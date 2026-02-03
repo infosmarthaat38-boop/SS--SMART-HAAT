@@ -11,7 +11,8 @@ service cloud.firestore {
     // Allow public read access to products and categories
     match /products/{productId} {
       allow read: if true;
-      allow write: if false; // Only via Firebase Admin or secure rules in future
+      // Allow create, update, delete for prototyping in admin panel
+      allow create, update, delete: if true;
     }
 
     match /categories/{categoryId} {
