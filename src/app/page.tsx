@@ -29,13 +29,18 @@ export default function Home() {
                       className="object-cover"
                       priority
                     />
-                    <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/20 to-transparent flex flex-col justify-center px-12 space-y-6">
-                      <h2 className="text-5xl md:text-6xl font-headline font-black text-white max-w-2xl leading-tight uppercase italic">
-                        GRAND <span className="text-orange-500">RAMADAN</span> BAZAAR
-                      </h2>
-                      <p className="text-white/70 max-w-md text-lg font-black leading-relaxed uppercase">UP TO 80% OFF + FREE DELIVERY</p>
-                      <Button className="bg-orange-600 text-white h-14 px-10 font-black rounded-none text-md hover:shadow-2xl hover:shadow-orange-600/40 transition-all uppercase w-fit">
-                        SHOP NOW <ArrowRight className="ml-2 h-5 w-5" />
+                    <div className="absolute inset-0 bg-gradient-to-r from-black/90 via-black/40 to-transparent flex flex-col justify-center px-12 space-y-4">
+                      <div className="space-y-0">
+                        <h2 className="text-6xl md:text-7xl font-headline font-black text-white leading-[0.9] uppercase tracking-tighter">
+                          GRAND <span className="text-orange-600 italic">RAMADAN</span>
+                        </h2>
+                        <h2 className="text-6xl md:text-7xl font-headline font-black text-white leading-[0.9] uppercase tracking-tighter">
+                          BAZAAR
+                        </h2>
+                      </div>
+                      <p className="text-white/90 text-xl font-black tracking-tight uppercase">UP TO 80% OFF + FREE DELIVERY</p>
+                      <Button className="bg-orange-600 text-white h-12 px-8 font-black rounded-none text-xs hover:bg-orange-700 transition-all uppercase w-fit mt-4">
+                        SHOP NOW <ArrowRight className="ml-2 h-4 w-4" />
                       </Button>
                     </div>
                   </div>

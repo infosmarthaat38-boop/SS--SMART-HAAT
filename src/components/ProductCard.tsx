@@ -43,18 +43,18 @@ export function ProductCard({ product }: ProductCardProps) {
         <div className="pt-2 border-t border-white/5 space-y-2">
           <div className="flex flex-col">
             <div className="flex items-center gap-2">
-              <span className="font-black text-lg text-primary tracking-tighter">৳{product.price.toFixed(2)}</span>
-              <span className="text-[10px] text-muted-foreground line-through font-bold">৳{product.originalPrice.toFixed(2)}</span>
+              <span className="font-black text-base text-primary tracking-tighter">৳{product.price.toFixed(2)}</span>
+              <span className="text-[9px] text-muted-foreground line-through font-bold">৳{product.originalPrice.toFixed(2)}</span>
             </div>
             {product.discountPercentage > 0 && (
-              <span className="text-orange-500 text-[9px] font-black uppercase">
+              <span className="text-orange-500 text-[8px] font-black uppercase">
                 {product.discountPercentage}% OFF TODAY
               </span>
             )}
           </div>
           
-          <Button className="w-full bg-primary text-black hover:bg-white transition-all font-black text-[10px] py-6 rounded-none uppercase shadow-lg shadow-primary/10">
-            <ShoppingCart className="mr-2 h-4 w-4" /> ORDER NOW
+          <Button className="w-full bg-primary text-black hover:bg-white transition-all font-black text-[9px] h-9 rounded-none uppercase shadow-lg shadow-primary/10">
+            <ShoppingCart className="mr-1.5 h-3 w-3" /> ORDER NOW
           </Button>
         </div>
       </CardContent>
