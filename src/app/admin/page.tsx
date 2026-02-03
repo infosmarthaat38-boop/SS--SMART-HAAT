@@ -4,7 +4,7 @@
 import React from 'react';
 import { Navbar } from '@/components/Navbar';
 import { Footer } from '@/components/Footer';
-import { LayoutDashboard, Users, ShoppingBag, BarChart3, Settings, Sparkles } from 'lucide-react';
+import { LayoutDashboard, Users, ShoppingBag, BarChart3, Settings, Sparkles, ShieldCheck } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { StyleAssistant } from '@/components/StyleAssistant';
 
@@ -15,8 +15,13 @@ export default function AdminPanel() {
       
       <main className="flex-grow container mx-auto px-4 py-12">
         <div className="flex items-center gap-6 mb-12">
-          <div className="p-4 bg-orange-600/10 border border-orange-600/20">
-            <LayoutDashboard className="h-8 w-8 text-orange-600" />
+          <div className="flex gap-2">
+            <div className="p-4 bg-orange-600/10 border border-orange-600/20">
+              <LayoutDashboard className="h-8 w-8 text-orange-600" />
+            </div>
+            <div className="p-4 bg-orange-600/10 border border-orange-600/20">
+              <ShieldCheck className="h-8 w-8 text-orange-600" />
+            </div>
           </div>
           <div>
             <h1 className="text-4xl font-headline font-black uppercase tracking-tighter text-white">ADMIN CONSOLE</h1>
@@ -24,12 +29,13 @@ export default function AdminPanel() {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
           {[
             { title: "TOTAL REVENUE", value: "৳1,245,600", icon: BarChart3, color: "text-orange-600" },
             { title: "BOUTIQUE ORDERS", value: "89", icon: ShoppingBag, color: "text-orange-600" },
             { title: "ELITE CLIENTS", value: "3,120", icon: Users, color: "text-orange-600" },
-            { title: "CURATED STOCK", value: "1,250", icon: Settings, color: "text-orange-600" }
+            { title: "CURATED STOCK", value: "1,250", icon: Settings, color: "text-orange-600" },
+            { title: "ADMIN ACCESS", value: "ACTIVE", icon: ShieldCheck, color: "text-orange-600" }
           ].map((stat, i) => (
             <Card key={i} className="bg-card border-white/5 rounded-none hover:border-orange-600/30 transition-all group">
               <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
@@ -49,6 +55,7 @@ export default function AdminPanel() {
           <div className="lg:col-span-2 space-y-8">
             <div className="flex items-center gap-4">
               <Sparkles className="h-5 w-5 text-orange-600" />
+              <ShieldCheck className="h-5 w-5 text-orange-600" />
               <h2 className="text-xl font-black uppercase tracking-tighter text-white">AI STYLE CONSULTANT</h2>
             </div>
             <div className="border border-white/5 bg-card">
