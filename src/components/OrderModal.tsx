@@ -89,13 +89,13 @@ export function OrderModal({ product, isOpen, onClose }: OrderModalProps) {
         <DialogContent className="max-w-4xl p-0 bg-black border-white/10 rounded-none overflow-hidden gap-0">
           <div className="flex flex-col md:flex-row h-full max-h-[90vh]">
             
-            {/* PRODUCT PREVIEW - 4:5 ASPECT RATIO (PURA ONSHO) - LIKED BY USER */}
-            <div className="relative w-full md:w-5/12 aspect-[4/5] bg-white border-b md:border-b-0 md:border-r border-white/5">
+            {/* PRODUCT PREVIEW - 4:5 ASPECT RATIO - COVER MODE */}
+            <div className="relative w-full md:w-5/12 aspect-[4/5] bg-zinc-900 border-b md:border-b-0 md:border-r border-white/5">
               <Image 
                 src={product.imageUrl} 
                 alt={product.name} 
                 fill 
-                className="object-contain opacity-90"
+                className="object-cover opacity-90"
                 sizes="(max-width: 768px) 100vw, 40vw"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent" />

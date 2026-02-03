@@ -68,15 +68,15 @@ export default function ProductDetails() {
           </Button>
           
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
-            {/* PRODUCT IMAGE - 4:5 ASPECT RATIO (PURA ONSHO) - LIKED BY USER */}
-            <div className="relative aspect-[4/5] rounded-none overflow-hidden bg-white border border-white/5 shadow-2xl group">
+            {/* PRODUCT IMAGE - 4:5 ASPECT RATIO - COVER MODE TO REMOVE BACKGROUND GAPS */}
+            <div className="relative aspect-[4/5] rounded-none overflow-hidden bg-zinc-900 border border-white/5 shadow-2xl group">
               <Image 
                 src={product.imageUrl} 
                 alt={product.name} 
                 fill 
                 sizes="(max-width: 1024px) 100vw, 50vw" 
                 priority 
-                className="object-contain transition-transform duration-[2000ms] group-hover:scale-105" 
+                className="object-cover transition-transform duration-[2000ms] group-hover:scale-105" 
               />
               {isOutOfStock && (
                 <div className="absolute inset-0 bg-black/70 backdrop-blur-md flex items-center justify-center z-10">
