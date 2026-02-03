@@ -21,15 +21,15 @@ export const ProductCard = memo(({ product }: ProductCardProps) => {
     <>
       <Card className={`group overflow-hidden bg-black border-none transition-all duration-300 rounded-none flex flex-col h-full relative ${isOutOfStock ? 'opacity-70' : ''}`}>
         
-        {/* IMAGE CONTAINER - SQUARE WHITE BACKGROUND */}
-        <Link href={`/products/${product.id}`} className="block relative aspect-square overflow-hidden bg-white border border-white/5">
+        {/* IMAGE CONTAINER - LOCKED SQUARE, FULL IMAGE (OBJECT-COVER) */}
+        <Link href={`/products/${product.id}`} className="block relative aspect-square overflow-hidden border border-white/5 bg-black">
           <Image
             src={product.imageUrl}
             alt={product.name}
             fill
             sizes="(max-width: 768px) 50vw, (max-width: 1024px) 25vw, 16vw"
             loading="lazy"
-            className="object-contain p-2 transition-transform duration-1000 group-hover:scale-105"
+            className="object-cover transition-transform duration-1000 group-hover:scale-105"
           />
           {isOutOfStock && (
             <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
@@ -50,7 +50,7 @@ export const ProductCard = memo(({ product }: ProductCardProps) => {
           {/* PRICE ROW: Main Price and Discount Box */}
           <div className="flex items-center justify-between">
             <span className="font-black text-2xl md:text-3xl text-[#01a3a4] tracking-tighter leading-none flex items-baseline">
-              <span className="text-[10px] font-normal mr-0.5 translate-y-[-2px]">৳</span>
+              <span className="text-[9px] font-normal mr-0.5 translate-y-[-2px]">৳</span>
               {product.price.toLocaleString()}
             </span>
             
