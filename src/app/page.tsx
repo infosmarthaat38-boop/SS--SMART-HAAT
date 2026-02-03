@@ -15,8 +15,8 @@ import Autoplay from "embla-carousel-autoplay";
 
 // Memoized carousel item for performance
 const SlideItem = memo(({ slide, priority }: { slide: any, priority: boolean }) => (
-  <CarouselItem>
-    <div className="relative h-[400px] w-full">
+  <CarouselItem className="h-full">
+    <div className="relative h-full w-full">
       <Image
         src={slide.image}
         alt="Slider"
@@ -40,21 +40,21 @@ const SlideItem = memo(({ slide, priority }: { slide: any, priority: boolean }) 
 ));
 SlideItem.displayName = 'SlideItem';
 
-// New Offer Product Card Component for the Left side
+// Flash Offer Card Component
 const OfferCard = () => {
   const offerProducts = products.filter(p => p.discountPercentage > 0).slice(0, 2);
   return (
-    <div className="h-[400px] bg-card border border-white/5 p-4 flex flex-col space-y-4">
-      <div className="flex items-center gap-2 mb-2">
+    <div className="h-[400px] bg-card border border-white/5 p-4 flex flex-col">
+      <div className="flex items-center gap-2 mb-4 shrink-0">
         <div className="p-1.5 bg-orange-600/10">
           <Flame className="h-4 w-4 text-orange-600 fill-current" />
         </div>
         <h2 className="text-[12px] font-black text-white uppercase tracking-tighter">FLASH OFFERS</h2>
       </div>
-      <div className="space-y-4 flex-grow overflow-hidden">
+      <div className="flex-grow space-y-4 overflow-hidden">
         {offerProducts.map(product => (
           <Link href={`/products/${product.id}`} key={product.id} className="block group">
-            <div className="relative aspect-square w-full mb-2 border border-white/5 overflow-hidden bg-white/5">
+            <div className="relative aspect-[16/9] w-full mb-2 border border-white/5 overflow-hidden bg-white/5">
               <Image 
                 src={product.imageUrl} 
                 alt={product.name} 
@@ -74,7 +74,7 @@ const OfferCard = () => {
           </Link>
         ))}
       </div>
-      <Button asChild variant="outline" className="w-full h-8 rounded-none border-white/10 text-[9px] font-black hover:bg-orange-600 hover:text-white transition-all uppercase mt-auto">
+      <Button asChild variant="outline" className="w-full h-8 rounded-none border-white/10 text-[9px] font-black hover:bg-orange-600 hover:text-white transition-all uppercase mt-4 shrink-0">
         <Link href="/shop">VIEW ALL OFFERS</Link>
       </Button>
     </div>
@@ -109,22 +109,22 @@ export default function Home() {
       <Navbar />
       
       <main className="flex-grow container mx-auto px-4 py-4 space-y-8">
-        {/* HERO GRID SECTION - 3 COLUMNS ON LG */}
+        {/* HERO GRID SECTION */}
         <section className="grid grid-cols-1 lg:grid-cols-12 gap-4">
           
-          {/* LEFT: FLASH OFFERS (3 Cols) */}
+          {/* LEFT: FLASH OFFERS */}
           <div className="hidden lg:block lg:col-span-3">
             <OfferCard />
           </div>
 
-          {/* MIDDLE: CAROUSEL (6 Cols) */}
+          {/* MIDDLE: CAROUSEL */}
           <div className="lg:col-span-6 relative rounded-none overflow-hidden h-[400px] border border-white/5 bg-card">
             <Carousel 
               className="w-full h-full" 
               opts={{ loop: true }}
               plugins={[plugin.current]}
             >
-              <CarouselContent>
+              <CarouselContent className="h-[400px]">
                 {slides.map((slide, index) => (
                   <SlideItem key={index} slide={slide} priority={index === 0} />
                 ))}
@@ -134,19 +134,19 @@ export default function Home() {
             </Carousel>
           </div>
           
-          {/* RIGHT: DOWNLOAD APP CARD (3 Cols) */}
-          <div className="hidden lg:flex lg:col-span-3 flex-col gap-4">
-            <div className="relative bg-gradient-to-br from-[#ff5f00] via-[#ff4b2b] to-[#ff0080] p-5 pt-8 rounded-2xl overflow-hidden shadow-2xl border border-white/10 h-[260px] flex flex-col">
+          {/* RIGHT: DOWNLOAD APP SECTION */}
+          <div className="hidden lg:flex lg:col-span-3 flex-col h-[400px] gap-4">
+            <div className="relative flex-grow bg-gradient-to-br from-[#ff5f00] via-[#ff4b2b] to-[#ff0080] p-5 pt-10 rounded-2xl overflow-hidden shadow-2xl border border-white/10 flex flex-col">
               <div className="absolute top-0 left-0 bg-white/20 backdrop-blur-md px-3 py-1.5 rounded-br-2xl flex items-center gap-1 border-b border-r border-white/30">
                 <Star className="h-3 w-3 fill-orange-400 text-orange-400" />
                 <span className="text-[9px] font-black text-white uppercase tracking-tighter">4.8 Rated</span>
               </div>
               
-              <div className="text-center mb-4">
+              <div className="text-center mb-6">
                 <h3 className="text-white font-black text-base tracking-tight uppercase leading-none">Download App</h3>
               </div>
 
-              <div className="space-y-3 flex-grow flex flex-col justify-center">
+              <div className="space-y-4 flex-grow flex flex-col justify-center">
                 <div className="flex items-center gap-3 group">
                   <div className="w-10 h-10 rounded-2xl bg-[#c7f9ee] flex items-center justify-center shadow-lg transition-transform group-hover:scale-105">
                     <Truck className="h-5 w-5 text-[#00b894]" />
@@ -170,7 +170,7 @@ export default function Home() {
             </div>
 
             {/* Bottom QR Area */}
-            <div className="flex items-center gap-3 px-1">
+            <div className="shrink-0 flex items-center gap-3 px-1 mt-auto">
               <div className="bg-white p-1.5 w-20 h-20 shrink-0 rounded-xl shadow-xl border border-white/5 flex items-center justify-center">
                 <svg viewBox="0 0 100 100" className="w-full h-full text-black">
                   <path fill="currentColor" d="M0 0h35v35H0V0zm5 5v25h25V5H5zm5 5h15v15H10V10zM65 0h35v35H65V0zm5 5v25h25V5H70zm5 5h15v15H75V10zM0 65h35v35H0V65zm5 5v25h25V70H5zm5 5h15v15H10V75zM45 0h10v10H45V0zm0 25h10v10H45V25zm20 45h10v10H65V70zm20 0h10v10H85V70zm-20 20h10v10H65V90zm0-45h10v10H65V45zm20 0h10v10H85V45zm-40 25h10v10H45V70zm0 20h10v10H45V90zm20-65h10v10H65V25zm-20 20h10v10H45V45zM0 45h10v10H0V45zm25 0h10v10H25V45z" />
@@ -208,7 +208,6 @@ export default function Home() {
             ))}
           </div>
           
-          {/* MORE PRODUCT BUTTON */}
           <div className="flex justify-center mt-12">
             <Button asChild className="bg-orange-600 hover:bg-orange-700 text-white font-black text-[12px] uppercase h-12 px-10 rounded-none shadow-xl transition-all hover:scale-105 active:scale-95">
               <Link href="/shop">
