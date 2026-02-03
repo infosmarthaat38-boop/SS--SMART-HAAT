@@ -16,7 +16,7 @@
     --secondary: 0 0% 8%;
     --secondary-foreground: 0 0% 98%;
     --muted: 0 0% 10%;
-    --muted-foreground: 0 0% 90%; /* LIGHT WHITE INSTEAD OF GRAY */
+    --muted-foreground: 0 0% 95%; /* VERY LIGHT WHITE FOR ALL MUTED TEXT */
     --accent: 30 100% 50%;
     --accent-foreground: 0 0% 100%;
     --destructive: 0 84.2% 60.2%;
@@ -38,6 +38,11 @@
   h1, h2, h3, h4, h5, h6 {
     @apply font-headline tracking-tighter uppercase;
   }
+  
+  /* Ensuring all "muted" or secondary text is Light White */
+  .text-muted-foreground {
+    @apply text-white/90;
+  }
 }
 
 /* Custom Scrollbar */
@@ -49,4 +54,17 @@
 }
 ::-webkit-scrollbar-thumb {
   background: #ff8c00;
+}
+
+/* Notification Shake Animation */
+@keyframes alert-shake {
+  0% { transform: translateX(0); }
+  25% { transform: translateX(5px); }
+  50% { transform: translateX(-5px); }
+  75% { transform: translateX(5px); }
+  100% { transform: translateX(0); }
+}
+
+.animate-alert-shake {
+  animation: alert-shake 0.5s ease-in-out infinite;
 }
