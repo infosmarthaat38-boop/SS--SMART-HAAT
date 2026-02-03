@@ -69,7 +69,7 @@ export default function ProductDetails() {
           
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
             {/* LOCKED ASPECT RATIO 4/5 FOR PRODUCT DETAILS */}
-            <div className="relative aspect-[4/5] rounded-none overflow-hidden bg-black border border-white/5 shadow-2xl group">
+            <div className="relative aspect-[4/5] rounded-none overflow-hidden bg-white border border-white/5 shadow-2xl group">
               <Image 
                 src={product.imageUrl} 
                 alt={product.name} 
@@ -94,12 +94,12 @@ export default function ProductDetails() {
                 <h1 className="text-5xl md:text-7xl font-black font-headline text-white leading-none uppercase tracking-tighter">{product.name}</h1>
                 <div className="flex items-center gap-6">
                   <div className="text-4xl font-black text-[#01a3a4] uppercase tracking-tighter flex items-baseline">
-                    <span className="text-[10px] font-normal mr-1">৳</span>
+                    <span className="text-[10px] font-normal mr-1 translate-y-[-4px]">৳</span>
                     {product.price.toLocaleString()}
                   </div>
                   {product.originalPrice > product.price && (
                     <p className="text-2xl text-white/60 line-through font-bold flex items-baseline">
-                      <span className="text-[10px] font-normal mr-0.5">৳</span>{product.originalPrice.toLocaleString()}
+                      <span className="text-[10px] font-normal mr-0.5 translate-y-[-2px]">৳</span>{product.originalPrice.toLocaleString()}
                     </p>
                   )}
                 </div>
