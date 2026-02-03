@@ -40,11 +40,11 @@ const SlideItem = memo(({ slide, priority }: { slide: any, priority: boolean }) 
 ));
 SlideItem.displayName = 'SlideItem';
 
-// Flash Offer Card Component
+// Flash Offer Card Component - Removed borders as requested
 const OfferCard = () => {
   const offerProducts = products.filter(p => p.discountPercentage > 0).slice(0, 2);
   return (
-    <div className="h-[400px] bg-card border border-white/5 p-4 flex flex-col">
+    <div className="h-[400px] bg-card p-4 flex flex-col">
       <div className="flex items-center gap-2 mb-4 shrink-0">
         <div className="p-1.5 bg-orange-600/10">
           <Flame className="h-4 w-4 text-orange-600 fill-current" />
@@ -109,7 +109,7 @@ export default function Home() {
       <Navbar />
       
       <main className="flex-grow container mx-auto px-4 py-4 space-y-8">
-        {/* HERO GRID SECTION */}
+        {/* HERO GRID SECTION - Removed borders from columns */}
         <section className="grid grid-cols-1 lg:grid-cols-12 gap-4">
           
           {/* LEFT: FLASH OFFERS */}
@@ -118,7 +118,7 @@ export default function Home() {
           </div>
 
           {/* MIDDLE: CAROUSEL */}
-          <div className="lg:col-span-6 relative rounded-none overflow-hidden h-[400px] border border-white/5 bg-card">
+          <div className="lg:col-span-6 relative rounded-none overflow-hidden h-[400px] bg-card">
             <Carousel 
               className="w-full h-full" 
               opts={{ loop: true }}
@@ -169,7 +169,7 @@ export default function Home() {
               </div>
             </div>
 
-            {/* Bottom QR Area */}
+            {/* Bottom QR Area - Removed outer border */}
             <div className="shrink-0 flex items-center gap-3 px-1 mt-auto">
               <div className="bg-white p-1.5 w-20 h-20 shrink-0 rounded-xl shadow-xl border border-white/5 flex items-center justify-center">
                 <svg viewBox="0 0 100 100" className="w-full h-full text-black">
