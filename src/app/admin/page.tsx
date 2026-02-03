@@ -151,7 +151,7 @@ export default function AdminPanel() {
           <Card className="lg:col-span-2 bg-card border-white/5 rounded-none overflow-hidden">
             <CardHeader className="flex flex-row items-center justify-between border-b border-white/5 pb-6">
               <div className="space-y-1">
-                <CardTitle className="text-xs font-black uppercase tracking-[0.3em] text-orange-600">Sales Intelligence</p>
+                <CardTitle className="text-xs font-black uppercase tracking-[0.3em] text-orange-600">Sales Intelligence</CardTitle>
                 <CardDescription className="text-[10px] font-bold uppercase">Weekly transaction performance (৳)</CardDescription>
               </div>
               <TrendingUp className="h-5 w-5 text-muted-foreground" />
