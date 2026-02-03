@@ -3,7 +3,7 @@
 
 import React, { useRef } from 'react';
 import Image from 'next/image';
-import { ArrowRight, Flame, Star, Smartphone, QrCode, Apple, Play } from 'lucide-react';
+import { ArrowRight, Flame, Star, QrCode, Apple, Play, Truck, Tag } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Navbar } from '@/components/Navbar';
 import { Footer } from '@/components/Footer';
@@ -88,36 +88,61 @@ export default function Home() {
             </Carousel>
           </div>
           
-          {/* DOWNLOAD APP CARD - UPDATED LAYOUT */}
-          <div className="hidden lg:flex lg:col-span-3 bg-orange-600 rounded-none border border-white/5 p-4 flex-col justify-between group hover:border-white/20 transition-all">
-            <div className="flex gap-3 items-start">
-              {/* QR Code Left */}
-              <div className="bg-white p-1.5 w-32 h-32 shrink-0 flex items-center justify-center shadow-xl">
-                <QrCode className="h-full w-full text-black" />
+          {/* DOWNLOAD APP CARD - NEW STYLE MATCHING IMAGE */}
+          <div className="hidden lg:flex lg:col-span-3 flex-col gap-4">
+            {/* Top Gradient Card */}
+            <div className="relative bg-gradient-to-br from-[#ff5f00] via-[#ff4b2b] to-[#ff0080] p-6 pt-10 rounded-2xl overflow-hidden shadow-2xl border border-white/10 h-[280px] flex flex-col">
+              {/* Badge */}
+              <div className="absolute top-0 left-0 bg-white/20 backdrop-blur-md px-3 py-1.5 rounded-br-2xl flex items-center gap-1 border-b border-r border-white/30">
+                <Star className="h-3 w-3 fill-orange-400 text-orange-400" />
+                <span className="text-[10px] font-black text-white uppercase tracking-tighter">4.8 Rated</span>
               </div>
               
-              {/* Buttons Right */}
-              <div className="flex flex-col gap-3 flex-grow py-1">
-                 <div className="bg-black/10 border border-white/20 h-12 px-3 flex items-center gap-3 cursor-pointer hover:bg-black/20 transition-all">
-                    <Apple className="h-6 w-6 text-white" />
-                    <div className="flex flex-col">
-                       <span className="text-[6px] text-white/80 font-bold leading-none uppercase">Download on</span>
-                       <span className="text-[10px] text-white font-black leading-none uppercase">App Store</span>
-                    </div>
-                 </div>
-                 <div className="bg-black/10 border border-white/20 h-12 px-3 flex items-center gap-3 cursor-pointer hover:bg-black/20 transition-all">
-                    <Play className="h-5 w-5 text-white fill-white" />
-                    <div className="flex flex-col">
-                       <span className="text-[6px] text-white/80 font-bold leading-none uppercase">Get it on</span>
-                       <span className="text-[10px] text-white font-black leading-none uppercase">Google Play</span>
-                    </div>
-                 </div>
+              <div className="text-center mb-6">
+                <h3 className="text-white font-black text-lg tracking-tight uppercase leading-none">Download App</h3>
+              </div>
+
+              <div className="space-y-4 flex-grow flex flex-col justify-center">
+                <div className="flex items-center gap-4 group">
+                  <div className="w-12 h-12 rounded-2xl bg-[#c7f9ee] flex items-center justify-center shadow-lg transition-transform group-hover:scale-105">
+                    <Truck className="h-6 w-6 text-[#00b894]" />
+                  </div>
+                  <div className="flex flex-col">
+                    <span className="text-white font-black text-[10px] leading-none uppercase opacity-80">Free</span>
+                    <span className="text-white font-black text-[14px] leading-tight uppercase">Delivery</span>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-4 group">
+                  <div className="w-12 h-12 rounded-2xl bg-[#ffe0e6] flex items-center justify-center shadow-lg transition-transform group-hover:scale-105">
+                    <Tag className="h-6 w-6 text-[#ff4d6d]" />
+                  </div>
+                  <div className="flex flex-col">
+                    <span className="text-white font-black text-[10px] leading-none uppercase opacity-80">Limited</span>
+                    <span className="text-white font-black text-[14px] leading-tight uppercase">Time</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Bottom QR Area */}
+            <div className="flex items-center gap-4 px-2">
+              <div className="bg-white p-2 w-24 h-24 shrink-0 rounded-xl shadow-xl border border-white/5">
+                <QrCode className="h-full w-full text-black" />
+              </div>
+              <div className="flex flex-col gap-2 flex-grow">
+                <div className="bg-white border border-white/10 h-10 px-4 flex items-center gap-3 rounded-xl cursor-pointer hover:bg-gray-100 transition-all shadow-md group">
+                  <Apple className="h-4 w-4 text-black" />
+                  <span className="text-[10px] text-black font-black uppercase tracking-tight">App Store</span>
+                </div>
+                <div className="bg-white border border-white/10 h-10 px-4 flex items-center gap-3 rounded-xl cursor-pointer hover:bg-gray-100 transition-all shadow-md group">
+                  <Play className="h-4 w-4 text-black fill-black" />
+                  <span className="text-[10px] text-black font-black uppercase tracking-tight">Google Play</span>
+                </div>
               </div>
             </div>
             
-            <div className="mt-4 pt-4 border-t border-white/10">
-              <p className="text-[14px] font-black text-white uppercase tracking-widest leading-none">DOWNLOAD THE APP NOW!</p>
-            </div>
+            <p className="text-[12px] font-black text-orange-600 uppercase tracking-[0.1em] px-2 leading-none mt-1">Download the App Now!</p>
           </div>
         </section>
 
