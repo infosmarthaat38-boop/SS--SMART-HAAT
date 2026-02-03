@@ -1,7 +1,7 @@
 
 "use client";
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Navbar } from '@/components/Navbar';
 import { Footer } from '@/components/Footer';
 import { Button } from '@/components/ui/button';
@@ -18,21 +18,52 @@ import {
   CheckCircle, 
   XCircle, 
   Download, 
-  Printer,
-  FileText
+  Truck,
+  FileText,
+  DollarSign
 } from 'lucide-react';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
 import Link from 'next/link';
 import { useFirestore, useCollection, useMemoFirebase } from '@/firebase';
 import { collection, query, orderBy, doc } from 'firebase/firestore';
 import { updateDocumentNonBlocking, deleteDocumentNonBlocking } from '@/firebase/non-blocking-updates';
 import { Badge } from '@/components/ui/badge';
-import { jsPDF } from "jspdf";
+import { jsPDF } from "jsPDF";
 import autoTable from 'jspdf-autotable';
 
 export default function AdminOrders() {
   const db = useFirestore();
+  const [isConfirmOpen, setIsConfirmOpen] = useState(false);
+  const [selectedOrder, setSelectedOrder] = useState<any>(null);
+  const [deliveryCharge, setDeliveryCharge] = useState('');
+
   const ordersRef = useMemoFirebase(() => query(collection(db, 'orders'), orderBy('createdAt', 'desc')), [db]);
   const { data: orders, isLoading } = useCollection(ordersRef);
+
+  const handleOpenConfirm = (order: any) => {
+    setSelectedOrder(order);
+    setDeliveryCharge('');
+    setIsConfirmOpen(true);
+  };
+
+  const handleFinalizeConfirmation = () => {
+    if (!selectedOrder || !deliveryCharge) return;
+    
+    updateDocumentNonBlocking(doc(db, 'orders', selectedOrder.id), { 
+      status: 'CONFIRMED',
+      deliveryCharge: parseFloat(deliveryCharge)
+    });
+    
+    setIsConfirmOpen(false);
+    setSelectedOrder(null);
+  };
 
   const handleUpdateStatus = (id: string, newStatus: string) => {
     updateDocumentNonBlocking(doc(db, 'orders', id), { status: newStatus });
@@ -46,9 +77,11 @@ export default function AdminOrders() {
 
   const generateInvoice = (order: any) => {
     const doc = new jsPDF();
+    const dCharge = order.deliveryCharge || 0;
+    const total = order.productPrice + dCharge;
     
     // Header
-    doc.setFillColor(255, 140, 0); // Orange
+    doc.setFillColor(255, 140, 0); 
     doc.rect(0, 0, 210, 40, 'F');
     doc.setTextColor(255, 255, 255);
     doc.setFontSize(24);
@@ -77,7 +110,7 @@ export default function AdminOrders() {
     // Table
     autoTable(doc, {
       startY: 90,
-      head: [['PRODUCT NAME', 'UNIT PRICE', 'QUANTITY', 'TOTAL']],
+      head: [['PRODUCT NAME', 'UNIT PRICE', 'QTY', 'TOTAL']],
       body: [
         [order.productName, `BDT ${order.productPrice.toLocaleString()}`, '1', `BDT ${order.productPrice.toLocaleString()}`]
       ],
@@ -85,10 +118,14 @@ export default function AdminOrders() {
       styles: { fontSize: 10, cellPadding: 5 }
     });
 
-    // Total
+    // Totals
     const finalY = (doc as any).lastAutoTable.finalY + 10;
+    doc.setFont("helvetica", "normal");
+    doc.text(`Subtotal: BDT ${order.productPrice.toLocaleString()}`, 130, finalY);
+    doc.text(`Delivery Charge: BDT ${dCharge.toLocaleString()}`, 130, finalY + 6);
     doc.setFont("helvetica", "bold");
-    doc.text(`GRAND TOTAL: BDT ${order.productPrice.toLocaleString()}`, 130, finalY + 10);
+    doc.setFontSize(12);
+    doc.text(`GRAND TOTAL: BDT ${total.toLocaleString()}`, 130, finalY + 14);
 
     // Footer
     doc.setFontSize(8);
@@ -110,141 +147,180 @@ export default function AdminOrders() {
               <Link href="/admin"><ArrowLeft className="h-6 w-6" /></Link>
             </Button>
             <div className="space-y-1">
-              <p className="text-[10px] font-black text-orange-600 uppercase tracking-widest">Executive Management</p>
+              <p className="text-[10px] font-black text-orange-600 uppercase tracking-widest">Business Operations</p>
               <h1 className="text-4xl font-black uppercase tracking-tighter text-white">ORDER INTELLIGENCE</h1>
             </div>
           </div>
-          <div className="flex items-center gap-3">
-             <Badge className="bg-white/5 border-white/10 text-white font-black text-[12px] uppercase rounded-none px-6 py-3 h-14">
-              {orders?.length || 0} TOTAL REPORTS
-            </Badge>
-          </div>
+          <Badge className="bg-white/5 border-white/10 text-white font-black text-[12px] uppercase rounded-none px-6 py-3 h-14">
+            {orders?.length || 0} RECORDS IN SYSTEM
+          </Badge>
         </div>
 
         {isLoading ? (
           <div className="flex flex-col items-center justify-center py-40 gap-4">
             <Loader2 className="h-12 w-12 text-orange-600 animate-spin" />
-            <p className="text-[10px] font-black uppercase text-orange-600 animate-pulse tracking-[0.3em]">Synchronizing Order Data...</p>
+            <p className="text-[10px] font-black uppercase text-orange-600 animate-pulse tracking-[0.3em]">Syncing Order Records...</p>
           </div>
         ) : !orders || orders.length === 0 ? (
           <div className="text-center py-32 border border-dashed border-white/10 bg-white/[0.02]">
             <ShoppingBag className="h-16 w-16 text-white/5 mx-auto mb-6" />
-            <p className="text-sm font-black uppercase text-muted-foreground tracking-[0.5em]">No records found in the system archive.</p>
+            <p className="text-sm font-black uppercase text-muted-foreground tracking-[0.5em]">No orders archived in system.</p>
           </div>
         ) : (
-          <div className="space-y-6">
+          <div className="space-y-2">
+            {/* LIST HEADER */}
+            <div className="hidden lg:grid grid-cols-12 gap-4 px-6 py-4 bg-white/5 border border-white/5 text-[10px] font-black uppercase tracking-widest text-orange-600 mb-4">
+              <div className="col-span-2">Customer</div>
+              <div className="col-span-2">Contact & Address</div>
+              <div className="col-span-3">Product Info</div>
+              <div className="col-span-1 text-center">Status</div>
+              <div className="col-span-4 text-right">Actions</div>
+            </div>
+
+            {/* ORDER LIST ITEMS */}
             {orders.map((order) => (
-              <Card key={order.id} className="bg-card border-white/5 rounded-none overflow-hidden hover:border-orange-600/30 transition-all shadow-2xl group">
-                <div className="flex flex-col xl:flex-row">
-                  {/* ORDER STATUS & BASIC INFO */}
-                  <div className="p-8 xl:w-1/4 bg-white/[0.02] border-b xl:border-b-0 xl:border-r border-white/5 flex flex-col justify-between">
-                    <div className="space-y-4">
-                      <div className="flex items-center justify-between">
-                        <Badge className={`rounded-none text-[9px] font-black uppercase px-3 py-1.5 ${
-                          order.status === 'PENDING' ? 'bg-yellow-500/20 text-yellow-500 border-yellow-500/30' : 
-                          order.status === 'CONFIRMED' ? 'bg-blue-500/20 text-blue-500 border-blue-500/30' :
-                          order.status === 'CANCELLED' ? 'bg-red-500/20 text-red-500 border-red-500/30' :
-                          'bg-green-500/20 text-green-500 border-green-500/30'
-                        } border`}>
-                          {order.status}
-                        </Badge>
-                        <span className="text-[9px] font-mono text-muted-foreground uppercase flex items-center gap-2">
-                          <Calendar className="h-3 w-3" /> {new Date(order.createdAt).toLocaleDateString()}
-                        </span>
-                      </div>
-                      <div className="space-y-1">
-                        <p className="text-[9px] font-black text-orange-600 uppercase tracking-widest">ORDER ID</p>
-                        <p className="text-xs font-mono text-white opacity-40">#{order.id.toUpperCase()}</p>
-                      </div>
-                      <div className="space-y-1">
-                        <p className="text-[9px] font-black text-orange-600 uppercase tracking-widest">PRODUCT</p>
-                        <h3 className="text-xl font-black text-white uppercase tracking-tighter leading-tight">{order.productName}</h3>
-                        <p className="text-2xl font-black text-white tracking-tighter">৳{order.productPrice.toLocaleString()}</p>
-                      </div>
-                    </div>
-                  </div>
+              <div key={order.id} className="grid grid-cols-1 lg:grid-cols-12 gap-4 p-6 bg-card border border-white/5 hover:border-orange-600/30 transition-all group items-center">
+                <div className="col-span-2 space-y-1">
+                  <p className="text-[9px] font-black text-orange-600 uppercase tracking-widest">Client Name</p>
+                  <p className="text-[14px] font-black text-white uppercase truncate">{order.customerName}</p>
+                  <span className="text-[9px] font-mono text-muted-foreground block">UID: #{order.id.slice(0, 8)}</span>
+                </div>
 
-                  {/* CUSTOMER DETAILS */}
-                  <div className="p-8 xl:w-2/4 grid grid-cols-1 md:grid-cols-2 gap-8 items-center bg-black/40">
-                    <div className="space-y-6">
-                      <div className="flex items-start gap-4">
-                        <div className="h-10 w-10 bg-orange-600/10 flex items-center justify-center shrink-0 border border-orange-600/20">
-                          <User className="h-5 w-5 text-orange-600" />
-                        </div>
-                        <div>
-                          <p className="text-[9px] font-black text-muted-foreground uppercase tracking-widest">Customer Name</p>
-                          <p className="text-[14px] font-black text-white uppercase">{order.customerName}</p>
-                        </div>
-                      </div>
-                      <div className="flex items-start gap-4">
-                        <div className="h-10 w-10 bg-orange-600/10 flex items-center justify-center shrink-0 border border-orange-600/20">
-                          <Phone className="h-5 w-5 text-orange-600" />
-                        </div>
-                        <div>
-                          <p className="text-[9px] font-black text-muted-foreground uppercase tracking-widest">Direct Contact</p>
-                          <p className="text-[14px] font-black text-white uppercase font-mono">{order.customerPhone}</p>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="flex items-start gap-4 h-full md:border-l md:border-white/5 md:pl-8">
-                      <div className="h-10 w-10 bg-orange-600/10 flex items-center justify-center shrink-0 border border-orange-600/20">
-                        <MapPin className="h-5 w-5 text-orange-600" />
-                      </div>
-                      <div>
-                        <p className="text-[9px] font-black text-muted-foreground uppercase tracking-widest">Delivery Address</p>
-                        <p className="text-[13px] font-black text-white uppercase leading-relaxed max-w-xs">{order.customerAddress}</p>
-                      </div>
-                    </div>
-                  </div>
+                <div className="col-span-2 space-y-3">
+                   <div className="flex items-center gap-2">
+                     <Phone className="h-3 w-3 text-orange-600" />
+                     <p className="text-[11px] font-mono text-white/70">{order.customerPhone}</p>
+                   </div>
+                   <div className="flex items-start gap-2">
+                     <MapPin className="h-3 w-3 text-orange-600 mt-0.5 shrink-0" />
+                     <p className="text-[10px] text-white/60 uppercase leading-tight line-clamp-2">{order.customerAddress}</p>
+                   </div>
+                </div>
 
-                  {/* ACTIONS */}
-                  <div className="p-8 xl:w-1/4 flex flex-col justify-center gap-3 bg-white/[0.01]">
-                    <div className="grid grid-cols-2 gap-2">
-                      <Button 
-                        onClick={() => handleUpdateStatus(order.id, 'CONFIRMED')}
-                        className="bg-blue-600 hover:bg-blue-700 text-white font-black text-[10px] uppercase rounded-none h-12 shadow-lg shadow-blue-600/10"
-                      >
-                        <CheckCircle className="mr-2 h-4 w-4" /> CONFIRM
-                      </Button>
-                      <Button 
-                        onClick={() => handleUpdateStatus(order.id, 'CANCELLED')}
-                        variant="outline"
-                        className="border-red-600/50 text-red-500 hover:bg-red-600 hover:text-white font-black text-[10px] uppercase rounded-none h-12"
-                      >
-                        <XCircle className="mr-2 h-4 w-4" /> CANCEL
-                      </Button>
-                    </div>
-                    
-                    <Button 
-                      onClick={() => handleUpdateStatus(order.id, 'DELIVERED')}
-                      className="bg-green-600 hover:bg-green-700 text-white font-black text-[10px] uppercase rounded-none h-12 shadow-lg shadow-green-600/10"
-                    >
-                      <ShoppingBag className="mr-2 h-4 w-4" /> MARK DELIVERED
-                    </Button>
-
-                    <div className="grid grid-cols-2 gap-2 mt-2">
-                      <Button 
-                        variant="secondary"
-                        onClick={() => generateInvoice(order)}
-                        className="bg-white/5 hover:bg-white/10 text-white font-black text-[10px] uppercase rounded-none h-12 border border-white/10"
-                      >
-                        <Download className="mr-2 h-4 w-4 text-orange-600" /> PDF INVOICE
-                      </Button>
-                      <Button 
-                        variant="ghost"
-                        onClick={() => handleDeleteOrder(order.id)}
-                        className="text-muted-foreground hover:text-red-500 hover:bg-red-500/10 rounded-none h-12 uppercase text-[10px] font-black"
-                      >
-                        <Trash2 className="mr-2 h-4 w-4" /> REMOVE
-                      </Button>
-                    </div>
+                <div className="col-span-3 space-y-2 border-l border-white/5 pl-4">
+                  <h3 className="text-sm font-black text-white uppercase tracking-tighter line-clamp-1">{order.productName}</h3>
+                  <div className="flex items-center gap-4">
+                    <p className="text-lg font-black text-white tracking-tighter">৳{order.productPrice.toLocaleString()}</p>
+                    {order.deliveryCharge && (
+                      <p className="text-[10px] font-black text-green-500 uppercase tracking-widest">+ ৳{order.deliveryCharge} DELIVERY</p>
+                    )}
                   </div>
                 </div>
-              </Card>
+
+                <div className="col-span-1 flex justify-center">
+                  <Badge className={`rounded-none text-[8px] font-black uppercase px-2 py-1 ${
+                    order.status === 'PENDING' ? 'bg-yellow-500/20 text-yellow-500 border-yellow-500/30' : 
+                    order.status === 'CONFIRMED' ? 'bg-blue-500/20 text-blue-500 border-blue-500/30' :
+                    order.status === 'CANCELLED' ? 'bg-red-500/20 text-red-500 border-red-500/30' :
+                    'bg-green-500/20 text-green-500 border-green-500/30'
+                  } border`}>
+                    {order.status}
+                  </Badge>
+                </div>
+
+                <div className="col-span-4 flex flex-wrap justify-end gap-2">
+                  {order.status === 'PENDING' && (
+                    <Button 
+                      onClick={() => handleOpenConfirm(order)}
+                      className="bg-orange-600 hover:bg-orange-700 text-white font-black text-[9px] uppercase rounded-none h-10 px-4"
+                    >
+                      <CheckCircle className="mr-2 h-3.5 w-3.5" /> CONFIRM
+                    </Button>
+                  )}
+                  
+                  {order.status === 'CONFIRMED' && (
+                    <Button 
+                      onClick={() => handleUpdateStatus(order.id, 'DELIVERED')}
+                      className="bg-green-600 hover:bg-green-700 text-white font-black text-[9px] uppercase rounded-none h-10 px-4"
+                    >
+                      <ShoppingBag className="mr-2 h-3.5 w-3.5" /> DELIVER
+                    </Button>
+                  )}
+
+                  <Button 
+                    variant="outline"
+                    onClick={() => handleUpdateStatus(order.id, 'CANCELLED')}
+                    className="border-white/10 text-white hover:bg-red-600/10 hover:text-red-500 font-black text-[9px] uppercase rounded-none h-10 px-4"
+                  >
+                    <XCircle className="mr-2 h-3.5 w-3.5" /> CANCEL
+                  </Button>
+
+                  <Button 
+                    variant="secondary"
+                    onClick={() => generateInvoice(order)}
+                    className="bg-white/5 hover:bg-white/10 text-white font-black text-[9px] uppercase rounded-none h-10 px-4 border border-white/10"
+                  >
+                    <FileText className="mr-2 h-3.5 w-3.5 text-orange-600" /> INVOICE
+                  </Button>
+
+                  <Button 
+                    variant="ghost"
+                    onClick={() => handleDeleteOrder(order.id)}
+                    className="text-muted-foreground hover:text-red-500 hover:bg-red-500/10 rounded-none h-10 w-10 p-0"
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </Button>
+                </div>
+              </div>
             ))}
           </div>
         )}
       </main>
+
+      {/* DELIVERY CHARGE CONFIRMATION MODAL */}
+      <Dialog open={isConfirmOpen} onOpenChange={setIsConfirmOpen}>
+        <DialogContent className="bg-black border-orange-600/30 rounded-none max-w-md p-8">
+          <DialogHeader className="space-y-4">
+            <div className="flex items-center gap-3">
+              <div className="h-10 w-10 bg-orange-600/10 flex items-center justify-center border border-orange-600/20">
+                <Truck className="h-6 w-6 text-orange-600" />
+              </div>
+              <DialogTitle className="text-2xl font-black text-white uppercase tracking-tighter">ORDER CONFIRMATION</DialogTitle>
+            </div>
+            <p className="text-[10px] text-muted-foreground uppercase font-black tracking-widest leading-relaxed">
+              ENTER THE DELIVERY CHARGE TO FINALIZE THIS ORDER. THE CHARGE WILL BE ADDED TO THE TOTAL INVOICE.
+            </p>
+          </DialogHeader>
+
+          <div className="py-8 space-y-6">
+            <div className="p-4 bg-white/5 border border-white/5 space-y-2">
+              <p className="text-[9px] font-black text-orange-600 uppercase tracking-widest">Ordering Product</p>
+              <p className="text-sm font-black text-white uppercase">{selectedOrder?.productName}</p>
+              <p className="text-xl font-black text-white">৳{selectedOrder?.productPrice.toLocaleString()}</p>
+            </div>
+
+            <div className="space-y-2">
+              <label className="text-[10px] font-black text-muted-foreground uppercase flex items-center gap-2">
+                <DollarSign className="h-3 w-3" /> DELIVERY CHARGE (BDT)
+              </label>
+              <Input 
+                type="number"
+                value={deliveryCharge}
+                onChange={(e) => setDeliveryCharge(e.target.value)}
+                placeholder="E.G. 60 OR 120"
+                className="bg-white/5 border-white/20 rounded-none h-14 text-lg font-black text-white focus:ring-orange-600"
+              />
+            </div>
+          </div>
+
+          <DialogFooter className="gap-2 sm:gap-0">
+            <Button 
+              variant="outline"
+              onClick={() => setIsConfirmOpen(false)}
+              className="flex-1 rounded-none uppercase text-[10px] font-black border-white/10 hover:bg-white/5 h-14"
+            >
+              CANCEL
+            </Button>
+            <Button 
+              disabled={!deliveryCharge}
+              onClick={handleFinalizeConfirmation}
+              className="flex-1 bg-orange-600 hover:bg-orange-700 text-white font-black uppercase text-[10px] rounded-none h-14 shadow-xl shadow-orange-600/10"
+            >
+              FINALIZE CONFIRMATION
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
       
       <Footer />
     </div>
