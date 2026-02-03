@@ -14,7 +14,7 @@ interface ProductCardProps {
 }
 
 /**
- * ProductCard Component - Replicated exactly from user screenshot.
+ * ProductCard Component - Optimized for small Taka symbol and proper stock placement.
  */
 export const ProductCard = memo(({ product }: ProductCardProps) => {
   const [isOrderOpen, setIsOrderOpen] = useState(false);
@@ -49,6 +49,7 @@ export const ProductCard = memo(({ product }: ProductCardProps) => {
           <div className="flex items-center justify-between mt-auto">
             <div className="flex flex-col">
               <span className="font-black text-2xl text-orange-600 tracking-tighter leading-none flex items-baseline">
+                {/* SMALL TAKA SYMBOL */}
                 <span className="text-[10px] font-bold mr-0.5">৳</span>
                 {product.price.toLocaleString()}
               </span>
@@ -68,7 +69,7 @@ export const ProductCard = memo(({ product }: ProductCardProps) => {
             )}
           </div>
 
-          {/* STOCK STATUS */}
+          {/* STOCK STATUS - PLACED DIRECTLY ABOVE ORDER BUTTON */}
           <div className="flex items-center gap-2 pt-1">
             <div className={`h-2 w-2 rounded-full ${isOutOfStock ? 'bg-red-600' : 'bg-green-600'}`} />
             <span className={`text-[10px] font-black uppercase tracking-widest ${isOutOfStock ? 'text-red-600' : 'text-green-600'}`}>

@@ -16,12 +16,9 @@ export function Navbar() {
 
   const handleAdminClick = (e: React.MouseEvent) => {
     e.preventDefault();
-    const isAuthenticated = sessionStorage.getItem('is_admin_authenticated') === 'true';
-    if (isAuthenticated) {
-      router.push('/admin');
-    } else {
-      setIsAdminModalOpen(true);
-    }
+    // Always trigger the modal regardless of previous authentication status
+    // to ensure user must provide credentials on every deliberate click.
+    setIsAdminModalOpen(true);
   };
 
   return (

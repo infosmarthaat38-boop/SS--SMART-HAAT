@@ -1,7 +1,7 @@
 
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   Dialog, 
   DialogContent, 
@@ -33,6 +33,15 @@ export function AdminLoginModal({ isOpen, onClose }: AdminLoginModalProps) {
   const settingsRef = useMemoFirebase(() => doc(db, 'settings', 'site-config'), [db]);
   const { data: settings } = useDoc(settingsRef);
 
+  // Reset fields whenever the modal opens to ensure a fresh entry every time
+  useEffect(() => {
+    if (isOpen) {
+      setUsername('');
+      setPassword('');
+      setError('');
+    }
+  }, [isOpen]);
+
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
@@ -43,7 +52,7 @@ export function AdminLoginModal({ isOpen, onClose }: AdminLoginModalProps) {
 
     setTimeout(() => {
       if (username === validUser && password === validPass) {
-        // Track Daily Login
+        // Track Daily Login in Firestore
         const today = new Date().toISOString().split('T')[0];
         const statsRef = doc(db, 'loginStats', today);
         setDocumentNonBlocking(statsRef, { 
@@ -51,6 +60,7 @@ export function AdminLoginModal({ isOpen, onClose }: AdminLoginModalProps) {
           date: today
         }, { merge: true });
 
+        // Set short-lived session flag
         sessionStorage.setItem('is_admin_authenticated', 'true');
         onClose();
         router.push('/admin');
@@ -76,11 +86,11 @@ export function AdminLoginModal({ isOpen, onClose }: AdminLoginModalProps) {
           </div>
         </DialogHeader>
 
-        {/* Form with aggressive autocomplete prevention */}
+        {/* Form with aggressive autocomplete prevention techniques */}
         <form onSubmit={handleLogin} className="space-y-6 mt-6" autoComplete="off">
-          {/* Dummy hidden fields to fool browser autofill */}
-          <input type="text" style={{ display: 'none' }} name="fake_user" />
-          <input type="password" style={{ display: 'none' }} name="fake_pass" />
+          {/* Dummy hidden fields to trick some browsers from autofilling the main inputs */}
+          <input type="text" style={{ display: 'none' }} name="dummy_username_99" />
+          <input type="password" style={{ display: 'none' }} name="dummy_password_99" />
           
           <div className="space-y-4">
             <div className="space-y-2">
@@ -88,15 +98,15 @@ export function AdminLoginModal({ isOpen, onClose }: AdminLoginModalProps) {
                 <User className="h-3 w-3" /> USERNAME
               </label>
               <Input 
-                id="adm_u_input_99"
-                name="adm_u_input_99"
+                id="sys_admin_u_field"
+                name="sys_admin_u_field"
                 required
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 placeholder="ENTER USERNAME"
                 autoComplete="off"
                 spellCheck={false}
-                data-lpignore="true"
+                data-lpignore="true" // Ignore LastPass
                 className="bg-white/5 border-white/10 rounded-none h-12 text-xs uppercase focus:ring-orange-600"
               />
             </div>
@@ -106,15 +116,15 @@ export function AdminLoginModal({ isOpen, onClose }: AdminLoginModalProps) {
                 <Lock className="h-3 w-3" /> ACCESS KEY
               </label>
               <Input 
-                id="adm_p_input_99"
-                name="adm_p_input_99"
+                id="sys_admin_p_field"
+                name="sys_admin_p_field"
                 required
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="••••"
-                autoComplete="new-password"
-                data-lpignore="true"
+                autoComplete="new-password" // Prevents most browser suggestions
+                data-lpignore="true" // Ignore LastPass
                 className="bg-white/5 border-white/10 rounded-none h-12 text-xs uppercase focus:ring-orange-600 tracking-widest"
               />
             </div>
