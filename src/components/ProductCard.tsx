@@ -54,8 +54,8 @@ export const ProductCard = memo(({ product }: ProductCardProps) => {
                 {product.price.toLocaleString()}
               </span>
               {product.originalPrice > product.price && (
-                <span className="text-white/40 line-through text-[8px] md:text-[10px] font-bold mt-1 flex items-baseline">
-                  <span className="text-[6px] md:text-[7px] font-normal mr-0.5">৳</span>{product.originalPrice.toLocaleString()}
+                <span className="text-white/40 line-through text-[10px] md:text-[12px] font-bold mt-1 flex items-baseline">
+                  <span className="text-[7px] md:text-[8px] font-normal mr-0.5">৳</span>{product.originalPrice.toLocaleString()}
                 </span>
               )}
             </div>
