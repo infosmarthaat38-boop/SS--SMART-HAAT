@@ -63,6 +63,9 @@ export default function AdminOrders() {
   };
 
   const handleUpdateStatus = (id: string, newStatus: string) => {
+    if (newStatus === 'CANCELLED') {
+      if (!confirm("ARE YOU SURE YOU WANT TO CANCEL THIS ORDER? THIS ACTION CANNOT BE UNDONE.")) return;
+    }
     updateDocumentNonBlocking(doc(db, 'orders', id), { status: newStatus });
   };
 
@@ -227,7 +230,11 @@ export default function AdminOrders() {
                   
                   {order.status === 'CONFIRMED' && (
                     <Button 
-                      onClick={() => handleUpdateStatus(order.id, 'DELIVERED')}
+                      onClick={() => {
+                        if (confirm("MARK THIS ORDER AS DELIVERED?")) {
+                          handleUpdateStatus(order.id, 'DELIVERED');
+                        }
+                      }}
                       className="bg-green-600 hover:bg-green-700 text-white font-black text-[9px] uppercase rounded-none h-10 px-4"
                     >
                       <ShoppingBag className="mr-2 h-3.5 w-3.5" /> DELIVER
