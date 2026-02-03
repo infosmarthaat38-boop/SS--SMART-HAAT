@@ -12,12 +12,9 @@ import {
   Loader2, 
   Phone, 
   MapPin, 
-  Calendar, 
-  User, 
   Trash2, 
   CheckCircle, 
   XCircle, 
-  Download, 
   Truck,
   FileText,
   DollarSign
@@ -35,7 +32,7 @@ import { useFirestore, useCollection, useMemoFirebase } from '@/firebase';
 import { collection, query, orderBy, doc } from 'firebase/firestore';
 import { updateDocumentNonBlocking, deleteDocumentNonBlocking } from '@/firebase/non-blocking-updates';
 import { Badge } from '@/components/ui/badge';
-import { jsPDF } from "jsPDF";
+import { jsPDF } from "jspdf";
 import autoTable from 'jspdf-autotable';
 
 export default function AdminOrders() {
