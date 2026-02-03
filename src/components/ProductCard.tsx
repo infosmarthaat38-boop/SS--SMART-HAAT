@@ -15,7 +15,7 @@ interface ProductCardProps {
 }
 
 /**
- * ProductCard Component - Updated to show stock status and handle out of stock.
+ * ProductCard Component - Optimized with React.memo and next/image sizing.
  */
 export const ProductCard = memo(({ product }: ProductCardProps) => {
   const [isOrderOpen, setIsOrderOpen] = useState(false);
