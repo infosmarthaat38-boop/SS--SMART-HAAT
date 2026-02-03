@@ -1,0 +1,72 @@
+{
+  "entities": {
+    "Product": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Product",
+      "type": "object",
+      "description": "Represents a product available for sale on SS Smart Haat.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the product."
+        },
+        "name": {
+          "type": "string",
+          "description": "Name of the product."
+        },
+        "description": {
+          "type": "string",
+          "description": "Detailed description of the product."
+        },
+        "price": {
+          "type": "number",
+          "description": "Price of the product."
+        },
+        "imageUrl": {
+          "type": "string",
+          "description": "URL of the product image.",
+          "format": "uri"
+        },
+        "category": {
+          "type": "string",
+          "description": "Category the product belongs to."
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "description",
+        "price",
+        "imageUrl",
+        "category"
+      ]
+    }
+  },
+  "auth": {
+    "providers": [
+      "password",
+      "anonymous"
+    ]
+  },
+  "firestore": {
+    "structure": [
+      {
+        "path": "/products/{productId}",
+        "definition": {
+          "entityName": "Product",
+          "schema": {
+            "$ref": "#/backend/entities/Product"
+          },
+          "description": "Stores product information. No denormalized authorization fields are needed as all products are treated equally for access purposes at this stage.",
+          "params": [
+            {
+              "name": "productId",
+              "description": "Unique identifier for the product."
+            }
+          ]
+        }
+      }
+    ],
+    "reasoning": "Given the simple product catalog requirements of the 'SS Smart Haat' application, a straightforward Firestore structure is recommended. We'll use a single collection called `products` to store product information. This design prioritizes simplicity and ease of querying, suitable for the current application scope.\n\nThis structure inherently supports Authorization Independence because no subcollections or cross-document dependencies are introduced. Security rules can be applied directly to the `products` collection without needing to `get()` data from other documents.\n\nThe single `products` collection is ideal for supporting QAPs. Listing products is a simple collection query. Because there are no subcollections or dependencies, more complex filtering is not required at this stage.  The design avoids mixing data with different access needs within the same collection."
+  }
+}
