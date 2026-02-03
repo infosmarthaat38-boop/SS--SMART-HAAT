@@ -74,9 +74,6 @@ export default function ProductDetails() {
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
                   <Badge variant="secondary" className="rounded-none uppercase tracking-widest text-[10px] bg-orange-600/10 text-orange-600 border-none">{product.category}</Badge>
-                  <Badge className={`rounded-none text-[9px] h-6 font-black uppercase ${isOutOfStock ? 'bg-red-600' : 'bg-green-600'}`}>
-                    {isOutOfStock ? 'OUT OF STOCK' : 'IN STOCK'}
-                  </Badge>
                 </div>
                 <h1 className="text-4xl md:text-5xl font-black font-headline text-white leading-tight uppercase tracking-tighter">{product.name}</h1>
                 <div className="flex items-center gap-4">
@@ -102,25 +99,35 @@ export default function ProductDetails() {
               
               <div className="text-muted-foreground uppercase leading-relaxed text-sm tracking-tight">{product.description}</div>
               
-              <div className="flex flex-col sm:flex-row gap-4 pt-4">
-                <Button 
-                  disabled={isOutOfStock}
-                  onClick={() => setIsOrderOpen(true)}
-                  size="lg" 
-                  className={`flex-grow h-14 rounded-none text-sm font-black uppercase tracking-widest shadow-xl ${isOutOfStock ? 'bg-white/5 text-white/20' : 'bg-orange-600 hover:bg-orange-700 text-white shadow-orange-600/10'}`}
-                >
-                  <ShoppingCart className="mr-2 h-5 w-5" /> {isOutOfStock ? 'CURRENTLY UNAVAILABLE' : 'ORDER NOW'}
-                </Button>
-                <div className="flex gap-2">
-                  <Button size="icon" variant="outline" className="h-14 w-14 rounded-none border-white/10 text-white hover:bg-white/5"><Heart className="h-5 w-5" /></Button>
-                  <Button size="icon" variant="outline" className="h-14 w-14 rounded-none border-white/10 text-white hover:bg-white/5"><Share2 className="h-5 w-5" /></Button>
+              <div className="space-y-6 pt-4">
+                {/* STOCK STATUS ABOVE BUTTON */}
+                <div className="flex items-center gap-3">
+                  <div className={`h-2.5 w-2.5 rounded-full animate-pulse ${isOutOfStock ? 'bg-red-600' : 'bg-green-600'}`} />
+                  <span className={`text-xs font-black uppercase tracking-widest ${isOutOfStock ? 'text-red-600' : 'text-green-600'}`}>
+                    {isOutOfStock ? 'OUT OF STOCK - CURRENTLY UNAVAILABLE' : `IN STOCK - ${product.stockQuantity} UNITS AVAILABLE`}
+                  </span>
+                </div>
+
+                <div className="flex flex-col sm:flex-row gap-4">
+                  <Button 
+                    disabled={isOutOfStock}
+                    onClick={() => setIsOrderOpen(true)}
+                    size="lg" 
+                    className={`flex-grow h-14 rounded-none text-sm font-black uppercase tracking-widest shadow-xl ${isOutOfStock ? 'bg-white/5 text-white/20' : 'bg-orange-600 hover:bg-orange-700 text-white shadow-orange-600/10'}`}
+                  >
+                    <ShoppingCart className="mr-2 h-5 w-5" /> {isOutOfStock ? 'SOLD OUT' : 'ORDER NOW'}
+                  </Button>
+                  <div className="flex gap-2">
+                    <Button size="icon" variant="outline" className="h-14 w-14 rounded-none border-white/10 text-white hover:bg-white/5"><Heart className="h-5 w-5" /></Button>
+                    <Button size="icon" variant="outline" className="h-14 w-14 rounded-none border-white/10 text-white hover:bg-white/5"><Share2 className="h-5 w-5" /></Button>
+                  </div>
                 </div>
               </div>
               
               <div className="pt-8 border-t border-white/5">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-[10px] font-black uppercase tracking-widest text-muted-foreground">
                   <div className="flex items-center gap-3 p-4 bg-white/[0.02] border border-white/5"><Truck className="h-4 w-4 text-orange-600" /><span>FAST DELIVERY</span></div>
-                  <div className="flex items-center gap-3 p-4 bg-white/[0.02] border border-white/5"><Package className="h-4 w-4 text-orange-600" /><span>STOCK: {product.stockQuantity}</span></div>
+                  <div className="flex items-center gap-3 p-4 bg-white/[0.02] border border-white/5"><ShieldCheck className="h-4 w-4 text-orange-600" /><span>SECURE SHOPPING</span></div>
                 </div>
               </div>
             </div>

@@ -29,13 +29,6 @@ export const ProductCard = memo(({ product }: ProductCardProps) => {
           <span className="text-[7px] font-black text-white uppercase tracking-widest leading-none">{product.category}</span>
         </div>
 
-        {/* Stock Status Badge */}
-        <div className="absolute top-2 right-2 z-10">
-          <Badge className={`rounded-none text-[7px] font-black uppercase px-2 py-0.5 border-none shadow-lg ${isOutOfStock ? 'bg-red-600 text-white' : 'bg-green-600 text-white'}`}>
-            {isOutOfStock ? 'OUT OF STOCK' : 'IN STOCK'}
-          </Badge>
-        </div>
-
         <Link href={`/products/${product.id}`} className="block relative aspect-[4/5] overflow-hidden bg-white/5">
           <Image
             src={product.imageUrl}
@@ -57,7 +50,7 @@ export const ProductCard = memo(({ product }: ProductCardProps) => {
             </Link>
           </div>
           
-          <div className="pt-3 border-t border-white/10 space-y-4 mt-auto">
+          <div className="pt-3 border-t border-white/10 space-y-3 mt-auto">
             <div className="flex items-baseline justify-between">
               <div className="flex flex-col">
                 <span className="font-black text-base text-orange-600 tracking-tighter leading-none">
@@ -77,6 +70,14 @@ export const ProductCard = memo(({ product }: ProductCardProps) => {
                   </span>
                 </div>
               )}
+            </div>
+
+            {/* STOCK STATUS ABOVE BUTTON */}
+            <div className="flex items-center gap-2">
+              <div className={`h-1.5 w-1.5 rounded-full ${isOutOfStock ? 'bg-red-600' : 'bg-green-600'}`} />
+              <span className={`text-[9px] font-black uppercase tracking-widest ${isOutOfStock ? 'text-red-600' : 'text-green-600'}`}>
+                {isOutOfStock ? 'OUT OF STOCK' : 'IN STOCK'}
+              </span>
             </div>
             
             <Button 
