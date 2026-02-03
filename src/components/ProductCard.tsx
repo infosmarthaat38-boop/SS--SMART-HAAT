@@ -14,7 +14,7 @@ interface ProductCardProps {
 }
 
 /**
- * ProductCard Component - Optimized for specific image size and pricing layout.
+ * ProductCard Component - Reverted to object-cover for seamless auto-setting image size.
  */
 export const ProductCard = memo(({ product }: ProductCardProps) => {
   const [isOrderOpen, setIsOrderOpen] = useState(false);
@@ -24,15 +24,15 @@ export const ProductCard = memo(({ product }: ProductCardProps) => {
     <>
       <Card className={`group overflow-hidden bg-black border-none transition-all duration-300 rounded-none flex flex-col h-full relative ${isOutOfStock ? 'opacity-70' : ''}`}>
         
-        {/* IMAGE CONTAINER - Aspect Square with Padding to prevent edge-to-edge cropping */}
-        <Link href={`/products/${product.id}`} className="block relative aspect-square overflow-hidden bg-white">
+        {/* IMAGE CONTAINER - Reverted to object-cover to auto-set with card size */}
+        <Link href={`/products/${product.id}`} className="block relative aspect-square overflow-hidden">
           <Image
             src={product.imageUrl}
             alt={product.name}
             fill
             sizes="(max-width: 768px) 50vw, (max-width: 1024px) 25vw, 16vw"
             loading="lazy"
-            className="object-contain p-4 transition-transform duration-1000 group-hover:scale-105"
+            className="object-cover transition-transform duration-1000 group-hover:scale-105"
           />
           {isOutOfStock && (
             <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
@@ -43,7 +43,7 @@ export const ProductCard = memo(({ product }: ProductCardProps) => {
         
         {/* CONTENT AREA */}
         <CardContent className="p-3 md:p-4 flex flex-col flex-grow space-y-2 bg-black">
-          {/* TITLE - Small, Bold, All Caps */}
+          {/* TITLE */}
           <Link href={`/products/${product.id}`} className="block">
             <h3 className="font-black text-[10px] md:text-[11px] leading-tight text-white uppercase tracking-tighter truncate">
               {product.name}

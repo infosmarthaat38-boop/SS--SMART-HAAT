@@ -98,7 +98,7 @@ export default function ProductDetails() {
                   </div>
                   {product.originalPrice > product.price && (
                     <p className="text-2xl text-white/60 line-through font-bold flex items-baseline">
-                      <span className="text-sm font-normal mr-0.5">৳</span>{product.originalPrice.toLocaleString()}
+                      <span className="text-[10px] font-normal mr-0.5">৳</span>{product.originalPrice.toLocaleString()}
                     </p>
                   )}
                 </div>
