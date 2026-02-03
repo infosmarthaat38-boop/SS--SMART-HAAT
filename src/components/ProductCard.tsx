@@ -61,8 +61,8 @@ export const ProductCard = memo(({ product }: ProductCardProps) => {
               </div>
               
               {product.discountPercentage > 0 && (
-                <div className="bg-orange-600 px-1.5 py-0.5">
-                  <span className="text-[8px] font-black text-white uppercase leading-none">
+                <div className="px-1.5 py-0.5 border border-orange-600/20">
+                  <span className="text-[10px] font-black text-orange-600 uppercase leading-none">
                     -{product.discountPercentage}%
                   </span>
                 </div>
