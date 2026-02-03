@@ -1,65 +1,71 @@
 
 "use client";
 
-import React, { useRef, memo } from 'react';
+import React, { useRef, useMemo } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { ArrowRight, Star, Apple, Play, Truck, Tag, Flame, Loader2 } from 'lucide-react';
+import { ArrowRight, Apple, Play, Truck, Tag, Flame, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Navbar } from '@/components/Navbar';
 import { Footer } from '@/components/Footer';
 import { ProductCard } from '@/components/ProductCard';
-import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
+import { Carousel, CarouselContent, CarouselItem } from "@/components/ui/carousel";
 import Autoplay from "embla-carousel-autoplay";
 import { useFirestore, useCollection, useMemoFirebase } from '@/firebase';
-import { collection } from 'firebase/firestore';
+import { collection, query, where, limit } from 'firebase/firestore';
 
-const SlideItem = memo(({ slide, priority }: { slide: any, priority: boolean }) => (
+const SlideItem = ({ product, priority }: { product: any, priority: boolean }) => (
   <CarouselItem className="h-full">
     <div className="relative h-full w-full">
       <Image
-        src={slide.image}
-        alt="Slider"
+        src={product.imageUrl}
+        alt={product.name}
         fill
         sizes="(max-width: 1024px) 100vw, 50vw"
         className="object-cover opacity-60"
         priority={priority}
       />
       <div className="absolute inset-0 bg-gradient-to-r from-black via-black/20 to-transparent flex flex-col justify-center px-8 space-y-3">
-        <div 
-          className="text-lg md:text-2xl font-headline font-black text-white leading-tight uppercase tracking-tighter"
-          dangerouslySetInnerHTML={{ __html: slide.title }}
-        />
-        <p className="text-white/90 text-[10px] font-black tracking-[0.2em] uppercase">{slide.subtitle}</p>
+        <div className="text-lg md:text-2xl font-headline font-black text-white leading-tight uppercase tracking-tighter">
+          {product.name}
+        </div>
+        <p className="text-white/90 text-[10px] font-black tracking-[0.2em] uppercase">SPECIAL EDITION | ৳{product.price}</p>
         <Button asChild className="bg-orange-600 text-white h-8 px-4 font-black rounded-none text-[10px] hover:bg-orange-700 transition-all uppercase w-fit mt-2">
-          <Link href="/shop">SHOP NOW <ArrowRight className="ml-2 h-3 w-3" /></Link>
+          <Link href={`/products/${product.id}`}>VIEW DETAILS <ArrowRight className="ml-2 h-3 w-3" /></Link>
         </Button>
       </div>
     </div>
   </CarouselItem>
-));
-SlideItem.displayName = 'SlideItem';
+);
 
-const OfferCard = () => {
+const FlashOfferCard = () => {
   const db = useFirestore();
-  const productsRef = useMemoFirebase(() => collection(db, 'products'), [db]);
-  const { data: products } = useCollection(productsRef);
+  const flashQuery = useMemoFirebase(() => query(
+    collection(db, 'products'),
+    where('showInFlashOffer', '==', true),
+    limit(1)
+  ), [db]);
+  const { data: flashProducts } = useCollection(flashQuery);
   
-  const offerImage = products && products.length > 0 
-    ? products[0].imageUrl 
-    : "https://images.unsplash.com/photo-1548568974-a4f8811a4bd0?q=80&w=800";
+  const flashProduct = flashProducts?.[0];
+  const offerImage = flashProduct?.imageUrl || "https://images.unsplash.com/photo-1548568974-a4f8811a4bd0?q=80&w=800";
 
   return (
     <div className="h-[350px] bg-card overflow-hidden relative">
-      <Link href="/shop" className="block h-full w-full group">
+      <Link href={flashProduct ? `/products/${flashProduct.id}` : "/shop"} className="block h-full w-full group">
         <Image 
           src={offerImage} 
-          alt="Offer Highlight" 
+          alt="Flash Offer" 
           fill 
           sizes="400px"
           className="object-cover group-hover:scale-110 transition-transform duration-1000 opacity-90 group-hover:opacity-100"
         />
         <div className="absolute inset-0 bg-black/10 group-hover:bg-transparent transition-colors duration-500" />
+        {flashProduct && (
+          <div className="absolute bottom-4 left-4 bg-orange-600 px-3 py-1 text-[10px] font-black text-white uppercase tracking-widest">
+            FLASH OFFER
+          </div>
+        )}
       </Link>
     </div>
   );
@@ -68,32 +74,19 @@ const OfferCard = () => {
 export default function Home() {
   const db = useFirestore();
   const categoriesRef = useMemoFirebase(() => collection(db, 'categories'), [db]);
-  const productsRef = useMemoFirebase(() => collection(db, 'products'), [db]);
+  const productsRef = useMemoFirebase(() => query(collection(db, 'products'), limit(12)), [db]);
+  const sliderQuery = useMemoFirebase(() => query(
+    collection(db, 'products'),
+    where('showInSlider', '==', true)
+  ), [db]);
   
   const { data: categories, isLoading: categoriesLoading } = useCollection(categoriesRef);
   const { data: products, isLoading: productsLoading } = useCollection(productsRef);
+  const { data: sliderProducts } = useCollection(sliderQuery);
 
   const plugin = useRef(
     Autoplay({ delay: 3000, stopOnInteraction: false })
   );
-
-  const slides = [
-    {
-      image: "https://images.unsplash.com/photo-1441986300917-64674bd600d8?q=80&w=1600",
-      title: "GRAND <span class='text-orange-600 italic'>RAMADAN</span> BAZAAR",
-      subtitle: "UP TO 80% OFF + FREE DELIVERY"
-    },
-    {
-      image: "https://images.unsplash.com/photo-1441984904996-e0b6ba687e12?q=80&w=1600",
-      title: "EXCLUSIVE <span class='text-orange-600'>FASHION</span> EDIT",
-      subtitle: "CURATED COLLECTIONS FOR THE ELITE"
-    },
-    {
-      image: "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?q=80&w=1600",
-      title: "PREMIUM <span class='text-orange-600'>TECH</span> DEALS",
-      subtitle: "LATEST SMARTPHONES & ACCESSORIES"
-    }
-  ];
 
   return (
     <div className="min-h-screen flex flex-col bg-background selection:bg-orange-600/30">
@@ -102,17 +95,24 @@ export default function Home() {
       <main className="flex-grow container mx-auto px-4 py-4 space-y-8">
         <section className="grid grid-cols-1 lg:grid-cols-12 gap-4">
           <div className="hidden lg:block lg:col-span-3">
-            <OfferCard />
+            <FlashOfferCard />
           </div>
 
           <div className="lg:col-span-6 relative rounded-none overflow-hidden h-[350px] bg-card">
-            <Carousel className="w-full h-full" opts={{ loop: true }} plugins={[plugin.current]}>
-              <CarouselContent className="h-[350px]">
-                {slides.map((slide, index) => (
-                  <SlideItem key={index} slide={slide} priority={index === 0} />
-                ))}
-              </CarouselContent>
-            </Carousel>
+            {sliderProducts && sliderProducts.length > 0 ? (
+              <Carousel className="w-full h-full" opts={{ loop: true }} plugins={[plugin.current]}>
+                <CarouselContent className="h-[350px]">
+                  {sliderProducts.map((p, index) => (
+                    <SlideItem key={p.id} product={p} priority={index === 0} />
+                  ))}
+                </CarouselContent>
+              </Carousel>
+            ) : (
+              <div className="w-full h-full flex flex-col items-center justify-center space-y-4">
+                <p className="text-white/20 text-[10px] font-black uppercase tracking-widest">Slider Products Not Set</p>
+                <Link href="/admin/products" className="text-orange-600 text-[10px] font-black uppercase underline">Update Admin</Link>
+              </div>
+            )}
           </div>
           
           <div className="hidden lg:flex lg:col-span-3 flex-col h-[350px] gap-4">
