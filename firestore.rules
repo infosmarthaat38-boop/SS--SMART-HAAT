@@ -4,38 +4,29 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
-    // ALLOW ACCESS TO PRODUCTS
-    match /products/{productId} {
-      allow read: if true;
-      allow write: if true;
-    }
-
-    // ALLOW ACCESS TO CATEGORIES
-    match /categories/{categoryId} {
-      allow read: if true;
-      allow write: if true;
-    }
-
-    // ALLOW ACCESS TO ORDERS
-    match /orders/{orderId} {
-      allow read: if true;
-      allow write: if true;
-    }
-
-    // ALLOW ACCESS TO SETTINGS
-    match /settings/{settingId} {
-      allow read: if true;
-      allow write: if true;
-    }
-
-    // ALLOW ACCESS TO LOGIN STATS
-    match /loginStats/{date} {
-      allow read: if true;
-      allow write: if true;
-    }
-
-    // FALLBACK
+    // ALL ACCESS TO ALL COLLECTIONS
     match /{path=**} {
+      allow read, write: if true;
+    }
+
+    // EXPLICIT RULES FOR CLARITY
+    match /products/{productId} {
+      allow read, write: if true;
+    }
+
+    match /categories/{categoryId} {
+      allow read, write: if true;
+    }
+
+    match /orders/{orderId} {
+      allow read, write: if true;
+    }
+
+    match /settings/{settingId} {
+      allow read, write: if true;
+    }
+
+    match /loginStats/{date} {
       allow read, write: if true;
     }
   }
