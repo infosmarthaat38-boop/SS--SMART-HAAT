@@ -12,7 +12,7 @@ import Image from 'next/image';
 
 /**
  * CategoriesPage - Fetches and displays categories directly from Firestore.
- * Updated to ensure images fill the container perfectly.
+ * Updated to make items smaller and more compact.
  */
 export default function CategoriesPage() {
   const db = useFirestore();
@@ -30,9 +30,9 @@ export default function CategoriesPage() {
         </div>
 
         {isLoading ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {[1, 2, 3].map((i) => (
-              <div key={i} className="aspect-[4/5] bg-white/5 animate-pulse border border-white/5" />
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-6">
+            {[1, 2, 3, 4, 5, 6].map((i) => (
+              <div key={i} className="aspect-square bg-white/5 animate-pulse border border-white/5" />
             ))}
           </div>
         ) : !categories || categories.length === 0 ? (
@@ -41,12 +41,12 @@ export default function CategoriesPage() {
             <p className="text-[10px] font-black uppercase text-muted-foreground tracking-widest">No categories found. Add some from Admin Panel.</p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-6">
             {categories.map((category) => (
               <Link 
                 href={`/shop?category=${category.name}`} 
                 key={category.id}
-                className="group relative aspect-[4/5] border border-white/10 overflow-hidden hover:border-orange-600/50 transition-all bg-card"
+                className="group relative aspect-square border border-white/10 overflow-hidden hover:border-orange-600/50 transition-all bg-card"
               >
                 {category.imageUrl && (
                   <div className="absolute inset-0 w-full h-full">
@@ -55,7 +55,7 @@ export default function CategoriesPage() {
                       alt={category.name} 
                       fill 
                       className="object-cover transition-all duration-700 scale-100 group-hover:scale-110"
-                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                      sizes="(max-width: 768px) 50vw, (max-width: 1200px) 25vw, 16vw"
                     />
                   </div>
                 )}
@@ -63,14 +63,11 @@ export default function CategoriesPage() {
                 {/* Gradient overlay for text readability */}
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-80 group-hover:opacity-60 transition-opacity" />
                 
-                <div className="absolute inset-0 flex flex-col items-center justify-center z-10 text-center space-y-3">
-                  <h2 className="text-4xl font-black uppercase tracking-[0.2em] text-white drop-shadow-2xl px-4">
+                <div className="absolute inset-0 flex flex-col items-center justify-center z-10 text-center space-y-2 p-2">
+                  <h2 className="text-[14px] md:text-[18px] font-black uppercase tracking-wider text-white drop-shadow-2xl">
                     {category.name}
                   </h2>
-                  <div className="h-1 w-0 bg-orange-600 mx-auto group-hover:w-24 transition-all duration-500" />
-                  <p className="text-[10px] font-black text-white/90 uppercase tracking-[0.4em] opacity-0 group-hover:opacity-100 transition-all duration-500 transform translate-y-2 group-hover:translate-y-0">
-                    EXPLORE COLLECTION
-                  </p>
+                  <div className="h-0.5 w-0 bg-orange-600 mx-auto group-hover:w-12 transition-all duration-500" />
                 </div>
               </Link>
             ))}
