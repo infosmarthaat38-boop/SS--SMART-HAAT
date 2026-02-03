@@ -46,7 +46,7 @@ export function OrderModal({ product, isOpen, onClose }: OrderModalProps) {
     if (step === 'SUCCESS') {
       timer = setTimeout(() => {
         handleClose();
-      }, 3000);
+      }, 5000); // 5 seconds for success screen
     }
     return () => clearTimeout(timer);
   }, [step]);
@@ -64,9 +64,9 @@ export function OrderModal({ product, isOpen, onClose }: OrderModalProps) {
     setLoading(true);
 
     const orderData = {
-      customerName: formData.name,
+      customerName: formData.name.toUpperCase(),
       customerPhone: formData.phone,
-      customerAddress: formData.address,
+      customerAddress: formData.address.toUpperCase(),
       selectedSize: formData.selectedSize,
       productId: product.id,
       productName: product.name,
@@ -80,7 +80,7 @@ export function OrderModal({ product, isOpen, onClose }: OrderModalProps) {
     setTimeout(() => {
       setLoading(false);
       setStep('SUCCESS');
-    }, 800);
+    }, 1000);
   };
 
   return (
@@ -89,13 +89,13 @@ export function OrderModal({ product, isOpen, onClose }: OrderModalProps) {
         <DialogContent className="max-w-4xl p-0 bg-black border-white/10 rounded-none overflow-hidden gap-0">
           <div className="flex flex-col md:flex-row h-full max-h-[90vh]">
             
-            {/* PRODUCT PREVIEW - 4:5 ASPECT RATIO - COVER MODE */}
+            {/* PRODUCT PREVIEW - 4:5 ASPECT RATIO - NO BACKGROUND GAPS */}
             <div className="relative w-full md:w-5/12 aspect-[4/5] bg-black border-b md:border-b-0 md:border-r border-white/5">
               <Image 
                 src={product.imageUrl} 
                 alt={product.name} 
                 fill 
-                className="object-cover opacity-90"
+                className="object-cover"
                 sizes="(max-width: 768px) 100vw, 40vw"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent" />
@@ -103,7 +103,6 @@ export function OrderModal({ product, isOpen, onClose }: OrderModalProps) {
                 <p className="text-[8px] md:text-[10px] font-black text-[#01a3a4] uppercase tracking-widest">Selected Item</p>
                 <h2 className="text-sm md:text-2xl font-black text-white uppercase tracking-tighter leading-tight">{product.name}</h2>
                 <div className="flex items-center gap-4">
-                   {/* PRICE ROW - ৳ SYMBOL 50% SMALLER & FONT NORMAL */}
                    <div className="text-lg md:text-3xl font-black text-white flex items-baseline">
                      <span className="text-[0.5em] font-normal mr-0.5 translate-y-[-0.1em]">৳</span>
                      {product.price.toLocaleString()}
@@ -209,12 +208,15 @@ export function OrderModal({ product, isOpen, onClose }: OrderModalProps) {
           <div className="w-16 h-16 bg-[#01a3a4]/10 rounded-full flex items-center justify-center mx-auto mb-4 border border-[#01a3a4]/20">
             <CheckCircle2 className="h-8 w-8 text-[#01a3a4]" />
           </div>
-          <div className="space-y-2">
-            <DialogTitle className="text-2xl font-black text-white uppercase tracking-tighter">ORDER PLACED SUCCESSFULLY</DialogTitle>
-            <DialogDescription className="text-[10px] font-bold text-[#01a3a4] uppercase tracking-widest italic">
-              OUR REPRESENTATIVE WILL CALL YOU SHORTLY TO CONFIRM.
+          <div className="space-y-4">
+            <DialogTitle className="text-2xl font-black text-white uppercase tracking-tighter leading-tight">
+              অর্ডার সফলভাবে সম্পন্ন হয়েছে
+            </DialogTitle>
+            <DialogDescription className="text-[13px] font-bold text-[#01a3a4] uppercase tracking-widest italic leading-relaxed">
+              আমাদের প্রতিনিধি শীঘ্রই আপনাকে ফোন করে অর্ডারটি নিশ্চিত করবেন। ধন্যবাদ!
             </DialogDescription>
           </div>
+          <Button onClick={handleClose} className="w-full bg-[#01a3a4] text-white font-black uppercase h-12 rounded-none">ঠিক আছে</Button>
         </DialogContent>
       </Dialog>
     </>
