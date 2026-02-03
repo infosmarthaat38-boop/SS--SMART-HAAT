@@ -15,7 +15,7 @@ interface ProductCardProps {
 
 export function ProductCard({ product }: ProductCardProps) {
   return (
-    <Card className="group overflow-hidden bg-card border-white/5 hover:border-primary/30 hover:shadow-2xl hover:shadow-primary/5 transition-all duration-500 rounded-2xl flex flex-col h-full">
+    <Card className="group overflow-hidden bg-card border-white/5 hover:border-primary/30 transition-all duration-500 rounded-none flex flex-col h-full">
       <Link href={`/products/${product.id}`} className="block relative aspect-square overflow-hidden bg-white/5">
         <Image
           src={product.imageUrl}
@@ -23,14 +23,6 @@ export function ProductCard({ product }: ProductCardProps) {
           fill
           className="object-cover transition-transform duration-700 group-hover:scale-110 opacity-80 group-hover:opacity-100"
         />
-        <div className="absolute top-3 left-3 bg-primary text-black text-[8px] font-bold px-3 py-1 rounded-full uppercase tracking-widest z-10">
-          PREMIUM
-        </div>
-        {product.discountPercentage > 0 && (
-          <div className="absolute top-3 right-3 bg-orange-600 text-white text-[9px] font-black px-2 py-1 rounded-md uppercase z-10">
-            {product.discountPercentage}% OFF
-          </div>
-        )}
       </Link>
       
       <CardContent className="p-4 flex flex-col flex-grow space-y-3">
@@ -48,13 +40,20 @@ export function ProductCard({ product }: ProductCardProps) {
           </div>
         </div>
         
-        <div className="pt-2 border-t border-white/5 space-y-3">
+        <div className="pt-2 border-t border-white/5 space-y-2">
           <div className="flex flex-col">
-            <span className="text-[10px] text-muted-foreground line-through font-bold">৳{product.originalPrice.toFixed(2)}</span>
-            <span className="font-black text-lg text-primary tracking-tighter">৳{product.price.toFixed(2)}</span>
+            <div className="flex items-center gap-2">
+              <span className="font-black text-lg text-primary tracking-tighter">৳{product.price.toFixed(2)}</span>
+              <span className="text-[10px] text-muted-foreground line-through font-bold">৳{product.originalPrice.toFixed(2)}</span>
+            </div>
+            {product.discountPercentage > 0 && (
+              <span className="text-orange-500 text-[9px] font-black uppercase">
+                {product.discountPercentage}% OFF TODAY
+              </span>
+            )}
           </div>
           
-          <Button className="w-full bg-primary text-black hover:bg-white transition-all font-black text-[10px] py-6 rounded-xl uppercase shadow-lg shadow-primary/10 group-hover:shadow-primary/30">
+          <Button className="w-full bg-primary text-black hover:bg-white transition-all font-black text-[10px] py-6 rounded-none uppercase shadow-lg shadow-primary/10">
             <ShoppingCart className="mr-2 h-4 w-4" /> ORDER NOW
           </Button>
         </div>
