@@ -90,12 +90,12 @@ export function OrderModal({ product, isOpen, onClose }: OrderModalProps) {
           <div className="flex flex-col md:flex-row h-full max-h-[90vh]">
             
             {/* PRODUCT PREVIEW */}
-            <div className="relative w-full md:w-5/12 aspect-video md:aspect-auto bg-card border-b md:border-b-0 md:border-r border-white/5">
+            <div className="relative w-full md:w-5/12 aspect-video md:aspect-auto bg-white border-b md:border-b-0 md:border-r border-white/5">
               <Image 
                 src={product.imageUrl} 
                 alt={product.name} 
                 fill 
-                className="object-cover opacity-80"
+                className="object-contain opacity-90"
                 sizes="(max-width: 768px) 100vw, 40vw"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent" />
