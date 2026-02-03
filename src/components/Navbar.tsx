@@ -1,8 +1,9 @@
+
 "use client";
 
 import React from 'react';
 import Link from 'next/link';
-import { Search, ShoppingBag, User, LogIn } from 'lucide-react';
+import { Search, ShoppingBag, User, LogIn, Menu } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { SidebarTrigger } from "@/components/ui/sidebar";
@@ -11,9 +12,9 @@ export function Navbar() {
   return (
     <nav className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur-md">
       <div className="container mx-auto px-4">
-        {/* Row 1: Top Navigation Links (Above Search) */}
+        {/* Row 1: Top Navigation Links (Exactly above Search) */}
         <div className="h-10 flex items-center justify-center border-b border-primary/5">
-          <ul className="flex items-center gap-10 text-[11px] font-bold uppercase tracking-[0.2em]">
+          <ul className="flex items-center gap-10 text-[11px] font-bold uppercase tracking-[0.2em] text-muted-foreground">
             <li>
               <Link href="/" className="hover:text-primary transition-all duration-300">Home</Link>
             </li>
@@ -24,13 +25,11 @@ export function Navbar() {
               <Link href="#" className="hover:text-primary transition-all duration-300">Category</Link>
             </li>
             <li>
-              <Link href="/admin" className="text-primary hover:text-primary/80 transition-all duration-300 flex items-center gap-1">
-                Admin Panel
-              </Link>
+              <Link href="/admin" className="hover:text-primary transition-all duration-300">Admin Panel</Link>
             </li>
             <li>
               <Link href="#" className="hover:text-primary transition-all duration-300 flex items-center gap-1">
-                <LogIn className="h-3 w-3" /> Sign Up
+                Sign Up
               </Link>
             </li>
           </ul>
@@ -40,13 +39,16 @@ export function Navbar() {
         <div className="h-16 flex items-center justify-between gap-8">
           <div className="flex items-center gap-4">
             <SidebarTrigger />
-            <Link href="/" className="flex items-center gap-2">
-              <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center shadow-lg shadow-primary/20">
-                <ShoppingBag className="h-5 w-5 text-background" />
+            <Link href="/" className="flex items-center gap-3">
+              <div className="w-10 h-10 bg-primary rounded-xl flex items-center justify-center shadow-lg shadow-primary/20">
+                <ShoppingBag className="h-6 w-6 text-background" />
               </div>
-              <h1 className="text-xl font-headline font-bold gold-gradient whitespace-nowrap hidden sm:block">
-                SS SMART HAAT
-              </h1>
+              <div className="flex flex-col">
+                <h1 className="text-lg font-headline font-bold text-primary leading-none uppercase tracking-tight">
+                  SS SMART HAAT
+                </h1>
+                <span className="text-[9px] text-muted-foreground font-bold uppercase tracking-[0.2em] mt-1">Premium Store</span>
+              </div>
             </Link>
           </div>
 
