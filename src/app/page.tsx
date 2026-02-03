@@ -1,7 +1,7 @@
 
 "use client";
 
-import React, { useRef } from 'react';
+import React, { useRef, memo } from 'react';
 import Image from 'next/image';
 import { ArrowRight, Flame, Star, Apple, Play, Truck, Tag } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -11,6 +11,33 @@ import { ProductCard } from '@/components/ProductCard';
 import { products } from '@/lib/products';
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
 import Autoplay from "embla-carousel-autoplay";
+
+// Memoized carousel item for performance
+const SlideItem = memo(({ slide, priority }: { slide: any, priority: boolean }) => (
+  <CarouselItem>
+    <div className="relative h-[400px] w-full">
+      <Image
+        src={slide.image}
+        alt="Slider"
+        fill
+        sizes="100vw"
+        className="object-cover opacity-60"
+        priority={priority}
+      />
+      <div className="absolute inset-0 bg-gradient-to-r from-black via-black/20 to-transparent flex flex-col justify-center px-12 space-y-3">
+        <div 
+          className="text-lg md:text-xl font-headline font-black text-white leading-tight uppercase tracking-tighter"
+          dangerouslySetInnerHTML={{ __html: slide.title }}
+        />
+        <p className="text-white/90 text-[10px] font-black tracking-[0.2em] uppercase">{slide.subtitle}</p>
+        <Button className="bg-orange-600 text-white h-8 px-4 font-black rounded-none text-[10px] hover:bg-orange-700 transition-all uppercase w-fit mt-2">
+          SHOP NOW <ArrowRight className="ml-2 h-3 w-3" />
+        </Button>
+      </div>
+    </div>
+  </CarouselItem>
+));
+SlideItem.displayName = 'SlideItem';
 
 export default function Home() {
   const plugin = useRef(
@@ -60,27 +87,7 @@ export default function Home() {
             >
               <CarouselContent>
                 {slides.map((slide, index) => (
-                  <CarouselItem key={index}>
-                    <div className="relative h-[400px] w-full">
-                      <Image
-                        src={slide.image}
-                        alt="Slider"
-                        fill
-                        className="object-cover opacity-60"
-                        priority={index === 0}
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-r from-black via-black/20 to-transparent flex flex-col justify-center px-12 space-y-3">
-                        <div 
-                          className="text-lg md:text-xl font-headline font-black text-white leading-tight uppercase tracking-tighter"
-                          dangerouslySetInnerHTML={{ __html: slide.title }}
-                        />
-                        <p className="text-white/90 text-[10px] font-black tracking-[0.2em] uppercase">{slide.subtitle}</p>
-                        <Button className="bg-orange-600 text-white h-8 px-4 font-black rounded-none text-[10px] hover:bg-orange-700 transition-all uppercase w-fit mt-2">
-                          SHOP NOW <ArrowRight className="ml-2 h-3 w-3" />
-                        </Button>
-                      </div>
-                    </div>
-                  </CarouselItem>
+                  <SlideItem key={index} slide={slide} priority={index === 0} />
                 ))}
               </CarouselContent>
               <CarouselPrevious className="hidden md:flex left-4 bg-white/5 border-none text-white hover:bg-white/20 h-10 w-10 rounded-none" />
@@ -90,7 +97,6 @@ export default function Home() {
           
           {/* DOWNLOAD APP CARD - UNIQUE STYLE */}
           <div className="hidden lg:flex lg:col-span-3 flex-col gap-4">
-            {/* Top Gradient Card */}
             <div className="relative bg-gradient-to-br from-[#ff5f00] via-[#ff4b2b] to-[#ff0080] p-6 pt-10 rounded-2xl overflow-hidden shadow-2xl border border-white/10 h-[280px] flex flex-col">
               <div className="absolute top-0 left-0 bg-white/20 backdrop-blur-md px-3 py-1.5 rounded-br-2xl flex items-center gap-1 border-b border-r border-white/30">
                 <Star className="h-3 w-3 fill-orange-400 text-orange-400" />
@@ -124,10 +130,9 @@ export default function Home() {
               </div>
             </div>
 
-            {/* Bottom QR Area with UNIQUE QR Code */}
+            {/* Bottom QR Area */}
             <div className="flex items-center gap-4 px-2">
               <div className="bg-white p-2 w-24 h-24 shrink-0 rounded-xl shadow-xl border border-white/5 flex items-center justify-center">
-                {/* UNIQUE CUSTOM QR CODE SVG */}
                 <svg viewBox="0 0 100 100" className="w-full h-full text-black">
                   <path fill="currentColor" d="M0 0h35v35H0V0zm5 5v25h25V5H5zm5 5h15v15H10V10zM65 0h35v35H65V0zm5 5v25h25V5H70zm5 5h15v15H75V10zM0 65h35v35H0V65zm5 5v25h25V70H5zm5 5h15v15H10V75zM45 0h10v10H45V0zm0 25h10v10H45V25zm20 45h10v10H65V70zm20 0h10v10H85V70zm-20 20h10v10H65V90zm0-45h10v10H65V45zm20 0h10v10H85V45zm-40 25h10v10H45V70zm0 20h10v10H45V90zm20-65h10v10H65V25zm-20 20h10v10H45V45zM0 45h10v10H0V45zm25 0h10v10H25V45z" />
                   <rect x="42" y="42" width="16" height="16" fill="white" />
@@ -151,7 +156,7 @@ export default function Home() {
           </div>
         </section>
 
-        {/* TOP PRODUCT SECTION - 12 ITEMS */}
+        {/* TOP PRODUCT SECTION - Optimized Grid */}
         <section className="bg-card/30 rounded-none p-6 border border-white/5">
           <div className="flex items-center justify-between mb-8">
             <h2 className="text-xl font-black flex items-center gap-3 uppercase tracking-tighter text-white">

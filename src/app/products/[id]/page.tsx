@@ -46,13 +46,15 @@ export default function ProductDetails() {
           </Button>
           
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
-            {/* Image Gallery */}
+            {/* Image Gallery - Optimized */}
             <div className="space-y-4">
               <div className="relative aspect-square rounded-none overflow-hidden bg-card border border-white/5">
                 <Image
                   src={product.imageUrl}
                   alt={product.name}
                   fill
+                  sizes="(max-width: 1024px) 100vw, 50vw"
+                  priority
                   className="object-cover"
                 />
               </div>
@@ -63,7 +65,6 @@ export default function ProductDetails() {
               <div className="space-y-4">
                 <Badge variant="secondary" className="rounded-none uppercase tracking-widest text-[10px] bg-orange-600/10 text-orange-600 border-none">{product.category}</Badge>
                 <h1 className="text-4xl md:text-5xl font-black font-headline text-white leading-tight uppercase">{product.name}</h1>
-                {/* RATING REMOVED PER USER REQUEST */}
                 <div className="flex items-center gap-4">
                   <p className="text-3xl font-black text-orange-600 uppercase">৳{product.price.toFixed(2)}</p>
                   <p className="text-lg text-muted-foreground line-through font-bold">৳{product.originalPrice.toFixed(2)}</p>

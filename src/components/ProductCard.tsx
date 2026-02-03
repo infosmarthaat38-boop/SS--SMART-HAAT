@@ -1,7 +1,7 @@
 
 "use client";
 
-import React from 'react';
+import React, { memo } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { ShoppingCart } from 'lucide-react';
@@ -13,7 +13,8 @@ interface ProductCardProps {
   product: Product;
 }
 
-export function ProductCard({ product }: ProductCardProps) {
+// React.memo used to prevent unnecessary re-renders in large lists
+export const ProductCard = memo(({ product }: ProductCardProps) => {
   return (
     <Card className="group overflow-hidden bg-card border-white/5 hover:border-orange-600/30 transition-all duration-500 rounded-none flex flex-col h-full shadow-lg">
       <Link href={`/products/${product.id}`} className="block relative aspect-square overflow-hidden bg-white/5">
@@ -21,6 +22,8 @@ export function ProductCard({ product }: ProductCardProps) {
           src={product.imageUrl}
           alt={product.name}
           fill
+          sizes="(max-width: 768px) 50vw, (max-width: 1024px) 25vw, 16vw"
+          loading="lazy"
           className="object-cover transition-transform duration-700 group-hover:scale-110 opacity-70 group-hover:opacity-100"
         />
       </Link>
@@ -32,7 +35,6 @@ export function ProductCard({ product }: ProductCardProps) {
               {product.name}
             </h3>
           </Link>
-          {/* RATING REMOVED PER USER REQUEST */}
         </div>
         
         <div className="pt-3 border-t border-white/5 space-y-3 mt-auto">
@@ -55,4 +57,6 @@ export function ProductCard({ product }: ProductCardProps) {
       </CardContent>
     </Card>
   );
-}
+});
+
+ProductCard.displayName = 'ProductCard';

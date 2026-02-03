@@ -1,4 +1,6 @@
 
+"use client";
+
 import React from 'react';
 import { Navbar } from '@/components/Navbar';
 import { Footer } from '@/components/Footer';
@@ -20,7 +22,7 @@ export default function ShopPage() {
           {products.map((product) => (
             <ProductCard key={product.id} product={product} />
           ))}
-          {/* Duplicating for UI fullness in shop */}
+          {/* Using unique keys for duplicated items for React efficiency */}
           {products.map((product) => (
             <ProductCard key={`${product.id}-copy`} product={product} />
           ))}
