@@ -23,12 +23,10 @@ import {
   Loader2, 
   MessageCircle,
   Github,
-  CloudUpload,
   Zap,
-  ExternalLink,
-  Code,
   Terminal,
-  Info
+  Info,
+  BookOpen
 } from 'lucide-react';
 import Link from 'next/link';
 import { useFirestore, useDoc, useMemoFirebase } from '@/firebase';
@@ -79,15 +77,24 @@ export default function AdminSettings() {
     });
   };
 
-  const CodeBlock = ({ title, commands, description }: { title: string, commands: string[], description: string }) => (
-    <div className="space-y-4 mb-10 group">
-      <div className="flex items-center gap-2 mb-2">
-        <div className="h-4 w-1 bg-orange-600" />
-        <h3 className="text-[12px] font-black text-white uppercase tracking-wider">{title}</h3>
+  const CodeBlock = ({ title, commands, explanation }: { title: string, commands: string[], explanation: string }) => (
+    <div className="space-y-6 mb-12 group p-6 border border-white/5 bg-white/[0.01]">
+      <div className="flex items-center gap-3 mb-2">
+        <div className="h-5 w-1.5 bg-orange-600" />
+        <h3 className="text-sm font-black text-white uppercase tracking-widest">{title}</h3>
       </div>
-      <p className="text-[11px] text-muted-foreground uppercase leading-relaxed mb-4">{description}</p>
-      <div className="bg-black/90 border border-white/10 p-6 font-mono text-[11px] text-green-400 space-y-3 relative overflow-hidden group-hover:border-orange-600/30 transition-all">
-        <div className="absolute top-0 right-0 p-2 bg-white/5 text-[8px] font-black text-white/20 uppercase tracking-widest">TERMINAL</div>
+      
+      <div className="space-y-4">
+        <div className="flex gap-3 items-start">
+          <BookOpen className="h-4 w-4 text-orange-600 shrink-0 mt-1" />
+          <p className="text-[11px] text-white/70 uppercase leading-relaxed font-bold">
+            {explanation}
+          </p>
+        </div>
+      </div>
+
+      <div className="bg-black/90 border border-white/10 p-6 font-mono text-[11px] text-green-400 space-y-3 relative overflow-hidden group-hover:border-orange-600/30 transition-all shadow-inner">
+        <div className="absolute top-0 right-0 p-2 bg-white/5 text-[8px] font-black text-white/20 uppercase tracking-widest">COMMAND TERMINAL</div>
         {commands.map((cmd, i) => (
           <div key={i} className="flex gap-3 items-start">
             <span className="text-orange-600 select-none">$</span>
@@ -95,6 +102,10 @@ export default function AdminSettings() {
           </div>
         ))}
       </div>
+      
+      <p className="text-[10px] text-muted-foreground italic uppercase">
+        * উপরের কোডগুলো আপনার প্রজেক্ট ফোল্ডারে টার্মিনাল ওপেন করে একে একে পেস্ট করুন।
+      </p>
     </div>
   );
 
@@ -210,83 +221,83 @@ export default function AdminSettings() {
             </form>
           </div>
 
-          {/* RIGHT COLUMN: PUBLISHING GUIDE */}
+          {/* RIGHT COLUMN: DETAILED PUBLISHING GUIDE */}
           <div className="lg:col-span-6">
             <Card className="bg-card border-orange-600/20 rounded-none shadow-2xl overflow-hidden h-fit sticky top-24">
               <CardHeader className="bg-orange-600/10 border-b border-orange-600/20 p-6">
                 <CardTitle className="text-xs font-black uppercase tracking-[0.3em] text-orange-600 flex items-center gap-2">
-                  <Terminal className="h-4 w-4" /> ওয়েবসাইট পাবলিশিং গাইড (STEP-BY-STEP GUIDE)
+                  <Terminal className="h-4 w-4" /> ওয়েবসাইট পাবলিশিং পূর্ণাঙ্গ নির্দেশিকা
                 </CardTitle>
               </CardHeader>
-              <CardContent className="p-8 space-y-2">
+              <CardContent className="p-8 space-y-4">
                 
-                <div className="bg-orange-600/5 border border-orange-600/20 p-6 mb-10 space-y-3">
-                  <div className="flex items-center gap-2">
-                    <Info className="h-4 w-4 text-orange-600" />
-                    <p className="text-[10px] font-black text-white uppercase tracking-widest">কিভাবে শুরু করবেন?</p>
+                <div className="bg-orange-600/5 border border-orange-600/20 p-6 mb-8 space-y-4">
+                  <div className="flex items-center gap-3">
+                    <Info className="h-5 w-5 text-orange-600" />
+                    <p className="text-[12px] font-black text-white uppercase tracking-widest">কিভাবে টার্মিনাল ব্যবহার করবেন?</p>
                   </div>
-                  <p className="text-[11px] text-white/70 leading-relaxed uppercase">
-                    নিচের কমান্ডগুলো আপনার পিসি বা ল্যাপটপের টার্মিনালে (Terminal/CMD) একে একে রান করে আপনার ওয়েবসাইটটি অনলাইনে পাবলিশ করতে পারবেন। প্রতিটি সেকশনের কাজ বাংলায় দেওয়া হয়েছে।
+                  <p className="text-[11px] text-white/80 leading-relaxed uppercase font-bold">
+                    আপনার পিসির প্রজেক্ট ফোল্ডারের ভেতরে গিয়ে মাউসের রাইট ক্লিক করে "Open in Terminal" বা "Open Command Prompt" এ ক্লিক করুন। এরপর নিচের প্রতিটি ধাপের কমান্ডগুলো কপি করে সেখানে পেস্ট করে এন্টার দিন। প্রতিটি কমান্ড আপনার সাইটকে ইন্টারনেটে লাইভ করার এক একটি ধাপ।
                   </p>
                 </div>
 
-                {/* GITHUB */}
+                {/* GITHUB DETAILED */}
                 <CodeBlock 
-                  title="১. গিটহাবে কোড আপলোড (GITHUB PUSH)"
-                  description="আপনার ওয়েবসাইটটি গিটহাবে সেভ করতে নিচের কোডগুলো ব্যবহার করুন। প্রথমে গিটহাবে একটি নতুন রিপোজিটরি তৈরি করে নিন।"
+                  title="১. গিটহাবে কোড জমা রাখা (GITHUB VERSION CONTROL)"
+                  explanation="গিটহাব হলো আপনার ওয়েবসাইটের কোডগুলো নিরাপদে অনলাইনে রাখার একটি জায়গা। এটি করা বাধ্যতামূলক কারণ পরবর্তীতে ভার্সেল বা নেটলিফাই এই গিটহাব থেকেই আপনার কোডগুলো নিয়ে ওয়েবসাইট তৈরি করবে। প্রথমে গিটহাবে একটি নতুন রিপোজিটরি (Repository) তৈরি করুন এবং নিচের কমান্ডগুলো একে একে আপনার টার্মিনালে পেস্ট করুন।"
                   commands={[
-                    'git init (গিট শুরু করা)',
-                    'git add . (সব ফাইল সিলেক্ট করা)',
-                    'git commit -m "Site Update" (পরিবর্তনগুলো সেভ করা)',
-                    'git branch -M main (ব্রাঞ্চ সেট করা)',
-                    'git remote add origin [আপনার-গিটহাব-লিঙ্ক]',
-                    'git push -u origin main (কোড পাবলিশ করা)'
+                    'git init',
+                    'git add .',
+                    'git commit -m "Initial Build"',
+                    'git branch -M main',
+                    'git remote add origin [YOUR_GITHUB_REPO_URL]',
+                    'git push -u origin main'
                   ]}
                 />
 
-                {/* VERCEL */}
+                {/* VERCEL DETAILED */}
                 <CodeBlock 
-                  title="২. ভার্সেল ডেপ্লয়মেন্ট (VERCEL DEPLOY)"
-                  description="নেক্সট-জেএস সাইটের জন্য ভার্সেল সবথেকে ফাস্ট। টার্মিনাল থেকে সরাসরি লাইভ করতে নিচের কমান্ডগুলো দিন।"
+                  title="২. ভার্সেলে সরাসরি পাবলিশ (VERCEL DEPLOYMENT)"
+                  explanation="ভার্সেল হলো নেক্সট-জেএস সাইটের জন্য সবথেকে দ্রুত এবং সহজ মাধ্যম। এটি সরাসরি আপনার গিটহাব একাউন্টের সাথে কানেক্ট হয়ে সাইট লাইভ করে দেয়। আপনি চাইলে আপনার টার্মিনাল থেকেই সরাসরি নিচের কোডগুলো দিয়ে ভার্সেলের সার্ভারে আপনার সাইটটি আপলোড করতে পারেন। এটি আপনার সাইটের জন্য একটি ফ্রী ডোমেইনও তৈরি করে দিবে।"
                   commands={[
-                    'npm install -g vercel (ভার্সেল টুলস ইন্সটল)',
-                    'vercel login (ভার্সেল অ্যাকাউন্টে লগইন)',
-                    'vercel --prod (সরাসরি প্রোডাকশনে পাবলিশ)'
+                    'npm install -g vercel',
+                    'vercel login',
+                    'vercel --prod'
                   ]}
                 />
 
-                {/* NETLIFY */}
+                {/* NETLIFY DETAILED */}
                 <CodeBlock 
-                  title="৩. নেটলিফাই হোস্টিং (NETLIFY DEPLOY)"
-                  description="নেটলিফায়ে সাইট লাইভ করতে সিএলআই (CLI) ব্যবহার করুন।"
+                  title="৩. নেটলিফায়ে হোস্টিং (NETLIFY HOSTING)"
+                  explanation="নেটলিফাই ব্যবহার করে সাইট পাবলিশ করতে চাইলে আপনাকে প্রথমে প্রজেক্টের একটি 'বিল্ড' ভার্সন তৈরি করতে হবে। বিল্ড মানে হলো আপনার কোডগুলোকে ব্রাউজারের জন্য পড়ার উপযোগী করা। নিচের কমান্ডগুলো দিয়ে আপনি খুব সহজেই আপনার সাইটটি নেটলিফায়ের প্রিমিয়াম সার্ভারে লাইভ করতে পারবেন।"
                   commands={[
-                    'npm install netlify-cli -g (ইন্সটল করা)',
-                    'netlify login (অ্যাকসেস নেওয়া)',
-                    'npm run build (সাইটটি তৈরির উপযোগী করা)',
-                    'netlify deploy --prod (পাবলিশ করা)'
+                    'npm install netlify-cli -g',
+                    'netlify login',
+                    'npm run build',
+                    'netlify deploy --prod'
                   ]}
                 />
 
-                {/* FIREBASE */}
+                {/* FIREBASE DETAILED */}
                 <CodeBlock 
-                  title="৪. ফায়ারবেস হোস্টিং (FIREBASE CLI)"
-                  description="ফায়ারবেস হোস্টিং ব্যবহার করলে আপনার সাইট ফায়ারবেসের নিজস্ব ডোমেইনে থাকবে।"
+                  title="৪. ফায়ারবেস হোস্টিং (FIREBASE CLI DEPLOY)"
+                  explanation="ফায়ারবেস হলো গুগল-এর একটি শক্তিশালী প্ল্যাটফর্ম। আপনার ডাটাবেস যেহেতু ফায়ারবেসে, তাই হোস্টিং এখানে করলে সাইট অনেক বেশি ফাস্ট কাজ করবে। ফায়ারবেস টুলস আপনার পিসিতে না থাকলে প্রথমে সেটি ইন্সটল করতে হবে। এরপর 'init' কমান্ড দিয়ে আপনার প্রজেক্টটি সিলেক্ট করে 'deploy' কমান্ড দিলেই আপনার ওয়েবসাইট ফায়ারবেসের ডোমেইনে লাইভ হয়ে যাবে।"
                   commands={[
-                    'npm install -g firebase-tools (টুলস ইন্সটল)',
-                    'firebase login (গুগল দিয়ে লগইন)',
-                    'firebase init (হোস্টিং সেটআপ শুরু)',
-                    'npm run build (বিল্ড তৈরি করা)',
-                    'firebase deploy (পাবলিশ সম্পন্ন করা)'
+                    'npm install -g firebase-tools',
+                    'firebase login',
+                    'firebase init',
+                    'npm run build',
+                    'firebase deploy'
                   ]}
                 />
 
-                <div className="pt-6 border-t border-white/5 mt-10">
+                <div className="pt-8 border-t border-white/5 mt-10">
                    <div className="flex flex-col md:flex-row gap-4">
-                    <Button asChild variant="outline" className="flex-1 border-white/10 text-white hover:bg-white/5 rounded-none uppercase text-[9px] font-black h-12">
-                      <a href="https://github.com/new" target="_blank" rel="noopener noreferrer"><Github className="mr-2 h-4 w-4 text-orange-600" /> NEW REPOSITORY</a>
+                    <Button asChild variant="outline" className="flex-1 border-white/10 text-white hover:bg-white/5 rounded-none uppercase text-[9px] font-black h-14">
+                      <a href="https://github.com/new" target="_blank" rel="noopener noreferrer"><Github className="mr-2 h-4 w-4 text-orange-600" /> CREATE NEW REPO</a>
                     </Button>
-                    <Button asChild variant="outline" className="flex-1 border-white/10 text-white hover:bg-white/5 rounded-none uppercase text-[9px] font-black h-12">
-                      <a href="https://vercel.com/new" target="_blank" rel="noopener noreferrer"><Zap className="mr-2 h-4 w-4 text-orange-600" /> VERCEL CONSOLE</a>
+                    <Button asChild variant="outline" className="flex-1 border-white/10 text-white hover:bg-white/5 rounded-none uppercase text-[9px] font-black h-14">
+                      <a href="https://vercel.com/new" target="_blank" rel="noopener noreferrer"><Zap className="mr-2 h-4 w-4 text-orange-600" /> VERCEL DASHBOARD</a>
                     </Button>
                   </div>
                 </div>
