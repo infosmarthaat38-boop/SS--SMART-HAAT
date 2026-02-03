@@ -4,20 +4,29 @@
 import React from 'react';
 import { Navbar } from '@/components/Navbar';
 import { Footer } from '@/components/Footer';
-import { LayoutDashboard, Users, ShoppingBag, BarChart3, Settings, Sparkles, ShieldCheck } from 'lucide-react';
+import { LayoutDashboard, ShoppingBag, Package, Settings, Link as LinkIcon, Sparkles, ShieldCheck } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { StyleAssistant } from '@/components/StyleAssistant';
 
 export default function AdminPanel() {
+  const adminOptions = [
+    { title: "DASHBOARD", icon: LayoutDashboard },
+    { title: "ORDER", icon: ShoppingBag },
+    { title: "PRODUCT", icon: Package },
+    { title: "SETTING", icon: Settings },
+    { title: "OTHER LINK", icon: LinkIcon }
+  ];
+
   return (
     <div className="min-h-screen flex flex-col bg-background">
       <Navbar />
       
       <main className="flex-grow container mx-auto px-4 py-12">
+        {/* HEADER SECTION */}
         <div className="flex items-center gap-6 mb-12">
           <div className="flex gap-2">
             <div className="p-4 bg-orange-600/10 border border-orange-600/20">
-              <LayoutDashboard className="h-8 w-8 text-orange-600" />
+              <ShieldCheck className="h-8 w-8 text-orange-600" />
             </div>
             <div className="p-4 bg-orange-600/10 border border-orange-600/20">
               <ShieldCheck className="h-8 w-8 text-orange-600" />
@@ -29,29 +38,28 @@ export default function AdminPanel() {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
-          {[
-            { title: "TOTAL REVENUE", value: "৳1,245,600", icon: BarChart3, color: "text-orange-600" },
-            { title: "BOUTIQUE ORDERS", value: "89", icon: ShoppingBag, color: "text-orange-600" },
-            { title: "ELITE CLIENTS", value: "3,120", icon: Users, color: "text-orange-600" },
-            { title: "CURATED STOCK", value: "1,250", icon: Settings, color: "text-orange-600" },
-            { title: "ADMIN ACCESS", value: "ACTIVE", icon: ShieldCheck, color: "text-orange-600" }
-          ].map((stat, i) => (
-            <Card key={i} className="bg-card border-white/5 rounded-none hover:border-orange-600/30 transition-all group">
-              <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
-                <CardTitle className="text-[8px] font-black uppercase tracking-[0.3em] text-muted-foreground">{stat.title}</CardTitle>
-                <stat.icon className={`h-4 w-4 ${stat.color} group-hover:scale-110 transition-transform`} />
+        {/* PRIMARY 5 OPTIONS GRID */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6 mb-12">
+          {adminOptions.map((option, i) => (
+            <Card key={i} className="bg-card border-white/5 rounded-none hover:border-orange-600/50 transition-all group cursor-pointer">
+              <CardHeader className="flex flex-row items-center justify-between pb-4 space-y-0">
+                <CardTitle className="text-[10px] font-black uppercase tracking-[0.3em] text-white group-hover:text-orange-600 transition-colors">
+                  {option.title}
+                </CardTitle>
+                <option.icon className="h-5 w-5 text-orange-600 group-hover:scale-110 transition-transform" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-black text-white">{stat.value}</div>
-                <p className="text-[7px] text-orange-600 font-black mt-2 uppercase tracking-widest">+15.2% INCREASE TODAY</p>
+                <div className="h-1 bg-white/5 w-full mb-4 overflow-hidden">
+                  <div className="h-full bg-orange-600 w-0 group-hover:w-full transition-all duration-500" />
+                </div>
+                <p className="text-[8px] text-muted-foreground font-black uppercase tracking-widest">ACCESS MANAGEMENT</p>
               </CardContent>
             </Card>
           ))}
         </div>
 
-        <div className="mt-12 grid grid-cols-1 lg:grid-cols-3 gap-12">
-          {/* AI Section for Admin */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
+          {/* AI Section */}
           <div className="lg:col-span-2 space-y-8">
             <div className="flex items-center gap-4">
               <Sparkles className="h-5 w-5 text-orange-600" />
@@ -63,14 +71,28 @@ export default function AdminPanel() {
             </div>
           </div>
 
+          {/* Quick Stats/Info */}
           <div className="space-y-8">
-            <h2 className="text-xl font-black uppercase tracking-tighter text-white">QUICK ACTIONS</h2>
-            <Card className="rounded-none border-white/5 bg-orange-600/5 p-8 text-center space-y-6">
-               <h3 className="text-md font-black uppercase tracking-widest text-white">STORE MANAGEMENT</h3>
-               <p className="text-[9px] text-muted-foreground leading-relaxed uppercase">INVENTORY MANAGEMENT, ORDER PROCESSING AND CLIENT TRACKING FEATURES ARE EXCLUSIVE TO ADMINISTRATIVE ACCOUNTS.</p>
-               <div className="flex flex-col gap-4">
-                 <div className="p-3 bg-black border border-white/10 text-[8px] font-black uppercase tracking-widest hover:border-orange-600 transition-colors cursor-pointer text-white">UPDATE INVENTORY</div>
-                 <div className="p-3 bg-black border border-white/10 text-[8px] font-black uppercase tracking-widest hover:border-orange-600 transition-colors cursor-pointer text-white">REVIEW ORDERS</div>
+            <h2 className="text-xl font-black uppercase tracking-tighter text-white">SYSTEM STATUS</h2>
+            <Card className="rounded-none border-white/5 bg-orange-600/5 p-8 space-y-6">
+               <div className="space-y-2">
+                 <h3 className="text-md font-black uppercase tracking-widest text-white">ADMINISTRATIVE ACCESS</h3>
+                 <p className="text-[9px] text-muted-foreground leading-relaxed uppercase">ALL SYSTEMS ARE OPERATIONAL. INVENTORY AND ORDER SYNCHRONIZATION IS ACTIVE FOR ALL PREMIUM OUTLETS.</p>
+               </div>
+               
+               <div className="space-y-4">
+                 <div className="flex justify-between items-center py-2 border-b border-white/5">
+                   <span className="text-[10px] font-black text-white">SERVER LOAD</span>
+                   <span className="text-[10px] font-black text-orange-600">MINIMAL</span>
+                 </div>
+                 <div className="flex justify-between items-center py-2 border-b border-white/5">
+                   <span className="text-[10px] font-black text-white">DB CONNECTION</span>
+                   <span className="text-[10px] font-black text-orange-600">SECURE</span>
+                 </div>
+                 <div className="flex justify-between items-center py-2 border-b border-white/5">
+                   <span className="text-[10px] font-black text-white">AI AGENT</span>
+                   <span className="text-[10px] font-black text-orange-600">ONLINE</span>
+                 </div>
                </div>
             </Card>
           </div>
