@@ -20,17 +20,17 @@ export function ProductCard({ product }: ProductCardProps) {
           src={product.imageUrl}
           alt={product.name}
           fill
-          className="object-cover transition-transform duration-700 group-hover:scale-110 opacity-90 group-hover:opacity-100"
+          className="object-cover transition-transform duration-700 group-hover:scale-110 opacity-80 group-hover:opacity-100"
         />
-        <div className="absolute top-3 left-3 bg-primary text-background text-[9px] font-bold px-3 py-1 rounded-full uppercase tracking-widest">
-          Premium
+        <div className="absolute top-3 left-3 bg-primary text-black text-[8px] font-bold px-3 py-1 rounded-full uppercase tracking-widest">
+          PREMIUM
         </div>
       </Link>
       
       <CardContent className="p-4 space-y-4">
         <div className="space-y-2">
           <Link href={`/products/${product.id}`} className="block">
-            <h3 className="font-bold text-sm line-clamp-2 leading-snug group-hover:text-primary transition-colors h-10 text-foreground">
+            <h3 className="font-bold text-[11px] line-clamp-2 leading-snug group-hover:text-primary transition-colors h-8 text-foreground uppercase">
               {product.name}
             </h3>
           </Link>
@@ -38,13 +38,13 @@ export function ProductCard({ product }: ProductCardProps) {
             <div className="flex text-primary">
               <Star className="h-3 w-3 fill-current" />
             </div>
-            <span className="text-[10px] text-muted-foreground font-bold">(4.9/5)</span>
+            <span className="text-[9px] text-muted-foreground font-bold uppercase">(4.9 RATING)</span>
           </div>
         </div>
         
         <div className="flex items-center justify-between pt-2 border-t border-white/5">
-          <p className="font-bold text-lg text-primary tracking-tight">${product.price.toFixed(2)}</p>
-          <Button size="icon" className="h-9 w-9 bg-primary/10 text-primary hover:bg-primary hover:text-background rounded-full transition-all">
+          <p className="font-bold text-md text-primary tracking-tight uppercase">${product.price.toFixed(2)}</p>
+          <Button size="icon" className="h-8 w-8 bg-primary/10 text-primary hover:bg-primary hover:text-black rounded-full transition-all">
             <Plus className="h-4 w-4" />
           </Button>
         </div>

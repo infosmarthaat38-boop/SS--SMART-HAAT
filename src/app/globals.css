@@ -4,13 +4,13 @@
 
 @layer base {
   :root {
-    --background: 0 0% 0%; /* Pure Black */
-    --foreground: 0 0% 98%; /* Light White */
+    --background: 0 0% 0%; /* PURE BLACK */
+    --foreground: 0 0% 98%; /* LIGHT WHITE */
     --card: 0 0% 3%;
     --card-foreground: 0 0% 98%;
     --popover: 0 0% 2%;
     --popover-foreground: 0 0% 98%;
-    --primary: 43 52% 53%; /* Signature Gold */
+    --primary: 43 52% 53%; /* SIGNATURE GOLD */
     --primary-foreground: 0 0% 0%;
     --secondary: 0 0% 8%;
     --secondary-foreground: 0 0% 98%;
@@ -29,7 +29,7 @@
 
 @layer base {
   * {
-    @apply border-border;
+    @apply border-border uppercase;
   }
   body {
     @apply bg-background text-foreground font-body antialiased;
