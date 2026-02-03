@@ -48,8 +48,9 @@ export const ProductCard = memo(({ product }: ProductCardProps) => {
           {/* PRICE AND DISCOUNT ROW */}
           <div className="flex items-center justify-between mt-auto">
             <div className="flex flex-col">
-              <span className="font-black text-2xl text-orange-600 tracking-tighter leading-none flex items-center">
-                ৳{product.price.toLocaleString()}
+              <span className="font-black text-2xl text-orange-600 tracking-tighter leading-none flex items-baseline">
+                <span className="text-sm font-bold mr-0.5">৳</span>
+                {product.price.toLocaleString()}
               </span>
               {product.originalPrice > product.price && (
                 <span className="text-muted-foreground line-through text-[12px] font-bold mt-1 opacity-60">

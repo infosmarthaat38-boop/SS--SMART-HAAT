@@ -111,7 +111,10 @@ export function OrderModal({ product, isOpen, onClose }: OrderModalProps) {
                 <p className="text-[10px] font-black text-orange-600 uppercase tracking-widest">Selected Item</p>
                 <h2 className="text-xl font-black text-white uppercase tracking-tighter leading-tight">{product.name}</h2>
                 <div className="flex items-center gap-4">
-                   <p className="text-2xl font-black text-white">৳{product.price.toLocaleString()}</p>
+                   <div className="text-2xl font-black text-white flex items-baseline">
+                     <span className="text-sm font-bold mr-0.5">৳</span>
+                     {product.price.toLocaleString()}
+                   </div>
                    <span className="text-[10px] font-black text-green-500 uppercase">IN STOCK</span>
                 </div>
               </div>

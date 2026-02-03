@@ -89,7 +89,10 @@ export default function ProductDetails() {
                 </div>
                 <h1 className="text-5xl md:text-7xl font-black font-headline text-white leading-none uppercase tracking-tighter">{product.name}</h1>
                 <div className="flex items-center gap-6">
-                  <p className="text-4xl font-black text-orange-600 uppercase tracking-tighter">৳{product.price.toLocaleString()}</p>
+                  <div className="text-4xl font-black text-orange-600 uppercase tracking-tighter flex items-baseline">
+                    <span className="text-xl font-bold mr-1">৳</span>
+                    {product.price.toLocaleString()}
+                  </div>
                   {product.originalPrice > product.price && (
                     <p className="text-xl text-muted-foreground line-through font-bold opacity-50">৳{product.originalPrice.toLocaleString()}</p>
                   )}

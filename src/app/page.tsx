@@ -33,7 +33,9 @@ const SlideItem = ({ product, priority }: { product: any, priority: boolean }) =
           <div className="text-lg md:text-2xl font-headline font-black text-white leading-tight uppercase tracking-tighter">
             {product.name}
           </div>
-          <p className="text-white/90 text-[10px] font-black tracking-[0.2em] uppercase">SPECIAL EDITION | ৳{product.price}</p>
+          <p className="text-white/90 text-[10px] font-black tracking-[0.2em] uppercase flex items-baseline">
+            SPECIAL EDITION | <span className="text-[8px] font-bold mr-0.5">৳</span>{product.price}
+          </p>
           <div className="flex flex-wrap gap-2 mt-2">
             <Button asChild variant="outline" className="border-white/20 text-white h-9 px-4 font-black rounded-none text-[10px] hover:bg-white/10 transition-all uppercase w-fit">
               <Link href={`/products/${product.id}`}>DETAILS</Link>
@@ -103,7 +105,10 @@ const FlashOfferCard = () => {
             <div className="absolute inset-0 flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-500 translate-y-4 group-hover:translate-y-0 p-4 text-center">
               <div className="bg-black/60 backdrop-blur-md p-4 w-full border border-white/10">
                 <h3 className="text-white font-black text-sm uppercase mb-3 tracking-tighter line-clamp-2">{flashProduct.name}</h3>
-                <p className="text-orange-600 font-black text-lg mb-4">৳{flashProduct.price.toLocaleString()}</p>
+                <div className="text-orange-600 font-black text-2xl mb-4 flex items-baseline justify-center">
+                  <span className="text-sm font-bold mr-0.5">৳</span>
+                  {flashProduct.price.toLocaleString()}
+                </div>
                 <div className="flex flex-col gap-2">
                   <Button 
                     onClick={() => setIsOrderOpen(true)}
@@ -195,10 +200,9 @@ export default function Home() {
               </div>
             </div>
             <div className="shrink-0 flex items-center gap-3 px-1 mt-auto">
-              <div className="bg-white p-1 w-20 h-20 shrink-0 border border-white/5 flex items-center justify-center group/qr">
+              <div className="bg-white p-1 w-20 h-20 shrink-0 border border-white/5 flex items-center justify-center group/qr overflow-hidden">
                 <svg viewBox="0 0 100 100" className="w-full h-full text-black">
-                  <path fill="currentColor" d="M0 0h18v18H0V0zm2 2v14h14V2H2zm2 2h10v10H4V4zM82 0h18v18H82V0zm2 2v14h14V2H84zm2 2h10v10H86V4zM0 82h18v18H0V82zm2 2v14h14V84H2zm2 2h10v10H4V86z" />
-                  <path fill="currentColor" d="M22 2h2v2h-2zm4 0h2v2h-2zm4 0h2v2h-2zm4 0h2v2h-2zm4 0h2v2h-2zm4 0h2v2h-2zm4 0h2v2h-2zm4 0h2v2h-2zm4 0h2v2h-2zm4 0h2v2h-2zm4 0h2v2h-2zm4 0h2v2h-2zm4 0h2v2h-2zm4 0h2v2h-2zm4 0h2v2h-2zm-60 4h2v2h-2zm4 0h2v2h-2zm8 0h2v2h-2zm4 0h2v2h-2zm8 0h2v2h-2zm12 0h2v2h-2zm4 0h2v2h-2zm8 0h2v2h-2zm4 0h2v2h-2zm4 0h2v2h-2zm-56 4h2v2h-2zm4 0h2v2h-2zm4 0h2v2h-2zm12 0h2v2h-2zm8 0h2v2h-2zm4 0h2v2h-2zm4 0h2v2h-2zm8 0h2v2h-2zm4 0h2v2h-2zm4 0h2v2h-2zm-52 4h2v2h-2zm8 0h2v2h-2zm4 0h2v2h-2zm4 0h2v2h-2zm8 0h2v2h-2zm12 0h2v2h-2zm4 0h2v2h-2zm4 0h2v2h-2zm-48 4h2v2h-2zm4 0h2v2h-2zm12 0h2v2h-2zm4 0h2v2h-2zm8 0h2v2h-2zm4 0h2v2h-2zm4 0h2v2h-2zm8 0h2v2h-2zm4 0h2v2h-2zm-52 4h2v2h-2zm4 0h2v2h-2zm4 0h2v2h-2zm12 0h2v2h-2zm8 0h2v2h-2zm4 0h2v2h-2zm4 0h2v2h-2zm8 0h2v2h-2zm-44 4h2v2h-2zm4 0h2v2h-2zm4 0h2v2h-2zm12 0h2v2h-2zm8 0h2v2h-2zm4 0h2v2h-2zm4 0h2v2h-2zm8 0h2v2h-2zm-44 4h2v2h-2zm4 0h2v2h-2zm4 0h2v2h-2zm12 0h2v2h-2zm8 0h2v2h-2zm4 0h2v2h-2zm4 0h2v2h-2zm8 0h2v2h-2zm-44 4h2v2h-2zm4 0h2v2h-2zm4 0h2v2h-2zm12 0h2v2h-2zm8 0h2v2h-2zm4 0h2v2h-2zm4 0h2v2h-2zm8 0h2v2h-2zm0 8h2v2h-2zm4 0h2v2h-2zm8 0h2v2h-2zm4 0h2v2h-2zm4 0h2v2h-2zm8 0h2v2h-2zm4 0h2v2h-2zm4 0h2v2h-2zm12 0h2v2h-2zm4 0h2v2h-2zm8 0h2v2h-2zm-60 4h2v2h-2zm4 0h2v2h-2zm8 0h2v2h-2zm4 0h2v2h-2zm8 0h2v2h-2zm12 0h2v2h-2zm4 0h2v2h-2zm8 0h2v2h-2zm4 0h2v2h-2zm4 0h2v2h-2zm-56 4h2v2h-2zm4 0h2v2h-2zm4 0h2v2h-2zm12 0h2v2h-2zm8 0h2v2h-2zm4 0h2v2h-2zm4 0h2v2h-2zm8 0h2v2h-2zm4 0h2v2h-2zm4 0h2v2h-2zm-52 4h2v2h-2zm8 0h2v2h-2zm4 0h2v2h-2zm4 0h2v2h-2zm8 0h2v2h-2zm12 0h2v2h-2zm4 0h2v2h-2zm4 0h2v2h-2zm-48 4h2v2h-2zm4 0h2v2h-2zm12 0h2v2h-2zm4 0h2v2h-2zm8 0h2v2h-2zm4 0h2v2h-2zm4 0h2v2h-2zm8 0h2v2h-2zm4 0h2v2h-2zm-52 4h2v2h-2zm4 0h2v2h-2zm4 0h2v2h-2zm12 0h2v2h-2zm8 0h2v2h-2zm4 0h2v2h-2zm4 0h2v2h-2zm8 0h2v2h-2zm-44 4h2v2h-2zm4 0h2v2h-2zm4 0h2v2h-2zm12 0h2v2h-2zm8 0h2v2h-2zm4 0h2v2h-2zm4 0h2v2h-2zm8 0h2v2h-2zm-44 4h2v2h-2zm4 0h2v2h-2zm4 0h2v2h-2zm12 0h2v2h-2zm8 0h2v2h-2zm4 0h2v2h-2zm4 0h2v2h-2zm8 0h2v2h-2zm-44 4h2v2h-2zm4 0h2v2h-2zm4 0h2v2h-2zm12 0h2v2h-2zm8 0h2v2h-2zm4 0h2v2h-2zm4 0h2v2h-2zm8 0h2v2h-2z" />
+                  <path fill="currentColor" d="M0 0h18v18H0V0zm2 2v14h14V2H2zm2 2h10v10H4V4zm78-4h18v18H82V0zm2 2v14h14V2H84zm2 2h10v10H86V4zM0 82h18v18H0V82zm2 2v14h14V84H2zm2 2h10v10H4V86zm20-80h2v2h-2zm4 0h2v2h-2zm4 0h2v2h-2zm4 0h2v2h-2zm4 0h2v2h-2zm4 0h2v2h-2zm4 0h2v2h-2zm4 0h2v2h-2zm4 0h2v2h-2zm4 0h2v2h-2zm4 0h2v2h-2zm4 0h2v2h-2zm-44 4h2v2h-2zm8 0h2v2h-2zm4 0h2v2h-2zm8 0h2v2h-2zm8 0h2v2h-2zm8 0h2v2h-2zm4 0h2v2h-2zm-40 4h2v2h-2zm4 0h2v2h-2zm12 0h2v2h-2zm8 0h2v2h-2zm4 0h2v2h-2zm8 0h2v2h-2zm-36 4h2v2h-2zm4 0h2v2h-2zm8 0h2v2h-2zm4 0h2v2h-2zm8 0h2v2h-2zm8 0h2v2h-2zm4 0h2v2h-2zm-36 4h2v2h-2zm4 0h2v2h-2zm12 0h2v2h-2zm8 0h2v2h-2zm4 0h2v2h-2zm8 0h2v2h-2zm-36 4h2v2h-2zm4 0h2v2h-2zm8 0h2v2h-2zm4 0h2v2h-2zm8 0h2v2h-2zm8 0h2v2h-2zm4 0h2v2h-2zm-36 4h2v2h-2zm4 0h2v2h-2zm12 0h2v2h-2zm8 0h2v2h-2zm4 0h2v2h-2zm8 0h2v2h-2zm-36 4h2v2h-2zm4 0h2v2h-2zm8 0h2v2h-2zm4 0h2v2h-2zm8 0h2v2h-2zm8 0h2v2h-2zm4 0h2v2h-2zm-36 4h2v2h-2zm4 0h2v2h-2zm12 0h2v2h-2zm8 0h2v2h-2zm4 0h2v2h-2zm8 0h2v2h-2zm-36 4h2v2h-2zm4 0h2v2h-2zm8 0h2v2h-2zm4 0h2v2h-2zm8 0h2v2h-2zm8 0h2v2h-2zm4 0h2v2h-2zm0 8h2v2h-2zm4 0h2v2h-2zm4 0h2v2h-2zm4 0h2v2h-2zm4 0h2v2h-2zm4 0h2v2h-2zm4 0h2v2h-2zm4 0h2v2h-2zm4 0h2v2h-2zm4 0h2v2h-2zm4 0h2v2h-2zm4 0h2v2h-2zm-44 4h2v2h-2zm8 0h2v2h-2zm4 0h2v2h-2zm8 0h2v2h-2zm8 0h2v2h-2zm8 0h2v2h-2zm4 0h2v2h-2zm-40 4h2v2h-2zm4 0h2v2h-2zm12 0h2v2h-2zm8 0h2v2h-2zm4 0h2v2h-2zm8 0h2v2h-2zm-36 4h2v2h-2zm4 0h2v2h-2zm8 0h2v2h-2zm4 0h2v2h-2zm8 0h2v2h-2zm8 0h2v2h-2zm4 0h2v2h-2zm-36 4h2v2h-2zm4 0h2v2h-2zm12 0h2v2h-2zm8 0h2v2h-2zm4 0h2v2h-2zm8 0h2v2h-2zm-36 4h2v2h-2zm4 0h2v2h-2zm8 0h2v2h-2zm4 0h2v2h-2zm8 0h2v2h-2zm8 0h2v2h-2zm4 0h2v2h-2zm-36 4h2v2h-2zm4 0h2v2h-2zm12 0h2v2h-2zm8 0h2v2h-2zm4 0h2v2h-2zm8 0h2v2h-2zm-36 4h2v2h-2zm4 0h2v2h-2zm8 0h2v2h-2zm4 0h2v2h-2zm8 0h2v2h-2zm8 0h2v2h-2zm4 0h2v2h-2zm-36 4h2v2h-2zm4 0h2v2h-2zm12 0h2v2h-2zm8 0h2v2h-2zm4 0h2v2h-2zm8 0h2v2h-2z" />
                 </svg>
               </div>
               <div className="flex flex-col gap-2 flex-grow">
