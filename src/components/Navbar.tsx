@@ -1,12 +1,10 @@
-
 "use client";
 
 import React from 'react';
 import Link from 'next/link';
-import { Search, ShoppingBag, User, LogIn, Menu } from 'lucide-react';
+import { Search, ShoppingBag, User } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { SidebarTrigger } from "@/components/ui/sidebar";
 
 export function Navbar() {
   return (
@@ -37,20 +35,17 @@ export function Navbar() {
 
         {/* Row 2: Logo, Search, and Icons */}
         <div className="h-16 flex items-center justify-between gap-8">
-          <div className="flex items-center gap-4">
-            <SidebarTrigger />
-            <Link href="/" className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-primary rounded-xl flex items-center justify-center shadow-lg shadow-primary/20">
-                <ShoppingBag className="h-6 w-6 text-background" />
-              </div>
-              <div className="flex flex-col">
-                <h1 className="text-lg font-headline font-bold text-primary leading-none uppercase tracking-tight">
-                  SS SMART HAAT
-                </h1>
-                <span className="text-[9px] text-muted-foreground font-bold uppercase tracking-[0.2em] mt-1">Premium Store</span>
-              </div>
-            </Link>
-          </div>
+          <Link href="/" className="flex items-center gap-3 shrink-0">
+            <div className="w-10 h-10 bg-primary rounded-xl flex items-center justify-center shadow-lg shadow-primary/20">
+              <ShoppingBag className="h-6 w-6 text-background" />
+            </div>
+            <div className="flex flex-col">
+              <h1 className="text-lg font-headline font-bold text-primary leading-none uppercase tracking-tight">
+                SS SMART HAAT
+              </h1>
+              <span className="text-[9px] text-muted-foreground font-bold uppercase tracking-[0.2em] mt-1">Premium Store</span>
+            </div>
+          </Link>
 
           <div className="flex-grow max-w-2xl relative group">
             <Input 
@@ -64,7 +59,7 @@ export function Navbar() {
             </Button>
           </div>
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3 shrink-0">
             <Button variant="ghost" size="icon" className="rounded-full hover:bg-primary/10">
               <User className="h-6 w-6" />
             </Button>
