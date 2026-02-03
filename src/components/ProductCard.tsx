@@ -21,8 +21,8 @@ export const ProductCard = memo(({ product }: ProductCardProps) => {
     <>
       <Card className={`group overflow-hidden bg-black border-none transition-all duration-300 rounded-none flex flex-col h-full relative ${isOutOfStock ? 'opacity-70' : ''}`}>
         
-        {/* IMAGE CONTAINER - LOCKED ASPECT RATIO */}
-        <Link href={`/products/${product.id}`} className="block relative aspect-square overflow-hidden bg-black border border-white/5">
+        {/* IMAGE CONTAINER - LOCKED ASPECT RATIO 4/5 FOR FASHION */}
+        <Link href={`/products/${product.id}`} className="block relative aspect-[4/5] overflow-hidden bg-black border border-white/5">
           <Image
             src={product.imageUrl}
             alt={product.name}
@@ -50,7 +50,7 @@ export const ProductCard = memo(({ product }: ProductCardProps) => {
           {/* PRICE ROW: Main Price and Discount Box */}
           <div className="flex items-center justify-between">
             <span className="font-black text-xl md:text-2xl text-[#01a3a4] tracking-tighter leading-none flex items-baseline">
-              <span className="text-[9px] md:text-[10px] font-normal mr-0.5">৳</span>
+              <span className="text-[9px] font-normal mr-0.5">৳</span>
               {product.price.toLocaleString()}
             </span>
             
@@ -63,7 +63,7 @@ export const ProductCard = memo(({ product }: ProductCardProps) => {
             )}
           </div>
 
-          {/* ORIGINAL PRICE - LARGE SIZE */}
+          {/* ORIGINAL PRICE - LARGE SIZE AS REQUESTED */}
           {product.originalPrice > product.price && (
             <div className="flex items-baseline">
               <span className="text-white/40 line-through text-[14px] font-bold flex items-baseline">
