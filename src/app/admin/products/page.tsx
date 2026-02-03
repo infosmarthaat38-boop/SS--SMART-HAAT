@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Plus, Trash2, ArrowLeft, Package, Upload, X, Loader2, Edit2, Save, CheckCircle2 } from 'lucide-react';
+import { Plus, Trash2, ArrowLeft, Package, Upload, X, Loader2, Edit2, Save, CheckCircle2, AlertTriangle } from 'lucide-react';
 import Link from 'next/link';
 import { useFirestore, useCollection, useMemoFirebase } from '@/firebase';
 import { collection, doc, query, orderBy } from 'firebase/firestore';
@@ -17,11 +17,17 @@ import Image from 'next/image';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
-/**
- * AdminProducts Component - Manages product inventory.
- * Features: Add, Edit, Delete, Slider/Flash Offer toggles, and direct image upload.
- */
 export default function AdminProducts() {
   const db = useFirestore();
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -35,19 +41,19 @@ export default function AdminProducts() {
   const [showInSlider, setShowInSlider] = useState(false);
   const [showInFlashOffer, setShowInFlashOffer] = useState(false);
   
+  const [isAlertOpen, setIsAlertOpen] = useState(false);
+  const [deleteId, setDeleteId] = useState<string | null>(null);
+
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  // References to collections
   const productsRef = useMemoFirebase(() => query(collection(db, 'products'), orderBy('createdAt', 'desc')), [db]);
   const categoriesRef = useMemoFirebase(() => collection(db, 'categories'), [db]);
   
   const { data: products, isLoading: productsLoading } = useCollection(productsRef);
   const { data: categories } = useCollection(categoriesRef);
 
-  // Auto-calculate discount percentage based on prices
   useEffect(() => {
-    if (editingId) return; // Don't auto-calculate when editing existing data to prevent unintended overrides
-
+    if (editingId) return;
     const p = parseFloat(price);
     const op = parseFloat(originalPrice);
     if (p && op && op > p) {
@@ -76,7 +82,7 @@ export default function AdminProducts() {
   const handleSaveProduct = (e: React.FormEvent) => {
     e.preventDefault();
     if (!name || !price || !imagePreview || !category) {
-      alert("PLEASE FILL ALL REQUIRED FIELDS AND UPLOAD AN IMAGE.");
+      alert("PLEASE FILL ALL REQUIRED FIELDS.");
       return;
     }
 
@@ -94,18 +100,14 @@ export default function AdminProducts() {
     };
 
     if (editingId) {
-      // Update existing document
       updateDocumentNonBlocking(doc(db, 'products', editingId), productData);
       setEditingId(null);
     } else {
-      // Create new document
       addDocumentNonBlocking(collection(db, 'products'), {
         ...productData,
         createdAt: new Date().toISOString()
       });
     }
-
-    // Reset form for next entry
     resetForm();
   };
 
@@ -134,14 +136,19 @@ export default function AdminProducts() {
     setImagePreview(product.imageUrl);
     setShowInSlider(!!product.showInSlider);
     setShowInFlashOffer(!!product.showInFlashOffer);
-    
-    // Smooth scroll to top form
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  const handleDeleteProduct = (id: string) => {
-    if (confirm("ARE YOU SURE YOU WANT TO DELETE THIS PRODUCT FROM INVENTORY?")) {
-      deleteDocumentNonBlocking(doc(db, 'products', id));
+  const confirmDelete = (id: string) => {
+    setDeleteId(id);
+    setIsAlertOpen(true);
+  };
+
+  const handleFinalDelete = () => {
+    if (deleteId) {
+      deleteDocumentNonBlocking(doc(db, 'products', deleteId));
+      setDeleteId(null);
+      setIsAlertOpen(false);
     }
   };
 
@@ -241,7 +248,6 @@ export default function AdminProducts() {
                   </div>
                 </div>
 
-                {/* PLACEMENT OPTIONS */}
                 <div className="space-y-4 pt-2 border-t border-white/5 mt-4">
                   <div className="flex items-center space-x-2">
                     <Checkbox 
@@ -263,7 +269,6 @@ export default function AdminProducts() {
                   </div>
                 </div>
                 
-                {/* IMAGE UPLOAD */}
                 <div className="space-y-2">
                   <label className="text-[10px] font-black text-muted-foreground uppercase">Product Image *</label>
                   <div 
@@ -273,13 +278,7 @@ export default function AdminProducts() {
                     {imagePreview ? (
                       <div className="relative w-full aspect-square">
                         <Image src={imagePreview} alt="Preview" fill className="object-cover" />
-                        <button 
-                          type="button" 
-                          onClick={(e) => { e.stopPropagation(); setImagePreview(null); }} 
-                          className="absolute -top-2 -right-2 bg-orange-600 p-1.5 text-white z-10"
-                        >
-                          <X className="h-4 w-4" />
-                        </button>
+                        <button type="button" onClick={(e) => { e.stopPropagation(); setImagePreview(null); }} className="absolute -top-2 -right-2 bg-orange-600 p-1.5 text-white z-10"><X className="h-4 w-4" /></button>
                       </div>
                     ) : (
                       <div className="space-y-2">
@@ -287,32 +286,14 @@ export default function AdminProducts() {
                         <p className="text-[10px] font-black text-white uppercase">UPLOAD PHOTO</p>
                       </div>
                     )}
-                    <input 
-                      type="file" 
-                      ref={fileInputRef} 
-                      onChange={handleFileChange} 
-                      accept="image/*" 
-                      className="hidden" 
-                    />
+                    <input type="file" ref={fileInputRef} onChange={handleFileChange} accept="image/*" className="hidden" />
                   </div>
                 </div>
 
                 <div className="flex gap-2">
-                  {editingId && (
-                    <Button 
-                      type="button" 
-                      onClick={resetForm} 
-                      variant="outline" 
-                      className="flex-1 border-white/10 rounded-none uppercase text-[10px] h-12"
-                    >
-                      CANCEL
-                    </Button>
-                  )}
-                  <Button 
-                    type="submit" 
-                    className="flex-grow bg-orange-600 hover:bg-orange-700 text-white font-black rounded-none uppercase text-[10px] h-12"
-                  >
-                    {editingId ? <><Save className="mr-2 h-4 w-4" /> UPDATE PRODUCT</> : <><Plus className="mr-2 h-4 w-4" /> SAVE PRODUCT</>}
+                  {editingId && <Button type="button" onClick={resetForm} variant="outline" className="flex-1 border-white/10 rounded-none uppercase text-[10px] h-12">CANCEL</Button>}
+                  <Button type="submit" className="flex-grow bg-orange-600 hover:bg-orange-700 text-white font-black rounded-none uppercase text-[10px] h-12">
+                    {editingId ? <><Save className="mr-2 h-4 w-4" /> UPDATE</> : <><Plus className="mr-2 h-4 w-4" /> SAVE</>}
                   </Button>
                 </div>
               </form>
@@ -321,68 +302,26 @@ export default function AdminProducts() {
 
           {/* PRODUCT LIST */}
           <Card className="bg-card border-white/5 rounded-none lg:col-span-2">
-            <CardHeader>
-              <CardTitle className="text-xs font-black uppercase tracking-[0.3em] text-orange-600">
-                INVENTORY LIST ({products?.length || 0})
-              </CardTitle>
-            </CardHeader>
+            <CardHeader><CardTitle className="text-xs font-black uppercase tracking-[0.3em] text-orange-600">INVENTORY LIST ({products?.length || 0})</CardTitle></CardHeader>
             <CardContent>
               {productsLoading ? (
-                <div className="flex flex-col items-center justify-center py-20">
-                  <Loader2 className="h-8 w-8 text-orange-600 animate-spin" />
-                </div>
-              ) : !products || products.length === 0 ? (
-                <div className="text-center py-20 border border-dashed border-white/10">
-                  <Package className="h-10 w-10 text-white/10 mx-auto mb-4" />
-                  <p className="text-[10px] font-black uppercase text-muted-foreground">NO PRODUCTS FOUND IN DATABASE</p>
-                </div>
+                <div className="flex flex-col items-center justify-center py-20"><Loader2 className="h-8 w-8 text-orange-600 animate-spin" /></div>
               ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {products.map((p) => (
-                    <div 
-                      key={p.id} 
-                      className={`flex gap-4 p-4 bg-white/5 border transition-all ${editingId === p.id ? 'border-orange-600 bg-orange-600/5 shadow-lg shadow-orange-600/10' : 'border-white/5'} group relative`}
-                    >
+                  {products?.map((p) => (
+                    <div key={p.id} className={`flex gap-4 p-4 bg-white/5 border transition-all ${editingId === p.id ? 'border-orange-600 bg-orange-600/5' : 'border-white/5'} group relative`}>
                       <div className="relative w-24 h-24 shrink-0 border border-white/10 overflow-hidden bg-black">
                         <Image src={p.imageUrl} alt={p.name} fill className="object-cover" />
-                        {(p.showInSlider || p.showInFlashOffer) && (
-                          <div className="absolute top-0 left-0 bg-orange-600 p-1">
-                            <CheckCircle2 className="h-3 w-3 text-white" />
-                          </div>
-                        )}
                       </div>
                       <div className="flex-grow flex flex-col justify-between overflow-hidden">
                         <div>
-                          <div className="flex justify-between items-start">
-                            <p className="text-[8px] font-black text-orange-600 tracking-widest uppercase">{p.category}</p>
-                            <div className="flex gap-1">
-                              {p.showInSlider && <span className="text-[7px] bg-orange-600 px-1 py-0.5 text-white font-black uppercase">Slider</span>}
-                              {p.showInFlashOffer && <span className="text-[7px] bg-primary/20 px-1 py-0.5 text-orange-600 font-black uppercase">Flash</span>}
-                            </div>
-                          </div>
+                          <p className="text-[8px] font-black text-orange-600 tracking-widest uppercase">{p.category}</p>
                           <h3 className="text-sm font-black text-white uppercase truncate mt-1">{p.name}</h3>
-                          <div className="flex items-center gap-2 mt-1">
-                            <span className="text-[12px] font-black text-white">৳{p.price}</span>
-                            {p.originalPrice > p.price && (
-                              <span className="text-[10px] text-muted-foreground line-through">৳{p.originalPrice}</span>
-                            )}
-                          </div>
+                          <span className="text-[12px] font-black text-white">৳{p.price}</span>
                         </div>
                         <div className="flex justify-end gap-2 mt-2">
-                          <Button 
-                            onClick={() => handleEdit(p)} 
-                            variant="ghost" 
-                            className="h-8 w-8 p-0 text-muted-foreground hover:text-orange-600 hover:bg-orange-600/10"
-                          >
-                            <Edit2 className="h-4 w-4" />
-                          </Button>
-                          <Button 
-                            onClick={() => handleDeleteProduct(p.id)} 
-                            variant="ghost" 
-                            className="h-8 w-8 p-0 text-muted-foreground hover:text-red-500 hover:bg-red-500/10"
-                          >
-                            <Trash2 className="h-4 w-4" />
-                          </Button>
+                          <Button onClick={() => handleEdit(p)} variant="ghost" className="h-8 w-8 p-0 text-muted-foreground hover:text-orange-600"><Edit2 className="h-4 w-4" /></Button>
+                          <Button onClick={() => confirmDelete(p.id)} variant="ghost" className="h-8 w-8 p-0 text-muted-foreground hover:text-red-500"><Trash2 className="h-4 w-4" /></Button>
                         </div>
                       </div>
                     </div>
@@ -393,6 +332,25 @@ export default function AdminProducts() {
           </Card>
         </div>
       </main>
+
+      {/* PROFESSIONAL DELETE ALERT */}
+      <AlertDialog open={isAlertOpen} onOpenChange={setIsAlertOpen}>
+        <AlertDialogContent className="bg-black border-orange-600/30 rounded-none p-8 max-w-md">
+          <AlertDialogHeader className="space-y-4">
+            <div className="flex items-center gap-3">
+              <div className="h-10 w-10 bg-red-600/10 flex items-center justify-center border border-red-600/20"><AlertTriangle className="h-6 w-6 text-red-600" /></div>
+              <AlertDialogTitle className="text-2xl font-black text-white uppercase tracking-tighter">DELETE PRODUCT?</AlertDialogTitle>
+            </div>
+            <AlertDialogDescription className="text-[10px] text-muted-foreground uppercase font-black tracking-widest leading-relaxed">
+              THIS ACTION WILL PERMANENTLY REMOVE THIS PRODUCT FROM YOUR INVENTORY. THIS CANNOT BE UNDONE.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter className="mt-8 gap-2 sm:gap-0">
+            <AlertDialogCancel className="flex-1 rounded-none border-white/10 text-white font-black uppercase text-[10px] h-12 hover:bg-white/5">CANCEL</AlertDialogCancel>
+            <AlertDialogAction onClick={handleFinalDelete} className="flex-1 bg-red-600 hover:bg-red-700 text-white font-black uppercase text-[10px] rounded-none h-12 shadow-xl shadow-red-600/10">DELETE FOREVER</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
       
       <Footer />
     </div>

@@ -17,7 +17,8 @@ import {
   XCircle, 
   Truck,
   FileText,
-  DollarSign
+  DollarSign,
+  AlertTriangle
 } from 'lucide-react';
 import {
   Dialog,
@@ -26,6 +27,16 @@ import {
   DialogTitle,
   DialogFooter,
 } from "@/components/ui/dialog";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { Input } from "@/components/ui/input";
 import Link from 'next/link';
 import { useFirestore, useCollection, useMemoFirebase } from '@/firebase';
@@ -38,8 +49,10 @@ import autoTable from 'jspdf-autotable';
 export default function AdminOrders() {
   const db = useFirestore();
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
+  const [isAlertOpen, setIsAlertOpen] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState<any>(null);
   const [deliveryCharge, setDeliveryCharge] = useState('');
+  const [alertConfig, setAlertConfig] = useState<{title: string, desc: string, action: () => void} | null>(null);
 
   const ordersRef = useMemoFirebase(() => query(collection(db, 'orders'), orderBy('createdAt', 'desc')), [db]);
   const { data: orders, isLoading } = useCollection(ordersRef);
@@ -62,17 +75,29 @@ export default function AdminOrders() {
     setSelectedOrder(null);
   };
 
+  const triggerAlert = (title: string, desc: string, action: () => void) => {
+    setAlertConfig({ title, desc, action });
+    setIsAlertOpen(true);
+  };
+
   const handleUpdateStatus = (id: string, newStatus: string) => {
     if (newStatus === 'CANCELLED') {
-      if (!confirm("ARE YOU SURE YOU WANT TO CANCEL THIS ORDER? THIS ACTION CANNOT BE UNDONE.")) return;
+      triggerAlert(
+        "ARE YOU SURE YOU WANT TO CANCEL THIS ORDER?",
+        "THIS ACTION CANNOT BE UNDONE. THE CLIENT WILL BE NOTIFIED OF THE CANCELLATION.",
+        () => updateDocumentNonBlocking(doc(db, 'orders', id), { status: 'CANCELLED' })
+      );
+    } else {
+      updateDocumentNonBlocking(doc(db, 'orders', id), { status: newStatus });
     }
-    updateDocumentNonBlocking(doc(db, 'orders', id), { status: newStatus });
   };
 
   const handleDeleteOrder = (id: string) => {
-    if (confirm("ARE YOU SURE YOU WANT TO PERMANENTLY DELETE THIS ORDER RECORD?")) {
-      deleteDocumentNonBlocking(doc(db, 'orders', id));
-    }
+    triggerAlert(
+      "PERMANENTLY DELETE THIS ORDER RECORD?",
+      "THIS WILL REMOVE ALL DATA ASSOCIATED WITH THIS ORDER FROM THE PERMANENT DATABASE.",
+      () => deleteDocumentNonBlocking(doc(db, 'orders', id))
+    );
   };
 
   const generateInvoice = (order: any) => {
@@ -231,9 +256,11 @@ export default function AdminOrders() {
                   {order.status === 'CONFIRMED' && (
                     <Button 
                       onClick={() => {
-                        if (confirm("MARK THIS ORDER AS DELIVERED?")) {
-                          handleUpdateStatus(order.id, 'DELIVERED');
-                        }
+                        triggerAlert(
+                          "MARK AS DELIVERED?",
+                          "THIS ORDER WILL BE ARCHIVED AS COMPLETED. MAKE SURE THE CUSTOMER HAS RECEIVED THE PRODUCT.",
+                          () => handleUpdateStatus(order.id, 'DELIVERED')
+                        );
                       }}
                       className="bg-green-600 hover:bg-green-700 text-white font-black text-[9px] uppercase rounded-none h-10 px-4"
                     >
@@ -325,6 +352,36 @@ export default function AdminOrders() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      {/* PROFESSIONAL ALERT DIALOG FOR DESTRUCTIVE ACTIONS */}
+      <AlertDialog open={isAlertOpen} onOpenChange={setIsAlertOpen}>
+        <AlertDialogContent className="bg-black border-orange-600/30 rounded-none p-8 max-w-md">
+          <AlertDialogHeader className="space-y-4">
+            <div className="flex items-center gap-3">
+              <div className="h-10 w-10 bg-red-600/10 flex items-center justify-center border border-red-600/20">
+                <AlertTriangle className="h-6 w-6 text-red-600" />
+              </div>
+              <AlertDialogTitle className="text-2xl font-black text-white uppercase tracking-tighter">
+                {alertConfig?.title}
+              </AlertDialogTitle>
+            </div>
+            <AlertDialogDescription className="text-[10px] text-muted-foreground uppercase font-black tracking-widest leading-relaxed">
+              {alertConfig?.desc}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter className="mt-8 gap-2 sm:gap-0">
+            <AlertDialogCancel className="flex-1 rounded-none border-white/10 text-white font-black uppercase text-[10px] h-12 hover:bg-white/5">
+              BACK TO PANEL
+            </AlertDialogCancel>
+            <AlertDialogAction 
+              onClick={() => alertConfig?.action()}
+              className="flex-1 bg-red-600 hover:bg-red-700 text-white font-black uppercase text-[10px] rounded-none h-12 shadow-xl shadow-red-600/10"
+            >
+              CONFIRM ACTION
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
       
       <Footer />
     </div>
