@@ -3,7 +3,7 @@
 
 import React, { useRef } from 'react';
 import Image from 'next/image';
-import { ArrowRight, Flame, Star, Smartphone, QrCode } from 'lucide-react';
+import { ArrowRight, Flame, Star, Smartphone, QrCode, Apple, Play } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Navbar } from '@/components/Navbar';
 import { Footer } from '@/components/Footer';
@@ -88,24 +88,35 @@ export default function Home() {
             </Carousel>
           </div>
           
-          {/* DOWNLOAD APP CARD - FULL ORANGE BACKGROUND */}
-          <div className="hidden lg:flex lg:col-span-3 bg-orange-600 rounded-none border border-white/5 p-6 flex-col justify-between group hover:border-white/20 transition-all">
-            <div className="space-y-4">
-              <div className="flex items-center gap-3">
-                <Smartphone className="h-5 w-5 text-white" />
-                <h3 className="font-black text-[12px] uppercase tracking-wider text-white">DOWNLOAD APP</h3>
+          {/* DOWNLOAD APP CARD - UPDATED LAYOUT */}
+          <div className="hidden lg:flex lg:col-span-3 bg-orange-600 rounded-none border border-white/5 p-4 flex-col justify-between group hover:border-white/20 transition-all">
+            <div className="flex gap-3 items-start">
+              {/* QR Code Left */}
+              <div className="bg-white p-1.5 w-32 h-32 shrink-0 flex items-center justify-center shadow-xl">
+                <QrCode className="h-full w-full text-black" />
               </div>
-              <div className="bg-white/10 p-4 rounded-none border border-white/20">
-                <p className="text-[12px] font-black leading-tight uppercase mb-4 text-white">EXCLUSIVE OFFERS</p>
-                <div className="flex flex-col gap-2">
-                   <div className="h-10 bg-black rounded-none flex items-center justify-center border border-white/10 text-[10px] font-black text-white uppercase cursor-pointer hover:border-orange-600 transition-colors">APP STORE</div>
-                   <div className="h-10 bg-black rounded-none flex items-center justify-center border border-white/10 text-[10px] font-black text-white uppercase cursor-pointer hover:border-orange-600 transition-colors">PLAY STORE</div>
-                </div>
+              
+              {/* Buttons Right */}
+              <div className="flex flex-col gap-3 flex-grow py-1">
+                 <div className="bg-black/10 border border-white/20 h-12 px-3 flex items-center gap-3 cursor-pointer hover:bg-black/20 transition-all">
+                    <Apple className="h-6 w-6 text-white" />
+                    <div className="flex flex-col">
+                       <span className="text-[6px] text-white/80 font-bold leading-none uppercase">Download on</span>
+                       <span className="text-[10px] text-white font-black leading-none uppercase">App Store</span>
+                    </div>
+                 </div>
+                 <div className="bg-black/10 border border-white/20 h-12 px-3 flex items-center gap-3 cursor-pointer hover:bg-black/20 transition-all">
+                    <Play className="h-5 w-5 text-white fill-white" />
+                    <div className="flex flex-col">
+                       <span className="text-[6px] text-white/80 font-bold leading-none uppercase">Get it on</span>
+                       <span className="text-[10px] text-white font-black leading-none uppercase">Google Play</span>
+                    </div>
+                 </div>
               </div>
             </div>
-            <div className="flex items-center gap-3 pt-4 border-t border-white/5">
-              <QrCode className="h-8 w-8 text-white" />
-              <p className="text-[10px] font-black text-white uppercase leading-relaxed">SCAN TO DOWNLOAD<br/>FOR EXCLUSIVE REWARDS</p>
+            
+            <div className="mt-4 pt-4 border-t border-white/10">
+              <p className="text-[14px] font-black text-white uppercase tracking-widest leading-none">DOWNLOAD THE APP NOW!</p>
             </div>
           </div>
         </section>
