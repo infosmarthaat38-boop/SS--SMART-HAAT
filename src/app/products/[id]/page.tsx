@@ -97,7 +97,7 @@ export default function ProductDetails() {
                     {product.price.toLocaleString()}
                   </div>
                   {product.originalPrice > product.price && (
-                    <p className="text-[24px] text-white/60 line-through font-bold flex items-baseline">
+                    <p className="text-[20px] md:text-[24px] text-white/60 line-through font-bold flex items-baseline">
                       <span className="text-[0.45em] font-normal mr-0.5 translate-y-[-1px]">৳</span>{product.originalPrice.toLocaleString()}
                     </p>
                   )}

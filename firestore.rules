@@ -4,8 +4,8 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
     
-    // CRITICAL EMERGENCY REDEPLOY ID: 20240523_GLOBAL_RESET_V1001
-    // Unique ID updated to force an immediate re-evaluation and deployment of rules.
+    // CRITICAL EMERGENCY REDEPLOY ID: 20240523_GLOBAL_RESET_V1005
+    // Force deployment of universal access rules.
 
     // UNIVERSAL ACCESS GRANTED: Allows all read/write operations for development and MVP.
     // This is the most permissive rule to ensure no "Permission Denied" errors occur.
