@@ -2,6 +2,7 @@
 "use client";
 
 import React from 'react';
+import Link from 'next/link';
 import { Navbar } from '@/components/Navbar';
 import { Footer } from '@/components/Footer';
 import { LayoutDashboard, ShoppingBag, Package, Settings, Link as LinkIcon, Sparkles, ShieldCheck, Layers } from 'lucide-react';
@@ -10,12 +11,12 @@ import { StyleAssistant } from '@/components/StyleAssistant';
 
 export default function AdminPanel() {
   const adminOptions = [
-    { title: "DASHBOARD", icon: LayoutDashboard },
-    { title: "ORDER", icon: ShoppingBag },
-    { title: "PRODUCT", icon: Package },
-    { title: "CATEGORY", icon: Layers },
-    { title: "SETTING", icon: Settings },
-    { title: "OTHER LINK", icon: LinkIcon }
+    { title: "DASHBOARD", icon: LayoutDashboard, href: "/admin" },
+    { title: "ORDER", icon: ShoppingBag, href: "/admin/orders" },
+    { title: "PRODUCT", icon: Package, href: "/admin/products" },
+    { title: "CATEGORY", icon: Layers, href: "/admin/categories" },
+    { title: "SETTING", icon: Settings, href: "/admin/settings" },
+    { title: "OTHER LINK", icon: LinkIcon, href: "/admin/other" }
   ];
 
   return (
@@ -39,23 +40,25 @@ export default function AdminPanel() {
           </div>
         </div>
 
-        {/* PRIMARY OPTIONS GRID - UPDATED TO 6 COLS ON LARGE SCREENS */}
+        {/* PRIMARY OPTIONS GRID */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-6 mb-12">
           {adminOptions.map((option, i) => (
-            <Card key={i} className="bg-card border-white/5 rounded-none hover:border-orange-600/50 transition-all group cursor-pointer">
-              <CardHeader className="flex flex-row items-center justify-between pb-4 space-y-0">
-                <CardTitle className="text-[10px] font-black uppercase tracking-[0.3em] text-white group-hover:text-orange-600 transition-colors">
-                  {option.title}
-                </CardTitle>
-                <option.icon className="h-5 w-5 text-orange-600 group-hover:scale-110 transition-transform" />
-              </CardHeader>
-              <CardContent>
-                <div className="h-1 bg-white/5 w-full mb-4 overflow-hidden">
-                  <div className="h-full bg-orange-600 w-0 group-hover:w-full transition-all duration-500" />
-                </div>
-                <p className="text-[8px] text-muted-foreground font-black uppercase tracking-widest">ACCESS MANAGEMENT</p>
-              </CardContent>
-            </Card>
+            <Link key={i} href={option.href}>
+              <Card className="bg-card border-white/5 rounded-none hover:border-orange-600/50 transition-all group cursor-pointer h-full">
+                <CardHeader className="flex flex-row items-center justify-between pb-4 space-y-0">
+                  <CardTitle className="text-[10px] font-black uppercase tracking-[0.3em] text-white group-hover:text-orange-600 transition-colors">
+                    {option.title}
+                  </CardTitle>
+                  <option.icon className="h-5 w-5 text-orange-600 group-hover:scale-110 transition-transform" />
+                </CardHeader>
+                <CardContent>
+                  <div className="h-1 bg-white/5 w-full mb-4 overflow-hidden">
+                    <div className="h-full bg-orange-600 w-0 group-hover:w-full transition-all duration-500" />
+                  </div>
+                  <p className="text-[8px] text-muted-foreground font-black uppercase tracking-widest">ACCESS MANAGEMENT</p>
+                </CardContent>
+              </Card>
+            </Link>
           ))}
         </div>
 

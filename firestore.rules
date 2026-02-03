@@ -1,65 +1,25 @@
+
 rules_version = '2';
 
 /**
  * FIRESTORE SECURITY RULES - SS SMART HAAT
- * 
- * CORE PHILOSOPHY:
- * This ruleset implements a Public Catalog model. The primary goal is to ensure that 
- * product information is globally accessible for browsing, while strictly protecting 
- * the integrity of the catalog by restricting write operations.
- * 
- * DATA STRUCTURE:
- * The data is organized into a flat, top-level collection:
- * - /products/{productId}: Contains details for individual sale items.
- * 
- * KEY SECURITY DECISIONS:
- * 1. Public Read Access: Since 'SS Smart Haat' is a marketplace/catalog, read and list 
- *    operations on the 'products' collection are permitted for all users (including 
- *    unauthenticated guests) to facilitate browsing.
- * 2. Restricted Writes: Modification of the product catalog (create, update, delete) 
- *    is currently locked. Authorization logic for writes requires a verified 
- *    identity/ownership field which is currently absent from the entity definition.
- * 3. Prototyping Flexibility: While access is strictly controlled, these rules do 
- *    not enforce a rigid data schema for non-authorization fields, allowing for 
- *    rapid UI/UX iteration.
- * 
- * DENORMALIZATION FOR AUTHORIZATION:
- * To maintain high performance and low cost, authorization checks avoid cross-document 
- * lookups (get() calls). Security is intended to be enforced via fields directly on 
- * the document (e.g., an 'ownerId' or 'adminId').
  */
 
 service cloud.firestore {
   match /databases/{database}/documents {
 
-    // --- COLLECTION RULES ---
-
+    // Allow public read access to products and categories
     match /products/{productId} {
-      
-      /**
-       * @description Rules for the Product catalog. Allows public viewing but restricts management.
-       * @path /products/{productId}
-       * @allow (get, list) for any user to browse the store catalog.
-       * @deny (create, update, delete) for all users until an administrative or ownership field is added.
-       * @principle Public Read with Owner-Only Writes (Pattern 5 - Partial Implementation).
-       */
-      
-      allow get, list: if true;
-
-      // CRITICAL: Cannot implement owner-only writes. The 'Product' entity is missing 
-      // an 'ownerId', 'authorId', or 'adminId' field in the provided schema.
-      // Without this field, we cannot securely verify who has permission to modify a product.
-      
-      allow create: if false; // TODO: Add owner validation (e.g., request.resource.data.ownerId == request.auth.uid) once schema is updated.
-      
-      allow update, delete: if false; // TODO: Add ownership check (e.g., resource.data.ownerId == request.auth.uid) once schema is updated.
+      allow read: if true;
+      allow write: if false; // Only via Firebase Admin or secure rules in future
     }
 
-    // --- SYSTEM DEFAULTS ---
+    match /categories/{categoryId} {
+      allow read: if true;
+      // For prototyping, allow anyone to create/delete in categories
+      allow create, update, delete: if true;
+    }
 
-    /**
-     * @description Default deny rule for any unexpected paths to ensure a "Closed by Default" posture.
-     */
     match /{path=**} {
       allow read, write: if false;
     }
