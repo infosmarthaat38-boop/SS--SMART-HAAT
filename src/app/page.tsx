@@ -21,13 +21,13 @@ const SlideItem = memo(({ slide, priority }: { slide: any, priority: boolean }) 
         src={slide.image}
         alt="Slider"
         fill
-        sizes="100vw"
+        sizes="(max-width: 1024px) 100vw, 50vw"
         className="object-cover opacity-60"
         priority={priority}
       />
-      <div className="absolute inset-0 bg-gradient-to-r from-black via-black/20 to-transparent flex flex-col justify-center px-12 space-y-3">
+      <div className="absolute inset-0 bg-gradient-to-r from-black via-black/20 to-transparent flex flex-col justify-center px-8 space-y-3">
         <div 
-          className="text-lg md:text-xl font-headline font-black text-white leading-tight uppercase tracking-tighter"
+          className="text-lg md:text-2xl font-headline font-black text-white leading-tight uppercase tracking-tighter"
           dangerouslySetInnerHTML={{ __html: slide.title }}
         />
         <p className="text-white/90 text-[10px] font-black tracking-[0.2em] uppercase">{slide.subtitle}</p>
@@ -39,6 +39,47 @@ const SlideItem = memo(({ slide, priority }: { slide: any, priority: boolean }) 
   </CarouselItem>
 ));
 SlideItem.displayName = 'SlideItem';
+
+// New Offer Product Card Component for the Left side
+const OfferCard = () => {
+  const offerProducts = products.filter(p => p.discountPercentage > 0).slice(0, 2);
+  return (
+    <div className="h-[400px] bg-card border border-white/5 p-4 flex flex-col space-y-4">
+      <div className="flex items-center gap-2 mb-2">
+        <div className="p-1.5 bg-orange-600/10">
+          <Flame className="h-4 w-4 text-orange-600 fill-current" />
+        </div>
+        <h2 className="text-[12px] font-black text-white uppercase tracking-tighter">FLASH OFFERS</h2>
+      </div>
+      <div className="space-y-4 flex-grow overflow-hidden">
+        {offerProducts.map(product => (
+          <Link href={`/products/${product.id}`} key={product.id} className="block group">
+            <div className="relative aspect-square w-full mb-2 border border-white/5 overflow-hidden bg-white/5">
+              <Image 
+                src={product.imageUrl} 
+                alt={product.name} 
+                fill 
+                sizes="200px"
+                className="object-cover group-hover:scale-110 transition-transform duration-500 opacity-80 group-hover:opacity-100"
+              />
+              <div className="absolute top-0 right-0 bg-orange-600 px-1.5 py-0.5">
+                <span className="text-[8px] font-black text-white">-{product.discountPercentage}%</span>
+              </div>
+            </div>
+            <h3 className="text-[9px] font-black text-white uppercase truncate mb-1">{product.name}</h3>
+            <div className="flex items-center justify-between">
+              <span className="text-[12px] font-black text-orange-600">৳{product.price.toLocaleString()}</span>
+              <span className="text-[8px] text-muted-foreground line-through">৳{product.originalPrice.toLocaleString()}</span>
+            </div>
+          </Link>
+        ))}
+      </div>
+      <Button asChild variant="outline" className="w-full h-8 rounded-none border-white/10 text-[9px] font-black hover:bg-orange-600 hover:text-white transition-all uppercase mt-auto">
+        <Link href="/shop">VIEW ALL OFFERS</Link>
+      </Button>
+    </div>
+  );
+};
 
 export default function Home() {
   const plugin = useRef(
@@ -60,16 +101,6 @@ export default function Home() {
       image: "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?q=80&w=1600",
       title: "PREMIUM <span class='text-orange-600'>TECH</span> DEALS",
       subtitle: "LATEST SMARTPHONES & ACCESSORIES"
-    },
-    {
-      image: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?q=80&w=1600",
-      title: "LUXURY <span class='text-orange-600'>TIMEPIECES</span>",
-      subtitle: "TIMELESS ELEGANCE ON YOUR WRIST"
-    },
-    {
-      image: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?q=80&w=1600",
-      title: "URBAN <span class='text-orange-600'>SNEAKER</span> DROP",
-      subtitle: "STEP INTO THE FUTURE OF STYLE"
     }
   ];
 
@@ -78,9 +109,16 @@ export default function Home() {
       <Navbar />
       
       <main className="flex-grow container mx-auto px-4 py-4 space-y-8">
-        {/* BANNER SECTION - 400PX HEIGHT */}
+        {/* HERO GRID SECTION - 3 COLUMNS ON LG */}
         <section className="grid grid-cols-1 lg:grid-cols-12 gap-4">
-          <div className="lg:col-span-9 relative rounded-none overflow-hidden h-[400px] border border-white/5 bg-card">
+          
+          {/* LEFT: FLASH OFFERS (3 Cols) */}
+          <div className="hidden lg:block lg:col-span-3">
+            <OfferCard />
+          </div>
+
+          {/* MIDDLE: CAROUSEL (6 Cols) */}
+          <div className="lg:col-span-6 relative rounded-none overflow-hidden h-[400px] border border-white/5 bg-card">
             <Carousel 
               className="w-full h-full" 
               opts={{ loop: true }}
@@ -96,44 +134,44 @@ export default function Home() {
             </Carousel>
           </div>
           
-          {/* DOWNLOAD APP CARD - UNIQUE STYLE */}
+          {/* RIGHT: DOWNLOAD APP CARD (3 Cols) */}
           <div className="hidden lg:flex lg:col-span-3 flex-col gap-4">
-            <div className="relative bg-gradient-to-br from-[#ff5f00] via-[#ff4b2b] to-[#ff0080] p-6 pt-10 rounded-2xl overflow-hidden shadow-2xl border border-white/10 h-[280px] flex flex-col">
+            <div className="relative bg-gradient-to-br from-[#ff5f00] via-[#ff4b2b] to-[#ff0080] p-5 pt-8 rounded-2xl overflow-hidden shadow-2xl border border-white/10 h-[260px] flex flex-col">
               <div className="absolute top-0 left-0 bg-white/20 backdrop-blur-md px-3 py-1.5 rounded-br-2xl flex items-center gap-1 border-b border-r border-white/30">
                 <Star className="h-3 w-3 fill-orange-400 text-orange-400" />
-                <span className="text-[10px] font-black text-white uppercase tracking-tighter">4.8 Rated</span>
+                <span className="text-[9px] font-black text-white uppercase tracking-tighter">4.8 Rated</span>
               </div>
               
-              <div className="text-center mb-6">
-                <h3 className="text-white font-black text-lg tracking-tight uppercase leading-none">Download App</h3>
+              <div className="text-center mb-4">
+                <h3 className="text-white font-black text-base tracking-tight uppercase leading-none">Download App</h3>
               </div>
 
-              <div className="space-y-4 flex-grow flex flex-col justify-center">
-                <div className="flex items-center gap-4 group">
-                  <div className="w-12 h-12 rounded-2xl bg-[#c7f9ee] flex items-center justify-center shadow-lg transition-transform group-hover:scale-105">
-                    <Truck className="h-6 w-6 text-[#00b894]" />
+              <div className="space-y-3 flex-grow flex flex-col justify-center">
+                <div className="flex items-center gap-3 group">
+                  <div className="w-10 h-10 rounded-2xl bg-[#c7f9ee] flex items-center justify-center shadow-lg transition-transform group-hover:scale-105">
+                    <Truck className="h-5 w-5 text-[#00b894]" />
                   </div>
                   <div className="flex flex-col">
-                    <span className="text-white font-black text-[10px] leading-none uppercase opacity-80">Free</span>
-                    <span className="text-white font-black text-[14px] leading-tight uppercase">Delivery</span>
+                    <span className="text-white font-black text-[9px] leading-none uppercase opacity-80">Free</span>
+                    <span className="text-white font-black text-[12px] leading-tight uppercase">Delivery</span>
                   </div>
                 </div>
 
-                <div className="flex items-center gap-4 group">
-                  <div className="w-12 h-12 rounded-2xl bg-[#ffe0e6] flex items-center justify-center shadow-lg transition-transform group-hover:scale-105">
-                    <Tag className="h-6 w-6 text-[#ff4d6d]" />
+                <div className="flex items-center gap-3 group">
+                  <div className="w-10 h-10 rounded-2xl bg-[#ffe0e6] flex items-center justify-center shadow-lg transition-transform group-hover:scale-105">
+                    <Tag className="h-5 w-5 text-[#ff4d6d]" />
                   </div>
                   <div className="flex flex-col">
-                    <span className="text-white font-black text-[10px] leading-none uppercase opacity-80">Limited</span>
-                    <span className="text-white font-black text-[14px] leading-tight uppercase">Time</span>
+                    <span className="text-white font-black text-[9px] leading-none uppercase opacity-80">Limited</span>
+                    <span className="text-white font-black text-[12px] leading-tight uppercase">Time</span>
                   </div>
                 </div>
               </div>
             </div>
 
             {/* Bottom QR Area */}
-            <div className="flex items-center gap-4 px-2">
-              <div className="bg-white p-2 w-24 h-24 shrink-0 rounded-xl shadow-xl border border-white/5 flex items-center justify-center">
+            <div className="flex items-center gap-3 px-1">
+              <div className="bg-white p-1.5 w-20 h-20 shrink-0 rounded-xl shadow-xl border border-white/5 flex items-center justify-center">
                 <svg viewBox="0 0 100 100" className="w-full h-full text-black">
                   <path fill="currentColor" d="M0 0h35v35H0V0zm5 5v25h25V5H5zm5 5h15v15H10V10zM65 0h35v35H65V0zm5 5v25h25V5H70zm5 5h15v15H75V10zM0 65h35v35H0V65zm5 5v25h25V70H5zm5 5h15v15H10V75zM45 0h10v10H45V0zm0 25h10v10H45V25zm20 45h10v10H65V70zm20 0h10v10H85V70zm-20 20h10v10H65V90zm0-45h10v10H65V45zm20 0h10v10H85V45zm-40 25h10v10H45V70zm0 20h10v10H45V90zm20-65h10v10H65V25zm-20 20h10v10H45V45zM0 45h10v10H0V45zm25 0h10v10H25V45z" />
                   <rect x="42" y="42" width="16" height="16" fill="white" />
@@ -142,22 +180,22 @@ export default function Home() {
                 </svg>
               </div>
               <div className="flex flex-col gap-2 flex-grow">
-                <div className="bg-white border border-white/10 h-10 px-4 flex items-center gap-3 rounded-xl cursor-pointer hover:bg-gray-100 transition-all shadow-md group">
-                  <Apple className="h-4 w-4 text-black" />
-                  <span className="text-[10px] text-black font-black uppercase tracking-tight">App Store</span>
+                <div className="bg-white border border-white/10 h-9 px-3 flex items-center gap-2 rounded-xl cursor-pointer hover:bg-gray-100 transition-all shadow-md group">
+                  <Apple className="h-3.5 w-3.5 text-black" />
+                  <span className="text-[9px] text-black font-black uppercase tracking-tight">App Store</span>
                 </div>
-                <div className="bg-white border border-white/10 h-10 px-4 flex items-center gap-3 rounded-xl cursor-pointer hover:bg-gray-100 transition-all shadow-md group">
-                  <Play className="h-4 w-4 text-black fill-black" />
-                  <span className="text-[10px] text-black font-black uppercase tracking-tight">Google Play</span>
+                <div className="bg-white border border-white/10 h-9 px-3 flex items-center gap-2 rounded-xl cursor-pointer hover:bg-gray-100 transition-all shadow-md group">
+                  <Play className="h-3.5 w-3.5 text-black fill-black" />
+                  <span className="text-[9px] text-black font-black uppercase tracking-tight">Google Play</span>
                 </div>
               </div>
             </div>
             
-            <p className="text-[12px] font-black text-orange-600 uppercase tracking-[0.1em] px-2 leading-none mt-1">Download the App Now!</p>
+            <p className="text-[10px] font-black text-orange-600 uppercase tracking-[0.1em] px-1 leading-none mt-1">Download the App Now!</p>
           </div>
         </section>
 
-        {/* TOP PRODUCT SECTION - Optimized Grid */}
+        {/* TOP PRODUCT SECTION */}
         <section className="bg-card/30 rounded-none p-6 border border-white/5">
           <div className="flex items-center justify-between mb-8">
             <h2 className="text-xl font-black flex items-center gap-3 uppercase tracking-tighter text-white">
