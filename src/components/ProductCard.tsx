@@ -4,8 +4,8 @@
 import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { ShoppingCart, Eye } from 'lucide-react';
-import { Card, CardContent, CardFooter } from '@/components/ui/card';
+import { ShoppingCart, Eye, Plus } from 'lucide-react';
+import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { type Product } from '@/lib/products';
 
@@ -15,31 +15,45 @@ interface ProductCardProps {
 
 export function ProductCard({ product }: ProductCardProps) {
   return (
-    <Card className="group overflow-hidden border-none shadow-none bg-transparent">
-      <div className="relative aspect-square overflow-hidden rounded-xl bg-muted">
+    <Card className="group overflow-hidden border-none shadow-none bg-transparent rounded-none transition-all duration-500">
+      <div className="relative aspect-[3/4] overflow-hidden bg-card">
         <Image
           src={product.imageUrl}
           alt={product.name}
           fill
-          className="object-cover transition-transform duration-500 group-hover:scale-110"
+          className="object-cover transition-transform duration-700 group-hover:scale-105"
         />
-        <div className="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
-          <Link href={`/products/${product.id}`}>
-            <Button size="icon" variant="secondary" className="rounded-full shadow-lg">
-              <Eye className="h-4 w-4" />
+        
+        {/* Hover Overlay */}
+        <div className="absolute inset-0 bg-background/40 backdrop-blur-[2px] opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col items-center justify-end p-8 gap-4">
+          <Link href={`/products/${product.id}`} className="w-full">
+            <Button variant="outline" className="w-full rounded-none border-white text-white hover:bg-white hover:text-background uppercase tracking-widest font-bold">
+              View Details
             </Button>
           </Link>
-          <Button size="icon" className="rounded-full shadow-lg">
-            <ShoppingCart className="h-4 w-4" />
+          <Button className="w-full rounded-none bg-primary text-background hover:bg-primary/90 uppercase tracking-widest font-bold">
+            <Plus className="h-4 w-4 mr-2" /> Add To Bag
           </Button>
         </div>
+        
+        {/* Luxury Badge */}
+        <div className="absolute top-4 left-4">
+          <div className="px-2 py-1 bg-primary text-[10px] font-bold text-background uppercase tracking-widest">
+            Limited
+          </div>
+        </div>
       </div>
-      <CardContent className="pt-4 px-0">
-        <p className="text-xs text-muted-foreground uppercase tracking-widest mb-1">{product.category}</p>
-        <Link href={`/products/${product.id}`}>
-          <h3 className="font-medium text-lg group-hover:text-primary transition-colors">{product.name}</h3>
-        </Link>
-        <p className="text-primary font-bold mt-1">${product.price.toFixed(2)}</p>
+      
+      <CardContent className="pt-6 px-0 space-y-2">
+        <div className="flex justify-between items-start">
+          <div className="space-y-1">
+            <p className="text-[10px] text-primary uppercase tracking-[0.3em] font-bold">{product.category}</p>
+            <Link href={`/products/${product.id}`}>
+              <h3 className="font-headline text-2xl tracking-tight leading-none group-hover:text-primary transition-colors">{product.name}</h3>
+            </Link>
+          </div>
+          <p className="font-bold text-lg">${product.price.toFixed(2)}</p>
+        </div>
       </CardContent>
     </Card>
   );
