@@ -4,7 +4,7 @@
 import React from 'react';
 import Image from 'next/image';
 import { useParams, useRouter } from 'next/navigation';
-import { ArrowLeft, ShoppingCart, Heart, Share2, Star, Truck, ShieldCheck } from 'lucide-react';
+import { ArrowLeft, ShoppingCart, Heart, Share2, Truck, ShieldCheck } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Navbar } from '@/components/Navbar';
 import { Footer } from '@/components/Footer';
@@ -63,12 +63,7 @@ export default function ProductDetails() {
               <div className="space-y-4">
                 <Badge variant="secondary" className="rounded-none uppercase tracking-widest text-[10px] bg-orange-600/10 text-orange-600 border-none">{product.category}</Badge>
                 <h1 className="text-4xl md:text-5xl font-black font-headline text-white leading-tight uppercase">{product.name}</h1>
-                <div className="flex items-center gap-4">
-                  <div className="flex text-orange-600">
-                    {[1, 2, 3, 4, 5].map((s) => <Star key={s} className="h-4 w-4 fill-current" />)}
-                  </div>
-                  <span className="text-[10px] text-muted-foreground font-black uppercase">(24 REVIEWS)</span>
-                </div>
+                {/* RATING REMOVED PER USER REQUEST */}
                 <div className="flex items-center gap-4">
                   <p className="text-3xl font-black text-orange-600 uppercase">৳{product.price.toFixed(2)}</p>
                   <p className="text-lg text-muted-foreground line-through font-bold">৳{product.originalPrice.toFixed(2)}</p>

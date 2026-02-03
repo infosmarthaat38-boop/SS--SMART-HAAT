@@ -44,6 +44,7 @@ export function Navbar() {
               <li><Link href="/" className="hover:text-black transition-colors">HOME</Link></li>
               <li><Link href="/shop" className="hover:text-black transition-colors">SHOP</Link></li>
               <li><Link href="/categories" className="hover:text-black transition-colors">CATEGORY</Link></li>
+              <li><Link href="/admin" className="hover:text-black transition-colors">ADMIN</Link></li>
             </ul>
 
             <div className="flex items-center gap-2">

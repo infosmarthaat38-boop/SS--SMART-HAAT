@@ -4,7 +4,7 @@
 import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { Star, ShoppingCart } from 'lucide-react';
+import { ShoppingCart } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { type Product } from '@/lib/products';
@@ -32,12 +32,7 @@ export function ProductCard({ product }: ProductCardProps) {
               {product.name}
             </h3>
           </Link>
-          <div className="flex items-center gap-1.5">
-            <div className="flex text-orange-600">
-              <Star className="h-3 w-3 fill-current" />
-            </div>
-            <span className="text-[8px] text-muted-foreground font-bold uppercase">(4.9 RATING)</span>
-          </div>
+          {/* RATING REMOVED PER USER REQUEST */}
         </div>
         
         <div className="pt-3 border-t border-white/5 space-y-3 mt-auto">
