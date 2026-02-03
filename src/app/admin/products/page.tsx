@@ -1,14 +1,14 @@
 
 "use client";
 
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useMemo } from 'react';
 import { Navbar } from '@/components/Navbar';
 import { Footer } from '@/components/Footer';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Plus, Trash2, ArrowLeft, Package, Upload, X, Loader2, Edit2, Save, CheckCircle2, AlertTriangle, Layers } from 'lucide-react';
+import { Plus, Trash2, ArrowLeft, Package, Upload, X, Loader2, Edit2, Save, CheckCircle2, AlertTriangle, Layers, Ruler } from 'lucide-react';
 import Link from 'next/link';
 import { useFirestore, useCollection, useMemoFirebase } from '@/firebase';
 import { collection, doc, query, orderBy } from 'firebase/firestore';
@@ -29,6 +29,11 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 
+interface SizeEntry {
+  size: string;
+  quantity: number;
+}
+
 export default function AdminProducts() {
   const db = useFirestore();
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -38,11 +43,13 @@ export default function AdminProducts() {
   const [originalPrice, setOriginalPrice] = useState('');
   const [discountPercentage, setDiscountPercentage] = useState('0');
   const [category, setCategory] = useState('');
-  const [sizes, setSizes] = useState('');
   const [stockQuantity, setStockQuantity] = useState('');
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [showInSlider, setShowInSlider] = useState(false);
   const [showInFlashOffer, setShowInFlashOffer] = useState(false);
+  
+  // Advanced Size Management
+  const [sizeEntries, setSizeEntries] = useState<SizeEntry[]>([]);
   
   const [isAlertOpen, setIsAlertOpen] = useState(false);
   const [deleteId, setDeleteId] = useState<string | null>(null);
@@ -55,6 +62,15 @@ export default function AdminProducts() {
   const { data: products, isLoading: productsLoading } = useCollection(productsRef);
   const { data: categories } = useCollection(categoriesRef);
 
+  // Auto-calculate total stock if sizes are present
+  useEffect(() => {
+    if (sizeEntries.length > 0) {
+      const total = sizeEntries.reduce((acc, curr) => acc + (curr.quantity || 0), 0);
+      setStockQuantity(total.toString());
+    }
+  }, [sizeEntries]);
+
+  // Auto-calculate discount
   useEffect(() => {
     if (editingId) return;
     const p = parseFloat(price);
@@ -82,6 +98,25 @@ export default function AdminProducts() {
     }
   };
 
+  const addSizeEntry = () => {
+    setSizeEntries([...sizeEntries, { size: '', quantity: 0 }]);
+  };
+
+  const removeSizeEntry = (index: number) => {
+    const newEntries = sizeEntries.filter((_, i) => i !== index);
+    setSizeEntries(newEntries);
+  };
+
+  const updateSizeEntry = (index: number, field: keyof SizeEntry, value: string | number) => {
+    const newEntries = [...sizeEntries];
+    if (field === 'quantity') {
+      newEntries[index][field] = parseInt(value.toString()) || 0;
+    } else {
+      newEntries[index][field] = value.toString().toUpperCase();
+    }
+    setSizeEntries(newEntries);
+  };
+
   const handleSaveProduct = (e: React.FormEvent) => {
     e.preventDefault();
     if (!name || !price || !imagePreview || !category || !stockQuantity) {
@@ -96,7 +131,10 @@ export default function AdminProducts() {
       originalPrice: parseFloat(originalPrice) || parseFloat(price),
       discountPercentage: parseInt(discountPercentage) || 0,
       category: category.toUpperCase(),
-      sizes: sizes.split(',').map(s => s.trim()).filter(s => s !== ''),
+      // Store sizes as formatted strings for the frontend
+      sizes: sizeEntries.length > 0 ? sizeEntries.map(s => s.size) : [],
+      // Keep a structured version for inventory tracking if needed
+      sizeInventory: sizeEntries,
       stockQuantity: parseInt(stockQuantity),
       imageUrl: imagePreview,
       showInSlider,
@@ -124,8 +162,8 @@ export default function AdminProducts() {
     setOriginalPrice('');
     setDiscountPercentage('0');
     setCategory('');
-    setSizes('');
     setStockQuantity('');
+    setSizeEntries([]);
     setImagePreview(null);
     setShowInSlider(false);
     setShowInFlashOffer(false);
@@ -140,7 +178,7 @@ export default function AdminProducts() {
     setOriginalPrice(product.originalPrice?.toString() || product.price.toString());
     setDiscountPercentage(product.discountPercentage?.toString() || '0');
     setCategory(product.category);
-    setSizes(product.sizes?.join(', ') || '');
+    setSizeEntries(product.sizeInventory || []);
     setStockQuantity(product.stockQuantity?.toString() || '');
     setImagePreview(product.imageUrl);
     setShowInSlider(!!product.showInSlider);
@@ -177,7 +215,7 @@ export default function AdminProducts() {
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* PRODUCT FORM */}
-          <Card className="bg-card border-white/5 rounded-none lg:col-span-1 h-fit sticky top-24">
+          <Card className="bg-card border-white/5 rounded-none lg:col-span-1 h-fit sticky top-24 max-h-[85vh] overflow-y-auto">
             <CardHeader>
               <CardTitle className="text-xs font-black uppercase tracking-[0.3em] text-orange-600">
                 {editingId ? 'UPDATE PRODUCT DETAILS' : 'ADD NEW PRODUCT'}
@@ -230,28 +268,65 @@ export default function AdminProducts() {
                   </div>
                 </div>
 
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <label className="text-[10px] font-black text-muted-foreground uppercase">Sizes (Separate with Comma)</label>
-                    <Input 
-                      value={sizes} 
-                      onChange={(e) => setSizes(e.target.value)} 
-                      placeholder="E.G. S, M, L, XL" 
-                      className="bg-black/50 border-white/10 rounded-none text-xs uppercase" 
-                    />
-                    <p className="text-[8px] text-muted-foreground uppercase">Separate each size with a comma (e.g. S, M, L)</p>
+                <div className="space-y-4 pt-4 border-t border-white/5">
+                  <div className="flex items-center justify-between mb-2">
+                    <label className="text-[10px] font-black text-orange-600 uppercase flex items-center gap-2">
+                      <Ruler className="h-3 w-3" /> SIZE SPECIFIC INVENTORY
+                    </label>
+                    <Button type="button" onClick={addSizeEntry} variant="outline" className="h-8 rounded-none border-orange-600/30 text-orange-600 hover:bg-orange-600 hover:text-white text-[9px] font-black uppercase">
+                      ADD SIZE
+                    </Button>
                   </div>
-                  <div className="space-y-2">
-                    <label className="text-[10px] font-black text-muted-foreground uppercase">Stock Quantity *</label>
-                    <Input 
-                      type="number" 
-                      value={stockQuantity} 
-                      onChange={(e) => setStockQuantity(e.target.value)} 
-                      placeholder="0" 
-                      className="bg-black/50 border-white/10 rounded-none text-xs"
-                      required
-                    />
-                  </div>
+
+                  {sizeEntries.map((entry, index) => (
+                    <div key={index} className="flex gap-2 items-end group">
+                      <div className="flex-1 space-y-1">
+                         <label className="text-[8px] font-black text-muted-foreground uppercase">SIZE</label>
+                         <Input 
+                            value={entry.size} 
+                            onChange={(e) => updateSizeEntry(index, 'size', e.target.value)}
+                            placeholder="XL"
+                            className="bg-black/50 border-white/10 rounded-none h-10 text-[10px]"
+                         />
+                      </div>
+                      <div className="w-24 space-y-1">
+                         <label className="text-[8px] font-black text-muted-foreground uppercase">QTY</label>
+                         <Input 
+                            type="number"
+                            value={entry.quantity} 
+                            onChange={(e) => updateSizeEntry(index, 'quantity', e.target.value)}
+                            placeholder="1"
+                            className="bg-black/50 border-white/10 rounded-none h-10 text-[10px]"
+                         />
+                      </div>
+                      <Button type="button" onClick={() => removeSizeEntry(index)} variant="ghost" size="icon" className="h-10 w-10 text-muted-foreground hover:text-red-500">
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  ))}
+
+                  {sizeEntries.length === 0 && (
+                    <div className="space-y-2">
+                      <label className="text-[10px] font-black text-muted-foreground uppercase">Total Stock Quantity *</label>
+                      <Input 
+                        type="number" 
+                        value={stockQuantity} 
+                        onChange={(e) => setStockQuantity(e.target.value)} 
+                        placeholder="E.G. 100" 
+                        className="bg-black/50 border-white/10 rounded-none text-xs"
+                        required
+                      />
+                      <p className="text-[8px] text-muted-foreground italic uppercase">USE THIS IF PRODUCT HAS NO SPECIFIC SIZES.</p>
+                    </div>
+                  )}
+
+                  {sizeEntries.length > 0 && (
+                    <div className="p-3 bg-orange-600/5 border border-orange-600/10">
+                      <p className="text-[9px] font-black text-orange-600 uppercase tracking-widest">
+                        TOTAL CALCULATED STOCK: {stockQuantity} PCS
+                      </p>
+                    </div>
+                  )}
                 </div>
 
                 <div className="space-y-2">
@@ -346,8 +421,15 @@ export default function AdminProducts() {
                           <h3 className="text-sm font-black text-white uppercase truncate mt-1">{p.name}</h3>
                           <div className="flex items-center gap-3">
                             <span className="text-[12px] font-black text-white">৳{p.price}</span>
-                            <span className="text-[9px] font-black text-muted-foreground uppercase">STOCK: {p.stockQuantity}</span>
+                            <span className="text-[9px] font-black text-muted-foreground uppercase">TOTAL: {p.stockQuantity}</span>
                           </div>
+                          {p.sizeInventory && p.sizeInventory.length > 0 && (
+                            <div className="flex flex-wrap gap-1 mt-1">
+                              {p.sizeInventory.map((si: any, i: number) => (
+                                <span key={i} className="text-[7px] font-bold bg-white/10 px-1 text-white/70">{si.size}: {si.quantity}</span>
+                              ))}
+                            </div>
+                          )}
                         </div>
                         <div className="flex justify-end gap-2 mt-2">
                           <Button onClick={() => handleEdit(p)} variant="ghost" className="h-8 w-8 p-0 text-muted-foreground hover:text-orange-600"><Edit2 className="h-4 w-4" /></Button>
