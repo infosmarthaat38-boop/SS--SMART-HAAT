@@ -14,7 +14,7 @@ interface ProductCardProps {
 }
 
 /**
- * ProductCard Component - Reconstructed to match user screenshot exactly.
+ * ProductCard Component - Optimized for specific image size and pricing layout.
  */
 export const ProductCard = memo(({ product }: ProductCardProps) => {
   const [isOrderOpen, setIsOrderOpen] = useState(false);
@@ -24,19 +24,24 @@ export const ProductCard = memo(({ product }: ProductCardProps) => {
     <>
       <Card className={`group overflow-hidden bg-black border-none transition-all duration-300 rounded-none flex flex-col h-full relative ${isOutOfStock ? 'opacity-70' : ''}`}>
         
-        {/* IMAGE CONTAINER - Dark background, contain to prevent cropping */}
-        <Link href={`/products/${product.id}`} className="block relative aspect-square overflow-hidden bg-[#050505] p-2">
+        {/* IMAGE CONTAINER - Aspect Square with Padding to prevent edge-to-edge cropping */}
+        <Link href={`/products/${product.id}`} className="block relative aspect-square overflow-hidden bg-white">
           <Image
             src={product.imageUrl}
             alt={product.name}
             fill
             sizes="(max-width: 768px) 50vw, (max-width: 1024px) 25vw, 16vw"
             loading="lazy"
-            className="object-contain transition-transform duration-1000 group-hover:scale-105"
+            className="object-contain p-4 transition-transform duration-1000 group-hover:scale-105"
           />
+          {isOutOfStock && (
+            <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
+              <span className="bg-black text-white text-[8px] font-black px-2 py-1 uppercase tracking-widest border border-white/20">SOLD OUT</span>
+            </div>
+          )}
         </Link>
         
-        {/* CONTENT AREA - Precise stack matching the screenshot */}
+        {/* CONTENT AREA */}
         <CardContent className="p-3 md:p-4 flex flex-col flex-grow space-y-2 bg-black">
           {/* TITLE - Small, Bold, All Caps */}
           <Link href={`/products/${product.id}`} className="block">
@@ -45,10 +50,10 @@ export const ProductCard = memo(({ product }: ProductCardProps) => {
             </h3>
           </Link>
           
-          {/* PRICE ROW: Main Price on Left, Discount Box on Right */}
+          {/* PRICE ROW: Main Price and Discount Box */}
           <div className="flex items-center justify-between">
             <span className="font-black text-xl md:text-2xl text-orange-600 tracking-tighter leading-none flex items-baseline">
-              {/* TINY SYMBOL - LIGHT WEIGHT */}
+              {/* TINY SYMBOL - LIGHT WEIGHT / NORMAL */}
               <span className="text-[9px] md:text-[10px] font-normal mr-0.5">৳</span>
               {product.price.toLocaleString()}
             </span>
@@ -62,25 +67,25 @@ export const ProductCard = memo(({ product }: ProductCardProps) => {
             )}
           </div>
 
-          {/* ORIGINAL PRICE - Below Main Price, Strikethrough, Larger than before but muted */}
+          {/* ORIGINAL PRICE - Larger and Strikethrough as requested */}
           {product.originalPrice > product.price && (
             <div className="flex items-baseline">
-              <span className="text-white/40 line-through text-[12px] md:text-[14px] font-bold flex items-baseline">
-                <span className="text-[8px] md:text-[9px] font-normal mr-0.5">৳</span>
+              <span className="text-white/40 line-through text-[14px] font-bold flex items-baseline">
+                <span className="text-[9px] font-normal mr-0.5">৳</span>
                 {product.originalPrice.toLocaleString()}
               </span>
             </div>
           )}
 
-          {/* STOCK STATUS - Green Dot + Text */}
+          {/* STOCK STATUS */}
           <div className="flex items-center gap-2 py-1">
             <div className={`h-2 w-2 rounded-full ${isOutOfStock ? 'bg-red-600' : 'bg-green-600'} animate-pulse`} />
             <span className={`text-[8px] md:text-[9px] font-black uppercase tracking-widest ${isOutOfStock ? 'text-red-600' : 'text-green-600'}`}>
-              {isOutOfStock ? 'SOLD OUT' : 'AVAILABLE IN STOCK'}
+              {isOutOfStock ? 'OUT OF STOCK' : 'AVAILABLE IN STOCK'}
             </span>
           </div>
           
-          {/* ACTION BUTTON - Full Width */}
+          {/* ACTION BUTTON */}
           <div className="mt-auto pt-1">
             <Button 
               disabled={isOutOfStock}
