@@ -5,9 +5,15 @@ import React from 'react';
 import { Navbar } from '@/components/Navbar';
 import { Footer } from '@/components/Footer';
 import { ProductCard } from '@/components/ProductCard';
-import { products } from '@/lib/products';
+import { useFirestore, useCollection, useMemoFirebase } from '@/firebase';
+import { collection } from 'firebase/firestore';
+import { Loader2 } from 'lucide-react';
 
 export default function ShopPage() {
+  const db = useFirestore();
+  const productsRef = useMemoFirebase(() => collection(db, 'products'), [db]);
+  const { data: products, isLoading } = useCollection(productsRef);
+
   return (
     <div className="min-h-screen flex flex-col bg-background">
       <Navbar />
@@ -18,15 +24,17 @@ export default function ShopPage() {
           <h1 className="text-3xl font-black uppercase tracking-tighter text-white">ALL PRODUCTS</h1>
         </div>
 
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-6">
-          {products.map((product) => (
-            <ProductCard key={product.id} product={product} />
-          ))}
-          {/* Using unique keys for duplicated items for React efficiency */}
-          {products.map((product) => (
-            <ProductCard key={`${product.id}-copy`} product={product} />
-          ))}
-        </div>
+        {isLoading ? (
+          <div className="flex items-center justify-center py-40">
+            <Loader2 className="h-10 w-10 text-orange-600 animate-spin" />
+          </div>
+        ) : (
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-6">
+            {products?.map((product) => (
+              <ProductCard key={product.id} product={product} />
+            ))}
+          </div>
+        )}
       </main>
       
       <Footer />
