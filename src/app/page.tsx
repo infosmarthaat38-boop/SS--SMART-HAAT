@@ -4,7 +4,7 @@
 import React, { useRef, memo } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { ArrowRight, Flame, Star, Apple, Play, Truck, Tag } from 'lucide-react';
+import { ArrowRight, Star, Apple, Play, Truck, Tag, Flame } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Navbar } from '@/components/Navbar';
 import { Footer } from '@/components/Footer';
@@ -40,43 +40,22 @@ const SlideItem = memo(({ slide, priority }: { slide: any, priority: boolean }) 
 ));
 SlideItem.displayName = 'SlideItem';
 
-// Flash Offer Card Component - Removed borders as requested
+// Updated OfferCard - Just a single large image highlight as requested
 const OfferCard = () => {
-  const offerProducts = products.filter(p => p.discountPercentage > 0).slice(0, 2);
+  const offerProduct = products.find(p => p.discountPercentage > 0) || products[0];
   return (
-    <div className="h-[400px] bg-card p-4 flex flex-col">
-      <div className="flex items-center gap-2 mb-4 shrink-0">
-        <div className="p-1.5 bg-orange-600/10">
-          <Flame className="h-4 w-4 text-orange-600 fill-current" />
-        </div>
-        <h2 className="text-[12px] font-black text-white uppercase tracking-tighter">FLASH OFFERS</h2>
-      </div>
-      <div className="flex-grow space-y-4 overflow-hidden">
-        {offerProducts.map(product => (
-          <Link href={`/products/${product.id}`} key={product.id} className="block group">
-            <div className="relative aspect-[16/9] w-full mb-2 border border-white/5 overflow-hidden bg-white/5">
-              <Image 
-                src={product.imageUrl} 
-                alt={product.name} 
-                fill 
-                sizes="200px"
-                className="object-cover group-hover:scale-110 transition-transform duration-500 opacity-80 group-hover:opacity-100"
-              />
-              <div className="absolute top-0 right-0 bg-orange-600 px-1.5 py-0.5">
-                <span className="text-[8px] font-black text-white">-{product.discountPercentage}%</span>
-              </div>
-            </div>
-            <h3 className="text-[9px] font-black text-white uppercase truncate mb-1">{product.name}</h3>
-            <div className="flex items-center justify-between">
-              <span className="text-[12px] font-black text-orange-600">৳{product.price.toLocaleString()}</span>
-              <span className="text-[8px] text-muted-foreground line-through">৳{product.originalPrice.toLocaleString()}</span>
-            </div>
-          </Link>
-        ))}
-      </div>
-      <Button asChild variant="outline" className="w-full h-8 rounded-none border-white/10 text-[9px] font-black hover:bg-orange-600 hover:text-white transition-all uppercase mt-4 shrink-0">
-        <Link href="/shop">VIEW ALL OFFERS</Link>
-      </Button>
+    <div className="h-[400px] bg-card overflow-hidden relative">
+      <Link href="/shop" className="block h-full w-full group">
+        <Image 
+          src={offerProduct.imageUrl} 
+          alt="Offer Highlight" 
+          fill 
+          sizes="400px"
+          className="object-cover group-hover:scale-110 transition-transform duration-1000 opacity-90 group-hover:opacity-100"
+        />
+        {/* Subtle overlay for depth */}
+        <div className="absolute inset-0 bg-black/10 group-hover:bg-transparent transition-colors duration-500" />
+      </Link>
     </div>
   );
 };
@@ -109,10 +88,10 @@ export default function Home() {
       <Navbar />
       
       <main className="flex-grow container mx-auto px-4 py-4 space-y-8">
-        {/* HERO GRID SECTION - Removed borders from columns */}
+        {/* HERO GRID SECTION - Clean layout without extra bars */}
         <section className="grid grid-cols-1 lg:grid-cols-12 gap-4">
           
-          {/* LEFT: FLASH OFFERS */}
+          {/* LEFT: IMAGE HIGHLIGHT */}
           <div className="hidden lg:block lg:col-span-3">
             <OfferCard />
           </div>
@@ -169,7 +148,6 @@ export default function Home() {
               </div>
             </div>
 
-            {/* Bottom QR Area - Removed outer border */}
             <div className="shrink-0 flex items-center gap-3 px-1 mt-auto">
               <div className="bg-white p-1.5 w-20 h-20 shrink-0 rounded-xl shadow-xl border border-white/5 flex items-center justify-center">
                 <svg viewBox="0 0 100 100" className="w-full h-full text-black">
@@ -208,6 +186,7 @@ export default function Home() {
             ))}
           </div>
           
+          {/* MORE PRODUCT BUTTON */}
           <div className="flex justify-center mt-12">
             <Button asChild className="bg-orange-600 hover:bg-orange-700 text-white font-black text-[12px] uppercase h-12 px-10 rounded-none shadow-xl transition-all hover:scale-105 active:scale-95">
               <Link href="/shop">
