@@ -68,15 +68,15 @@ export default function ProductDetails() {
           </Button>
           
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
-            {/* PRODUCT IMAGE - SQUARE FIDELITY */}
-            <div className="relative aspect-square rounded-none overflow-hidden bg-white border border-white/5 shadow-2xl group">
+            {/* PRODUCT IMAGE - 4:5 FIDELITY */}
+            <div className="relative aspect-[4/5] rounded-none overflow-hidden bg-white border border-white/5 shadow-2xl group">
               <Image 
                 src={product.imageUrl} 
                 alt={product.name} 
                 fill 
                 sizes="(max-width: 1024px) 100vw, 50vw" 
                 priority 
-                className="object-contain transition-transform duration-[2000ms] group-hover:scale-105 p-4" 
+                className="object-contain transition-transform duration-[2000ms] group-hover:scale-105" 
               />
               {isOutOfStock && (
                 <div className="absolute inset-0 bg-black/70 backdrop-blur-md flex items-center justify-center z-10">
@@ -93,7 +93,7 @@ export default function ProductDetails() {
                 <h1 className="text-5xl md:text-7xl font-black font-headline text-white leading-none uppercase tracking-tighter">{product.name}</h1>
                 <div className="flex items-center gap-6">
                   <div className="text-4xl font-black text-[#01a3a4] uppercase tracking-tighter flex items-baseline">
-                    <span className="text-[0.45em] font-normal mr-1 translate-y-[-0.2em]">৳</span>
+                    <span className="text-[0.5em] font-normal mr-1 translate-y-[-0.2em]">৳</span>
                     {product.price.toLocaleString()}
                   </div>
                   {product.originalPrice > product.price && (
