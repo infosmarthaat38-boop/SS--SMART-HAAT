@@ -11,11 +11,11 @@ export function Navbar() {
   return (
     <nav className="sticky top-0 z-50 w-full bg-orange-600 shadow-lg border-b border-black/10">
       <div className="container mx-auto px-4">
-        <div className="flex items-center justify-between h-12 gap-4">
-          {/* LEFT: BRANDING */}
+        <div className="flex items-center justify-between h-10 gap-4">
+          {/* LEFT: BRANDING - AS PER YOUR IMAGE REQUEST */}
           <Link href="/" className="flex items-center gap-2 shrink-0 group">
             <div className="w-8 h-8 bg-black rounded-none flex items-center justify-center shadow-lg transition-transform group-hover:scale-105">
-              <ShoppingBag className="h-5 w-5 text-orange-600" />
+              <ShoppingBag className="h-4 w-4 text-orange-600" />
             </div>
             <div className="flex flex-col">
               <h1 className="text-sm font-headline font-black text-white leading-none uppercase tracking-tighter">
@@ -25,15 +25,15 @@ export function Navbar() {
             </div>
           </Link>
 
-          {/* MIDDLE: SEARCH BAR */}
-          <div className="flex-grow max-w-xl relative group">
+          {/* MIDDLE: SEARCH BAR - NOW IN THE MIDDLE */}
+          <div className="flex-grow max-w-md relative group mx-auto hidden md:block">
             <Input 
               type="search" 
               placeholder="SEARCH PRODUCTS..." 
-              className="w-full bg-black/10 border-white/20 h-8 pl-10 pr-20 focus-visible:ring-black focus-visible:bg-black/20 transition-all rounded-none text-[10px] text-white uppercase placeholder:text-white/70 font-bold"
+              className="w-full bg-black/10 border-white/20 h-7 pl-10 pr-16 focus-visible:ring-black focus-visible:bg-black/20 transition-all rounded-none text-[9px] text-white uppercase placeholder:text-white/70 font-bold"
             />
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-white" />
-            <Button className="absolute right-0 top-0 h-8 rounded-none px-3 bg-black text-white hover:bg-black/90 font-black text-[9px] uppercase border-l border-white/10">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-white" />
+            <Button className="absolute right-0 top-0 h-7 rounded-none px-3 bg-black text-white hover:bg-black/90 font-black text-[8px] uppercase border-l border-white/10">
               SEARCH
             </Button>
           </div>
