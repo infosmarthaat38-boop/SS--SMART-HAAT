@@ -47,12 +47,26 @@ export function OrderModal({ product, isOpen, onClose }: OrderModalProps) {
 
     if (!isOpen) {
       // Reset state when closed
-      setTimeout(() => {
+      const resetTimer = setTimeout(() => {
         setStep('FORM');
         setFormData({ name: '', phone: '', address: '', selectedSize: '' });
       }, 300);
+      return () => clearTimeout(resetTimer);
     }
   }, [product, isOpen]);
+
+  // AUTO-CLOSE TIMER: Closes success modal after 3 seconds
+  useEffect(() => {
+    let autoCloseTimer: NodeJS.Timeout;
+    if (step === 'SUCCESS' && isOpen) {
+      autoCloseTimer = setTimeout(() => {
+        onClose();
+      }, 3000);
+    }
+    return () => {
+      if (autoCloseTimer) clearTimeout(autoCloseTimer);
+    };
+  }, [step, isOpen, onClose]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
