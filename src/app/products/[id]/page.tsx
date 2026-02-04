@@ -68,8 +68,8 @@ export default function ProductDetails() {
           </Button>
           
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
-            {/* PRODUCT IMAGE - MATCHING SAME STYLE */}
-            <div className="relative aspect-square rounded-none overflow-hidden border border-white/5 shadow-2xl group bg-white">
+            {/* PRODUCT IMAGE - FULL COVERAGE, NO BG BOX */}
+            <div className="relative aspect-square rounded-none overflow-hidden border border-white/5 shadow-2xl group bg-black">
               <Image 
                 src={product.imageUrl} 
                 alt={product.name} 
@@ -78,7 +78,7 @@ export default function ProductDetails() {
                 priority 
                 loading="eager"
                 quality={95}
-                className="object-contain p-8 transition-transform duration-[2000ms] group-hover:scale-105" 
+                className="object-cover transition-transform duration-[2000ms] group-hover:scale-105" 
               />
               {isOutOfStock && (
                 <div className="absolute inset-0 bg-black/70 backdrop-blur-md flex items-center justify-center z-10">
@@ -94,7 +94,7 @@ export default function ProductDetails() {
                 </div>
                 <h1 className="text-5xl md:text-7xl font-black font-headline text-white leading-none uppercase tracking-tighter">{product.name}</h1>
                 <div className="flex items-center gap-6">
-                  {/* PRICE ROW - EXACT SYMBOL RATIO */}
+                  {/* PRICE ROW */}
                   <div className="text-4xl md:text-6xl font-black text-[#01a3a4] uppercase tracking-tighter flex items-baseline">
                     <span className="text-[0.45em] font-normal mr-2 translate-y-[-0.1em]">৳</span>
                     {product.price.toLocaleString()}

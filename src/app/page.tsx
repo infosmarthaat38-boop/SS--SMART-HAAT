@@ -124,20 +124,20 @@ const FlashOfferCard = () => {
   const activeItem = combinedItems[currentIndex];
 
   return (
-    <div className="h-full bg-[#f5f5f5] overflow-hidden relative group border border-white/5 w-full">
+    <div className="h-full bg-black overflow-hidden relative group border border-white/5 w-full">
       {activeItem ? (
         <div className="h-full w-full relative flex flex-col items-center justify-center">
           <div className="absolute top-4 left-4 bg-[#01a3a4] px-4 py-1.5 text-[9px] font-black text-white uppercase tracking-widest z-10 shadow-lg">
             FLASH OFFER
           </div>
           
-          <div className="relative w-full h-full p-6">
+          <div className="relative w-full h-full">
             <Image 
               src={activeItem.imageUrl} 
               alt="Flash Offer" 
               fill 
               sizes="400px"
-              className="object-contain p-8 transition-transform duration-[3000ms] group-hover:scale-105"
+              className="object-cover transition-transform duration-[3000ms] group-hover:scale-105"
               key={activeItem.id || activeItem.imageUrl}
               priority={true}
               loading="eager"
@@ -145,13 +145,13 @@ const FlashOfferCard = () => {
             />
           </div>
 
-          <div className="absolute bottom-6 w-full text-center px-4">
-             <p className="text-black font-black text-[11px] uppercase tracking-[0.2em] mb-1 line-clamp-1">{activeItem.name || activeItem.title}</p>
-             <p className="text-black/20 text-[8px] font-black uppercase tracking-[0.4em]">ROLEX EDITION</p>
+          <div className="absolute bottom-0 w-full text-center px-4 py-6 bg-gradient-to-t from-black to-transparent">
+             <p className="text-white font-black text-[11px] uppercase tracking-[0.2em] mb-1 line-clamp-1">{activeItem.name || activeItem.title}</p>
+             <p className="text-[#01a3a4] text-[8px] font-black uppercase tracking-[0.4em]">ROLEX EDITION</p>
           </div>
 
           {activeItem.price !== undefined && (
-            <div className="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 transition-all duration-500 flex items-center justify-center p-6">
+            <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-all duration-500 flex items-center justify-center p-6">
               <Button 
                 onClick={() => setIsOrderOpen(true)}
                 className="bg-[#01a3a4] hover:bg-black text-white font-black text-[10px] uppercase h-12 px-8 rounded-none transition-all shadow-2xl"
@@ -163,7 +163,7 @@ const FlashOfferCard = () => {
           )}
         </div>
       ) : (
-        <div className="absolute inset-0 flex items-center justify-center bg-[#f5f5f5]">
+        <div className="absolute inset-0 flex items-center justify-center bg-black">
           <Loader2 className="h-6 w-6 text-[#01a3a4] animate-spin" />
         </div>
       )}
@@ -210,7 +210,7 @@ export default function Home() {
       <Navbar />
       
       <main className="flex-grow container mx-auto py-0 space-y-12">
-        {/* HERO SECTION - MATCHING REFERENCE IMAGE 3-COLUMN LAYOUT */}
+        {/* HERO SECTION */}
         <section className="grid grid-cols-12 gap-0 h-[420px]">
           {/* LEFT: FLASH BAR */}
           <div className="col-span-3 h-full">
@@ -235,9 +235,9 @@ export default function Home() {
             )}
           </div>
           
-          {/* RIGHT: SIDEBAR BOXES (REFINED TEAL/BLACK STYLE) */}
+          {/* RIGHT: SIDEBAR BOXES */}
           <div className="col-span-3 flex flex-col h-full gap-0">
-            {/* TEAL TOP BOX - SOLID COVERAGE */}
+            {/* TEAL TOP BOX */}
             <div className="relative h-2/3 bg-[#01a3a4] p-8 flex flex-col items-center justify-center space-y-8 shadow-2xl">
               <h3 className="text-white font-black text-3xl tracking-tighter uppercase font-headline">DOWNLOAD APP</h3>
               <div className="w-full space-y-4">
@@ -258,7 +258,7 @@ export default function Home() {
               </div>
             </div>
             
-            {/* BLACK BOTTOM BOX - SEAMLESS TRANSITION */}
+            {/* BLACK BOTTOM BOX */}
             <div className="relative h-1/3 bg-black border-t border-white/5 p-5 flex items-center gap-4">
               <div className="bg-white p-2 w-20 h-20 shrink-0 flex items-center justify-center shadow-lg">
                 <svg viewBox="0 0 100 100" className="w-full h-full text-black">
@@ -311,7 +311,7 @@ export default function Home() {
               Array.from({length: 8}).map((_, i) => <div key={i} className="aspect-square bg-white/5 animate-pulse border border-white/5" />)
             ) : categories?.map((cat) => (
               <Link href={`/shop?category=${cat.name}`} key={cat.id} className="group flex flex-col items-center space-y-3">
-                <div className="relative w-full aspect-square overflow-hidden border border-white/5 group-hover:border-[#01a3a4] transition-all bg-white shadow-xl">
+                <div className="relative w-full aspect-square overflow-hidden border border-white/5 group-hover:border-[#01a3a4] transition-all bg-black shadow-xl">
                   {cat.imageUrl && (
                     <Image 
                       src={cat.imageUrl} 
@@ -319,7 +319,7 @@ export default function Home() {
                       fill 
                       sizes="200px" 
                       quality={75} 
-                      className="object-contain p-2 group-hover:scale-110 transition-transform duration-700 opacity-90 group-hover:opacity-100" 
+                      className="object-cover group-hover:scale-110 transition-transform duration-700 opacity-90 group-hover:opacity-100" 
                     />
                   )}
                 </div>

@@ -22,8 +22,8 @@ export const ProductCard = memo(({ product, index = 0 }: ProductCardProps) => {
     <>
       <Card className="group overflow-hidden bg-black border-none rounded-none flex flex-col h-full relative">
         
-        {/* IMAGE CONTAINER - EXACT MATCH TO USER REFERENCE (WHITE BG, CONTAIN) */}
-        <Link href={`/products/${product.id}`} className="block relative aspect-square overflow-hidden bg-white">
+        {/* IMAGE CONTAINER - FULL COVERAGE, NO BG BOX */}
+        <Link href={`/products/${product.id}`} className="block relative aspect-square overflow-hidden">
           <Image
             src={product.imageUrl}
             alt={product.name}
@@ -32,7 +32,7 @@ export const ProductCard = memo(({ product, index = 0 }: ProductCardProps) => {
             priority={index < 12}
             loading={index < 12 ? "eager" : "lazy"}
             quality={90}
-            className="object-contain p-6 transition-transform duration-700 group-hover:scale-105"
+            className="object-cover transition-transform duration-700 group-hover:scale-105"
           />
           {isOutOfStock && (
             <div className="absolute inset-0 bg-black/60 flex items-center justify-center z-10">
@@ -41,7 +41,7 @@ export const ProductCard = memo(({ product, index = 0 }: ProductCardProps) => {
           )}
         </Link>
         
-        {/* CONTENT AREA - MATCHING REFERENCE IMAGE LAYOUT */}
+        {/* CONTENT AREA */}
         <CardContent className="p-5 flex flex-col flex-grow bg-black space-y-4">
           <Link href={`/products/${product.id}`} className="block">
             <h3 className="font-black text-[15px] leading-tight text-white uppercase tracking-wider font-headline truncate">
