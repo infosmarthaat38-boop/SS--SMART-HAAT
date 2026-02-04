@@ -18,6 +18,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { Badge } from '@/components/ui/badge';
+import { useToast } from '@/hooks/use-toast';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -36,6 +37,7 @@ interface SizeEntry {
 
 export default function AdminProducts() {
   const db = useFirestore();
+  const { toast } = useToast();
   const [editingId, setEditingId] = useState<string | null>(null);
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
@@ -84,7 +86,11 @@ export default function AdminProducts() {
     const file = e.target.files?.[0];
     if (file) {
       if (file.size > 1024 * 1024) {
-        alert("IMAGE IS TOO LARGE. MAX 1MB.");
+        toast({
+          variant: "destructive",
+          title: "IMAGE TOO LARGE",
+          description: "MAXIMUM IMAGE SIZE IS 1MB.",
+        });
         return;
       }
       const reader = new FileReader();
@@ -117,7 +123,11 @@ export default function AdminProducts() {
   const handleSaveProduct = (e: React.FormEvent) => {
     e.preventDefault();
     if (!name || !price || !imagePreview || !category) {
-      alert("PLEASE FILL ALL REQUIRED FIELDS.");
+      toast({
+        variant: "destructive",
+        title: "MISSING INFORMATION",
+        description: "PLEASE FILL ALL REQUIRED FIELDS BEFORE SAVING.",
+      });
       return;
     }
 
@@ -143,11 +153,19 @@ export default function AdminProducts() {
 
     if (editingId) {
       updateDocumentNonBlocking(doc(db, 'products', editingId), productData);
+      toast({
+        title: "RECORD UPDATED",
+        description: "PRODUCT INFORMATION HAS BEEN SUCCESSFULLY SYNCED.",
+      });
       setEditingId(null);
     } else {
       addDocumentNonBlocking(collection(db, 'products'), {
         ...productData,
         createdAt: new Date().toISOString()
+      });
+      toast({
+        title: "PRODUCT REGISTERED",
+        description: "NEW ITEM HAS BEEN ADDED TO THE INVENTORY ARCHIVE.",
       });
     }
     resetForm();
@@ -197,6 +215,11 @@ export default function AdminProducts() {
   const handleFinalDelete = () => {
     if (deleteId) {
       deleteDocumentNonBlocking(doc(db, 'products', deleteId));
+      toast({
+        variant: "destructive",
+        title: "PRODUCT REMOVED",
+        description: "RECORD HAS BEEN PERMANENTLY DELETED FROM ARCHIVE.",
+      });
       setDeleteId(null);
       setIsAlertOpen(false);
     }
@@ -452,17 +475,6 @@ export default function AdminProducts() {
                         </div>
                       </div>
 
-                      {/* Sizes Summary */}
-                      {p.sizeInventory && p.sizeInventory.length > 0 && (
-                        <div className="hidden md:flex flex-wrap gap-1 max-w-[150px] justify-center">
-                          {p.sizeInventory.map((si: any, i: number) => (
-                            <span key={i} className="text-[7px] font-black bg-white/5 px-1.5 py-0.5 text-white/40 border border-white/5 uppercase">
-                              {si.size}:{si.quantity}
-                            </span>
-                          ))}
-                        </div>
-                      )}
-
                       {/* Action Buttons */}
                       <div className="flex gap-2 shrink-0">
                         <Button onClick={() => handleEdit(p)} variant="outline" size="icon" className="h-10 w-10 border-white/10 text-white hover:bg-orange-600 hover:text-white hover:border-orange-600 rounded-none transition-colors">
@@ -514,4 +526,3 @@ export default function AdminProducts() {
     </div>
   );
 }
-

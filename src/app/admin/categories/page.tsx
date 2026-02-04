@@ -13,6 +13,7 @@ import { useFirestore, useCollection, useMemoFirebase } from '@/firebase';
 import { collection, doc } from 'firebase/firestore';
 import { addDocumentNonBlocking, deleteDocumentNonBlocking } from '@/firebase/non-blocking-updates';
 import Image from 'next/image';
+import { useToast } from '@/hooks/use-toast';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -26,6 +27,7 @@ import {
 
 export default function AdminCategories() {
   const db = useFirestore();
+  const { toast } = useToast();
   const [name, setName] = useState('');
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [isAlertOpen, setIsAlertOpen] = useState(false);
@@ -39,7 +41,11 @@ export default function AdminCategories() {
     const file = e.target.files?.[0];
     if (file) {
       if (file.size > 1024 * 1024) {
-        alert("IMAGE TOO LARGE.");
+        toast({
+          variant: "destructive",
+          title: "IMAGE TOO LARGE",
+          description: "MAXIMUM IMAGE SIZE IS 1MB.",
+        });
         return;
       }
       const reader = new FileReader();
@@ -57,6 +63,10 @@ export default function AdminCategories() {
       name: name.toUpperCase(),
       imageUrl: imagePreview
     });
+    toast({
+      title: "CATEGORY ADDED",
+      description: "NEW CATEGORY HAS BEEN SUCCESSFULLY CREATED.",
+    });
     setName('');
     setImagePreview(null);
   };
@@ -69,6 +79,11 @@ export default function AdminCategories() {
   const handleFinalDelete = () => {
     if (deleteId) {
       deleteDocumentNonBlocking(doc(db, 'categories', deleteId));
+      toast({
+        variant: "destructive",
+        title: "CATEGORY DELETED",
+        description: "THE CATEGORY HAS BEEN PERMANENTLY REMOVED.",
+      });
       setDeleteId(null);
       setIsAlertOpen(false);
     }
