@@ -20,6 +20,7 @@ import { Label } from "@/components/ui/label";
 import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
+import { compressImage } from '@/lib/image-compression';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -50,13 +51,10 @@ export default function AdminProducts() {
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [showInSlider, setShowInSlider] = useState(false);
   const [showInFlashOffer, setShowInFlashOffer] = useState(false);
+  const [isProcessingImage, setIsProcessingImage] = useState(false);
   
-  // Validation state
   const [showValidation, setShowValidation] = useState(false);
-  
-  // Advanced Size Management
   const [sizeEntries, setSizeEntries] = useState<SizeEntry[]>([]);
-  
   const [isAlertOpen, setIsAlertOpen] = useState(false);
   const [deleteId, setDeleteId] = useState<string | null>(null);
 
@@ -68,12 +66,10 @@ export default function AdminProducts() {
   const { data: products, isLoading: productsLoading } = useCollection(productsRef);
   const { data: categories } = useCollection(categoriesRef);
 
-  // Auto-calculate total stock if sizes are present
   const calculatedTotalStock = sizeEntries.length > 0 
     ? sizeEntries.reduce((acc, curr) => acc + (curr.quantity || 0), 0)
     : parseInt(manualStockQuantity) || 0;
 
-  // Auto-calculate discount
   useEffect(() => {
     if (editingId) return;
     const p = parseFloat(price);
@@ -86,22 +82,23 @@ export default function AdminProducts() {
     }
   }, [price, originalPrice, editingId]);
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      if (file.size > 1024 * 1024) {
+      setIsProcessingImage(true);
+      try {
+        // Automatic compression for performance with 10k+ images
+        const compressedDataUrl = await compressImage(file);
+        setImagePreview(compressedDataUrl);
+      } catch (err) {
         toast({
           variant: "destructive",
-          title: "IMAGE TOO LARGE",
-          description: "MAXIMUM IMAGE SIZE IS 1MB.",
+          title: "PROCESSING ERROR",
+          description: "COULD NOT PROCESS THE IMAGE. PLEASE TRY AGAIN.",
         });
-        return;
+      } finally {
+        setIsProcessingImage(false);
       }
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setImagePreview(reader.result as string);
-      };
-      reader.readAsDataURL(file);
     }
   };
 
@@ -127,7 +124,6 @@ export default function AdminProducts() {
   const handleSaveProduct = (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Check missing fields
     const isNameMissing = !name;
     const isPriceMissing = !price;
     const isCategoryMissing = !category;
@@ -258,7 +254,6 @@ export default function AdminProducts() {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-          {/* PRODUCT FORM */}
           <Card className="bg-card border-white/5 rounded-none lg:col-span-4 h-fit sticky top-24 max-h-[85vh] overflow-y-auto shadow-2xl">
             <CardHeader className="border-b border-white/5 p-6">
               <CardTitle className="text-xs font-black uppercase tracking-[0.3em] text-orange-600 flex items-center gap-2">
@@ -320,7 +315,6 @@ export default function AdminProducts() {
                   </div>
                 </div>
 
-                {/* SIZE & INVENTORY SYSTEM */}
                 <div className="space-y-4 pt-6 border-t border-white/5">
                   <div className="flex items-center justify-between mb-4">
                     <label className="text-[10px] font-black text-white uppercase flex items-center gap-2">
@@ -378,17 +372,6 @@ export default function AdminProducts() {
                           showValidation && sizeEntries.length === 0 && !manualStockQuantity && "border-red-600 focus-visible:ring-red-600"
                         )}
                       />
-                      <p className="text-[8px] text-orange-600/70 italic uppercase tracking-wider font-bold">
-                        * Use this if product has no specific sizes.
-                      </p>
-                    </div>
-                  )}
-
-                  {sizeEntries.length > 0 && (
-                    <div className="p-4 bg-orange-600/10 border border-orange-600/20">
-                      <p className="text-[10px] font-black text-orange-600 uppercase tracking-[0.2em] text-center">
-                        TOTAL CALCULATED STOCK: {calculatedTotalStock} PCS
-                      </p>
                     </div>
                   )}
                 </div>
@@ -416,27 +399,14 @@ export default function AdminProducts() {
 
                 <div className="grid grid-cols-2 gap-4 pt-4 border-t border-white/5 mt-4">
                   <div className="flex items-center space-x-3 p-3 bg-white/[0.02] border border-white/5">
-                    <Checkbox 
-                      id="slider" 
-                      checked={showInSlider} 
-                      onCheckedChange={(checked) => setShowInSlider(!!checked)} 
-                      className="border-white/20 data-[state=checked]:bg-orange-600" 
-                    />
+                    <Checkbox id="slider" checked={showInSlider} onCheckedChange={(checked) => setShowInSlider(!!checked)} className="border-white/20 data-[state=checked]:bg-orange-600" />
                     <Label htmlFor="slider" className="text-[9px] font-black uppercase text-white cursor-pointer tracking-widest leading-none">Slider</Label>
                   </div>
                   <div className="flex items-center space-x-3 p-3 bg-white/[0.02] border border-white/5">
-                    <Checkbox 
-                      id="flash" 
-                      checked={showInFlashOffer} 
-                      onCheckedChange={(checked) => setShowInFlashOffer(!!checked)} 
-                      className="border-white/20 data-[state=checked]:bg-orange-600" 
-                    />
+                    <Checkbox id="flash" checked={showInFlashOffer} onCheckedChange={(checked) => setShowInFlashOffer(!!checked)} className="border-white/20 data-[state=checked]:bg-orange-600" />
                     <Label htmlFor="flash" className="text-[9px] font-black uppercase text-white cursor-pointer tracking-widest leading-none">Flash Offer</Label>
                   </div>
                 </div>
-                <p className="text-[8px] text-white/30 uppercase tracking-[0.2em] italic">
-                   * Checked products appear in the designated bar AND main list.
-                </p>
                 
                 <div className="space-y-2">
                   <label className={cn("text-[10px] font-black uppercase", showValidation && !imagePreview ? "text-red-500" : "text-muted-foreground")}>
@@ -449,7 +419,12 @@ export default function AdminProducts() {
                       showValidation && !imagePreview ? "border-red-600" : "border-white/10 hover:border-orange-600"
                     )}
                   >
-                    {imagePreview ? (
+                    {isProcessingImage ? (
+                      <div className="flex flex-col items-center gap-2">
+                        <Loader2 className="h-8 w-8 text-orange-600 animate-spin" />
+                        <p className="text-[8px] font-black text-orange-600 uppercase">Resizing for performance...</p>
+                      </div>
+                    ) : imagePreview ? (
                       <div className="relative w-full aspect-square animate-in zoom-in duration-300">
                         <Image src={imagePreview} alt="Preview" fill className="object-cover" />
                         <button type="button" onClick={(e) => { e.stopPropagation(); setImagePreview(null); }} className="absolute top-2 right-2 bg-red-600 p-2 text-white z-10 shadow-xl"><X className="h-5 w-5" /></button>
@@ -472,7 +447,7 @@ export default function AdminProducts() {
                       DISCARD
                     </Button>
                   )}
-                  <Button type="submit" className="flex-grow bg-orange-600 hover:bg-orange-700 text-white font-black rounded-none uppercase text-[10px] h-14 tracking-[0.2em] shadow-2xl shadow-orange-600/10">
+                  <Button type="submit" disabled={isProcessingImage} className="flex-grow bg-orange-600 hover:bg-orange-700 text-white font-black rounded-none uppercase text-[10px] h-14 tracking-[0.2em] shadow-2xl shadow-orange-600/10">
                     {editingId ? <><Save className="mr-2 h-4 w-4" /> UPDATE RECORD</> : <><Plus className="mr-2 h-4 w-4" /> SAVE PRODUCT</>}
                   </Button>
                 </div>
@@ -480,7 +455,6 @@ export default function AdminProducts() {
             </CardContent>
           </Card>
 
-          {/* PRODUCT LIST (LIST VIEW) */}
           <Card className="bg-card border-white/5 rounded-none lg:col-span-8 shadow-2xl overflow-hidden">
             <CardHeader className="bg-white/[0.02] border-b border-white/5 p-6 flex flex-row items-center justify-between">
               <CardTitle className="text-xs font-black uppercase tracking-[0.3em] text-orange-600">INVENTORY ARCHIVE ({products?.length || 0})</CardTitle>
@@ -496,12 +470,9 @@ export default function AdminProducts() {
                 <div className="flex flex-col gap-2">
                   {products?.map((p) => (
                     <div key={p.id} className={`flex items-center gap-4 p-4 bg-white/5 border transition-all group ${editingId === p.id ? 'border-orange-600 bg-orange-600/5' : 'border-white/5 hover:border-white/20'}`}>
-                      {/* Image Thumbnail */}
                       <div className="relative w-20 h-20 shrink-0 bg-black overflow-hidden border border-white/10">
                         <Image src={p.imageUrl} alt={p.name} fill className="object-cover opacity-80 group-hover:opacity-100" />
                       </div>
-                      
-                      {/* Product Basic Info */}
                       <div className="flex-grow min-w-0">
                         <div className="flex items-center gap-2 mb-1">
                           <p className="text-[8px] font-black text-orange-600 tracking-widest uppercase">{p.category}</p>
@@ -516,8 +487,6 @@ export default function AdminProducts() {
                            </Badge>
                         </div>
                       </div>
-
-                      {/* Action Buttons */}
                       <div className="flex gap-2 shrink-0">
                         <Button onClick={() => handleEdit(p)} variant="outline" size="icon" className="h-10 w-10 border-white/10 text-white hover:bg-orange-600 hover:text-white hover:border-orange-600 rounded-none transition-colors">
                           <Edit2 className="h-4 w-4" />
@@ -528,11 +497,6 @@ export default function AdminProducts() {
                       </div>
                     </div>
                   ))}
-                  {products?.length === 0 && (
-                    <div className="text-center py-20 bg-white/[0.02] border border-dashed border-white/10">
-                      <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">No products in archive.</p>
-                    </div>
-                  )}
                 </div>
               )}
             </CardContent>
@@ -540,7 +504,6 @@ export default function AdminProducts() {
         </div>
       </main>
 
-      {/* PROFESSIONAL DELETE ALERT */}
       <AlertDialog open={isAlertOpen} onOpenChange={setIsAlertOpen}>
         <AlertDialogContent className="bg-black border-orange-600/30 rounded-none p-10 max-w-md">
           <AlertDialogHeader className="space-y-6">
@@ -568,4 +531,3 @@ export default function AdminProducts() {
     </div>
   );
 }
-
