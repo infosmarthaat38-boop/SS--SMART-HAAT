@@ -27,13 +27,13 @@ const SlideItem = ({ item, priority }: { item: any, priority: boolean }) => {
             alt={item.name}
             fill
             sizes="1200px"
-            className="object-cover opacity-100"
+            className="object-contain opacity-100"
             priority={priority}
             loading="eager"
             quality={90}
           />
-          {/* Subtle overlay for text readability without being dark on one side */}
-          <div className="absolute inset-0 bg-black/20 flex flex-col justify-center px-12 space-y-4">
+          {/* Content overlay */}
+          <div className="absolute inset-0 flex flex-col justify-center px-12 space-y-4">
             <div className="text-2xl md:text-4xl font-headline font-black text-white leading-tight uppercase tracking-tighter max-w-[500px] drop-shadow-lg">
               {item.name}
             </div>
@@ -70,7 +70,7 @@ const SlideItem = ({ item, priority }: { item: any, priority: boolean }) => {
           alt={item.title || "Banner"}
           fill
           sizes="1200px"
-          className="object-cover opacity-100"
+          className="object-contain opacity-100"
           priority={priority}
           loading="eager"
           quality={95}
@@ -123,13 +123,13 @@ const FlashOfferCard = () => {
             alt="Flash Offer" 
             fill 
             sizes="400px"
-            className="object-cover group-hover:scale-110 transition-transform duration-[3000ms]"
+            className="object-contain p-4 group-hover:scale-110 transition-transform duration-[3000ms]"
             key={activeItem.id || activeItem.imageUrl}
             priority={true}
             loading="eager"
             quality={85}
           />
-          <div className="absolute inset-0 bg-black/10 group-hover:bg-black/30 transition-colors duration-500" />
+          <div className="absolute inset-0 bg-black/10 group-hover:bg-black/20 transition-colors duration-500" />
           <div className="absolute top-4 left-4 bg-[#01a3a4] px-4 py-1 text-[9px] font-black text-white uppercase tracking-widest z-10 animate-pulse">
             FLASH OFFER
           </div>
@@ -315,7 +315,7 @@ export default function Home() {
                       fill 
                       sizes="200px" 
                       quality={75} 
-                      className="object-cover group-hover:scale-110 transition-transform duration-700 opacity-90 group-hover:opacity-100" 
+                      className="object-contain p-2 group-hover:scale-110 transition-transform duration-700 opacity-90 group-hover:opacity-100" 
                     />
                   )}
                 </div>

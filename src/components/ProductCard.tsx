@@ -22,20 +22,20 @@ export const ProductCard = memo(({ product, index = 0 }: ProductCardProps) => {
     <>
       <Card className={`group overflow-hidden bg-black border-none transition-all duration-300 rounded-none flex flex-col h-full relative ${isOutOfStock ? 'opacity-70' : ''}`}>
         
-        {/* IMAGE CONTAINER - 4:5 RATIO - COVER MODE - ULTRA OPTIMIZED FOR SPEED */}
-        <Link href={`/products/${product.id}`} className="block relative aspect-[4/5] overflow-hidden border border-white/5 bg-black">
+        {/* IMAGE CONTAINER - 4:5 RATIO - CONTAIN MODE - ENSURES NO CROPPING */}
+        <Link href={`/products/${product.id}`} className="block relative aspect-[4/5] overflow-hidden border border-white/5 bg-black/50">
           <Image
             src={product.imageUrl}
             alt={product.name}
             fill
-            sizes="200px"
-            priority={index < 12} // Load first 12 images instantly for maximum speed
+            sizes="300px"
+            priority={index < 12}
             loading={index < 12 ? "eager" : "lazy"}
-            quality={75}
-            className="object-cover transition-transform duration-700 group-hover:scale-105"
+            quality={85}
+            className="object-contain p-2 transition-transform duration-700 group-hover:scale-105"
           />
           {isOutOfStock && (
-            <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
+            <div className="absolute inset-0 bg-black/60 flex items-center justify-center z-10">
               <span className="bg-black text-white text-[8px] font-black px-2 py-1 uppercase tracking-widest border border-white/20">SOLD OUT</span>
             </div>
           )}
@@ -50,7 +50,7 @@ export const ProductCard = memo(({ product, index = 0 }: ProductCardProps) => {
           </Link>
           
           <div className="flex items-center justify-between">
-            {/* MAIN PRICE - ELEGANT SMALLER SIZE AS REQUESTED - ৳ SYMBOL 50% SMALLER & NORMAL WEIGHT */}
+            {/* MAIN PRICE - ELEGANT SMALLER SIZE - ৳ SYMBOL 50% SMALLER */}
             <span className="font-black text-[14px] text-[#01a3a4] tracking-tighter leading-none flex items-baseline">
               <span className="text-[0.45em] font-normal mr-0.5 translate-y-[-0.1em]">৳</span>
               {product.price.toLocaleString()}
