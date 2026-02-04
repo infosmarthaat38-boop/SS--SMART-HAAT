@@ -11,7 +11,7 @@ import {
   DialogDescription
 } from "@/components/ui/dialog";
 import { Button } from '@/components/ui/button';
-import { ShoppingBag, CheckCircle2, Loader2, Phone, MapPin, User, Ruler, Sparkles, PartyPopper } from 'lucide-react';
+import { ShoppingBag, CheckCircle2, Loader2, Phone, MapPin, User, Ruler, Sparkles, PartyPopper, X } from 'lucide-react';
 import { useFirestore } from '@/firebase';
 import { collection } from 'firebase/firestore';
 import { addDocumentNonBlocking } from '@/firebase/non-blocking-updates';
@@ -90,23 +90,24 @@ export function OrderModal({ product, isOpen, onClose }: OrderModalProps) {
   return (
     <>
       <Dialog open={isOpen && step === 'FORM'} onOpenChange={(val) => !val && handleClose()}>
-        <DialogContent className="max-w-4xl p-0 bg-black border border-white/10 rounded-none overflow-hidden gap-0 shadow-[0_0_50px_rgba(0,0,0,1)]">
+        <DialogContent className="max-w-4xl p-0 bg-white border border-gray-200 rounded-none overflow-hidden gap-0 shadow-2xl">
           <div className="flex flex-row h-full max-h-[95vh]">
             
+            {/* LEFT SIDE: IMAGE (HIDDEN ON ACTUAL MOBILE) */}
             {!isActualMobile && (
-              <div className="relative w-5/12 aspect-[4/5] bg-black border-r border-white/5 overflow-hidden">
+              <div className="relative w-5/12 aspect-[4/5] bg-gray-100 border-r border-gray-100 overflow-hidden">
                 <Image 
                   src={product.imageUrl} 
                   alt={product.name} 
                   fill 
-                  className="object-cover opacity-80"
+                  className="object-cover"
                   sizes="400px"
                   quality={75}
                   priority
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
                 <div className="absolute bottom-8 left-8 right-8 space-y-3">
-                  <p className="text-[10px] font-black text-[#01a3a4] uppercase tracking-[0.4em]">ITEM ARCHIVE</p>
+                  <p className="text-[10px] font-black text-white uppercase tracking-[0.4em]">ITEM ARCHIVE</p>
                   <h2 className="text-2xl font-black text-white uppercase tracking-tighter leading-tight">{product.name}</h2>
                   <div className="text-3xl font-black text-[#01a3a4] flex items-baseline tracking-tighter">
                     <span className="text-[0.45em] font-normal mr-1 translate-y-[-0.1em]">৳</span>
@@ -116,11 +117,12 @@ export function OrderModal({ product, isOpen, onClose }: OrderModalProps) {
               </div>
             )}
 
-            <div className={`${isActualMobile ? 'w-full' : 'w-7/12'} p-12 space-y-10 bg-[#050505] overflow-y-auto`}>
+            {/* RIGHT SIDE: FORM (WHITE THEME) */}
+            <div className={`${isActualMobile ? 'w-full' : 'w-7/12'} p-12 space-y-10 bg-white overflow-y-auto`}>
               <div className="space-y-3">
                 <div className="flex items-center gap-3">
-                  <div className="h-10 w-2 bg-[#01a3a4] shadow-[0_0_15px_#01a3a4]" />
-                  <DialogTitle className="text-4xl font-black text-white uppercase tracking-tighter leading-none font-headline">CONFIRM ORDER</DialogTitle>
+                  <div className="h-10 w-2 bg-[#01a3a4]" />
+                  <DialogTitle className="text-4xl font-black text-black uppercase tracking-tighter leading-none font-headline">CONFIRM ORDER</DialogTitle>
                 </div>
                 <DialogDescription className="text-[11px] text-[#01a3a4] uppercase font-black tracking-[0.3em] leading-relaxed">
                   PLEASE ENTER ACCURATE DELIVERY INFORMATION
@@ -130,7 +132,7 @@ export function OrderModal({ product, isOpen, onClose }: OrderModalProps) {
               <form onSubmit={handleSubmit} className="space-y-8">
                 {product?.sizes && product.sizes.length > 0 && (
                   <div className="space-y-4">
-                    <label className="text-[10px] font-black text-white uppercase tracking-widest flex items-center gap-2">
+                    <label className="text-[10px] font-black text-gray-700 uppercase tracking-widest flex items-center gap-2">
                       <Ruler className="h-4 w-4 text-[#01a3a4]" /> SELECT SPECIFICATION
                     </label>
                     <div className="flex flex-wrap gap-2">
@@ -141,8 +143,8 @@ export function OrderModal({ product, isOpen, onClose }: OrderModalProps) {
                           onClick={() => setFormData({...formData, selectedSize: size})}
                           className={`px-6 py-3 border text-[11px] font-black uppercase transition-all duration-300 ${
                             formData.selectedSize === size 
-                              ? 'bg-[#01a3a4] border-[#01a3a4] text-white shadow-[0_0_15px_rgba(1,163,164,0.3)]' 
-                              : 'bg-white/5 border-white/10 text-white/60 hover:border-[#01a3a4] hover:text-[#01a3a4]'
+                              ? 'bg-[#01a3a4] border-[#01a3a4] text-white shadow-lg' 
+                              : 'bg-gray-50 border-gray-200 text-gray-500 hover:border-[#01a3a4] hover:text-[#01a3a4]'
                           }`}
                         >
                           {size}
@@ -154,8 +156,8 @@ export function OrderModal({ product, isOpen, onClose }: OrderModalProps) {
 
                 <div className="space-y-6">
                   <div className="space-y-2 group">
-                    <label className="text-[10px] font-black text-white/70 uppercase tracking-widest flex items-center gap-3 group-focus-within:text-[#01a3a4] transition-colors">
-                      <div className="p-2 bg-white/5 border border-white/10 group-focus-within:border-[#01a3a4] transition-colors"><User className="h-3 w-3" /></div>
+                    <label className="text-[10px] font-black text-gray-600 uppercase tracking-widest flex items-center gap-3 group-focus-within:text-[#01a3a4] transition-colors">
+                      <div className="p-2 bg-gray-50 border border-gray-100 group-focus-within:border-[#01a3a4] transition-colors"><User className="h-3 w-3" /></div>
                       FULL NAME
                     </label>
                     <input 
@@ -163,13 +165,13 @@ export function OrderModal({ product, isOpen, onClose }: OrderModalProps) {
                       value={formData.name}
                       onChange={(e) => setFormData({...formData, name: e.target.value})}
                       placeholder="ENTER YOUR FULL NAME"
-                      className="w-full bg-white/[0.03] border-2 border-white/10 rounded-none h-14 px-5 text-[12px] font-black uppercase tracking-widest focus:outline-none focus:border-[#01a3a4] focus:bg-white/[0.07] focus:shadow-[0_0_20px_rgba(1,163,164,0.1)] text-white placeholder:text-white/20 transition-all"
+                      className="w-full bg-gray-50 border-2 border-gray-100 rounded-none h-14 px-5 text-[12px] font-black uppercase tracking-widest focus:outline-none focus:border-[#01a3a4] focus:bg-white text-black placeholder:text-gray-400 transition-all"
                     />
                   </div>
 
                   <div className="space-y-2 group">
-                    <label className="text-[10px] font-black text-white/70 uppercase tracking-widest flex items-center gap-3 group-focus-within:text-[#01a3a4] transition-colors">
-                      <div className="p-2 bg-white/5 border border-white/10 group-focus-within:border-[#01a3a4] transition-colors"><Phone className="h-3 w-3" /></div>
+                    <label className="text-[10px] font-black text-gray-600 uppercase tracking-widest flex items-center gap-3 group-focus-within:text-[#01a3a4] transition-colors">
+                      <div className="p-2 bg-gray-50 border border-gray-100 group-focus-within:border-[#01a3a4] transition-colors"><Phone className="h-3 w-3" /></div>
                       CONTACT NUMBER
                     </label>
                     <input 
@@ -178,13 +180,13 @@ export function OrderModal({ product, isOpen, onClose }: OrderModalProps) {
                       value={formData.phone}
                       onChange={(e) => setFormData({...formData, phone: e.target.value})}
                       placeholder="E.G. 017XXXXXXXX"
-                      className="w-full bg-white/[0.03] border-2 border-white/10 rounded-none h-14 px-5 text-[12px] font-black tracking-widest focus:outline-none focus:border-[#01a3a4] focus:bg-white/[0.07] focus:shadow-[0_0_20px_rgba(1,163,164,0.1)] text-white placeholder:text-white/20 transition-all"
+                      className="w-full bg-gray-50 border-2 border-gray-100 rounded-none h-14 px-5 text-[12px] font-black tracking-widest focus:outline-none focus:border-[#01a3a4] focus:bg-white text-black placeholder:text-gray-400 transition-all"
                     />
                   </div>
 
                   <div className="space-y-2 group">
-                    <label className="text-[10px] font-black text-white/70 uppercase tracking-widest flex items-center gap-3 group-focus-within:text-[#01a3a4] transition-colors">
-                      <div className="p-2 bg-white/5 border border-white/10 group-focus-within:border-[#01a3a4] transition-colors"><MapPin className="h-3 w-3" /></div>
+                    <label className="text-[10px] font-black text-gray-600 uppercase tracking-widest flex items-center gap-3 group-focus-within:text-[#01a3a4] transition-colors">
+                      <div className="p-2 bg-gray-50 border border-gray-100 group-focus-within:border-[#01a3a4] transition-colors"><MapPin className="h-3 w-3" /></div>
                       DELIVERY ADDRESS
                     </label>
                     <textarea 
@@ -192,7 +194,7 @@ export function OrderModal({ product, isOpen, onClose }: OrderModalProps) {
                       value={formData.address}
                       onChange={(e) => setFormData({...formData, address: e.target.value})}
                       placeholder="HOUSE, ROAD, AREA, CITY..."
-                      className="w-full bg-white/[0.03] border-2 border-white/10 rounded-none p-5 text-[12px] font-black uppercase tracking-widest min-h-[120px] focus:outline-none focus:border-[#01a3a4] focus:bg-white/[0.07] focus:shadow-[0_0_20px_rgba(1,163,164,0.1)] text-white placeholder:text-white/20 transition-all leading-relaxed"
+                      className="w-full bg-gray-50 border-2 border-gray-100 rounded-none p-5 text-[12px] font-black uppercase tracking-widest min-h-[120px] focus:outline-none focus:border-[#01a3a4] focus:bg-white text-black placeholder:text-gray-400 transition-all leading-relaxed"
                     />
                   </div>
                 </div>
@@ -200,7 +202,7 @@ export function OrderModal({ product, isOpen, onClose }: OrderModalProps) {
                 <Button 
                   disabled={loading}
                   type="submit" 
-                  className="w-full bg-[#01a3a4] hover:bg-white hover:text-black text-white h-16 font-black uppercase tracking-[0.4em] rounded-none shadow-[0_15px_40px_rgba(1,163,164,0.2)] text-[13px] transition-all duration-500 border-none"
+                  className="w-full bg-[#01a3a4] hover:bg-black text-white h-16 font-black uppercase tracking-[0.4em] rounded-none shadow-xl text-[13px] transition-all duration-500 border-none"
                 >
                   {loading ? <Loader2 className="animate-spin h-6 w-6" /> : "CONFIRM ORDER"}
                 </Button>
@@ -210,6 +212,7 @@ export function OrderModal({ product, isOpen, onClose }: OrderModalProps) {
         </DialogContent>
       </Dialog>
 
+      {/* UNIQUE SUCCESS MODAL - PRESERVED AS REQUESTED */}
       <Dialog open={isOpen && step === 'SUCCESS'} onOpenChange={(val) => !val && handleClose()}>
         <DialogContent className="max-w-2xl bg-black border-[5px] border-[#01a3a4] rounded-none p-0 overflow-hidden shadow-[0_0_100px_rgba(1,163,164,0.5)] relative">
           <div className="absolute top-0 left-0 w-full h-3 bg-gradient-to-r from-[#01a3a4] via-white to-[#01a3a4]" />
