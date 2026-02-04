@@ -34,10 +34,10 @@
   }
   html, body {
     @apply bg-background text-foreground font-body antialiased;
-    /* FORCE DESKTOP WIDTH ON ALL DEVICES */
-    width: 1200px !important;
+    /* CENTER THE DESKTOP CONTENT */
     min-width: 1200px !important;
     overflow-x: auto !important;
+    margin: 0 auto !important;
   }
   h1, h2, h3, h4, h5, h6 {
     @apply font-headline tracking-tighter uppercase;
@@ -47,13 +47,13 @@
     @apply text-white/90;
   }
 
-  /* HARD OVERRIDE FOR CONTAINER TO STAY DESKTOP WIDTH AT ALL TIMES */
+  /* HARD OVERRIDE FOR CONTAINER TO STAY DESKTOP WIDTH AND CENTERED */
   .container {
     width: 1200px !important;
     max-width: 1200px !important;
     min-width: 1200px !important;
-    margin-left: auto;
-    margin-right: auto;
+    margin-left: auto !important;
+    margin-right: auto !important;
     padding-left: 1rem;
     padding-right: 1rem;
   }
