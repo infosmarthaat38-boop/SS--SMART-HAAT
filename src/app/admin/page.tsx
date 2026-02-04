@@ -17,7 +17,8 @@ import {
   LogIn,
   AlertCircle,
   MessageSquare,
-  ArrowUpRight
+  ArrowUpRight,
+  Calendar
 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { StyleAssistant } from '@/components/StyleAssistant';
@@ -242,7 +243,12 @@ export default function AdminPanel() {
                   <Bell className="h-2.5 w-2.5 text-white animate-bounce" />
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-[8px] font-mono text-white/30">{new Date(order.createdAt).toLocaleTimeString()}</span>
+                  <div className="flex items-center gap-1.5">
+                    <Calendar className="h-2.5 w-2.5 text-white/20" />
+                    <span className="text-[8px] font-mono text-white/30">
+                      {new Date(order.createdAt).toLocaleDateString()} {new Date(order.createdAt).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
+                    </span>
+                  </div>
                   <Badge className="rounded-none bg-[#01a3a4] text-white text-[7px] border-none font-black h-4 px-1.5">NEW ORDER</Badge>
                 </div>
                 <div className="space-y-1">

@@ -18,7 +18,8 @@ import {
   Truck,
   FileText,
   DollarSign,
-  AlertTriangle
+  AlertTriangle,
+  Calendar
 } from 'lucide-react';
 import {
   Dialog,
@@ -297,7 +298,13 @@ export default function AdminOrders() {
                 <div className="col-span-2 space-y-1">
                   <p className="text-[9px] font-black text-[#01a3a4] uppercase tracking-widest">Client Name</p>
                   <p className="text-[14px] font-black text-white uppercase truncate">{order.customerName}</p>
-                  <span className="text-[9px] font-mono text-muted-foreground block">UID: #{order.id.slice(0, 8)}</span>
+                  <div className="flex items-center gap-1.5 mt-1">
+                    <Calendar className="h-2.5 w-2.5 text-white/30" />
+                    <span className="text-[8px] font-mono text-white/40 uppercase">
+                      {new Date(order.createdAt).toLocaleDateString()} @ {new Date(order.createdAt).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
+                    </span>
+                  </div>
+                  <span className="text-[8px] font-mono text-white/20 block">UID: #{order.id.slice(0, 8)}</span>
                 </div>
 
                 <div className="col-span-2 space-y-3">
