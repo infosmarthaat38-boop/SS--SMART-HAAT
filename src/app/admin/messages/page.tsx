@@ -20,23 +20,16 @@ import Link from 'next/link';
 import { useFirestore, useCollection, useMemoFirebase } from '@/firebase';
 import { collection, query, where } from 'firebase/firestore';
 import { addDocumentNonBlocking } from '@/firebase/non-blocking-updates';
-import { Badge } from '@/components/ui/badge';
 
-/**
- * AdminMessages - একটি প্রফেশনাল চ্যাট সেন্টার।
- * লেআউটটি এখন আরও কম্প্যাক্ট এবং ছোট করা হয়েছে।
- */
 export default function AdminMessages() {
   const db = useFirestore();
   const [selectedOrderId, setSelectedOrderId] = useState<string | null>(null);
   const [replyText, setReplyText] = useState('');
-  const chatEndRef = useRef<HTMLDivElement>(null);
+  const chatScrollContainerRef = useRef<HTMLDivElement>(null);
 
-  // সব মেসেজ নিয়ে আসা
   const allMessagesQuery = useMemoFirebase(() => collection(db, 'messages'), [db]);
   const { data: rawAllMessages, isLoading } = useCollection(allMessagesQuery);
 
-  // ইউনিক চ্যাট লিস্ট তৈরি করা
   const uniqueChats = React.useMemo(() => {
     if (!rawAllMessages) return [];
     const seen = new Map();
@@ -53,7 +46,6 @@ export default function AdminMessages() {
     );
   }, [rawAllMessages]);
 
-  // সিলেক্ট করা কাস্টমারের মেসেজ ফিল্টার করা
   const chatQuery = useMemoFirebase(() => {
     if (!selectedOrderId) return null;
     return query(
@@ -71,8 +63,11 @@ export default function AdminMessages() {
     );
   }, [rawActiveChat]);
 
+  // Stable scrolling for admin as well
   useEffect(() => {
-    chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    if (chatScrollContainerRef.current) {
+      chatScrollContainerRef.current.scrollTop = chatScrollContainerRef.current.scrollHeight;
+    }
   }, [activeChat]);
 
   const handleSendReply = (e: React.FormEvent) => {
@@ -107,7 +102,6 @@ export default function AdminMessages() {
         </div>
 
         <div className="grid grid-cols-12 gap-4 h-[600px]">
-          {/* চ্যাট লিস্ট - আরও কম্প্যাক্ট */}
           <Card className="col-span-4 bg-card border-white/5 rounded-none overflow-hidden flex flex-col shadow-2xl">
             <div className="p-4 border-b border-white/5 bg-white/[0.02]">
                <div className="relative">
@@ -115,7 +109,7 @@ export default function AdminMessages() {
                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-[#01a3a4]" />
                </div>
             </div>
-            <div className="flex-grow overflow-y-auto custom-scrollbar">
+            <div className="flex-grow overflow-y-auto">
               {isLoading ? (
                 <div className="flex flex-col items-center justify-center py-10 gap-2">
                   <Loader2 className="h-6 w-6 text-[#01a3a4] animate-spin" />
@@ -141,7 +135,6 @@ export default function AdminMessages() {
             </div>
           </Card>
 
-          {/* চ্যাট উইন্ডো - ছোট বাবল এবং কম্প্যাক্ট ইনপুট */}
           <Card className="col-span-8 bg-card border-white/5 rounded-none flex flex-col overflow-hidden shadow-2xl">
             {selectedOrderId ? (
               <>
@@ -161,7 +154,10 @@ export default function AdminMessages() {
                   </div>
                 </div>
 
-                <div className="flex-grow overflow-y-auto p-6 space-y-4 bg-black/40 custom-scrollbar">
+                <div 
+                  ref={chatScrollContainerRef}
+                  className="flex-grow overflow-y-auto p-6 space-y-4 bg-black/40"
+                >
                   {activeChat?.map((msg, i) => (
                     <div key={i} className={`flex ${msg.sender === 'ADMIN' ? 'justify-end' : 'justify-start'} animate-in fade-in slide-in-from-bottom-1 duration-300`}>
                       <div className="max-w-[70%] space-y-1">
@@ -181,7 +177,6 @@ export default function AdminMessages() {
                       </div>
                     </div>
                   ))}
-                  <div ref={chatEndRef} />
                 </div>
 
                 <form onSubmit={handleSendReply} className="p-4 bg-black border-t border-white/5 flex gap-3">
@@ -191,7 +186,7 @@ export default function AdminMessages() {
                     placeholder="RESPONSE..." 
                     className="flex-grow bg-white/5 border-white/10 h-11 rounded-none text-[11px] font-black uppercase px-4 tracking-widest"
                   />
-                  <Button type="submit" className="h-11 w-24 bg-[#01a3a4] hover:bg-white hover:text-black text-white font-black rounded-none transition-all uppercase tracking-widest text-[9px]">
+                  <Button type="submit" className="h-11 w-24 bg-[#01a3a4] hover:bg-white hover:text-black text-white font-black rounded-none transition-all uppercase tracking-widest text-[9px] shrink-0">
                     <Send className="mr-1.5 h-3 w-3" /> SEND
                   </Button>
                 </form>

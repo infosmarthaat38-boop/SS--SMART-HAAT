@@ -41,10 +41,8 @@ export function OrderModal({ product, isOpen, onClose }: OrderModalProps) {
   const [currentOrderId, setCurrentOrderId] = useState<string | null>(null);
   const [chatMessage, setChatMessage] = useState('');
   
-  // Create a stable session ID for chat that persists throughout the modal session
   const [chatSessionId] = useState(() => 'chat_' + Math.random().toString(36).substring(2, 11));
-
-  const chatEndRef = useRef<HTMLDivElement>(null);
+  const chatScrollContainerRef = useRef<HTMLDivElement>(null);
 
   const [formData, setFormData] = useState({
     name: '',
@@ -73,7 +71,6 @@ export function OrderModal({ product, isOpen, onClose }: OrderModalProps) {
     }
   }, [product, isOpen]);
 
-  // Query for chat messages - simplified without orderBy to avoid index issues, we sort in JS
   const messagesQuery = useMemoFirebase(() => {
     return query(
       collection(db, 'messages'),
@@ -83,7 +80,6 @@ export function OrderModal({ product, isOpen, onClose }: OrderModalProps) {
 
   const { data: rawChatHistory, isLoading: isChatLoading } = useCollection(messagesQuery);
 
-  // Sort messages locally by creation time
   const chatHistory = React.useMemo(() => {
     if (!rawChatHistory) return [];
     return [...rawChatHistory].sort((a, b) => 
@@ -100,8 +96,11 @@ export function OrderModal({ product, isOpen, onClose }: OrderModalProps) {
     }
   }, [step, onClose]);
 
+  // Stable scrolling that doesn't affect the outer window
   useEffect(() => {
-    chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    if (chatScrollContainerRef.current) {
+      chatScrollContainerRef.current.scrollTop = chatScrollContainerRef.current.scrollHeight;
+    }
   }, [chatHistory]);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -119,7 +118,7 @@ export function OrderModal({ product, isOpen, onClose }: OrderModalProps) {
       productName: product.name,
       productPrice: product.price,
       status: 'PENDING',
-      chatId: chatSessionId, // Link the chat session to the order
+      chatId: chatSessionId,
       createdAt: new Date().toISOString()
     };
 
@@ -154,7 +153,7 @@ export function OrderModal({ product, isOpen, onClose }: OrderModalProps) {
   return (
     <Dialog open={isOpen} onOpenChange={(val) => !val && onClose()}>
       <DialogContent className="max-w-[1100px] p-0 bg-white border-none rounded-none overflow-hidden gap-0 shadow-2xl">
-        <div className="flex flex-col md:flex-row h-full max-h-[95vh] min-h-[600px]">
+        <div className="flex flex-col md:flex-row h-full max-h-[90vh] min-h-[600px]">
           
           <div className={`flex flex-col md:flex-row bg-white transition-all duration-500 ${step === 'SUCCESS' ? 'w-full' : 'w-full md:w-2/3'}`}>
             {step === 'FORM' ? (
@@ -311,7 +310,10 @@ export function OrderModal({ product, isOpen, onClose }: OrderModalProps) {
                 </div>
               </div>
 
-              <div className="flex-grow overflow-y-auto p-5 space-y-4">
+              <div 
+                ref={chatScrollContainerRef}
+                className="flex-grow overflow-y-auto p-5 space-y-4"
+              >
                 {isChatLoading && (
                   <div className="flex justify-center py-10">
                     <Loader2 className="h-5 w-5 animate-spin text-[#01a3a4]" />
@@ -340,7 +342,6 @@ export function OrderModal({ product, isOpen, onClose }: OrderModalProps) {
                     </span>
                   </div>
                 ))}
-                <div ref={chatEndRef} />
               </div>
 
               <form onSubmit={handleSendMessage} className="p-4 bg-white border-t border-gray-100 flex gap-2">
@@ -350,7 +351,7 @@ export function OrderModal({ product, isOpen, onClose }: OrderModalProps) {
                   placeholder="TYPE MESSAGE..."
                   className="flex-grow bg-gray-50 border border-gray-200 h-12 px-4 text-[11px] font-black uppercase text-black focus:outline-none focus:border-[#01a3a4] transition-all"
                 />
-                <Button type="submit" size="icon" className="h-12 w-12 bg-[#01a3a4] hover:bg-black rounded-none">
+                <Button type="submit" size="icon" className="h-12 w-12 bg-[#01a3a4] hover:bg-black rounded-none shrink-0">
                   <Send className="h-4 w-4 text-white" />
                 </Button>
               </form>
