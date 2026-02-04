@@ -28,13 +28,13 @@ const SlideItem = ({ item, priority }: { item: any, priority: boolean }) => {
             alt={item.name}
             fill
             sizes="1200px"
-            className="object-cover opacity-90"
+            className="object-cover opacity-100"
             priority={priority}
             loading="eager"
             quality={95}
           />
           {/* Transparent Overlay for Text */}
-          <div className="absolute inset-0 bg-black/30 flex flex-col justify-center px-12 space-y-4">
+          <div className="absolute inset-0 bg-black/40 flex flex-col justify-center px-12 space-y-4">
             <div className="space-y-1">
               <h2 className="text-4xl md:text-5xl font-headline font-black text-white leading-tight uppercase tracking-tighter max-w-[500px]">
                 {item.name}
@@ -42,8 +42,8 @@ const SlideItem = ({ item, priority }: { item: any, priority: boolean }) => {
               <div className="flex items-center gap-2 text-white/90">
                 <span className="text-[12px] font-black uppercase tracking-[0.2em]">SPECIAL EDITION</span>
                 <span className="text-white/40">|</span>
-                <div className="flex items-baseline text-2xl font-black tracking-tighter">
-                  <span className="text-[0.4em] font-normal mr-1 translate-y-[-0.2em]">৳</span>
+                <div className="flex items-baseline text-2xl font-black tracking-tighter text-[#01a3a4]">
+                  <span className="text-[0.3em] font-normal mr-1 translate-y-[-0.3em] text-white/50">৳</span>
                   {item.price.toLocaleString()}
                 </div>
               </div>
@@ -235,7 +235,7 @@ export default function Home() {
             )}
           </div>
           
-          {/* RIGHT: SIDEBAR BOXES - NO GAP, SOLID BACKGROUNDS */}
+          {/* RIGHT: SIDEBAR BOXES */}
           <div className="col-span-3 flex flex-col h-full bg-black">
             {/* TEAL TOP BOX */}
             <div className="bg-[#01a3a4] h-2/3 p-10 flex flex-col items-center justify-center space-y-10 shadow-inner">
@@ -262,12 +262,12 @@ export default function Home() {
               </div>
             </div>
             
-            {/* BLACK BOTTOM BOX - MATCHING SCREENSHOT */}
+            {/* BLACK BOTTOM BOX */}
             <div className="bg-black h-1/3 p-6 flex items-center gap-6">
               {/* QR CODE BOX */}
               <div className="bg-white p-2 w-24 h-24 shrink-0 flex items-center justify-center shadow-2xl">
                 <svg viewBox="0 0 100 100" className="w-full h-full text-black">
-                  <path fill="currentColor" d="M0 0h20v20H0V0zm4 4v12h12V4H4zm2 2h8v8H6V6zm60-6h20v20H66V0zm4 4v12h12V4H70zm2 2h8v8H72V6zM0 66h20v20H0V66zm4 4v12h12V70H4zm2 2h8v8H6V72zm22-60h4v4h-4zm8 0h4v4h-4zm8 0h4v4h-4zm8 0h4v4h-4zm8 0h4v4h-4zm-32 8h4v4h-4zm16 0h4v4h-4zm16 0h4v4h-4zm-32 8h4v4h-4zm8 0h4v4h-4zm8 0h4v4h-4zm8 0h4v4h-4zm8 0h4v4h-4zm-32 8h4v4h-4zm16 0h4v4h-4zm16 0h4v4h-4zm-32 8h4v4h-4zm8 0h4v4h-4zm8 0h4v4h-4zm8 0h4v4h-4zm8 0h4v4h-4zm-32 8h4v4h-4zm16 0h4v4h-4zm16 0h4v4h-4zm-32 8h4v4h-4zm8 0h4v4h-4zm8 0h4v4h-4zm8 0h4v4h-4zm8 0h4v4h-4zm-32 8h4v4h-4zm16 0h4v4h-4zm16 0h4v4h-4zm-32 8h4v4h-4zm8 0h4v4h-4zm8 0h4v4h-4zm8 0h4v4h-4zm8 0h4v4h-4zm-32 8h4v4h-4zm16 0h4v4h-4zm16 0h4v4h-4zm-32 8h4v4h-4zm8 0h4v4h-4zm8 0h4v4h-4zm8 0h4v4h-4zm8 0h4v4h-4z" />
+                  <path fill="currentColor" d="M0 0h20v20H0V0zm4 4v12h12V4H4zm2 2h8v8H6V6zm60-6h20v20H66V0zm4 4v12h12V4H70zm2 2h8v8H72V6zM0 66h20v20H0V66zm4 4v12h12V70H4zm2 2h8v8H6V72zm22-60h4v4h-4zm8 0h4v4h-4zm8 0h4v4h-4zm8 0h4v4h-4zm8 0h4v4h-4zm-32 8h4v4h-4zm16 0h4v4h-4zm16 0h4v4h-4zm-32 8h4v4h-4zm8 0h4v4h-4zm8 0h4v4h-4zm8 0h4v4h-4zm8 0h4v4h-4zm-32 8h4v4h-4zm16 0h4v4h-4zm16 0h4v4h-4zm-32 8h4v4h-4zm8 0h4v4h-4zm8 0h4v4h-4zm8 0h4v4h-4zm8 0h4v4h-4zm-32 8h4v4h-4zm16 0h4v4h-4zm16 0h4v4h-4zm-32 8h4v4h-4zm8 0h4v4h-4zm8 0h4v4h-4zm8 0h4v4h-4zm8 0h4v4h-4zm-32 8h4v4h-4zm16 0h4v4h-4zm16 0h4v4h-4zm-32 8h4v4h-4zm8 0h4v4h-4zm8 0h4v4h-4zm8 0h4v4h-4zm8 0h4v4h-4zm-32 8h4v4h-4zm16 0h4v4h-4zm16 0h4v4h-4zm-32 8h4v4h-4zm8 0h4v4h-4zm8 0h4v4h-4zm8 0h4v4h-4zm8 0h4v4h-4zm-32 8h4v4h-4zm16 0h4v4h-4zm16 0h4v4h-4zm-32 8h4v4h-4zm8 0h4v4h-4zm8 0h4v4h-4zm8 0h4v4h-4zm8 0h4v4h-4z" />
                 </svg>
               </div>
               {/* STORE BUTTONS */}

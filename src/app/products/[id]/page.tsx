@@ -68,7 +68,7 @@ export default function ProductDetails() {
           </Button>
           
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
-            {/* PRODUCT IMAGE - FULL COVERAGE, NO BG BOX */}
+            {/* PRODUCT IMAGE */}
             <div className="relative aspect-square rounded-none overflow-hidden border border-white/5 shadow-2xl group bg-black">
               <Image 
                 src={product.imageUrl} 
@@ -96,7 +96,7 @@ export default function ProductDetails() {
                 <div className="flex items-center gap-6">
                   {/* PRICE ROW */}
                   <div className="text-4xl md:text-6xl font-black text-[#01a3a4] uppercase tracking-tighter flex items-baseline">
-                    <span className="text-[0.35em] font-normal mr-2 translate-y-[-0.3em] text-white/50">৳</span>
+                    <span className="text-[0.3em] font-normal mr-2 translate-y-[-0.4em] text-white/50">৳</span>
                     {product.price.toLocaleString()}
                   </div>
                   {product.originalPrice > product.price && (

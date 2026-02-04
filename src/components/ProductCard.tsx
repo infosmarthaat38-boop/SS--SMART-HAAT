@@ -22,8 +22,8 @@ export const ProductCard = memo(({ product, index = 0 }: ProductCardProps) => {
     <>
       <Card className="group overflow-hidden bg-black border-none rounded-none flex flex-col h-full relative">
         
-        {/* IMAGE CONTAINER - FULL COVERAGE, NO BG BOX, NO PADDING */}
-        <Link href={`/products/${product.id}`} className="block relative aspect-square overflow-hidden">
+        {/* IMAGE CONTAINER - FULL COVERAGE */}
+        <Link href={`/products/${product.id}`} className="block relative aspect-square overflow-hidden bg-black">
           <Image
             src={product.imageUrl}
             alt={product.name}
@@ -52,13 +52,13 @@ export const ProductCard = memo(({ product, index = 0 }: ProductCardProps) => {
           <div className="flex items-center justify-between">
             {/* MAIN PRICE - LARGE TEAL BOLD */}
             <div className="flex items-baseline text-[#01a3a4]">
-              <span className="text-[10px] font-normal mr-1.5 translate-y-[-4px] text-white/50">৳</span>
+              <span className="text-[9px] font-normal mr-1.5 translate-y-[-6px] text-white/50">৳</span>
               <span className="font-black text-[34px] tracking-tighter leading-none">
                 {product.price.toLocaleString()}
               </span>
             </div>
             
-            {/* DISCOUNT BOX - TEAL BORDER BOX */}
+            {/* DISCOUNT BOX */}
             {product.discountPercentage > 0 && (
               <div className="px-3 py-2 border border-[#01a3a4] flex items-center justify-center">
                 <span className="text-[11px] font-black text-[#01a3a4] leading-none">
@@ -68,17 +68,17 @@ export const ProductCard = memo(({ product, index = 0 }: ProductCardProps) => {
             )}
           </div>
 
-          {/* OLD PRICE - GREY STRIKETHROUGH */}
+          {/* OLD PRICE */}
           {product.originalPrice > product.price && (
             <div className="flex items-baseline text-white/30 -mt-3">
-              <span className="text-[9px] font-normal mr-1 translate-y-[-2px]">৳</span>
+              <span className="text-[8px] font-normal mr-1 translate-y-[-2px]">৳</span>
               <span className="text-white/30 line-through text-[18px] font-bold">
                 {product.originalPrice.toLocaleString()}
               </span>
             </div>
           )}
 
-          {/* STOCK STATUS INDICATOR */}
+          {/* STOCK STATUS */}
           <div className="flex items-center gap-2.5 pt-2">
             <div className={`h-2.5 w-2.5 rounded-full ${isOutOfStock ? 'bg-red-600' : 'bg-green-600 animate-pulse'}`} />
             <span className={`text-[10px] font-black uppercase tracking-[0.2em] ${isOutOfStock ? 'text-red-600' : 'text-green-600'}`}>
