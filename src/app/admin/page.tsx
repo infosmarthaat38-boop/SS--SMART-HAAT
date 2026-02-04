@@ -16,7 +16,8 @@ import {
   Bell,
   LogIn,
   AlertCircle,
-  MessageSquare
+  MessageSquare,
+  ArrowUpRight
 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { StyleAssistant } from '@/components/StyleAssistant';
@@ -49,6 +50,10 @@ const chartConfig = {
   },
 } satisfies ChartConfig;
 
+/**
+ * AdminPanel - মেইন ড্যাশবোর্ড।
+ * এখান থেকে সব অপশন (অর্ডার, মেসেজ, ইনভেন্টরি) ম্যানেজ করা যায়।
+ */
 export default function AdminPanel() {
   const db = useFirestore();
   const { toast } = useToast();
@@ -69,6 +74,7 @@ export default function AdminPanel() {
   const { data: messages } = useCollection(messagesRef);
   const { data: dailyStats } = useDoc(loginStatsRef);
 
+  // নতুন অর্ডার আসলে নোটিফিকেশন দেওয়া
   useEffect(() => {
     if (pendingOrders && pendingOrders.length > 0) {
       const latestOrder = pendingOrders[0];
@@ -85,19 +91,19 @@ export default function AdminPanel() {
   }, [pendingOrders, toast]);
 
   const stats = [
-    { title: "ORDERS", value: orders?.length || 0, change: pendingOrders?.length ? `${pendingOrders.length} PENDING` : "UP TO DATE", icon: ShoppingBag, color: "text-[#01a3a4]" },
-    { title: "MESSAGES", value: messages?.length || 0, change: "LIVE", icon: MessageSquare, color: "text-orange-500" },
-    { title: "DAILY LOGINS", value: dailyStats?.count || 0, change: "TODAY", icon: LogIn, color: "text-purple-500" },
-    { title: "CATEGORIES", value: categories?.length || 0, change: "SYNCED", icon: Layers, color: "text-green-500" }
+    { title: "ORDERS", value: orders?.length || 0, change: pendingOrders?.length ? `${pendingOrders.length} PENDING` : "UP TO DATE", icon: ShoppingBag, color: "text-[#01a3a4]", href: "/admin/orders" },
+    { title: "MESSAGES", value: messages?.length || 0, change: "LIVE CHAT", icon: MessageSquare, color: "text-orange-500", href: "/admin/messages" },
+    { title: "DAILY LOGINS", value: dailyStats?.count || 0, change: "TODAY", icon: LogIn, color: "text-purple-500", href: "/admin/settings" },
+    { title: "CATEGORIES", value: categories?.length || 0, change: "SYNCED", icon: Layers, color: "text-green-500", href: "/admin/categories" }
   ];
 
   const quickLinks = [
-    { title: "ORDERS", icon: ShoppingBag, href: "/admin/orders", badge: pendingOrders?.length },
-    { title: "MESSAGES", icon: MessageSquare, href: "/admin/messages" },
-    { title: "INVENTORY", icon: Package, href: "/admin/products" },
-    { title: "STRUCTURE", icon: Layers, href: "/admin/categories" },
-    { title: "OTHERS", icon: LinkIcon, href: "/admin/others" },
-    { title: "SETTINGS", icon: Settings, href: "/admin/settings" }
+    { title: "ORDER INTELLIGENCE", icon: ShoppingBag, href: "/admin/orders", badge: pendingOrders?.length },
+    { title: "LIVE MESSAGE CENTER", icon: MessageSquare, href: "/admin/messages" },
+    { title: "PRODUCT INVENTORY", icon: Package, href: "/admin/products" },
+    { title: "SYSTEM STRUCTURE", icon: Layers, href: "/admin/categories" },
+    { title: "OTHERS CONFIG", icon: LinkIcon, href: "/admin/others" },
+    { title: "SECURITY SETTINGS", icon: Settings, href: "/admin/settings" }
   ];
 
   return (
@@ -105,54 +111,61 @@ export default function AdminPanel() {
       <Navbar />
       
       <main className="flex-grow container mx-auto px-4 py-8">
+        {/* উপরের স্ট্যাটাস কার্ডগুলো */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
           {stats.map((stat, i) => (
-            <Card key={i} className="bg-card border-white/5 rounded-none p-4 md:p-6 hover:border-[#01a3a4]/30 transition-all">
-              <div className="flex justify-between items-start mb-4">
-                <p className="text-[8px] md:text-[10px] font-black text-white/60 uppercase tracking-[0.2em]">{stat.title}</p>
-                <stat.icon className={`h-3 w-3 md:h-4 md:w-4 ${stat.color} opacity-70`} />
-              </div>
-              <div className="flex items-baseline gap-2">
-                <h3 className="text-xl md:text-3xl font-black text-white tracking-tighter">{stat.value}</h3>
-                <span className={`text-[7px] md:text-[9px] font-black uppercase ${stat.change.includes('PENDING') ? 'text-[#01a3a4] animate-pulse' : 'text-green-500'}`}>
-                  {stat.change}
-                </span>
-              </div>
-            </Card>
+            <Link key={i} href={stat.href}>
+              <Card className="bg-card border-white/5 rounded-none p-4 md:p-6 hover:border-[#01a3a4]/30 transition-all cursor-pointer group h-full">
+                <div className="flex justify-between items-start mb-4">
+                  <p className="text-[8px] md:text-[10px] font-black text-white/60 uppercase tracking-[0.2em]">{stat.title}</p>
+                  <stat.icon className={`h-3 w-3 md:h-4 md:w-4 ${stat.color} opacity-70 group-hover:scale-110 transition-transform`} />
+                </div>
+                <div className="flex items-baseline gap-2">
+                  <h3 className="text-xl md:text-3xl font-black text-white tracking-tighter">{stat.value}</h3>
+                  <span className={`text-[7px] md:text-[9px] font-black uppercase ${stat.change.includes('PENDING') ? 'text-[#01a3a4] animate-pulse' : 'text-green-500'}`}>
+                    {stat.change}
+                  </span>
+                </div>
+              </Card>
+            </Link>
           ))}
         </div>
 
+        {/* নতুন মেসেজ বা অর্ডার নোটিফিকেশন বার */}
         {pendingOrders && pendingOrders.length > 0 && (
           <div className="mb-6 p-4 bg-[#01a3a4]/10 border border-[#01a3a4]/30 flex items-center justify-between animate-pulse">
             <div className="flex items-center gap-3">
               <AlertCircle className="h-5 w-5 text-[#01a3a4]" />
               <p className="text-[10px] font-black text-white uppercase tracking-widest">
-                SYSTEM ALERT: {pendingOrders.length} PENDING ORDERS REQUIRE ACTION
+                SYSTEM ALERT: {pendingOrders.length} PENDING ORDERS REQUIRE IMMEDIATE ACTION
               </p>
             </div>
-            <Link href="/admin/orders" className="text-[9px] font-black text-[#01a3a4] underline uppercase">VIEW ALL</Link>
+            <Link href="/admin/orders" className="text-[9px] font-black text-[#01a3a4] underline uppercase flex items-center gap-1">
+              VIEW ALL <ArrowUpRight className="h-3 w-3" />
+            </Link>
           </div>
         )}
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+          {/* বামপাশের কুইক লিংক এবং AI */}
           <div className="lg:col-span-4 space-y-6">
-            <Card className="bg-card border-white/5 rounded-none">
-              <CardHeader className="py-4 px-6 border-b border-white/5">
+            <Card className="bg-card border-white/5 rounded-none shadow-2xl">
+              <CardHeader className="py-4 px-6 border-b border-white/5 bg-white/[0.02]">
                 <CardTitle className="text-[10px] font-black uppercase tracking-[0.3em] text-[#01a3a4]">COMMAND CENTER</CardTitle>
               </CardHeader>
               <CardContent className="p-2">
                 <div className="grid grid-cols-1 gap-1">
                   {quickLinks.map((link, i) => (
                     <Link key={i} href={link.href}>
-                      <div className="flex items-center justify-between p-4 hover:bg-white/[0.03] transition-all group border-b border-white/[0.02] last:border-0">
-                        <div className="flex items-center gap-3">
-                          <link.icon className="h-4 w-4 text-[#01a3a4]" />
-                          <span className="text-[10px] font-black text-white uppercase tracking-wider">{link.title}</span>
+                      <div className="flex items-center justify-between p-4 hover:bg-[#01a3a4]/5 transition-all group border-b border-white/[0.02] last:border-0">
+                        <div className="flex items-center gap-4">
+                          <link.icon className="h-4 w-4 text-[#01a3a4] opacity-50 group-hover:opacity-100" />
+                          <span className="text-[10px] font-black text-white uppercase tracking-widest group-hover:text-[#01a3a4]">{link.title}</span>
                           {link.badge ? (
-                            <Badge className="bg-[#01a3a4] text-white text-[7px] font-black h-4 px-1 rounded-none border-none">{link.badge}</Badge>
+                            <Badge className="bg-[#01a3a4] text-white text-[7px] font-black h-4 px-1.5 rounded-none border-none">{link.badge}</Badge>
                           ) : null}
                         </div>
-                        <ChevronRight className="h-3 w-3 text-white/40 group-hover:text-[#01a3a4] transition-all" />
+                        <ChevronRight className="h-3 w-3 text-white/20 group-hover:text-[#01a3a4] group-hover:translate-x-1 transition-all" />
                       </div>
                     </Link>
                   ))}
@@ -160,11 +173,11 @@ export default function AdminPanel() {
               </CardContent>
             </Card>
 
-            <Card className="bg-card border-white/5 rounded-none overflow-hidden">
-              <CardHeader className="py-4 px-6 border-b border-white/5">
+            <Card className="bg-card border-white/5 rounded-none overflow-hidden shadow-2xl">
+              <CardHeader className="py-4 px-6 border-b border-white/5 bg-white/[0.02]">
                 <div className="flex items-center justify-between">
                   <CardTitle className="text-[10px] font-black uppercase tracking-[0.3em] text-[#01a3a4]">AI STRATEGIST</CardTitle>
-                  <Sparkles className="h-3 w-3 text-[#01a3a4]" />
+                  <Sparkles className="h-3 w-3 text-[#01a3a4] animate-pulse" />
                 </div>
               </CardHeader>
               <div className="scale-100 origin-top">
@@ -173,40 +186,41 @@ export default function AdminPanel() {
             </Card>
           </div>
 
+          {/* ডানপাশের রেভিনিউ চার্ট */}
           <div className="lg:col-span-8">
             <Card className="bg-card border-white/5 rounded-none h-full shadow-2xl">
-              <CardHeader className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-white/5 p-6 gap-4">
+              <CardHeader className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-white/5 p-6 gap-4 bg-white/[0.01]">
                 <div className="space-y-1">
                   <p className="text-[8px] font-black text-[#01a3a4] uppercase tracking-widest">Business Intelligence</p>
-                  <CardTitle className="text-xl font-black uppercase tracking-tighter text-white">REVENUE ARCHIVE</CardTitle>
+                  <CardTitle className="text-2xl font-black uppercase tracking-tighter text-white">REVENUE ARCHIVE</CardTitle>
                 </div>
-                <Badge variant="outline" className="rounded-none border-white/10 text-[8px] h-6 px-3 w-fit">SYNCED REAL-TIME</Badge>
+                <Badge variant="outline" className="rounded-none border-white/10 text-[8px] h-6 px-3 w-fit font-black text-white/40">DATABASE: LIVE SYNCED</Badge>
               </CardHeader>
-              <CardContent className="p-6">
-                <ChartContainer config={chartConfig} className="h-[300px] md:h-[400px] w-full">
+              <CardContent className="p-8">
+                <ChartContainer config={chartConfig} className="h-[300px] md:h-[450px] w-full">
                   <BarChart data={chartData}>
                     <CartesianGrid vertical={false} stroke="rgba(255,255,255,0.03)" strokeDasharray="3 3" />
                     <XAxis
                       dataKey="day"
                       tickLine={false}
                       axisLine={false}
-                      tick={{ fontSize: 9, fontWeight: 900, fill: '#888' }}
+                      tick={{ fontSize: 9, fontWeight: 900, fill: '#666' }}
                     />
                     <YAxis
                       tickLine={false}
                       axisLine={false}
                       tickFormatter={(value) => `৳${value/1000}K`}
-                      tick={{ fontSize: 9, fontWeight: 900, fill: '#888' }}
+                      tick={{ fontSize: 9, fontWeight: 900, fill: '#666' }}
                     />
                     <ChartTooltip
                       cursor={{ fill: 'rgba(1,163,164,0.05)' }}
-                      content={<ChartTooltipContent className="bg-black border-white/10" hideLabel />}
+                      content={<ChartTooltipContent className="bg-black border-white/10 rounded-none p-4" hideLabel />}
                     />
                     <Bar
                       dataKey="sales"
                       fill="#01a3a4"
-                      radius={[2, 2, 0, 0]}
-                      barSize={30}
+                      radius={[1, 1, 0, 0]}
+                      barSize={40}
                     />
                   </BarChart>
                 </ChartContainer>
@@ -215,29 +229,30 @@ export default function AdminPanel() {
           </div>
         </div>
 
+        {/* রিসেন্ট অ্যাক্টিভিটি লগ */}
         <div className="mt-12">
           <div className="flex items-center gap-3 mb-6">
             <div className="h-4 w-1 bg-[#01a3a4]" />
-            <h2 className="text-[10px] font-black uppercase tracking-widest text-white">LIVE SYSTEM LOGS</h2>
+            <h2 className="text-[10px] font-black uppercase tracking-widest text-white">SYSTEM ACTIVITY LOGS</h2>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             {pendingOrders?.slice(0, 4).map((order, i) => (
-              <div key={i} className="bg-card border border-[#01a3a4]/20 p-5 flex flex-col gap-3 relative overflow-hidden group hover:border-[#01a3a4] transition-all">
+              <div key={i} className="bg-card border border-[#01a3a4]/10 p-5 flex flex-col gap-3 relative overflow-hidden group hover:border-[#01a3a4]/40 transition-all shadow-xl">
                 <div className="absolute top-0 right-0 p-1.5 bg-[#01a3a4]">
                   <Bell className="h-2.5 w-2.5 text-white animate-bounce" />
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-[8px] font-mono text-white/40">{new Date(order.createdAt).toLocaleTimeString()}</span>
+                  <span className="text-[8px] font-mono text-white/30">{new Date(order.createdAt).toLocaleTimeString()}</span>
                   <Badge className="rounded-none bg-[#01a3a4] text-white text-[7px] border-none font-black h-4 px-1.5">NEW ORDER</Badge>
                 </div>
                 <div className="space-y-1">
-                  <p className="text-[10px] font-black text-white uppercase tracking-tight line-clamp-1">{order.customerName}</p>
+                  <p className="text-[11px] font-black text-white uppercase tracking-tight line-clamp-1">{order.customerName}</p>
                   <p className="text-[9px] font-black text-[#01a3a4] uppercase tracking-widest truncate">{order.productName}</p>
                 </div>
               </div>
             )) || (
-              <div className="col-span-full py-12 text-center border border-dashed border-white/5">
-                <p className="text-[10px] text-white/20 uppercase font-black tracking-widest">No Recent Activity Detected</p>
+              <div className="col-span-full py-16 text-center border border-dashed border-white/5 bg-white/[0.01]">
+                <p className="text-[10px] text-white/20 uppercase font-black tracking-widest">Waiting for incoming data packets...</p>
               </div>
             )}
           </div>
