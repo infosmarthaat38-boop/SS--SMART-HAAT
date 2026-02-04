@@ -68,7 +68,7 @@ export default function ProductDetails() {
           </Button>
           
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
-            {/* PRODUCT IMAGE - 4:5 ASPECT RATIO - CONTAIN MODE WITH PADDING */}
+            {/* PRODUCT IMAGE - 4:5 ASPECT RATIO - CONTAIN MODE WITH PADDING FOR AUTO-FIT */}
             <div className="relative aspect-[4/5] rounded-none overflow-hidden border border-white/5 shadow-2xl group bg-black">
               <Image 
                 src={product.imageUrl} 
