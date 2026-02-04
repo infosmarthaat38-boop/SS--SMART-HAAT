@@ -32,7 +32,7 @@ export const ProductCard = memo(({ product, index = 0 }: ProductCardProps) => {
             priority={index < 12}
             loading={index < 12 ? "eager" : "lazy"}
             quality={90}
-            className="object-contain p-4 transition-transform duration-700 group-hover:scale-105"
+            className="object-contain p-6 transition-transform duration-700 group-hover:scale-105"
           />
           {isOutOfStock && (
             <div className="absolute inset-0 bg-black/60 flex items-center justify-center z-10">
@@ -42,25 +42,25 @@ export const ProductCard = memo(({ product, index = 0 }: ProductCardProps) => {
         </Link>
         
         {/* CONTENT AREA - MATCHING REFERENCE IMAGE LAYOUT */}
-        <CardContent className="p-4 flex flex-col flex-grow space-y-3 bg-black">
+        <CardContent className="p-5 flex flex-col flex-grow bg-black space-y-4">
           <Link href={`/products/${product.id}`} className="block">
-            <h3 className="font-black text-[12px] leading-tight text-white uppercase tracking-widest truncate">
+            <h3 className="font-black text-[15px] leading-tight text-white uppercase tracking-wider font-headline truncate">
               {product.name}
             </h3>
           </Link>
           
           <div className="flex items-center justify-between">
             {/* MAIN PRICE - LARGE TEAL BOLD */}
-            <div className="flex items-baseline">
-              <span className="text-[12px] font-normal text-[#01a3a4] mr-1">৳</span>
-              <span className="font-black text-[28px] text-[#01a3a4] tracking-tighter leading-none">
+            <div className="flex items-baseline text-[#01a3a4]">
+              <span className="text-[12px] font-normal mr-1.5 translate-y-[-2px]">৳</span>
+              <span className="font-black text-[32px] tracking-tighter leading-none">
                 {product.price.toLocaleString()}
               </span>
             </div>
             
             {/* DISCOUNT BOX - TEAL BORDER BOX */}
             {product.discountPercentage > 0 && (
-              <div className="px-2 py-1 border border-[#01a3a4] flex items-center justify-center h-6">
+              <div className="px-2.5 py-1.5 border border-[#01a3a4] flex items-center justify-center">
                 <span className="text-[10px] font-black text-[#01a3a4] leading-none">
                   -{product.discountPercentage}%
                 </span>
@@ -70,32 +70,34 @@ export const ProductCard = memo(({ product, index = 0 }: ProductCardProps) => {
 
           {/* OLD PRICE - GREY STRIKETHROUGH */}
           {product.originalPrice > product.price && (
-            <div className="flex items-baseline -mt-2">
-              <span className="text-[10px] font-normal text-white/40 mr-1">৳</span>
-              <span className="text-white/40 line-through text-[16px] font-bold">
+            <div className="flex items-baseline text-white/40 -mt-2">
+              <span className="text-[10px] font-normal mr-1">৳</span>
+              <span className="text-white/40 line-through text-[18px] font-bold">
                 {product.originalPrice.toLocaleString()}
               </span>
             </div>
           )}
 
           {/* STOCK STATUS INDICATOR */}
-          <div className="flex items-center gap-2 py-1">
-            <div className={`h-2 w-2 rounded-full ${isOutOfStock ? 'bg-red-600' : 'bg-green-600'} animate-pulse`} />
-            <span className={`text-[9px] font-black uppercase tracking-widest ${isOutOfStock ? 'text-red-600' : 'text-green-600'}`}>
+          <div className="flex items-center gap-2 pt-2 pb-1">
+            <div className={`h-2.5 w-2.5 rounded-full ${isOutOfStock ? 'bg-red-600' : 'bg-green-600'}`} />
+            <span className={`text-[10px] font-black uppercase tracking-widest ${isOutOfStock ? 'text-red-600' : 'text-green-600'}`}>
               {isOutOfStock ? 'OUT OF STOCK' : 'AVAILABLE IN STOCK'}
             </span>
           </div>
           
-          <div className="mt-auto pt-2">
+          <div className="mt-auto pt-3">
             <Button 
               disabled={isOutOfStock}
               onClick={(e) => {
                 e.preventDefault();
                 setIsOrderOpen(true);
               }}
-              className={`w-full ${isOutOfStock ? 'bg-white/5 text-white/10 cursor-not-allowed' : 'bg-[#01a3a4] text-white hover:bg-white hover:text-black'} transition-all duration-300 font-black text-[11px] h-12 rounded-none uppercase px-4 flex items-center justify-center gap-2 shadow-xl`}
+              className={`w-full ${isOutOfStock ? 'bg-white/5 text-white/10 cursor-not-allowed' : 'bg-[#01a3a4] text-white hover:bg-[#01a3a4]/90'} transition-all duration-300 font-black text-[12px] h-14 rounded-none uppercase px-4 flex items-center justify-center gap-3 shadow-xl`}
             >
-              <ShoppingBag className="h-4 w-4" /> 
+              <div className="w-6 h-6 border border-white/20 flex items-center justify-center">
+                <ShoppingBag className="h-3.5 w-3.5" /> 
+              </div>
               <span className="tracking-[0.2em]">ORDER NOW</span>
             </Button>
           </div>
