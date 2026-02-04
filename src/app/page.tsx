@@ -43,7 +43,7 @@ const SlideItem = ({ item, priority }: { item: any, priority: boolean }) => {
                 <span className="text-[12px] font-black uppercase tracking-[0.2em]">SPECIAL EDITION</span>
                 <span className="text-white/40">|</span>
                 <div className="flex items-baseline text-2xl font-black tracking-tighter">
-                  <span className="text-[0.6em] font-normal mr-1 translate-y-[-0.1em]">৳</span>
+                  <span className="text-[0.4em] font-normal mr-1 translate-y-[-0.2em]">৳</span>
                   {item.price.toLocaleString()}
                 </div>
               </div>
@@ -53,7 +53,7 @@ const SlideItem = ({ item, priority }: { item: any, priority: boolean }) => {
                 <Link href={`/products/${item.id}`}>DETAILS</Link>
               </Button>
               <button onClick={() => setIsOrderOpen(true)} className="bg-[#01a3a4] text-white h-11 px-8 font-black rounded-none text-[10px] hover:bg-black transition-all uppercase tracking-widest flex items-center gap-2 shadow-xl">
-                <ShoppingCart className="h-3.5 w-3.5" /> ORDER NOW
+                <ShoppingCart className="h-3.5 w-3.5" /> অর্ডার করুন
               </button>
             </div>
           </div>
@@ -156,7 +156,7 @@ const FlashOfferCard = () => {
                 onClick={() => setIsOrderOpen(true)}
                 className="bg-[#01a3a4] hover:bg-black text-white font-black text-[10px] uppercase h-12 px-8 rounded-none transition-all shadow-2xl"
               >
-                ORDER NOW
+                অর্ডার করুন
               </Button>
               <OrderModal product={activeItem} isOpen={isOrderOpen} onClose={() => setIsOrderOpen(false)} />
             </div>
@@ -267,7 +267,7 @@ export default function Home() {
               {/* QR CODE BOX */}
               <div className="bg-white p-2 w-24 h-24 shrink-0 flex items-center justify-center shadow-2xl">
                 <svg viewBox="0 0 100 100" className="w-full h-full text-black">
-                  <path fill="currentColor" d="M0 0h20v20H0V0zm4 4v12h12V4H4zm2 2h8v8H6V6zm60-6h20v20H66V0zm4 4v12h12V4H70zm2 2h8v8H72V6zM0 66h20v20H0V66zm4 4v12h12V70H4zm2 2h8v8H6V72zm22-60h4v4h-4zm8 0h4v4h-4zm8 0h4v4h-4zm8 0h4v4h-4zm8 0h4v4h-4zm-32 8h4v4h-4zm16 0h4v4h-4zm16 0h4v4h-4zm-32 8h4v4h-4zm8 0h4v4h-4zm8 0h4v4h-4zm8 0h4v4h-4zm8 0h4v4h-4zm-32 8h4v4h-4zm16 0h4v4h-4zm16 0h4v4h-4zm-32 8h4v4h-4zm8 0h4v4h-4zm8 0h4v4h-4zm8 0h4v4h-4zm8 0h4v4h-4zm-32 8h4v4h-4zm16 0h4v4h-4zm16 0h4v4h-4zm-32 8h4v4h-4zm8 0h4v4h-4zm8 0h4v4h-4zm8 0h4v4h-4zm8 0h4v4h-4zm-32 8h4v4h-4zm16 0h4v4h-4zm16 0h4v4h-4zm-32 8h4v4h-4zm8 0h4v4h-4zm8 0h4v4h-4zm8 0h4v4h-4zm8 0h4v4h-4z" />
+                  <path fill="currentColor" d="M0 0h20v20H0V0zm4 4v12h12V4H4zm2 2h8v8H6V6zm60-6h20v20H66V0zm4 4v12h12V4H70zm2 2h8v8H72V6zM0 66h20v20H0V66zm4 4v12h12V70H4zm2 2h8v8H6V72zm22-60h4v4h-4zm8 0h4v4h-4zm8 0h4v4h-4zm8 0h4v4h-4zm8 0h4v4h-4zm-32 8h4v4h-4zm16 0h4v4h-4zm16 0h4v4h-4zm-32 8h4v4h-4zm8 0h4v4h-4zm8 0h4v4h-4zm8 0h4v4h-4zm8 0h4v4h-4zm-32 8h4v4h-4zm16 0h4v4h-4zm16 0h4v4h-4zm-32 8h4v4h-4zm8 0h4v4h-4zm8 0h4v4h-4zm8 0h4v4h-4zm8 0h4v4h-4zm-32 8h4v4h-4zm16 0h4v4h-4zm16 0h4v4h-4zm-32 8h4v4h-4zm8 0h4v4h-4zm8 0h4v4h-4zm8 0h4v4h-4zm8 0h4v4h-4zm-32 8h4v4h-4zm16 0h4v4h-4zm16 0h4v4h-4zm-32 8h4v4h-4zm8 0h4v4h-4zm8 0h4v4h-4zm8 0h4v4h-4zm8 0h4v4h-4zm-32 8h4v4h-4zm16 0h4v4h-4zm16 0h4v4h-4zm-32 8h4v4h-4zm8 0h4v4h-4zm8 0h4v4h-4zm8 0h4v4h-4zm8 0h4v4h-4z" />
                 </svg>
               </div>
               {/* STORE BUTTONS */}

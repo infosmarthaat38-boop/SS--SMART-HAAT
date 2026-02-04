@@ -96,12 +96,12 @@ export default function ProductDetails() {
                 <div className="flex items-center gap-6">
                   {/* PRICE ROW */}
                   <div className="text-4xl md:text-6xl font-black text-[#01a3a4] uppercase tracking-tighter flex items-baseline">
-                    <span className="text-[0.45em] font-normal mr-2 translate-y-[-0.1em]">৳</span>
+                    <span className="text-[0.35em] font-normal mr-2 translate-y-[-0.3em] text-white/50">৳</span>
                     {product.price.toLocaleString()}
                   </div>
                   {product.originalPrice > product.price && (
                     <p className="text-[24px] md:text-[32px] text-white/60 line-through font-bold flex items-baseline">
-                      <span className="text-[0.45em] font-normal mr-1 translate-y-[-1px]">৳</span>{product.originalPrice.toLocaleString()}
+                      <span className="text-[0.4em] font-normal mr-1 translate-y-[-1px]">৳</span>{product.originalPrice.toLocaleString()}
                     </p>
                   )}
                 </div>
@@ -144,7 +144,7 @@ export default function ProductDetails() {
                     size="lg" 
                     className={`flex-grow h-16 rounded-none text-[14px] font-black uppercase tracking-[0.4em] shadow-2xl transition-all duration-500 ${isOutOfStock ? 'bg-white/5 text-white/20 border border-white/10' : 'bg-[#01a3a4] hover:bg-white hover:text-black text-white shadow-[#01a3a4]/20'}`}
                   >
-                    <ShoppingCart className="mr-3 h-5 w-5" /> {isOutOfStock ? 'SOLD OUT' : 'ORDER NOW'}
+                    <ShoppingCart className="mr-3 h-5 w-5" /> {isOutOfStock ? 'SOLD OUT' : 'অর্ডার করুন'}
                   </Button>
                   <div className="flex gap-3">
                     <Button size="icon" variant="outline" className="h-16 w-16 rounded-none border-white/10 text-white hover:bg-[#01a3a4] hover:border-[#01a3a4] transition-all duration-500"><Heart className="h-6 w-6" /></Button>
