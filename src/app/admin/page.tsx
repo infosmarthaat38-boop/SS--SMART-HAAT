@@ -15,7 +15,8 @@ import {
   ChevronRight,
   Bell,
   LogIn,
-  AlertCircle
+  AlertCircle,
+  MessageSquare
 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { StyleAssistant } from '@/components/StyleAssistant';
@@ -58,12 +59,14 @@ export default function AdminPanel() {
   const categoriesRef = useMemoFirebase(() => collection(db, 'categories'), [db]);
   const ordersRef = useMemoFirebase(() => query(collection(db, 'orders'), orderBy('createdAt', 'desc')), [db]);
   const pendingOrdersRef = useMemoFirebase(() => query(collection(db, 'orders'), where('status', '==', 'PENDING'), orderBy('createdAt', 'desc')), [db]);
+  const messagesRef = useMemoFirebase(() => collection(db, 'messages'), [db]);
   const loginStatsRef = useMemoFirebase(() => doc(db, 'loginStats', today), [db, today]);
   
   const { data: products } = useCollection(productsRef);
   const { data: categories } = useCollection(categoriesRef);
   const { data: orders } = useCollection(ordersRef);
   const { data: pendingOrders } = useCollection(pendingOrdersRef);
+  const { data: messages } = useCollection(messagesRef);
   const { data: dailyStats } = useDoc(loginStatsRef);
 
   useEffect(() => {
@@ -83,13 +86,14 @@ export default function AdminPanel() {
 
   const stats = [
     { title: "ORDERS", value: orders?.length || 0, change: pendingOrders?.length ? `${pendingOrders.length} PENDING` : "UP TO DATE", icon: ShoppingBag, color: "text-[#01a3a4]" },
-    { title: "PRODUCTS", value: products?.length || 0, change: "ACTIVE", icon: Package, color: "text-blue-500" },
+    { title: "MESSAGES", value: messages?.length || 0, change: "LIVE", icon: MessageSquare, color: "text-orange-500" },
     { title: "DAILY LOGINS", value: dailyStats?.count || 0, change: "TODAY", icon: LogIn, color: "text-purple-500" },
     { title: "CATEGORIES", value: categories?.length || 0, change: "SYNCED", icon: Layers, color: "text-green-500" }
   ];
 
   const quickLinks = [
     { title: "ORDERS", icon: ShoppingBag, href: "/admin/orders", badge: pendingOrders?.length },
+    { title: "MESSAGES", icon: MessageSquare, href: "/admin/messages" },
     { title: "INVENTORY", icon: Package, href: "/admin/products" },
     { title: "STRUCTURE", icon: Layers, href: "/admin/categories" },
     { title: "OTHERS", icon: LinkIcon, href: "/admin/others" },

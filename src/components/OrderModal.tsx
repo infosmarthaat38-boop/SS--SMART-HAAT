@@ -1,7 +1,7 @@
 
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
 import { 
   Dialog, 
@@ -11,9 +11,21 @@ import {
   DialogDescription
 } from "@/components/ui/dialog";
 import { Button } from '@/components/ui/button';
-import { ShoppingBag, CheckCircle2, Loader2, Phone, MapPin, User, Ruler, Sparkles, PartyPopper } from 'lucide-react';
-import { useFirestore } from '@/firebase';
-import { collection } from 'firebase/firestore';
+import { 
+  ShoppingBag, 
+  CheckCircle2, 
+  Loader2, 
+  Phone, 
+  MapPin, 
+  User, 
+  Ruler, 
+  Sparkles, 
+  PartyPopper,
+  Send,
+  MessageCircle
+} from 'lucide-react';
+import { useFirestore, useCollection, useMemoFirebase } from '@/firebase';
+import { collection, query, where, orderBy, limit } from 'firebase/firestore';
 import { addDocumentNonBlocking } from '@/firebase/non-blocking-updates';
 
 interface OrderModalProps {
@@ -27,6 +39,10 @@ export function OrderModal({ product, isOpen, onClose }: OrderModalProps) {
   const [step, setStep] = useState<'FORM' | 'SUCCESS'>('FORM');
   const [loading, setLoading] = useState(false);
   const [isActualMobile, setIsActualMobile] = useState(false);
+  const [currentOrderId, setCurrentOrderId] = useState<string | null>(null);
+  const [chatMessage, setChatMessage] = useState('');
+  const chatEndRef = useRef<HTMLDivElement>(null);
+
   const [formData, setFormData] = useState({
     name: '',
     phone: '',
@@ -34,8 +50,19 @@ export function OrderModal({ product, isOpen, onClose }: OrderModalProps) {
     selectedSize: ''
   });
 
+  // Fetch messages for the current order in real-time
+  const messagesQuery = useMemoFirebase(() => {
+    if (!currentOrderId) return null;
+    return query(
+      collection(db, 'messages'),
+      where('orderId', '==', currentOrderId),
+      orderBy('createdAt', 'asc')
+    );
+  }, [db, currentOrderId]);
+
+  const { data: chatHistory } = useCollection(messagesQuery);
+
   useEffect(() => {
-    // Detect real mobile devices for image hiding logic
     const userAgent = typeof window !== 'undefined' ? (navigator.userAgent || navigator.vendor || (window as any).opera) : '';
     if (/android|iphone|ipad|ipod/i.test(userAgent.toLowerCase())) {
       setIsActualMobile(true);
@@ -46,27 +73,18 @@ export function OrderModal({ product, isOpen, onClose }: OrderModalProps) {
     }
 
     if (!isOpen) {
-      // Reset state when closed
       const resetTimer = setTimeout(() => {
         setStep('FORM');
         setFormData({ name: '', phone: '', address: '', selectedSize: '' });
+        setCurrentOrderId(null);
       }, 300);
       return () => clearTimeout(resetTimer);
     }
   }, [product, isOpen]);
 
-  // AUTO-CLOSE TIMER: Closes success modal after 3 seconds
   useEffect(() => {
-    let autoCloseTimer: NodeJS.Timeout;
-    if (step === 'SUCCESS' && isOpen) {
-      autoCloseTimer = setTimeout(() => {
-        onClose();
-      }, 3000);
-    }
-    return () => {
-      if (autoCloseTimer) clearTimeout(autoCloseTimer);
-    };
-  }, [step, isOpen, onClose]);
+    chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [chatHistory]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -86,7 +104,10 @@ export function OrderModal({ product, isOpen, onClose }: OrderModalProps) {
       createdAt: new Date().toISOString()
     };
 
-    addDocumentNonBlocking(collection(db, 'orders'), orderData);
+    const docPromise = addDocumentNonBlocking(collection(db, 'orders'), orderData);
+    docPromise?.then((docRef) => {
+      if (docRef) setCurrentOrderId(docRef.id);
+    });
     
     setTimeout(() => {
       setLoading(false);
@@ -94,12 +115,26 @@ export function OrderModal({ product, isOpen, onClose }: OrderModalProps) {
     }, 1200);
   };
 
+  const handleSendMessage = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!chatMessage.trim() || !currentOrderId) return;
+
+    addDocumentNonBlocking(collection(db, 'messages'), {
+      orderId: currentOrderId,
+      customerName: formData.name,
+      text: chatMessage,
+      sender: 'CUSTOMER',
+      createdAt: new Date().toISOString()
+    });
+
+    setChatMessage('');
+  };
+
   return (
     <Dialog open={isOpen} onOpenChange={(val) => !val && onClose()}>
-      <DialogContent className={`max-w-4xl p-0 bg-white border-none rounded-none overflow-hidden gap-0 shadow-2xl transition-all duration-500 ${step === 'SUCCESS' ? 'max-w-2xl' : 'max-w-4xl'}`}>
+      <DialogContent className={`max-w-4xl p-0 bg-white border-none rounded-none overflow-hidden gap-0 shadow-2xl transition-all duration-500 ${step === 'SUCCESS' ? 'max-w-3xl' : 'max-w-4xl'}`}>
         {step === 'FORM' ? (
           <div className="flex flex-row h-full max-h-[95vh]">
-            {/* LEFT SIDE: IMAGE (HIDDEN ON ACTUAL MOBILE) */}
             {!isActualMobile && (
               <div className="relative w-5/12 aspect-[4/5] bg-gray-100 border-r border-gray-100 overflow-hidden">
                 <Image 
@@ -123,7 +158,6 @@ export function OrderModal({ product, isOpen, onClose }: OrderModalProps) {
               </div>
             )}
 
-            {/* RIGHT SIDE: FORM */}
             <div className={`${isActualMobile ? 'w-full' : 'w-7/12'} p-12 space-y-10 bg-white overflow-y-auto`}>
               <div className="space-y-3">
                 <div className="flex items-center gap-3">
@@ -216,49 +250,78 @@ export function OrderModal({ product, isOpen, onClose }: OrderModalProps) {
             </div>
           </div>
         ) : (
-          <div className="relative p-16 text-center space-y-12 bg-white animate-in fade-in zoom-in duration-500">
-            <div className="absolute top-0 left-0 w-full h-3 bg-gradient-to-r from-[#01a3a4] via-gray-100 to-[#01a3a4]" />
-            <div className="absolute bottom-0 left-0 w-full h-3 bg-gradient-to-r from-[#01a3a4] via-gray-100 to-[#01a3a4]" />
-            
-            <div className="relative">
-              <div className="w-40 h-40 bg-[#01a3a4]/5 rounded-full flex items-center justify-center mx-auto mb-10 border-[5px] border-[#01a3a4] shadow-[0_0_50px_rgba(1,163,164,0.15)] animate-pulse">
-                <CheckCircle2 className="h-20 w-20 text-[#01a3a4]" />
-              </div>
-              <PartyPopper className="absolute -top-6 right-1/4 h-12 w-12 text-[#01a3a4] animate-bounce" />
-              <Sparkles className="absolute bottom-0 left-1/4 h-10 w-10 text-[#01a3a4] animate-spin-slow" />
-            </div>
-
-            <div className="space-y-10">
-              <div className="space-y-4">
-                <p className="text-[13px] font-black text-[#01a3a4] uppercase tracking-[0.8em]">SYSTEM VERIFIED</p>
-                <DialogTitle className="text-5xl font-black text-black uppercase tracking-tighter leading-none font-headline">
-                  THANK YOU FOR YOUR ORDER
-                </DialogTitle>
-              </div>
-
-              <div className="flex items-center justify-center gap-6">
-                <div className="h-1 w-24 bg-gradient-to-r from-transparent to-[#01a3a4]" />
-                <Sparkles className="h-6 w-6 text-[#01a3a4]" />
-                <div className="h-1 w-24 bg-gradient-to-l from-transparent to-[#01a3a4]" />
+          <div className="flex flex-col md:flex-row h-full max-h-[95vh] bg-white">
+            {/* SUCCESS MESSAGE AREA */}
+            <div className="w-full md:w-1/2 p-12 text-center space-y-10 border-r border-gray-100">
+               <div className="relative">
+                <div className="w-32 h-32 bg-[#01a3a4]/5 rounded-full flex items-center justify-center mx-auto mb-8 border-[4px] border-[#01a3a4] shadow-xl">
+                  <CheckCircle2 className="h-16 w-16 text-[#01a3a4]" />
+                </div>
+                <PartyPopper className="absolute -top-4 right-1/4 h-10 w-10 text-[#01a3a4] animate-bounce" />
               </div>
 
               <div className="space-y-6">
-                <DialogDescription className="text-[26px] font-bold text-black leading-relaxed max-w-lg mx-auto border-y border-gray-100 py-10 px-6 italic font-headline">
-                  আমাদের একজন প্রতিনিধি যত দ্রুত সম্ভব আপনার সঙ্গে যোগাযোগ করবে।
-                </DialogDescription>
+                <div className="space-y-2">
+                  <p className="text-[11px] font-black text-[#01a3a4] uppercase tracking-[0.6em]">VERIFIED</p>
+                  <DialogTitle className="text-4xl font-black text-black uppercase tracking-tighter leading-none font-headline">
+                    THANK YOU FOR YOUR ORDER
+                  </DialogTitle>
+                </div>
                 
-                <p className="text-[12px] font-black text-[#01a3a4] uppercase tracking-[0.6em] opacity-80">
-                  SS SMART HAAT • DHAKA, BANGLADESH
+                <p className="text-[20px] font-bold text-black leading-relaxed italic font-headline py-6 border-y border-gray-50">
+                  আমাদের একজন প্রতিনিধি যত দ্রুত সম্ভব যোগাযোগ করবে।
                 </p>
+
+                <Button onClick={onClose} className="w-full bg-black hover:bg-[#01a3a4] text-white font-black uppercase h-14 rounded-none text-[14px] tracking-[0.3em] transition-all">
+                  DONE
+                </Button>
               </div>
             </div>
 
-            <Button 
-              onClick={onClose} 
-              className="w-full bg-[#01a3a4] hover:bg-black text-white font-black uppercase h-24 rounded-none text-[22px] tracking-[0.5em] transition-all duration-700 shadow-xl border-none"
-            >
-              ঠিক আছে
-            </Button>
+            {/* REAL-TIME CHAT AREA */}
+            <div className="w-full md:w-1/2 flex flex-col bg-gray-50 h-[600px] md:h-auto">
+              <div className="p-6 bg-white border-b border-gray-100 flex items-center gap-3">
+                <MessageCircle className="h-5 w-5 text-[#01a3a4]" />
+                <h3 className="text-[12px] font-black text-black uppercase tracking-widest">LIVE CUSTOMER SUPPORT</h3>
+              </div>
+
+              <div className="flex-grow overflow-y-auto p-6 space-y-4">
+                {chatHistory?.length === 0 && (
+                  <div className="text-center py-10">
+                    <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest leading-relaxed">
+                      আমাদের সাথে সরাসরি কথা বলতে নিচে মেসেজ দিন।
+                    </p>
+                  </div>
+                )}
+                {chatHistory?.map((msg, i) => (
+                  <div key={i} className={`flex flex-col ${msg.sender === 'CUSTOMER' ? 'items-end' : 'items-start'}`}>
+                    <div className={`max-w-[80%] p-4 text-[11px] font-medium leading-relaxed ${
+                      msg.sender === 'CUSTOMER' 
+                        ? 'bg-[#01a3a4] text-white rounded-l-2xl rounded-tr-2xl' 
+                        : 'bg-white border border-gray-200 text-black rounded-r-2xl rounded-tl-2xl shadow-sm'
+                    }`}>
+                      {msg.text}
+                    </div>
+                    <span className="text-[8px] font-black text-gray-400 uppercase mt-1 px-1">
+                      {msg.sender === 'CUSTOMER' ? 'YOU' : 'SS SMART HAAT'} • {new Date(msg.createdAt).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
+                    </span>
+                  </div>
+                ))}
+                <div ref={chatEndRef} />
+              </div>
+
+              <form onSubmit={handleSendMessage} className="p-4 bg-white border-t border-gray-100 flex gap-2">
+                <input 
+                  value={chatMessage}
+                  onChange={(e) => setChatMessage(e.target.value)}
+                  placeholder="TYPE YOUR MESSAGE..."
+                  className="flex-grow bg-gray-50 border border-gray-200 h-12 px-4 text-[11px] font-black uppercase focus:outline-none focus:border-[#01a3a4] transition-all"
+                />
+                <Button type="submit" size="icon" className="h-12 w-12 bg-[#01a3a4] hover:bg-black rounded-none">
+                  <Send className="h-5 w-5 text-white" />
+                </Button>
+              </form>
+            </div>
           </div>
         )}
       </DialogContent>

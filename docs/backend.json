@@ -7,91 +7,34 @@
       "type": "object",
       "description": "Represents a product available for sale on SS Smart Haat.",
       "properties": {
-        "id": {
-          "type": "string",
-          "description": "Unique identifier for the product."
-        },
-        "name": {
-          "type": "string",
-          "description": "Name of the product."
-        },
-        "description": {
-          "type": "string",
-          "description": "Detailed description of the product."
-        },
-        "price": {
-          "type": "number",
-          "description": "Current selling price."
-        },
-        "originalPrice": {
-          "type": "number",
-          "description": "Price before discount."
-        },
-        "discountPercentage": {
-          "type": "number",
-          "description": "Percentage of discount offered."
-        },
-        "imageUrl": {
-          "type": "string",
-          "description": "URL of the product image.",
-          "format": "uri"
-        },
-        "category": {
-          "type": "string",
-          "description": "Category the product belongs to."
-        },
-        "sizes": {
-          "type": "array",
-          "items": { "type": "string" },
-          "description": "Available sizes for the product (e.g., S, M, L, XL)."
-        },
-        "stockQuantity": {
-          "type": "number",
-          "description": "Number of items available in stock."
-        },
-        "showInSlider": {
-          "type": "boolean",
-          "description": "Whether to display this product in the home slider."
-        },
-        "showInFlashOffer": {
-          "type": "boolean",
-          "description": "Whether to display this product in the flash offer section."
-        },
-        "createdAt": {
-          "type": "string",
-          "format": "date-time"
-        }
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "description": { "type": "string" },
+        "price": { "type": "number" },
+        "originalPrice": { "type": "number" },
+        "discountPercentage": { "type": "number" },
+        "imageUrl": { "type": "string", "format": "uri" },
+        "category": { "type": "string" },
+        "sizes": { "type": "array", "items": { "type": "string" } },
+        "stockQuantity": { "type": "number" },
+        "showInSlider": { "type": "boolean" },
+        "showInFlashOffer": { "type": "boolean" },
+        "createdAt": { "type": "string", "format": "date-time" }
       },
-      "required": [
-        "name",
-        "description",
-        "price",
-        "imageUrl",
-        "category",
-        "stockQuantity"
-      ]
+      "required": ["name", "description", "price", "imageUrl", "category", "stockQuantity"]
     },
     "Category": {
       "title": "Category",
       "type": "object",
-      "description": "A product category with an associated image.",
       "properties": {
-        "name": {
-          "type": "string",
-          "description": "Name of the category."
-        },
-        "imageUrl": {
-          "type": "string",
-          "description": "URL of the category image.",
-          "format": "uri"
-        }
+        "name": { "type": "string" },
+        "imageUrl": { "type": "string", "format": "uri" }
       },
       "required": ["name", "imageUrl"]
     },
     "Order": {
       "title": "Order",
       "type": "object",
-      "description": "Customer purchase order information.",
       "properties": {
         "customerName": { "type": "string" },
         "customerPhone": { "type": "string" },
@@ -106,10 +49,23 @@
       },
       "required": ["customerName", "customerPhone", "customerAddress", "productId", "status"]
     },
+    "Message": {
+      "title": "Message",
+      "type": "object",
+      "description": "A real-time chat message between customer and admin.",
+      "properties": {
+        "orderId": { "type": "string" },
+        "customerId": { "type": "string" },
+        "customerName": { "type": "string" },
+        "text": { "type": "string" },
+        "sender": { "type": "string", "enum": ["CUSTOMER", "ADMIN"] },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["orderId", "text", "sender", "createdAt"]
+    },
     "SiteSettings": {
       "title": "SiteSettings",
       "type": "object",
-      "description": "Global site settings including contact info and footer content.",
       "properties": {
         "email": { "type": "string" },
         "phone": { "type": "string" },
@@ -127,7 +83,6 @@
     "LoginStats": {
       "title": "LoginStats",
       "type": "object",
-      "description": "Daily login tracking statistics.",
       "properties": {
         "count": { "type": "number" },
         "date": { "type": "string" }
@@ -135,41 +90,14 @@
     }
   },
   "auth": {
-    "providers": [
-      "password",
-      "anonymous"
-    ]
+    "providers": ["password", "anonymous"]
   },
   "firestore": {
-    "/products/{productId}": {
-      "schema": {
-        "$ref": "#/backend/entities/Product"
-      },
-      "description": "Stores product information."
-    },
-    "/categories/{categoryId}": {
-      "schema": {
-        "$ref": "#/backend/entities/Category"
-      },
-      "description": "Stores product categories."
-    },
-    "/orders/{orderId}": {
-      "schema": {
-        "$ref": "#/backend/entities/Order"
-      },
-      "description": "Stores customer orders."
-    },
-    "/settings/{settingId}": {
-      "schema": {
-        "$ref": "#/backend/entities/SiteSettings"
-      },
-      "description": "Global site settings document."
-    },
-    "/loginStats/{date}": {
-      "schema": {
-        "$ref": "#/backend/entities/LoginStats"
-      },
-      "description": "Stores daily login counts."
-    }
+    "/products/{productId}": { "schema": { "$ref": "#/backend/entities/Product" }, "description": "Stores product information." },
+    "/categories/{categoryId}": { "schema": { "$ref": "#/backend/entities/Category" }, "description": "Stores product categories." },
+    "/orders/{orderId}": { "schema": { "$ref": "#/backend/entities/Order" }, "description": "Stores customer orders." },
+    "/messages/{messageId}": { "schema": { "$ref": "#/backend/entities/Message" }, "description": "Stores chat messages." },
+    "/settings/{settingId}": { "schema": { "$ref": "#/backend/entities/SiteSettings" }, "description": "Global site settings document." },
+    "/loginStats/{date}": { "schema": { "$ref": "#/backend/entities/LoginStats" }, "description": "Stores daily login counts." }
   }
 }
