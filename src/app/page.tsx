@@ -25,21 +25,21 @@ const SlideItem = ({ product, priority }: { product: any, priority: boolean }) =
           src={product.imageUrl}
           alt={product.name}
           fill
-          sizes="100vw"
+          sizes="600px"
           className="object-cover opacity-80"
-          priority={true}
+          priority={priority}
           loading="eager"
           quality={75}
         />
         <div className="absolute inset-0 bg-gradient-to-r from-black via-black/40 to-transparent flex flex-col justify-center px-8 space-y-4">
-          <div className="text-xl md:text-3xl font-headline font-black text-white leading-tight uppercase tracking-tighter max-w-[200px]">
+          <div className="text-3xl font-headline font-black text-white leading-tight uppercase tracking-tighter max-w-[250px]">
             {product.name}
           </div>
           <div className="flex items-baseline gap-4">
-            <div className="text-white text-[12px] md:text-[14px] font-black tracking-[0.2em] uppercase leading-tight">
+            <div className="text-white text-[14px] font-black tracking-[0.2em] uppercase leading-tight">
               SPECIAL<br/>EDITION |
             </div>
-            <div className="text-2xl md:text-4xl font-black text-white tracking-tighter flex items-baseline">
+            <div className="text-4xl font-black text-white tracking-tighter flex items-baseline">
               <span className="text-[0.45em] font-normal mr-1 translate-y-[-0.1em]">৳</span>
               {product.price.toLocaleString()}
             </div>
@@ -78,74 +78,60 @@ const FlashOfferCard = () => {
 
   useEffect(() => {
     if (!flashProducts || flashProducts.length <= 1) return;
-
     const interval = setInterval(() => {
       setCurrentIndex((prevIndex) => (prevIndex + 1) % flashProducts.length);
     }, 5000);
-
     return () => clearInterval(interval);
   }, [flashProducts]);
   
   const flashProduct = flashProducts?.[currentIndex];
-  const offerImage = flashProduct?.imageUrl;
 
   return (
-    <div className="h-[350px] bg-black overflow-hidden relative group border border-white/5">
-      <div className="h-full w-full relative">
-        {offerImage && (
+    <div className="h-[350px] bg-black overflow-hidden relative group border border-white/5 w-full">
+      {flashProduct ? (
+        <div className="h-full w-full relative">
           <Image 
-            src={offerImage} 
+            src={flashProduct.imageUrl} 
             alt="Flash Offer" 
             fill 
-            sizes="(max-width: 1200px) 30vw, 25vw"
+            sizes="300px"
             className="object-cover group-hover:scale-110 transition-transform duration-[2000ms]"
-            key={flashProduct?.id}
+            key={flashProduct.id}
             priority={true}
             loading="eager"
             quality={75}
           />
-        )}
-        <div className="absolute inset-0 bg-black/5 group-hover:bg-black/30 transition-colors duration-500" />
-        
-        {flashProduct ? (
-          <>
-            <div className="absolute top-4 left-4 bg-[#01a3a4] px-3 py-1 text-[10px] font-black text-white uppercase tracking-widest z-10 animate-pulse">
-              FLASH OFFER
-            </div>
-            
-            <div className="absolute inset-0 flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-500 translate-y-4 group-hover:translate-y-0 p-4 text-center">
-              <div className="bg-black/60 backdrop-blur-md p-4 w-full border border-white/10">
-                <h3 className="text-white font-black text-sm uppercase mb-3 tracking-tighter line-clamp-2">{flashProduct.name}</h3>
-                <div className="text-[#01a3a4] font-black text-2xl mb-4 flex items-baseline justify-center">
-                  <span className="text-[0.45em] font-normal mr-0.5 translate-y-[-0.1em]">৳</span>
-                  {flashProduct.price.toLocaleString()}
-                </div>
-                <div className="flex flex-col gap-2">
-                  <Button 
-                    onClick={() => setIsOrderOpen(true)}
-                    className="bg-[#01a3a4] hover:bg-[#01a3a4]/90 text-white font-black text-[10px] uppercase h-10 px-4 rounded-none shadow-xl shadow-[#01a3a4]/20 w-full"
-                  >
-                    ORDER NOW
-                  </Button>
-                  <Button asChild variant="outline" className="border-white/40 text-white hover:bg-white hover:text-black font-black text-[10px] uppercase h-10 px-4 rounded-none w-full">
-                    <Link href={`/products/${flashProduct.id}`}>VIEW DETAILS</Link>
-                  </Button>
-                </div>
+          <div className="absolute inset-0 bg-black/10 group-hover:bg-black/30 transition-colors duration-500" />
+          <div className="absolute top-4 left-4 bg-[#01a3a4] px-3 py-1 text-[10px] font-black text-white uppercase tracking-widest z-10 animate-pulse">
+            FLASH OFFER
+          </div>
+          <div className="absolute inset-0 flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-500 translate-y-4 group-hover:translate-y-0 p-4 text-center">
+            <div className="bg-black/60 backdrop-blur-md p-4 w-full border border-white/10">
+              <h3 className="text-white font-black text-xs uppercase mb-2 tracking-tighter line-clamp-1">{flashProduct.name}</h3>
+              <div className="text-[#01a3a4] font-black text-xl mb-3 flex items-baseline justify-center">
+                <span className="text-[0.45em] font-normal mr-0.5 translate-y-[-0.1em]">৳</span>
+                {flashProduct.price.toLocaleString()}
+              </div>
+              <div className="flex flex-col gap-2">
+                <Button 
+                  onClick={() => setIsOrderOpen(true)}
+                  className="bg-[#01a3a4] hover:bg-[#01a3a4]/90 text-white font-black text-[9px] uppercase h-9 px-4 rounded-none w-full"
+                >
+                  ORDER NOW
+                </Button>
+                <Button asChild variant="outline" className="border-white/40 text-white hover:bg-white hover:text-black font-black text-[9px] uppercase h-9 px-4 rounded-none w-full">
+                  <Link href={`/products/${flashProduct.id}`}>DETAILS</Link>
+                </Button>
               </div>
             </div>
-
-            <OrderModal 
-              product={flashProduct} 
-              isOpen={isOrderOpen} 
-              onClose={() => setIsOrderOpen(false)} 
-            />
-          </>
-        ) : (
-          <div className="absolute inset-0 flex items-center justify-center">
-            <p className="text-white/20 text-[10px] font-black uppercase tracking-[0.3em]">No Flash Offers</p>
           </div>
-        )}
-      </div>
+          <OrderModal product={flashProduct} isOpen={isOrderOpen} onClose={() => setIsOrderOpen(false)} />
+        </div>
+      ) : (
+        <div className="absolute inset-0 flex items-center justify-center">
+          <p className="text-white/20 text-[10px] font-black uppercase tracking-[0.3em]">No Flash Offers</p>
+        </div>
+      )}
     </div>
   );
 };
@@ -171,97 +157,98 @@ export default function Home() {
     <div className="min-h-screen flex flex-col bg-background selection:bg-[#01a3a4]/30">
       <Navbar />
       
-      <main className="flex-grow container mx-auto px-4 py-4 space-y-8">
-        {/* HERO SECTION: FORCED 3-COLUMN LAYOUT FOR DESKTOP MODE ON ALL DEVICES */}
-        <section className="grid grid-cols-12 gap-4">
-          <div className="col-span-3">
+      <main className="flex-grow container mx-auto py-8 space-y-12">
+        {/* HERO SECTION: FIXED 3-COLUMN DESKTOP LAYOUT */}
+        <section className="grid grid-cols-12 gap-4 h-[350px]">
+          <div className="col-span-3 h-full">
             <FlashOfferCard />
           </div>
 
-          <div className="col-span-6 relative rounded-none overflow-hidden h-[350px] bg-card">
+          <div className="col-span-6 relative rounded-none overflow-hidden h-full bg-card border border-white/5">
             {sliderProducts && sliderProducts.length > 0 ? (
               <Carousel className="w-full h-full" opts={{ loop: true }} plugins={[plugin.current]}>
                 <CarouselContent className="h-[350px]">
                   {sliderProducts.map((p, index) => (
-                    <SlideItem key={p.id} product={p} priority={true} />
+                    <SlideItem key={p.id} product={p} priority={index < 3} />
                   ))}
                 </CarouselContent>
               </Carousel>
             ) : (
               <div className="w-full h-full flex flex-col items-center justify-center space-y-4">
                 <p className="text-white/20 text-[10px] font-black uppercase tracking-widest">Slider Products Not Set</p>
-                <Link href="/admin/products" className="text-[#01a3a4] text-[10px] font-black uppercase underline">Update Admin</Link>
               </div>
             )}
           </div>
           
-          <div className="col-span-3 flex flex-col h-[350px] gap-4">
-            <div className="relative flex-grow bg-gradient-to-br from-[#01a3a4] to-[#00d2d3] p-5 pt-10 rounded-none overflow-hidden shadow-2xl flex flex-col">
-              <div className="text-center mb-6">
-                <h3 className="text-white font-black text-base tracking-tight uppercase leading-none">Download App</h3>
+          <div className="col-span-3 flex flex-col h-full gap-4">
+            <div className="relative flex-grow bg-gradient-to-br from-[#01a3a4] to-[#00d2d3] p-6 rounded-none overflow-hidden shadow-2xl flex flex-col justify-between">
+              <div className="text-center">
+                <h3 className="text-white font-black text-lg tracking-tight uppercase leading-none">Download App</h3>
+                <p className="text-white/70 text-[8px] font-black uppercase tracking-[0.3em] mt-2">Get Extra Discount</p>
               </div>
-              <div className="space-y-4 flex-grow flex flex-col justify-center">
-                <div className="flex items-center gap-3">
+              <div className="space-y-4">
+                <div className="flex items-center gap-4">
                   <div className="w-10 h-10 bg-black/20 flex items-center justify-center border border-white/10"><Truck className="h-5 w-5 text-white" /></div>
-                  <div className="flex flex-col"><span className="text-white font-black text-[9px] uppercase opacity-80">Free</span><span className="text-white font-black text-[12px] uppercase">Delivery</span></div>
+                  <div className="flex flex-col"><span className="text-white font-black text-[9px] uppercase opacity-80">Fast</span><span className="text-white font-black text-[12px] uppercase">Delivery</span></div>
                 </div>
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-4">
                   <div className="w-10 h-10 bg-black/20 flex items-center justify-center border border-white/10"><Tag className="h-5 w-5 text-white" /></div>
-                  <div className="flex flex-col"><span className="text-white font-black text-[9px] uppercase opacity-80">Limited</span><span className="text-white font-black text-[12px] uppercase">Time</span></div>
+                  <div className="flex flex-col"><span className="text-white font-black text-[9px] uppercase opacity-80">Premium</span><span className="text-white font-black text-[12px] uppercase">Service</span></div>
                 </div>
               </div>
             </div>
-            <div className="shrink-0 flex items-center gap-3 px-1 mt-auto">
-              <div className="bg-white p-1 w-20 h-20 shrink-0 border border-white/5 flex items-center justify-center group/qr overflow-hidden">
+            <div className="flex items-center gap-3 bg-card border border-white/5 p-3">
+              <div className="bg-white p-1 w-16 h-16 shrink-0 border border-white/5 flex items-center justify-center">
                 <svg viewBox="0 0 100 100" className="w-full h-full text-black">
-                  <path fill="currentColor" d="M0 0h18v18H0V0zm2 2v14h14V2H2zm2 2h10v10H4V4zm78-4h18v18H82V0zm2 2v14h14V2H84zm2 2h10v10H86V4zM0 82h18v18H0V82zm2 2v14h14V84H2zm2 2h10v10H4V86zm20-80h2v2h-2zm4 0h2v2h-2zm4 0h2v2h-2zm4 0h2v2h-2zm4 0h2v2h-2zm4 0h2v2h-2zm4 0h2v2h-2zm4 0h2v2h-2zm4 0h2v2h-2zm4 0h2v2h-2zm4 0h2v2h-2zm4 0h2v2h-2zm-44 4h2v2h-2zm8 0h2v2h-2zm4 0h2v2h-2zm8 0h2v2h-2zm8 0h2v2h-2zm8 0h2v2h-2zm4 0h2v2h-2zm-40 4h2v2h-2zm4 0h2v2h-2zm12 0h2v2h-2zm8 0h2v2h-2zm4 0h2v2h-2zm8 0h2v2h-2zm-36 4h2v2h-2zm4 0h2v2h-2zm8 0h2v2h-2zm4 0h2v2h-2zm8 0h2v2h-2zm8 0h2v2h-2zm4 0h2v2h-2zm-36 4h2v2h-2zm4 0h2v2h-2zm12 0h2v2h-2zm8 0h2v2h-2zm4 0h2v2h-2zm8 0h2v2h-2zm-36 4h2v2h-2zm4 0h2v2h-2zm8 0h2v2h-2zm4 0h2v2h-2zm8 0h2v2h-2zm8 0h2v2h-2zm4 0h2v2h-2zm-36 4h2v2h-2zm4 0h2v2h-2zm12 0h2v2h-2zm8 0h2v2h-2zm4 0h2v2h-2zm8 0h2v2h-2zm-36 4h2v2h-2zm4 0h2v2h-2zm8 0h2v2h-2zm4 0h2v2h-2zm8 0h2v2h-2zm8 0h2v2h-2zm4 0h2v2h-2zm-36 4h2v2h-2zm4 0h2v2h-2zm12 0h2v2h-2zm8 0h2v2h-2zm4 0h2v2h-2zm8 0h2v2h-2zm-36 4h2v2h-2zm4 0h2v2h-2zm8 0h2v2h-2zm4 0h2v2h-2zm8 0h2v2h-2zm8 0h2v2h-2zm4 0h2v2h-2zm-36 4h2v2h-2zm4 0h2v2h-2zm12 0h2v2h-2zm8 0h2v2h-2zm4 0h2v2h-2zm8 0h2v2h-2zm-36 4h2v2h-2zm4 0h2v2h-2zm8 0h2v2h-2zm4 0h2v2h-2zm8 0h2v2h-2zm8 0h2v2h-2zm4 0h2v2h-2zm-36 4h2v2h-2zm4 0h2v2h-2zm12 0h2v2h-2zm8 0h2v2h-2zm4 0h2v2h-2zm8 0h2v2h-2zm-36 4h2v2h-2zm4 0h2v2h-2zm8 0h2v2h-2zm4 0h2v2h-2zm8 0h2v2h-2zm8 0h2v2h-2zm4 0h2v2h-2zm-36 4h2v2h-2zm4 0h2v2h-2zm12 0h2v2h-2zm8 0h2v2h-2zm4 0h2v2h-2zm8 0h2v2h-2zm-36 4h2v2h-2zm4 0h2v2h-2zm8 0h2v2h-2zm4 0h2v2h-2zm8 0h2v2h-2zm8 0h2v2h-2zm4 0h2v2h-2zm-36 4h2v2h-2zm4 0h2v2h-2zm12 0h2v2h-2zm8 0h2v2h-2zm4 0h2v2h-2zm8 0h2v2h-2zm-36 4h2v2h-2zm4 0h2v2h-2zm8 0h2v2h-2zm4 0h2v2h-2zm8 0h2v2h-2zm8 0h2v2h-2zm4 0h2v2h-2zm-36 4h2v2h-2zm4 0h2v2h-2zm12 0h2v2h-2zm8 0h2v2h-2zm4 0h2v2h-2zm8 0h2v2h-2zm-36 4h2v2h-2zm4 0h2v2h-2zm8 0h2v2h-2zm4 0h2v2h-2zm8 0h2v2h-2zm8 0h2v2h-2zm4 0h2v2h-2zm-36 4h2v2h-2zm4 0h2v2h-2zm12 0h2v2h-2zm8 0h2v2h-2zm4 0h2v2h-2zm8 0h2v2h-2zm-36 4h2v2h-2zm4 0h2v2h-2zm8 0h2v2h-2zm4 0h2v2h-2zm8 0h2v2h-2zm8 0h2v2h-2zm4 0h2v2h-2zm-36 4h2v2h-2zm4 0h2v2h-2zm12 0h2v2h-2zm8 0h2v2h-2zm4 0h2v2h-2zm8 0h2v2h-2zm-36 4h2v2h-2zm4 0h2v2h-2zm8 0h2v2h-2zm4 0h2v2h-2zm8 0h2v2h-2zm8 0h2v2h-2zm4 0h2v2h-2zm-36 4h2v2h-2zm4 0h2v2h-2zm12 0h2v2h-2zm8 0h2v2h-2zm4 0h2v2h-2zm8 0h2v2h-2zm-36 4h2v2h-2zm4 0h2v2h-2zm8 0h2v2h-2zm4 0h2v2h-2zm8 0h2v2h-2zm8 0h2v2h-2zm4 0h2v2h-2zm-36 4h2v2h-2zm4 0h2v2h-2zm12 0h2v2h-2zm8 0h2v2h-2zm4 0h2v2h-2zm8 0h2v2h-2zm-36 4h2v2h-2zm4 0h2v2h-2zm8 0h2v2h-2zm4 0h2v2h-2zm8 0h2v2h-2zm8 0h2v2h-2zm4 0h2v2h-2zm-36 4h2v2h-2zm4 0h2v2h-2zm12 0h2v2h-2zm8 0h2v2h-2zm4 0h2v2h-2zm8 0h2v2h-2zm-36 4h2v2h-2zm4 0h2v2h-2zm8 0h2v2h-2zm4 0h2v2h-2zm8 0h2v2h-2zm8 0h2v2h-2zm4 0h2v2h-2zm-36 4h2v2h-2zm4 0h2v2h-2zm12 0h2v2h-2zm8 0h2v2h-2zm4 0h2v2h-2zm8 0h2v2h-2z" />
+                  <path fill="currentColor" d="M0 0h18v18H0V0zm2 2v14h14V2H2zm2 2h10v10H4V4zm78-4h18v18H82V0zm2 2v14h14V2H84zm2 2h10v10H86V4zM0 82h18v18H0V82zm2 2v14h14V84H2zm2 2h10v10H4V86zm20-80h2v2h-2zm4 0h2v2h-2zm4 0h2v2h-2zm4 0h2v2h-2zm4 0h2v2h-2zm4 0h2v2h-2zm4 0h2v2h-2zm4 0h2v2h-2zm4 0h2v2h-2zm4 0h2v2h-2zm4 0h2v2h-2zm4 0h2v2h-2zm-44 4h2v2h-2zm8 0h2v2h-2zm4 0h2v2h-2zm8 0h2v2h-2zm8 0h2v2h-2zm8 0h2v2h-2zm4 0h2v2h-2zm-40 4h2v2h-2zm4 0h2v2h-2zm12 0h2v2h-2zm8 0h2v2h-2zm4 0h2v2h-2zm8 0h2v2h-2zm-36 4h2v2h-2zm4 0h2v2h-2zm8 0h2v2h-2zm4 0h2v2h-2zm8 0h2v2h-2zm8 0h2v2h-2zm4 0h2v2h-2zm-36 4h2v2h-2zm4 0h2v2h-2zm12 0h2v2h-2zm8 0h2v2h-2zm4 0h2v2h-2zm8 0h2v2h-2zm-36 4h2v2h-2zm4 0h2v2h-2zm8 0h2v2h-2zm4 0h2v2h-2zm8 0h2v2h-2zm8 0h2v2h-2zm4 0h2v2h-2zm-36 4h2v2h-2zm4 0h2v2h-2zm12 0h2v2h-2zm8 0h2v2h-2zm4 0h2v2h-2zm8 0h2v2h-2zm-36 4h2v2h-2zm4 0h2v2h-2zm8 0h2v2h-2zm4 0h2v2h-2zm8 0h2v2h-2zm8 0h2v2h-2zm4 0h2v2h-2zm-36 4h2v2h-2zm4 0h2v2h-2zm12 0h2v2h-2zm8 0h2v2h-2zm4 0h2v2h-2zm8 0h2v2h-2zm-36 4h2v2h-2zm4 0h2v2h-2zm8 0h2v2h-2zm4 0h2v2h-2zm8 0h2v2h-2zm8 0h2v2h-2zm4 0h2v2h-2zm-36 4h2v2h-2zm4 0h2v2h-2zm12 0h2v2h-2zm8 0h2v2h-2zm4 0h2v2h-2zm8 0h2v2h-2zm-36 4h2v2h-2zm4 0h2v2h-2zm8 0h2v2h-2zm4 0h2v2h-2zm8 0h2v2h-2zm8 0h2v2h-2zm4 0h2v2h-2zm-36 4h2v2h-2zm4 0h2v2h-2zm12 0h2v2h-2zm8 0h2v2h-2zm4 0h2v2h-2zm8 0h2v2h-2zm-36 4h2v2h-2zm4 0h2v2h-2zm8 0h2v2h-2zm4 0h2v2h-2zm8 0h2v2h-2zm8 0h2v2h-2zm4 0h2v2h-2zm-36 4h2v2h-2zm4 0h2v2h-2zm12 0h2v2h-2zm8 0h2v2h-2zm4 0h2v2h-2zm8 0h2v2h-2zm-36 4h2v2h-2zm4 0h2v2h-2zm8 0h2v2h-2zm4 0h2v2h-2zm8 0h2v2h-2zm8 0h2v2h-2zm4 0h2v2h-2zm-36 4h2v2h-2zm4 0h2v2h-2zm12 0h2v2h-2zm8 0h2v2h-2zm4 0h2v2h-2zm8 0h2v2h-2zm-36 4h2v2h-2zm4 0h2v2h-2zm8 0h2v2h-2zm4 0h2v2h-2zm8 0h2v2h-2zm8 0h2v2h-2zm4 0h2v2h-2zm-36 4h2v2h-2zm4 0h2v2h-2zm12 0h2v2h-2zm8 0h2v2h-2zm4 0h2v2h-2zm8 0h2v2h-2zm-36 4h2v2h-2zm4 0h2v2h-2zm8 0h2v2h-2zm4 0h2v2h-2zm8 0h2v2h-2zm8 0h2v2h-2zm4 0h2v2h-2zm-36 4h2v2h-2zm4 0h2v2h-2zm12 0h2v2h-2zm8 0h2v2h-2zm4 0h2v2h-2zm8 0h2v2h-2zm-36 4h2v2h-2zm4 0h2v2h-2zm8 0h2v2h-2zm4 0h2v2h-2zm8 0h2v2h-2zm8 0h2v2h-2zm4 0h2v2h-2zm-36 4h2v2h-2zm4 0h2v2h-2zm12 0h2v2h-2zm8 0h2v2h-2zm4 0h2v2h-2zm8 0h2v2h-2zm-36 4h2v2h-2zm4 0h2v2h-2zm8 0h2v2h-2zm4 0h2v2h-2zm8 0h2v2h-2zm8 0h2v2h-2zm4 0h2v2h-2zm-36 4h2v2h-2zm4 0h2v2h-2zm12 0h2v2h-2zm8 0h2v2h-2zm4 0h2v2h-2zm8 0h2v2h-2z" />
                 </svg>
               </div>
-              <div className="flex flex-col gap-2 flex-grow">
-                <div className="bg-white h-9 px-3 flex items-center gap-2 rounded-none"><Apple className="h-3.5 w-3.5 text-black" /><span className="text-[9px] text-black font-black uppercase">App Store</span></div>
-                <div className="bg-white h-9 px-3 flex items-center gap-2 rounded-none"><Play className="h-3.5 w-3.5 text-black fill-black" /><span className="text-[9px] text-black font-black uppercase">Google Play</span></div>
+              <div className="flex flex-col gap-1.5 flex-grow">
+                <div className="bg-white h-7 px-3 flex items-center gap-2"><Apple className="h-3 w-3 text-black" /><span className="text-[8px] text-black font-black uppercase">App Store</span></div>
+                <div className="bg-white h-7 px-3 flex items-center gap-2"><Play className="h-3 w-3 text-black fill-black" /><span className="text-[8px] text-black font-black uppercase">Google Play</span></div>
               </div>
             </div>
           </div>
         </section>
 
-        <section className="bg-card/30 rounded-none p-6 border border-white/5">
-          <div className="flex items-center justify-between mb-8">
-            <h2 className="text-xl font-black flex items-center gap-3 uppercase tracking-tighter text-white">
-              <Flame className="h-5 w-5 text-[#01a3a4] fill-current" /> TOP PRODUCTS
+        <section className="bg-card/30 p-8 border border-white/5">
+          <div className="flex items-center justify-between mb-10">
+            <h2 className="text-2xl font-black flex items-center gap-3 uppercase tracking-tighter text-white">
+              <Flame className="h-6 w-6 text-[#01a3a4] fill-current" /> TOP SELLING PRODUCTS
             </h2>
+            <div className="h-0.5 flex-grow mx-8 bg-white/5" />
           </div>
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
+          <div className="grid grid-cols-6 gap-6">
             {productsLoading ? (
                Array.from({length: 12}).map((_, i) => <div key={i} className="aspect-[4/5] bg-white/5 animate-pulse" />)
             ) : products?.map((product, index) => (
               <ProductCard key={product.id} product={product} index={index} />
             ))}
           </div>
-          <div className="flex justify-center mt-12">
-            <Button asChild className="bg-[#01a3a4] hover:bg-[#01a3a4]/90 text-white font-black text-[12px] uppercase h-12 px-10 rounded-none">
-              <Link href="/shop">LOAD MORE PRODUCTS <ArrowRight className="ml-2 h-5 w-5" /></Link>
+          <div className="flex justify-center mt-16">
+            <Button asChild className="bg-[#01a3a4] hover:bg-[#01a3a4]/90 text-white font-black text-[13px] uppercase h-14 px-12 rounded-none shadow-2xl shadow-[#01a3a4]/20">
+              <Link href="/shop">LOAD MORE PRODUCTS <ArrowRight className="ml-3 h-5 w-5" /></Link>
             </Button>
           </div>
         </section>
 
-        <section className="space-y-6">
-          <div className="flex items-center gap-3">
-            <div className="h-6 w-1.5 bg-[#01a3a4]" />
-            <h2 className="text-xl font-black uppercase tracking-tighter text-white">SHOP BY CATEGORY</h2>
+        <section className="space-y-8 pb-12">
+          <div className="flex items-center gap-4">
+            <div className="h-8 w-2 bg-[#01a3a4]" />
+            <h2 className="text-2xl font-black uppercase tracking-tighter text-white">EXPLORE BY CATEGORY</h2>
           </div>
-          <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-4">
+          <div className="grid grid-cols-8 gap-6">
             {categoriesLoading ? (
               Array.from({length: 8}).map((_, i) => <div key={i} className="aspect-square bg-white/5 animate-pulse" />)
             ) : categories?.map((cat) => (
-              <Link href={`/shop?category=${cat.name}`} key={cat.id} className="group flex flex-col items-center space-y-2">
+              <Link href={`/shop?category=${cat.name}`} key={cat.id} className="group flex flex-col items-center space-y-3">
                 <div className="relative w-full aspect-square overflow-hidden border border-white/5 group-hover:border-[#01a3a4] transition-all bg-black">
                   {cat.imageUrl && (
                     <Image 
                       src={cat.imageUrl} 
                       alt={cat.name} 
                       fill 
-                      sizes="(max-width: 768px) 33vw, 12vw" 
+                      sizes="150px" 
                       quality={60} 
                       className="object-cover group-hover:scale-110 transition-transform duration-500" 
                     />

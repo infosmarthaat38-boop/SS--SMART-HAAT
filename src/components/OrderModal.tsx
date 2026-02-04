@@ -26,6 +26,7 @@ export function OrderModal({ product, isOpen, onClose }: OrderModalProps) {
   const db = useFirestore();
   const [step, setStep] = useState<'FORM' | 'SUCCESS'>('FORM');
   const [loading, setLoading] = useState(false);
+  const [isActualMobile, setIsActualMobile] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
     phone: '',
@@ -34,6 +35,12 @@ export function OrderModal({ product, isOpen, onClose }: OrderModalProps) {
   });
 
   useEffect(() => {
+    // Detect if the device is actually a mobile regardless of forced viewport width
+    const userAgent = navigator.userAgent || navigator.vendor || (window as any).opera;
+    if (/android|iphone|ipad|ipod/i.test(userAgent.toLowerCase())) {
+      setIsActualMobile(true);
+    }
+
     if (product?.sizes?.length > 0 && !formData.selectedSize) {
       setFormData(prev => ({ ...prev, selectedSize: product.sizes[0] }));
     }
@@ -85,38 +92,40 @@ export function OrderModal({ product, isOpen, onClose }: OrderModalProps) {
     <>
       <Dialog open={isOpen && step === 'FORM'} onOpenChange={(val) => !val && handleClose()}>
         <DialogContent className="max-w-4xl p-0 bg-black border-white/10 rounded-none overflow-hidden gap-0">
-          <div className="flex flex-col md:flex-row h-full max-h-[95vh]">
+          <div className="flex flex-row h-full max-h-[95vh]">
             
-            {/* PRODUCT PREVIEW - HIDDEN ON MOBILE */}
-            <div className="hidden md:block relative w-5/12 aspect-[4/5] bg-black border-r border-white/5">
-              <Image 
-                src={product.imageUrl} 
-                alt={product.name} 
-                fill 
-                className="object-cover"
-                sizes="40vw"
-                quality={75}
-                priority
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent" />
-              <div className="absolute bottom-8 left-8 right-8 space-y-2">
-                <p className="text-[10px] font-black text-[#01a3a4] uppercase tracking-widest">Selected Item</p>
-                <h2 className="text-2xl font-black text-white uppercase tracking-tighter leading-tight">{product.name}</h2>
-                <div className="text-3xl font-black text-white flex items-baseline">
-                  <span className="text-[0.45em] font-normal mr-1 translate-y-[-0.1em]">৳</span>
-                  {product.price.toLocaleString()}
+            {/* PRODUCT PREVIEW - HIDDEN ONLY ON ACTUAL MOBILE DEVICES */}
+            {!isActualMobile && (
+              <div className="relative w-5/12 aspect-[4/5] bg-black border-r border-white/5">
+                <Image 
+                  src={product.imageUrl} 
+                  alt={product.name} 
+                  fill 
+                  className="object-cover"
+                  sizes="400px"
+                  quality={75}
+                  priority
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent" />
+                <div className="absolute bottom-8 left-8 right-8 space-y-2">
+                  <p className="text-[10px] font-black text-[#01a3a4] uppercase tracking-widest">Selected Item</p>
+                  <h2 className="text-2xl font-black text-white uppercase tracking-tighter leading-tight">{product.name}</h2>
+                  <div className="text-3xl font-black text-white flex items-baseline">
+                    <span className="text-[0.45em] font-normal mr-1 translate-y-[-0.1em]">৳</span>
+                    {product.price.toLocaleString()}
+                  </div>
                 </div>
               </div>
-            </div>
+            )}
 
-            {/* FORM AREA - FULL WIDTH ON MOBILE */}
-            <div className="w-full md:w-7/12 p-6 md:p-12 space-y-6 md:space-y-10 bg-black overflow-y-auto">
+            {/* FORM AREA */}
+            <div className={`${isActualMobile ? 'w-full' : 'w-7/12'} p-12 space-y-10 bg-black overflow-y-auto`}>
               <div className="space-y-2">
                 <div className="flex items-center gap-3">
-                  <div className="h-6 md:h-8 w-1.5 bg-[#01a3a4]" />
-                  <DialogTitle className="text-xl md:text-3xl font-black text-white uppercase tracking-tighter leading-none">COMPLETE ORDER</DialogTitle>
+                  <div className="h-8 w-1.5 bg-[#01a3a4]" />
+                  <DialogTitle className="text-3xl font-black text-white uppercase tracking-tighter leading-none">COMPLETE ORDER</DialogTitle>
                 </div>
-                <DialogDescription className="text-[10px] md:text-[11px] text-white/60 uppercase font-black tracking-widest">
+                <DialogDescription className="text-[11px] text-white/60 uppercase font-black tracking-widest">
                   PROVIDE YOUR DETAILS FOR ELITE DELIVERY
                 </DialogDescription>
               </div>
@@ -124,7 +133,7 @@ export function OrderModal({ product, isOpen, onClose }: OrderModalProps) {
               <form onSubmit={handleSubmit} className="space-y-6">
                 {product?.sizes && product.sizes.length > 0 && (
                   <div className="space-y-3">
-                    <label className="text-[9px] md:text-[10px] font-black text-white/60 uppercase flex items-center gap-2">
+                    <label className="text-[10px] font-black text-white/60 uppercase flex items-center gap-2">
                       <Ruler className="h-3 w-3" /> SELECT SIZE
                     </label>
                     <div className="flex flex-wrap gap-2">
@@ -148,7 +157,7 @@ export function OrderModal({ product, isOpen, onClose }: OrderModalProps) {
 
                 <div className="grid grid-cols-1 gap-5">
                   <div className="space-y-2">
-                    <label className="text-[9px] md:text-[10px] font-black text-white/60 uppercase flex items-center gap-2">
+                    <label className="text-[10px] font-black text-white/60 uppercase flex items-center gap-2">
                       <User className="h-3 w-3" /> FULL NAME
                     </label>
                     <input 
@@ -161,7 +170,7 @@ export function OrderModal({ product, isOpen, onClose }: OrderModalProps) {
                   </div>
 
                   <div className="space-y-2">
-                    <label className="text-[9px] md:text-[10px] font-black text-white/60 uppercase flex items-center gap-2">
+                    <label className="text-[10px] font-black text-white/60 uppercase flex items-center gap-2">
                       <Phone className="h-3 w-3" /> CONTACT NUMBER
                     </label>
                     <input 
@@ -175,7 +184,7 @@ export function OrderModal({ product, isOpen, onClose }: OrderModalProps) {
                   </div>
 
                   <div className="space-y-2">
-                    <label className="text-[9px] md:text-[10px] font-black text-white/60 uppercase flex items-center gap-2">
+                    <label className="text-[10px] font-black text-white/60 uppercase flex items-center gap-2">
                       <MapPin className="h-3 w-3" /> DELIVERY ADDRESS
                     </label>
                     <textarea 
@@ -191,7 +200,7 @@ export function OrderModal({ product, isOpen, onClose }: OrderModalProps) {
                 <Button 
                   disabled={loading}
                   type="submit" 
-                  className="w-full bg-[#01a3a4] hover:bg-white hover:text-black text-white h-14 font-black uppercase tracking-widest rounded-none shadow-xl shadow-[#01a3a4]/10 text-[11px] md:text-[12px] transition-all"
+                  className="w-full bg-[#01a3a4] hover:bg-white hover:text-black text-white h-14 font-black uppercase tracking-widest rounded-none shadow-xl shadow-[#01a3a4]/10 text-[12px] transition-all"
                 >
                   {loading ? <Loader2 className="animate-spin h-5 w-5" /> : <><ShoppingBag className="mr-3 h-5 w-5" /> CONFIRM ORDER</>}
                 </Button>
