@@ -11,7 +11,7 @@ import {
   DialogDescription
 } from "@/components/ui/dialog";
 import { Button } from '@/components/ui/button';
-import { ShoppingBag, CheckCircle2, Loader2, Phone, MapPin, User, Ruler } from 'lucide-react';
+import { ShoppingBag, CheckCircle2, Loader2, Phone, MapPin, User, Ruler, Sparkles } from 'lucide-react';
 import { useFirestore } from '@/firebase';
 import { collection } from 'firebase/firestore';
 import { addDocumentNonBlocking } from '@/firebase/non-blocking-updates';
@@ -44,7 +44,7 @@ export function OrderModal({ product, isOpen, onClose }: OrderModalProps) {
     if (step === 'SUCCESS') {
       timer = setTimeout(() => {
         handleClose();
-      }, 5000);
+      }, 8000); // Increased time to enjoy the beautiful success screen
     }
     return () => clearTimeout(timer);
   }, [step]);
@@ -78,7 +78,7 @@ export function OrderModal({ product, isOpen, onClose }: OrderModalProps) {
     setTimeout(() => {
       setLoading(false);
       setStep('SUCCESS');
-    }, 1000);
+    }, 1200);
   };
 
   return (
@@ -121,7 +121,7 @@ export function OrderModal({ product, isOpen, onClose }: OrderModalProps) {
                 </DialogDescription>
                 {/* Mobile Identity Helper */}
                 <div className="md:hidden pt-2 flex items-center justify-between border-t border-white/5">
-                   <p className="text-[10px] font-black text-white/40 uppercase">{product.name}</p>
+                   <p className="text-[10px] font-black text-white/40 uppercase line-clamp-1 max-w-[150px]">{product.name}</p>
                    <div className="text-lg font-black text-[#01a3a4] flex items-baseline">
                       <span className="text-[0.45em] font-normal mr-0.5 translate-y-[-0.1em]">৳</span>
                       {product.price.toLocaleString()}
@@ -209,22 +209,51 @@ export function OrderModal({ product, isOpen, onClose }: OrderModalProps) {
         </DialogContent>
       </Dialog>
 
+      {/* UNIQUE & ATTRACTIVE SUCCESS MODAL */}
       <Dialog open={isOpen && step === 'SUCCESS'} onOpenChange={(val) => !val && handleClose()}>
-        <DialogContent className="max-w-md bg-black border-[#01a3a4]/30 rounded-none p-10 text-center space-y-6">
-          <div className="w-16 h-16 bg-[#01a3a4]/10 rounded-full flex items-center justify-center mx-auto mb-4 border border-[#01a3a4]/20">
-            <CheckCircle2 className="h-8 w-8 text-[#01a3a4]" />
+        <DialogContent className="max-w-lg bg-black border-[3px] border-[#01a3a4] rounded-none p-0 overflow-hidden shadow-[0_0_50px_rgba(1,163,164,0.3)]">
+          <div className="relative p-10 text-center space-y-8">
+            {/* Decorative background element */}
+            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-[#01a3a4] to-transparent" />
+            
+            <div className="relative">
+              <div className="w-24 h-24 bg-[#01a3a4]/10 rounded-full flex items-center justify-center mx-auto mb-6 border-2 border-[#01a3a4]/40 animate-pulse">
+                <CheckCircle2 className="h-12 w-12 text-[#01a3a4]" />
+              </div>
+              <Sparkles className="absolute top-0 right-1/4 h-6 w-6 text-[#01a3a4] animate-bounce" />
+            </div>
+
+            <div className="space-y-6">
+              <div className="space-y-2">
+                <p className="text-[10px] font-black text-[#01a3a4] uppercase tracking-[0.5em]">Order Confirmed</p>
+                <DialogTitle className="text-3xl md:text-4xl font-black text-white uppercase tracking-tighter leading-none">
+                  THANK YOU FOR YOUR ORDER
+                </DialogTitle>
+              </div>
+
+              <div className="h-px w-20 bg-[#01a3a4] mx-auto opacity-50" />
+
+              <DialogDescription className="text-[15px] md:text-[18px] font-bold text-white/90 leading-relaxed max-w-sm mx-auto">
+                আমাদের একজন প্রতিনিধি যত দ্রুত সম্ভব আপনার সঙ্গে যোগাযোগ করবে।
+              </DialogDescription>
+              
+              <p className="text-[10px] font-black text-[#01a3a4] uppercase tracking-widest italic opacity-70">
+                STAY CONNECTED WITH SS SMART HAAT
+              </p>
+            </div>
+
+            <Button 
+              onClick={handleClose} 
+              className="w-full bg-[#01a3a4] hover:bg-white hover:text-black text-white font-black uppercase h-16 rounded-none text-[12px] tracking-[0.3em] transition-all shadow-xl shadow-[#01a3a4]/20"
+            >
+              ঠিক আছে
+            </Button>
+            
+            <div className="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-[#01a3a4] to-transparent" />
           </div>
-          <div className="space-y-4">
-            <DialogTitle className="text-2xl font-black text-white uppercase tracking-tighter leading-tight">
-              অর্ডার সফলভাবে সম্পন্ন হয়েছে
-            </DialogTitle>
-            <DialogDescription className="text-[13px] font-bold text-[#01a3a4] uppercase tracking-widest italic leading-relaxed">
-              আমাদের প্রতিনিধি শীঘ্রই আপনাকে ফোন করে অর্ডারটি নিশ্চিত করবেন। ধন্যবাদ!
-            </DialogDescription>
-          </div>
-          <Button onClick={handleClose} className="w-full bg-[#01a3a4] text-white font-black uppercase h-12 rounded-none">ঠিক আছে</Button>
         </DialogContent>
       </Dialog>
     </>
   );
 }
+
