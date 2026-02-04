@@ -32,7 +32,7 @@ export const ProductCard = memo(({ product, index = 0 }: ProductCardProps) => {
             priority={index < 12}
             loading={index < 12 ? "eager" : "lazy"}
             quality={85}
-            className="object-contain p-2 transition-transform duration-700 group-hover:scale-105"
+            className="object-contain transition-transform duration-700 group-hover:scale-105"
           />
           {isOutOfStock && (
             <div className="absolute inset-0 bg-black/60 flex items-center justify-center z-10">
