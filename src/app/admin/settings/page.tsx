@@ -50,7 +50,9 @@ export default function AdminSettings() {
         adminPassword: settings.adminPassword || '4321'
       });
     }
-    setPreviewUrl(window.location.origin);
+    if (typeof window !== 'undefined') {
+      setPreviewUrl(window.location.origin);
+    }
   }, [settings]);
 
   const handleSaveAdmin = (e: React.FormEvent) => {
@@ -111,7 +113,7 @@ export default function AdminSettings() {
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
           
-          {/* LEFT COLUMN: SECURITY & PUBLISHING */}
+          {/* LEFT COLUMN: SECURITY & PUBLISHING HUB */}
           <div className="space-y-12">
             <Card className="bg-card border-white/5 rounded-none shadow-2xl">
               <CardHeader className="bg-white/[0.02] border-b border-white/5 p-6">
@@ -153,53 +155,71 @@ export default function AdminSettings() {
             <Card className="bg-card border-white/5 rounded-none shadow-2xl">
               <CardHeader className="bg-white/[0.02] border-b border-white/5 p-6">
                 <CardTitle className="text-xs font-black uppercase tracking-[0.3em] text-orange-600 flex items-center gap-2">
-                  <Terminal className="h-4 w-4" /> পাবলিশিং গাইড (GitHub & Vercel)
+                  <Terminal className="h-4 w-4" /> পাবলিশিং হাব (GITHUB & VERCEL)
                 </CardTitle>
               </CardHeader>
-              <CardContent className="p-8">
-                <CodeBlock 
-                  title="১. গিটহাব পাবলিশ গাইড"
-                  explanation="আপনার কোড আপডেট করতে নিচের কমান্ডগুলো ব্যবহার করুন। এরপর বাটন ক্লিক করে গিটহাবে গিয়ে আপডেট কোড চেক করুন।"
-                  commands={[
-                    'git init',
-                    'git add .',
-                    'git commit -m "Updated Final Build"',
-                    'git push origin main'
-                  ]}
-                />
-                <Button asChild className="w-full bg-white text-black hover:bg-white/90 h-14 font-black uppercase tracking-widest rounded-none mb-8">
-                  <a href="https://github.com" target="_blank" rel="noopener noreferrer">
-                    <Github className="mr-3 h-5 w-5" /> OPEN GITHUB TERMINAL
-                  </a>
-                </Button>
+              <CardContent className="p-8 space-y-10">
+                {/* GITHUB GUIDE */}
+                <div className="space-y-6">
+                   <div className="flex items-center gap-3">
+                     <div className="h-8 w-8 bg-white/5 flex items-center justify-center border border-white/10"><Github className="h-4 w-4" /></div>
+                     <h2 className="text-sm font-black text-white uppercase tracking-widest">১. গিটহাবে কোড আপডেট করার নিয়ম</h2>
+                   </div>
+                   
+                   <div className="space-y-4 text-[11px] text-white/70 font-bold uppercase leading-relaxed pl-11">
+                      <p>১. প্রথমে আপনার প্রজেক্ট ফোল্ডারে টার্মিনাল বা কমান্ড প্রম্পট ওপেন করুন।</p>
+                      <p>২. নিচে দেওয়া কমান্ডগুলো একে একে রান করুন:</p>
+                   </div>
 
-                <div className="h-px bg-white/5 mb-8" />
+                   <div className="bg-black border border-white/10 p-5 font-mono text-[10px] text-green-400 space-y-2 shadow-inner ml-11">
+                      <div className="flex gap-3"><span className="text-orange-600">$</span><span>git add .</span></div>
+                      <div className="flex gap-3"><span className="text-orange-600">$</span><span>git commit -m "Update Final Build"</span></div>
+                      <div className="flex gap-3"><span className="text-orange-600">$</span><span>git push origin main</span></div>
+                   </div>
 
-                <CodeBlock 
-                  title="২. ভার্সেল ডিপ্লয়মেন্ট গাইড"
-                  explanation="গিটহাব কানেক্ট হয়ে গেলে ভার্সেলে গিয়ে এক ক্লিকেই আপনার সাইট লাইভ করতে পারবেন। ভার্সেল আপনার গিটহাবের আপডেট কোড সরাসরি লাইভ করে দিবে।"
-                  commands={[
-                    'Go to Vercel Dashboard',
-                    'Import from GitHub',
-                    'Click Deploy',
-                    'Your Site is Live!'
-                  ]}
-                />
-                <Button asChild className="w-full bg-[#01a3a4] text-white hover:bg-[#01a3a4]/90 h-14 font-black uppercase tracking-widest rounded-none">
-                  <a href="https://vercel.com/new" target="_blank" rel="noopener noreferrer">
-                    <Zap className="mr-3 h-5 w-5" /> DEPLOY TO VERCEL
-                  </a>
-                </Button>
+                   <div className="pl-11">
+                     <Button asChild className="w-full bg-white text-black hover:bg-white/90 h-12 font-black uppercase tracking-widest rounded-none">
+                        <a href="https://github.com" target="_blank" rel="noopener noreferrer">
+                          <ExternalLink className="mr-2 h-4 w-4" /> OPEN GITHUB REPOSITORY
+                        </a>
+                     </Button>
+                   </div>
+                </div>
+
+                <div className="h-px bg-white/5" />
+
+                {/* VERCEL GUIDE */}
+                <div className="space-y-6">
+                   <div className="flex items-center gap-3">
+                     <div className="h-8 w-8 bg-white/5 flex items-center justify-center border border-white/10"><Zap className="h-4 w-4 text-orange-600" /></div>
+                     <h2 className="text-sm font-black text-white uppercase tracking-widest">২. ভার্সেল এ ওয়েবসাইট লাইভ করার নিয়ম</h2>
+                   </div>
+                   
+                   <div className="space-y-4 text-[11px] text-white/70 font-bold uppercase leading-relaxed pl-11">
+                      <p>১. গিটহাবে কোড পুশ হয়ে গেলে ভার্সেল ড্যাশবোর্ডে যান।</p>
+                      <p>২. "Add New Project" এ ক্লিক করে আপনার গিটহাব রিপোজিটরিটি সিলেক্ট করুন।</p>
+                      <p>৩. "Deploy" বাটনে ক্লিক করুন। আপনার ওয়েবসাইট লাইভ হয়ে যাবে।</p>
+                      <p className="text-orange-600">* পরবর্তীতে গিটহাবে পুশ করলে ভার্সেল অটোমেটিক আপনার সাইট আপডেট করে নিবে।</p>
+                   </div>
+
+                   <div className="pl-11">
+                     <Button asChild className="w-full bg-[#01a3a4] text-white hover:bg-[#01a3a4]/90 h-12 font-black uppercase tracking-widest rounded-none">
+                        <a href="https://vercel.com/dashboard" target="_blank" rel="noopener noreferrer">
+                          <Zap className="mr-2 h-4 w-4" /> OPEN VERCEL DASHBOARD
+                        </a>
+                     </Button>
+                   </div>
+                </div>
               </CardContent>
             </Card>
           </div>
 
-          {/* RIGHT COLUMN: MOBILE PREVIEW */}
+          {/* RIGHT COLUMN: MOBILE PREVIEW SCALED */}
           <div className="space-y-6">
             <Card className="bg-card border-white/5 rounded-none shadow-2xl h-full">
               <CardHeader className="bg-[#01a3a4]/5 border-b border-white/5 p-6 flex flex-row items-center justify-between">
                 <CardTitle className="text-xs font-black uppercase tracking-[0.3em] text-[#01a3a4] flex items-center gap-2">
-                  <Smartphone className="h-4 w-4" /> LIVE MOBILE PREVIEW
+                  <Smartphone className="h-4 w-4" /> LIVE MOBILE PREVIEW (SCALED)
                 </CardTitle>
                 <Button 
                   variant="ghost" 
@@ -219,8 +239,8 @@ export default function AdminSettings() {
                       className="border-none pt-2"
                       style={{
                         width: '1200px',
-                        height: '2294px', // Adjusted height based on 1200px width ratio
-                        transform: 'scale(0.2833)', // Scales 1200px down to fit 340px (340/1200)
+                        height: '2294px', 
+                        transform: 'scale(0.2833)', 
                         transformOrigin: 'top left',
                       }}
                       title="Mobile Preview"
@@ -230,8 +250,8 @@ export default function AdminSettings() {
               </CardContent>
               <div className="p-6 bg-black border-t border-white/5 text-center">
                 <p className="text-[10px] font-black text-white/40 uppercase tracking-widest leading-relaxed">
-                  আপনার মোবাইল ভিউ এখন ডেস্কটপ মুডে (Fixed 1200px) সেট করা আছে। <br/>
-                  কাস্টমাররা মোবাইলেও একদম ডেস্কটপের মতো প্রিমিয়াম ফিল পাবে।
+                  আপনার মোবাইল প্রিভিউ এখন ০.২৮ স্কেলে ছোট করা হয়েছে। <br/>
+                  এতে করে আপনি পুরো ১২০০ পিক্সেলের ডেস্কটপ লেআউটটি একবারে দেখতে পাবেন।
                 </p>
               </div>
             </Card>
