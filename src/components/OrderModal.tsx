@@ -35,6 +35,7 @@ export function OrderModal({ product, isOpen, onClose }: OrderModalProps) {
   });
 
   useEffect(() => {
+    // Detect real mobile devices
     const userAgent = typeof window !== 'undefined' ? (navigator.userAgent || navigator.vendor || (window as any).opera) : '';
     if (/android|iphone|ipad|ipod/i.test(userAgent.toLowerCase())) {
       setIsActualMobile(true);
@@ -212,7 +213,7 @@ export function OrderModal({ product, isOpen, onClose }: OrderModalProps) {
         </DialogContent>
       </Dialog>
 
-      {/* UNIQUE SUCCESS MODAL - PRESERVED AS REQUESTED */}
+      {/* SUCCESS MODAL */}
       <Dialog open={isOpen && step === 'SUCCESS'} onOpenChange={(val) => !val && handleClose()}>
         <DialogContent className="max-w-2xl bg-black border-[5px] border-[#01a3a4] rounded-none p-0 overflow-hidden shadow-[0_0_100px_rgba(1,163,164,0.5)] relative">
           <div className="absolute top-0 left-0 w-full h-3 bg-gradient-to-r from-[#01a3a4] via-white to-[#01a3a4]" />

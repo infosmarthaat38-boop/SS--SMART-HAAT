@@ -34,10 +34,9 @@
   }
   html, body {
     @apply bg-background text-foreground font-body antialiased;
-    /* CENTER THE DESKTOP CONTENT */
-    min-width: 1200px !important;
-    overflow-x: auto !important;
-    margin: 0 auto !important;
+    /* REMOVED MIN-WIDTH FROM BODY TO ALLOW FULL DISPLAY */
+    margin: 0;
+    padding: 0;
   }
   h1, h2, h3, h4, h5, h6 {
     @apply font-headline tracking-tighter uppercase;
@@ -48,6 +47,7 @@
   }
 
   /* HARD OVERRIDE FOR CONTAINER TO STAY DESKTOP WIDTH AND CENTERED */
+  /* This ensures the layout stays "Desktop Style" even on full display */
   .container {
     width: 1200px !important;
     max-width: 1200px !important;
