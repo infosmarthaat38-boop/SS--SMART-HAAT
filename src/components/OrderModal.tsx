@@ -175,7 +175,7 @@ export function OrderModal({ product, isOpen, onClose }: OrderModalProps) {
                     <div className="absolute bottom-6 left-6 right-6">
                       <h2 className="text-xl font-black text-white uppercase tracking-tighter leading-tight">{product.name}</h2>
                       <div className="text-2xl font-black text-[#01a3a4] flex items-baseline tracking-tighter mt-1">
-                        <span className="text-[0.45em] font-normal mr-1 translate-y-[-0.1em]">৳</span>
+                        <span className="text-[0.45em] font-normal mr-1 translate-y-[-0.1em] text-white/50">৳</span>
                         {product.price.toLocaleString()}
                       </div>
                     </div>
@@ -186,42 +186,40 @@ export function OrderModal({ product, isOpen, onClose }: OrderModalProps) {
                   <div className="space-y-2">
                     <div className="flex items-center gap-3">
                       <div className="h-8 w-1.5 bg-[#01a3a4]" />
-                      <DialogTitle className="text-3xl font-black text-black uppercase tracking-tighter leading-none font-headline">অর্ডার কনফার্ম করুন</DialogTitle>
+                      <DialogTitle className="text-3xl font-black text-black uppercase tracking-tighter leading-none font-headline">CONFIRM YOUR ORDER</DialogTitle>
                     </div>
                     <DialogDescription className="text-[10px] text-[#01a3a4] uppercase font-black tracking-[0.2em]">
-                      সঠিক তথ্য প্রদান করে অর্ডার সম্পন্ন করুন
+                      PLEASE PROVIDE ACCURATE INFORMATION TO COMPLETE YOUR ORDER
                     </DialogDescription>
                   </div>
 
                   <form onSubmit={handleSubmit} className="space-y-6">
                     <div className="grid grid-cols-2 gap-4">
-                      {product?.sizes && product.sizes.length > 0 && (
-                        <div className="space-y-3">
-                          <label className="text-[9px] font-black text-gray-600 uppercase tracking-widest flex items-center gap-2">
-                            <Ruler className="h-3.5 w-3.5 text-[#01a3a4]" /> সাইজ
-                          </label>
-                          <div className="flex flex-wrap gap-1.5">
-                            {product.sizes.map((size: string) => (
-                              <button
-                                key={size}
-                                type="button"
-                                onClick={() => setFormData({...formData, selectedSize: size})}
-                                className={`px-4 py-2 border text-[10px] font-black uppercase transition-all ${
-                                  formData.selectedSize === size 
-                                    ? 'bg-[#01a3a4] border-[#01a3a4] text-white' 
-                                    : 'bg-gray-50 border-gray-200 text-gray-400 hover:border-[#01a3a4]'
-                                }`}
-                              >
-                                {size}
-                              </button>
-                            ))}
-                          </div>
+                      <div className="space-y-3">
+                        <label className="text-[9px] font-black text-gray-600 uppercase tracking-widest flex items-center gap-2">
+                          <Ruler className="h-3.5 w-3.5 text-[#01a3a4]" /> SIZE
+                        </label>
+                        <div className="flex flex-wrap gap-1.5">
+                          {(product?.sizes?.length > 0 ? product.sizes : ['M', 'L', 'XL']).map((size: string) => (
+                            <button
+                              key={size}
+                              type="button"
+                              onClick={() => setFormData({...formData, selectedSize: size})}
+                              className={`px-4 py-2 border text-[10px] font-black uppercase transition-all ${
+                                formData.selectedSize === size 
+                                  ? 'bg-[#01a3a4] border-[#01a3a4] text-white' 
+                                  : 'bg-gray-50 border-gray-200 text-gray-400 hover:border-[#01a3a4]'
+                              }`}
+                            >
+                              {size}
+                            </button>
+                          ))}
                         </div>
-                      )}
+                      </div>
 
                       <div className="space-y-3">
                         <label className="text-[9px] font-black text-gray-600 uppercase tracking-widest flex items-center gap-2">
-                          <Hash className="h-3.5 w-3.5 text-[#01a3a4]" /> পরিমাণ (PCS)
+                          <Hash className="h-3.5 w-3.5 text-[#01a3a4]" /> QUANTITY (PCS)
                         </label>
                         <input 
                           type="number"
@@ -237,20 +235,20 @@ export function OrderModal({ product, isOpen, onClose }: OrderModalProps) {
                     <div className="space-y-5">
                       <div className="space-y-1.5">
                         <label className="text-[9px] font-black text-gray-600 uppercase tracking-widest flex items-center gap-2">
-                          <User className="h-3 w-3 text-[#01a3a4]" /> আপনার নাম
+                          <User className="h-3 w-3 text-[#01a3a4]" /> YOUR NAME
                         </label>
                         <input 
                           required
                           value={formData.name}
                           onChange={(e) => setFormData({...formData, name: e.target.value})}
-                          placeholder="পুরো নাম লিখুন"
+                          placeholder="ENTER FULL NAME"
                           className="w-full bg-gray-50 border border-gray-200 rounded-none h-12 px-4 text-[13px] font-black uppercase tracking-widest focus:outline-none focus:border-[#01a3a4] focus:bg-white text-black placeholder:text-gray-400"
                         />
                       </div>
 
                       <div className="space-y-1.5">
                         <label className="text-[9px] font-black text-gray-600 uppercase tracking-widest flex items-center gap-2">
-                          <Phone className="h-3 w-3 text-[#01a3a4]" /> মোবাইল নাম্বার
+                          <Phone className="h-3 w-3 text-[#01a3a4]" /> PHONE NUMBER
                         </label>
                         <input 
                           required
@@ -264,13 +262,13 @@ export function OrderModal({ product, isOpen, onClose }: OrderModalProps) {
 
                       <div className="space-y-1.5">
                         <label className="text-[9px] font-black text-gray-600 uppercase tracking-widest flex items-center gap-2">
-                          <MapPin className="h-3 w-3 text-[#01a3a4]" /> ঠিকানা
+                          <MapPin className="h-3 w-3 text-[#01a3a4]" /> ADDRESS
                         </label>
                         <textarea 
                           required
                           value={formData.address}
                           onChange={(e) => setFormData({...formData, address: e.target.value})}
-                          placeholder="বাসা নাম্বার, এলাকা এবং শহর"
+                          placeholder="HOUSE NO, AREA AND CITY"
                           className="w-full bg-gray-50 border border-gray-200 rounded-none p-4 text-[13px] font-black uppercase tracking-widest min-h-[100px] focus:outline-none focus:border-[#01a3a4] focus:bg-white text-black placeholder:text-gray-400"
                         />
                       </div>
@@ -297,18 +295,18 @@ export function OrderModal({ product, isOpen, onClose }: OrderModalProps) {
 
                 <div className="space-y-6">
                   <div className="space-y-2">
-                    <p className="text-[12px] font-black text-[#01a3a4] uppercase tracking-[0.5em]">সফল হয়েছে</p>
+                    <p className="text-[12px] font-black text-[#01a3a4] uppercase tracking-[0.5em]">SUCCESSFUL</p>
                     <DialogTitle className="text-5xl font-black text-black uppercase tracking-tighter leading-none font-headline">
-                      অর্ডার করার জন্য ধন্যবাদ
+                      THANK YOU FOR YOUR ORDER
                     </DialogTitle>
                   </div>
                   
                   <p className="text-[22px] font-bold text-black italic font-headline py-10 border-y border-gray-100 leading-relaxed">
-                    আমাদের একজন প্রতিনিধি যত দ্রুত সম্ভব আপনার সঙ্গে যোগাযোগ করবে।
+                    OUR REPRESENTATIVE WILL CONTACT YOU SHORTLY TO FINALIZE THE DELIVERY.
                   </p>
 
                   <Button onClick={onClose} className="w-full bg-black hover:bg-[#01a3a4] text-white font-black uppercase h-16 rounded-none text-[15px] tracking-[0.4em]">
-                    বন্ধ করুন
+                    CLOSE
                   </Button>
                 </div>
               </div>
@@ -320,11 +318,11 @@ export function OrderModal({ product, isOpen, onClose }: OrderModalProps) {
               <div className="p-5 bg-white border-b border-gray-100 flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <MessageCircle className="h-4 w-4 text-[#01a3a4]" />
-                  <h3 className="text-[10px] font-black text-black uppercase tracking-widest">লাইভ সাপোর্ট</h3>
+                  <h3 className="text-[10px] font-black text-black uppercase tracking-widest">LIVE SUPPORT</h3>
                 </div>
                 <div className="flex items-center gap-1.5">
                   <div className="h-2 w-2 bg-green-500 rounded-full animate-pulse" />
-                  <span className="text-[8px] font-black text-gray-400 uppercase">অনলাইন</span>
+                  <span className="text-[8px] font-black text-gray-400 uppercase">ONLINE</span>
                 </div>
               </div>
 
@@ -341,7 +339,7 @@ export function OrderModal({ product, isOpen, onClose }: OrderModalProps) {
                 {chatHistory.length === 0 && !isChatLoading && (
                   <div className="text-center py-10 opacity-40">
                     <p className="text-[9px] font-black text-gray-500 uppercase tracking-widest leading-relaxed px-4">
-                      যেকোনো প্রয়োজনে আমাদের এখানে মেসেজ দিন। আমাদের টিম আপনার সেবায় প্রস্তুত।
+                      FEEL FREE TO SEND US A MESSAGE. OUR TEAM IS READY TO ASSIST YOU.
                     </p>
                   </div>
                 )}
@@ -356,7 +354,7 @@ export function OrderModal({ product, isOpen, onClose }: OrderModalProps) {
                       {msg.text}
                     </div>
                     <span className="text-[7px] font-black text-gray-400 uppercase mt-1 px-1">
-                      {msg.sender === 'CUSTOMER' ? 'আপনি' : 'অ্যাডমিন'} • {new Date(msg.createdAt).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
+                      {msg.sender === 'CUSTOMER' ? 'YOU' : 'ADMIN'} • {new Date(msg.createdAt).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
                     </span>
                   </div>
                 ))}
@@ -366,7 +364,7 @@ export function OrderModal({ product, isOpen, onClose }: OrderModalProps) {
                 <input 
                   value={chatMessage}
                   onChange={(e) => setChatMessage(e.target.value)}
-                  placeholder="মেসেজ লিখুন..."
+                  placeholder="TYPE A MESSAGE..."
                   className="flex-grow bg-gray-50 border border-gray-200 h-12 px-4 text-[11px] font-black uppercase text-black focus:outline-none focus:border-[#01a3a4] transition-all"
                 />
                 <Button type="submit" size="icon" className="h-12 w-12 bg-[#01a3a4] hover:bg-black rounded-none shrink-0">
