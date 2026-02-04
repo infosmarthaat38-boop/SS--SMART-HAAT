@@ -19,13 +19,12 @@ import {
   MapPin, 
   User, 
   Ruler, 
-  Sparkles, 
   PartyPopper,
   Send,
   MessageCircle
 } from 'lucide-react';
 import { useFirestore, useCollection, useMemoFirebase } from '@/firebase';
-import { collection, query, where, orderBy, limit } from 'firebase/firestore';
+import { collection, query, where, orderBy } from 'firebase/firestore';
 import { addDocumentNonBlocking } from '@/firebase/non-blocking-updates';
 
 interface OrderModalProps {
@@ -81,6 +80,16 @@ export function OrderModal({ product, isOpen, onClose }: OrderModalProps) {
       return () => clearTimeout(resetTimer);
     }
   }, [product, isOpen]);
+
+  // 3-second auto-close timer when reaching SUCCESS step
+  useEffect(() => {
+    if (step === 'SUCCESS') {
+      const timer = setTimeout(() => {
+        onClose();
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [step, onClose]);
 
   useEffect(() => {
     chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
