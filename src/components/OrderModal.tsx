@@ -24,7 +24,7 @@ import {
   MessageCircle
 } from 'lucide-react';
 import { useFirestore, useCollection, useMemoFirebase } from '@/firebase';
-import { collection, query, where, orderBy, addDoc } from 'firebase/firestore';
+import { collection, query, where, addDoc } from 'firebase/firestore';
 import { addDocumentNonBlocking } from '@/firebase/non-blocking-updates';
 
 interface OrderModalProps {
@@ -40,7 +40,10 @@ export function OrderModal({ product, isOpen, onClose }: OrderModalProps) {
   const [isActualMobile, setIsActualMobile] = useState(false);
   const [currentOrderId, setCurrentOrderId] = useState<string | null>(null);
   const [chatMessage, setChatMessage] = useState('');
-  const [tempId, setTempId] = useState<string>('');
+  
+  // Create a stable session ID for chat that persists throughout the modal session
+  const [chatSessionId] = useState(() => 'chat_' + Math.random().toString(36).substring(2, 11));
+
   const chatEndRef = useRef<HTMLDivElement>(null);
 
   const [formData, setFormData] = useState({
@@ -51,10 +54,6 @@ export function OrderModal({ product, isOpen, onClose }: OrderModalProps) {
   });
 
   useEffect(() => {
-    if (!tempId) {
-      setTempId('chat_' + Math.random().toString(36).substr(2, 9));
-    }
-
     const userAgent = typeof window !== 'undefined' ? (navigator.userAgent || navigator.vendor || (window as any).opera) : '';
     if (/android|iphone|ipad|ipod/i.test(userAgent.toLowerCase())) {
       setIsActualMobile(true);
@@ -72,19 +71,25 @@ export function OrderModal({ product, isOpen, onClose }: OrderModalProps) {
       }, 300);
       return () => clearTimeout(resetTimer);
     }
-  }, [product, isOpen, tempId]);
+  }, [product, isOpen]);
 
+  // Query for chat messages - simplified without orderBy to avoid index issues, we sort in JS
   const messagesQuery = useMemoFirebase(() => {
-    const idToUse = currentOrderId || tempId;
-    if (!idToUse) return null;
     return query(
       collection(db, 'messages'),
-      where('orderId', '==', idToUse),
-      orderBy('createdAt', 'asc')
+      where('orderId', '==', chatSessionId)
     );
-  }, [db, currentOrderId, tempId]);
+  }, [db, chatSessionId]);
 
-  const { data: chatHistory } = useCollection(messagesQuery);
+  const { data: rawChatHistory, isLoading: isChatLoading } = useCollection(messagesQuery);
+
+  // Sort messages locally by creation time
+  const chatHistory = React.useMemo(() => {
+    if (!rawChatHistory) return [];
+    return [...rawChatHistory].sort((a, b) => 
+      new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
+    );
+  }, [rawChatHistory]);
 
   useEffect(() => {
     if (step === 'SUCCESS') {
@@ -114,6 +119,7 @@ export function OrderModal({ product, isOpen, onClose }: OrderModalProps) {
       productName: product.name,
       productPrice: product.price,
       status: 'PENDING',
+      chatId: chatSessionId, // Link the chat session to the order
       createdAt: new Date().toISOString()
     };
 
@@ -132,11 +138,10 @@ export function OrderModal({ product, isOpen, onClose }: OrderModalProps) {
 
   const handleSendMessage = (e: React.FormEvent) => {
     e.preventDefault();
-    const idToUse = currentOrderId || tempId;
-    if (!chatMessage.trim() || !idToUse) return;
+    if (!chatMessage.trim()) return;
 
     addDocumentNonBlocking(collection(db, 'messages'), {
-      orderId: idToUse,
+      orderId: chatSessionId,
       customerName: formData.name || 'GUEST',
       text: chatMessage,
       sender: 'CUSTOMER',
@@ -307,16 +312,23 @@ export function OrderModal({ product, isOpen, onClose }: OrderModalProps) {
               </div>
 
               <div className="flex-grow overflow-y-auto p-5 space-y-4">
-                {chatHistory?.length === 0 && (
+                {isChatLoading && (
+                  <div className="flex justify-center py-10">
+                    <Loader2 className="h-5 w-5 animate-spin text-[#01a3a4]" />
+                  </div>
+                )}
+                
+                {chatHistory.length === 0 && !isChatLoading && (
                   <div className="text-center py-10 opacity-40">
-                    <p className="text-[9px] font-black text-gray-500 uppercase tracking-widest leading-relaxed">
-                      যেকোনো প্রয়োজনে আমাদের এখানে মেসেজ দিন।
+                    <p className="text-[9px] font-black text-gray-500 uppercase tracking-widest leading-relaxed px-4">
+                      যেকোনো প্রয়োজনে আমাদের এখানে মেসেজ দিন। আমাদের টিম আপনার সেবায় প্রস্তুত।
                     </p>
                   </div>
                 )}
-                {chatHistory?.map((msg, i) => (
+
+                {chatHistory.map((msg, i) => (
                   <div key={i} className={`flex flex-col ${msg.sender === 'CUSTOMER' ? 'items-end' : 'items-start'}`}>
-                    <div className={`max-w-[85%] p-3.5 text-[10.5px] font-medium leading-relaxed ${
+                    <div className={`max-w-[85%] p-3.5 text-[11px] font-bold leading-relaxed ${
                       msg.sender === 'CUSTOMER' 
                         ? 'bg-[#01a3a4] text-white rounded-l-xl rounded-tr-xl shadow-md' 
                         : 'bg-white border border-gray-200 text-black rounded-r-xl rounded-tl-xl shadow-sm'

@@ -16,11 +16,10 @@ import {
   Search,
   Loader2,
   CheckCircle2,
-  Phone
 } from 'lucide-react';
 import Link from 'next/link';
 import { useFirestore, useCollection, useMemoFirebase } from '@/firebase';
-import { collection, query, orderBy, where, doc } from 'firebase/firestore';
+import { collection, query, where } from 'firebase/firestore';
 import { addDocumentNonBlocking } from '@/firebase/non-blocking-updates';
 import { Badge } from '@/components/ui/badge';
 
@@ -30,32 +29,45 @@ export default function AdminMessages() {
   const [replyText, setReplyText] = useState('');
   const chatEndRef = useRef<HTMLDivElement>(null);
 
-  // Get all unique chats (grouped by orderId, which could be temp IDs)
-  const allMessagesQuery = useMemoFirebase(() => query(collection(db, 'messages'), orderBy('createdAt', 'desc')), [db]);
-  const { data: allMessages, isLoading } = useCollection(allMessagesQuery);
+  // Get all unique chats
+  const allMessagesQuery = useMemoFirebase(() => collection(db, 'messages'), [db]);
+  const { data: rawAllMessages, isLoading } = useCollection(allMessagesQuery);
 
-  // Filter unique chats
+  // Filter unique chats and sort by most recent activity
   const uniqueChats = React.useMemo(() => {
-    if (!allMessages) return [];
-    const seen = new Set();
-    return allMessages.filter(msg => {
-      const duplicate = seen.has(msg.orderId);
-      seen.add(msg.orderId);
-      return !duplicate;
+    if (!rawAllMessages) return [];
+    const seen = new Map();
+    
+    rawAllMessages.forEach(msg => {
+      const existing = seen.get(msg.orderId);
+      if (!existing || new Date(msg.createdAt) > new Date(existing.createdAt)) {
+        seen.set(msg.orderId, msg);
+      }
     });
-  }, [allMessages]);
+
+    return Array.from(seen.values()).sort((a, b) => 
+      new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+    );
+  }, [rawAllMessages]);
 
   // Selected chat messages
   const chatQuery = useMemoFirebase(() => {
     if (!selectedOrderId) return null;
     return query(
       collection(db, 'messages'),
-      where('orderId', '==', selectedOrderId),
-      orderBy('createdAt', 'asc')
+      where('orderId', '==', selectedOrderId)
     );
   }, [db, selectedOrderId]);
 
-  const { data: activeChat } = useCollection(chatQuery);
+  const { data: rawActiveChat } = useCollection(chatQuery);
+
+  // Sort active chat messages locally
+  const activeChat = React.useMemo(() => {
+    if (!rawActiveChat) return [];
+    return [...rawActiveChat].sort((a, b) => 
+      new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
+    );
+  }, [rawActiveChat]);
 
   useEffect(() => {
     chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -156,10 +168,10 @@ export default function AdminMessages() {
                   {activeChat?.map((msg, i) => (
                     <div key={i} className={`flex ${msg.sender === 'ADMIN' ? 'justify-end' : 'justify-start'}`}>
                       <div className={`max-w-[70%] space-y-2`}>
-                        <div className={`p-5 text-[12px] font-medium leading-relaxed shadow-xl ${
+                        <div className={`p-5 text-[12px] font-bold leading-relaxed shadow-xl ${
                           msg.sender === 'ADMIN' 
                             ? 'bg-[#01a3a4] text-white rounded-l-3xl rounded-tr-3xl' 
-                            : 'bg-white/5 border border-white/10 text-white rounded-r-3xl rounded-tl-3xl'
+                            : 'bg-white border border-white/10 text-black rounded-r-3xl rounded-tl-3xl'
                         }`}>
                           {msg.text}
                         </div>
