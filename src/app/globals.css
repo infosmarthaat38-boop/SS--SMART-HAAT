@@ -39,6 +39,8 @@
     width: 100%;
     overflow-x: hidden;
     scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
   h1, h2, h3, h4, h5, h6 {
     @apply font-headline tracking-tighter uppercase;
@@ -108,10 +110,22 @@
   will-change: transform;
 }
 
+/* PERFORMANCE OPTIMIZATIONS */
 .animate-pulse {
   will-change: opacity;
 }
 
 .animate-bounce {
   will-change: transform;
+}
+
+.gpu-accelerated {
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  perspective: 1000px;
+  will-change: transform, opacity;
+}
+
+img {
+  content-visibility: auto;
 }

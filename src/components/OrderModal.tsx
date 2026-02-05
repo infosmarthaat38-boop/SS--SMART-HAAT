@@ -1,7 +1,7 @@
 
 "use client";
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, memo } from 'react';
 import Image from 'next/image';
 import { 
   Dialog, 
@@ -9,12 +9,10 @@ import {
   DialogHeader, 
   DialogTitle,
   DialogDescription,
-  DialogClose
 } from "@/components/ui/dialog";
 import { Button } from '@/components/ui/button';
 import { 
   CheckCircle2, 
-  Loader2, 
   Phone, 
   MapPin, 
   User, 
@@ -25,7 +23,6 @@ import {
   Hash,
   ArrowLeft,
   X,
-  ShoppingBag
 } from 'lucide-react';
 import { useFirestore, useCollection, useMemoFirebase } from '@/firebase';
 import { collection, query, where, doc } from 'firebase/firestore';
@@ -39,7 +36,7 @@ interface OrderModalProps {
   onClose: () => void;
 }
 
-export function OrderModal({ product, isOpen, onClose }: OrderModalProps) {
+export const OrderModal = memo(({ product, isOpen, onClose }: OrderModalProps) => {
   const db = useFirestore();
   const isMobile = useIsMobile();
   const [step, setStep] = useState<'FORM' | 'CHAT' | 'SUCCESS'>('FORM');
@@ -86,7 +83,7 @@ export function OrderModal({ product, isOpen, onClose }: OrderModalProps) {
     );
   }, [db, chatSessionId]);
 
-  const { data: rawChatHistory, isLoading: isChatLoading } = useCollection(messagesQuery);
+  const { data: rawChatHistory } = useCollection(messagesQuery);
 
   const chatHistory = React.useMemo(() => {
     if (!rawChatHistory) return [];
@@ -160,13 +157,13 @@ export function OrderModal({ product, isOpen, onClose }: OrderModalProps) {
   return (
     <Dialog open={isOpen} onOpenChange={(val) => !val && onClose()}>
       <DialogContent className={cn(
-        "p-0 bg-white border-none rounded-none overflow-hidden gap-0 shadow-2xl transition-all duration-300",
+        "p-0 bg-white border-none rounded-none overflow-hidden gap-0 shadow-2xl transition-all duration-300 gpu-accelerated",
         step === 'SUCCESS' ? "max-w-[350px]" : isMobile ? "max-w-full h-full sm:h-auto sm:max-w-[480px]" : "sm:max-w-[1000px]"
       )}>
         {/* GLOBAL CLOSE BUTTON */}
         <button 
           onClick={onClose}
-          className="absolute right-4 top-4 z-50 p-2 text-gray-400 hover:text-black hover:bg-gray-100 transition-all"
+          className="absolute right-4 top-4 z-50 p-2 text-gray-400 hover:text-black hover:bg-gray-100 transition-all rounded-full"
         >
           <X className="h-5 w-5" />
         </button>
@@ -178,8 +175,8 @@ export function OrderModal({ product, isOpen, onClose }: OrderModalProps) {
               {/* DESKTOP LEFT: PRODUCT IMAGE & INFO */}
               {!isMobile && (
                 <div className="sm:w-[300px] bg-gray-50 border-r border-gray-100 p-8 flex flex-col items-center shrink-0">
-                  <div className="relative w-full aspect-square border border-gray-200 mb-6 bg-white shadow-sm">
-                    <Image src={product.imageUrl} alt={product.name} fill className="object-cover" />
+                  <div className="relative w-full aspect-square border border-gray-200 mb-6 bg-white shadow-sm overflow-hidden">
+                    <Image src={product.imageUrl} alt={product.name} fill className="object-cover" priority />
                   </div>
                   <div className="w-full space-y-4">
                     <h3 className="text-sm font-black text-black uppercase tracking-tighter leading-tight font-headline">{product.name}</h3>
@@ -196,18 +193,19 @@ export function OrderModal({ product, isOpen, onClose }: OrderModalProps) {
 
               {/* MIDDLE (OR FULL ON MOBILE): ORDER FORM */}
               <div className={cn(
-                "flex-grow p-8 space-y-6 bg-white overflow-y-auto relative",
+                "flex-grow p-8 space-y-6 bg-white overflow-y-auto relative no-scrollbar",
                 !isMobile && "sm:w-[350px]"
               )}>
                 {/* SMALL PRODUCT IMAGE IN CORNER (FOR MOBILE ONLY) */}
                 {isMobile && (
-                  <div className="absolute top-4 right-12 w-16 h-16 border border-gray-100 shadow-md z-10 bg-white">
+                  <div className="absolute top-4 right-12 w-16 h-16 border border-gray-100 shadow-md z-10 bg-white overflow-hidden">
                     <Image 
                       src={product.imageUrl} 
                       alt={product.name} 
                       fill 
                       className="object-cover"
                       sizes="64px"
+                      priority
                     />
                   </div>
                 )}
@@ -301,14 +299,14 @@ export function OrderModal({ product, isOpen, onClose }: OrderModalProps) {
                         value={formData.address}
                         onChange={(e) => setFormData({...formData, address: e.target.value})}
                         placeholder="AREA, HOUSE, CITY"
-                        className="w-full bg-gray-50 border border-gray-200 rounded-none p-4 text-[12px] font-black uppercase tracking-widest min-h-[80px] focus:outline-none focus:border-[#01a3a4] focus:bg-white text-black transition-all"
+                        className="w-full bg-gray-50 border border-gray-200 rounded-none p-4 text-[12px] font-black uppercase tracking-widest min-h-[80px] focus:outline-none focus:border-[#01a3a4] focus:bg-white text-black transition-all no-scrollbar"
                       />
                     </div>
                   </div>
 
                   <Button 
                     type="submit" 
-                    className="w-full bg-[#01a3a4] hover:bg-black text-white h-16 font-black uppercase tracking-[0.4em] rounded-none shadow-2xl text-[14px] border-none transition-all"
+                    className="w-full bg-[#01a3a4] hover:bg-black text-white h-16 font-black uppercase tracking-[0.4em] rounded-none shadow-2xl text-[14px] border-none transition-all active:scale-95"
                   >
                     অর্ডার নিশ্চিত করুন
                   </Button>
@@ -317,9 +315,9 @@ export function OrderModal({ product, isOpen, onClose }: OrderModalProps) {
                     <button 
                       type="button"
                       onClick={() => setStep('CHAT')}
-                      className="w-full flex items-center justify-center gap-2 text-[11px] font-black text-[#01a3a4] uppercase tracking-widest py-3 hover:bg-gray-50 transition-all border border-dashed border-[#01a3a4]/20"
+                      className="w-full flex items-center justify-center gap-2 text-[11px] font-black text-[#01a3a4] uppercase tracking-widest py-3 hover:bg-gray-50 transition-all border border-dashed border-[#01a3a4]/20 active:scale-95"
                     >
-                      <MessageCircle className="h-4 w-4" /> LIVE CHAT SUPPORT
+                      <MessageCircle className="h-4 w-4" /> CHAT
                     </button>
                   )}
                 </form>
@@ -338,7 +336,7 @@ export function OrderModal({ product, isOpen, onClose }: OrderModalProps) {
 
                   <div 
                     ref={chatScrollContainerRef}
-                    className="flex-grow overflow-y-auto p-6 space-y-4 bg-gray-50/50"
+                    className="flex-grow overflow-y-auto p-6 space-y-4 bg-gray-50/50 no-scrollbar"
                   >
                     {chatHistory.length === 0 ? (
                       <div className="h-full flex flex-col items-center justify-center text-center p-8 space-y-4">
@@ -373,7 +371,7 @@ export function OrderModal({ product, isOpen, onClose }: OrderModalProps) {
                       placeholder="TYPE MESSAGE..."
                       className="flex-grow bg-gray-50 border border-gray-200 h-11 px-4 text-[11px] font-black uppercase text-black focus:outline-none focus:border-[#01a3a4] transition-all"
                     />
-                    <Button type="submit" size="icon" className="h-11 w-11 bg-[#01a3a4] hover:bg-black rounded-none shrink-0 border-none shadow-lg">
+                    <Button type="submit" size="icon" className="h-11 w-11 bg-[#01a3a4] hover:bg-black rounded-none shrink-0 border-none shadow-lg active:scale-90">
                       <Send className="h-4 w-4 text-white" />
                     </Button>
                   </form>
@@ -381,8 +379,8 @@ export function OrderModal({ product, isOpen, onClose }: OrderModalProps) {
               )}
             </div>
           ) : step === 'CHAT' ? (
-            <div className="flex flex-col h-full bg-white relative">
-              <button onClick={() => setStep('FORM')} className="absolute left-4 top-4 z-50 p-2 text-white hover:scale-110 transition-all">
+            <div className="flex flex-col h-full bg-white relative gpu-accelerated">
+              <button onClick={() => setStep('FORM')} className="absolute left-4 top-4 z-50 p-2 text-white hover:scale-110 transition-all active:scale-90">
                 <ArrowLeft className="h-6 w-6" />
               </button>
 
@@ -396,7 +394,7 @@ export function OrderModal({ product, isOpen, onClose }: OrderModalProps) {
 
               <div 
                 ref={chatScrollContainerRef}
-                className="flex-grow overflow-y-auto p-6 space-y-5 bg-gray-50"
+                className="flex-grow overflow-y-auto p-6 space-y-5 bg-gray-50 no-scrollbar"
               >
                 {chatHistory.length === 0 ? (
                   <div className="h-full flex flex-col items-center justify-center text-center p-8">
@@ -429,13 +427,13 @@ export function OrderModal({ product, isOpen, onClose }: OrderModalProps) {
                   placeholder="আপনার মেসেজ লিখুন..."
                   className="flex-grow bg-gray-50 border border-gray-200 h-14 px-5 text-sm font-bold text-black focus:outline-none focus:border-[#01a3a4] transition-all"
                 />
-                <Button type="submit" size="icon" className="h-14 w-14 bg-[#01a3a4] hover:bg-black rounded-none shrink-0 border-none shadow-xl">
+                <Button type="submit" size="icon" className="h-14 w-14 bg-[#01a3a4] hover:bg-black rounded-none shrink-0 border-none shadow-xl active:scale-90">
                   <Send className="h-6 w-6 text-white" />
                 </Button>
               </form>
             </div>
           ) : (
-            <div className="w-full p-12 text-center space-y-6 flex flex-col justify-center bg-white items-center min-h-[400px]">
+            <div className="w-full p-12 text-center space-y-6 flex flex-col justify-center bg-white items-center min-h-[400px] gpu-accelerated">
               <div className="relative">
                 <div className="w-20 h-20 bg-[#01a3a4]/5 rounded-full flex items-center justify-center mx-auto mb-2 border-[3px] border-[#01a3a4] shadow-2xl animate-in zoom-in-50 duration-500">
                   <CheckCircle2 className="h-10 w-10 text-[#01a3a4]" />
@@ -464,5 +462,6 @@ export function OrderModal({ product, isOpen, onClose }: OrderModalProps) {
       </DialogContent>
     </Dialog>
   );
-}
+});
 
+OrderModal.displayName = 'OrderModal';

@@ -20,7 +20,7 @@ const SlideItem = memo(({ item, priority }: { item: any, priority: boolean }) =>
   if (item.price !== undefined) {
     return (
       <CarouselItem className="h-full">
-        <div className="relative h-full w-full bg-black overflow-hidden">
+        <div className="relative h-full w-full bg-black overflow-hidden gpu-accelerated">
           <Image
             src={item.imageUrl}
             alt={item.name}
@@ -40,7 +40,7 @@ const SlideItem = memo(({ item, priority }: { item: any, priority: boolean }) =>
                   {item.price.toLocaleString()}
                 </div>
               </div>
-              <button onClick={() => setIsOrderOpen(true)} className="bg-[#01a3a4] text-white h-5 md:h-9 px-3 md:px-6 font-black rounded-none text-[6px] md:text-[9px] hover:bg-white hover:text-black transition-all uppercase tracking-widest flex items-center gap-1 shadow-2xl w-fit mt-1">
+              <button onClick={() => setIsOrderOpen(true)} className="bg-[#01a3a4] text-white h-5 md:h-9 px-3 md:px-6 font-black rounded-none text-[6px] md:text-[9px] hover:bg-white hover:text-black transition-all uppercase tracking-widest flex items-center gap-1 shadow-2xl w-fit mt-1 active:scale-95">
                 <ShoppingCart className="h-2 w-2 md:h-3 md:w-3" /> অর্ডার করুন
               </button>
             </div>
@@ -53,7 +53,7 @@ const SlideItem = memo(({ item, priority }: { item: any, priority: boolean }) =>
 
   return (
     <CarouselItem className="h-full">
-      <div className="relative h-full w-full bg-black">
+      <div className="relative h-full w-full bg-black gpu-accelerated">
         <Image 
           src={item.imageUrl} 
           alt={item.title || "Banner"} 
@@ -98,7 +98,7 @@ const FlashOfferCard = memo(() => {
   const activeItem = combinedItems[currentIndex];
 
   return (
-    <div className="h-full bg-black overflow-hidden relative group w-full">
+    <div className="h-full bg-black overflow-hidden relative group w-full gpu-accelerated">
       {activeItem ? (
         <div className="h-full w-full relative">
           <Image 
@@ -167,7 +167,7 @@ export default function Home() {
   }, [db]);
 
   return (
-    <div className="min-h-screen flex flex-col bg-background">
+    <div className="min-h-screen flex flex-col bg-background selection:bg-primary/30">
       <Navbar />
       
       {settings?.liveStatus && (
@@ -186,7 +186,7 @@ export default function Home() {
 
       <main className="flex-grow container mx-auto space-y-1">
         {/* COMPACT HERO SECTION */}
-        <section className="grid grid-cols-12 gap-0 h-[160px] md:h-[320px]">
+        <section className="grid grid-cols-12 gap-0 h-[160px] md:h-[320px] gpu-accelerated">
           <div className="col-span-3 h-full"><FlashOfferCard /></div>
           <div className="col-span-6 h-full relative overflow-hidden bg-black">
             {combinedSliderItems.length > 0 ? (
@@ -201,7 +201,7 @@ export default function Home() {
               </div>
             )}
           </div>
-          <div className="col-span-3 h-full bg-[#01a3a4] flex flex-col items-center justify-center p-1.5 md:p-6 space-y-2 md:space-y-4">
+          <div className="col-span-3 h-full bg-[#01a3a4] flex flex-col items-center justify-center p-1.5 md:p-6 space-y-2 md:space-y-4 gpu-accelerated">
             <h3 className="text-white font-black text-[7px] md:text-lg uppercase tracking-widest italic text-center drop-shadow-xl">DOWNLOAD APP</h3>
             <div className="bg-white p-0.5 md:p-1.5 w-14 h-14 md:w-32 md:h-32 flex items-center justify-center border md:border-2 border-white/20 shadow-2xl">
               <Image src={qrCodeUrl} alt="QR Code" width={150} height={150} className="w-full h-full" loading="lazy" />
@@ -213,7 +213,7 @@ export default function Home() {
           </div>
         </section>
 
-        <section className="py-8 md:py-10 px-4 md:px-10">
+        <section className="py-8 md:py-10 px-4 md:px-10 gpu-accelerated">
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center gap-2">
               <div className="h-5 w-1 bg-[#01a3a4]" />

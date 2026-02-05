@@ -17,11 +17,12 @@ interface ProductCardProps {
 export const ProductCard = memo(({ product, index = 0 }: ProductCardProps) => {
   const [isOrderOpen, setIsOrderOpen] = useState(false);
   const isOutOfStock = (product.stockQuantity || 0) <= 0;
+  // Aggressive priority for top products
   const isPriority = index < 6;
 
   return (
     <>
-      <Card className="group bg-black border-none rounded-none flex flex-col h-full overflow-hidden">
+      <Card className="group bg-black border-none rounded-none flex flex-col h-full overflow-hidden gpu-accelerated">
         <Link href={`/products/${product.id}`} className="relative aspect-square overflow-hidden bg-black block">
           <Image
             src={product.imageUrl}
@@ -29,7 +30,8 @@ export const ProductCard = memo(({ product, index = 0 }: ProductCardProps) => {
             fill
             sizes="(max-width: 768px) 50vw, 15vw"
             priority={isPriority}
-            className="object-cover"
+            className="object-cover transition-transform duration-700 group-hover:scale-105"
+            loading={isPriority ? "eager" : "lazy"}
           />
           {isOutOfStock && (
             <div className="absolute inset-0 bg-black/60 flex items-center justify-center z-10">
@@ -72,7 +74,7 @@ export const ProductCard = memo(({ product, index = 0 }: ProductCardProps) => {
           <Button 
             disabled={isOutOfStock}
             onClick={(e) => { e.preventDefault(); setIsOrderOpen(true); }}
-            className={`w-full ${isOutOfStock ? 'bg-white/5 opacity-50' : 'bg-[#01a3a4] hover:bg-white hover:text-black'} text-white font-black text-[10px] md:text-[11px] h-9 md:h-10 rounded-none uppercase flex items-center justify-center gap-2 transition-all active:scale-95`}
+            className={`w-full ${isOutOfStock ? 'bg-white/5 opacity-50' : 'bg-[#01a3a4] hover:bg-white hover:text-black'} text-white font-black text-[10px] md:text-[11px] h-9 md:h-10 rounded-none uppercase flex items-center justify-center gap-2 transition-all active:scale-95 shadow-lg shadow-black/20`}
           >
             <ShoppingBag className="h-3.5 w-3.5" /> অর্ডার করুন
           </Button>
