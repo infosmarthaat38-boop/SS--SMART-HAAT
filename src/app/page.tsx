@@ -29,19 +29,19 @@ const SlideItem = memo(({ item, priority }: { item: any, priority: boolean }) =>
             className="object-cover"
             priority={priority}
           />
-          <div className="absolute inset-0 bg-black/5 flex flex-col justify-center px-4 md:px-12 space-y-2 md:space-y-4">
-            <h2 className="text-[10px] md:text-2xl font-headline font-black text-white uppercase tracking-tight max-w-[400px] leading-tight drop-shadow-2xl">
+          <div className="absolute inset-0 bg-black/5 flex flex-col justify-center px-4 md:px-12 space-y-1 md:space-y-2">
+            <h2 className="text-[9px] md:text-xl font-headline font-black text-white uppercase tracking-tight max-w-[400px] leading-tight drop-shadow-2xl">
               {item.name}
             </h2>
-            <div className="flex flex-col space-y-1">
+            <div className="flex flex-col space-y-0.5">
               <div className="flex items-center gap-1 md:gap-4">
-                <div className="flex items-baseline text-[12px] md:text-[22px] font-black text-[#01a3a4] tracking-tighter drop-shadow-2xl">
-                  <span className="text-[7px] md:text-[11px] font-normal mr-0.5 translate-y-[-2px] md:translate-y-[-4px] text-white/90">৳</span>
+                <div className="flex items-baseline text-[10px] md:text-lg font-black text-[#01a3a4] tracking-tighter drop-shadow-2xl">
+                  <span className="text-[6px] md:text-[10px] font-normal mr-0.5 translate-y-[-2px] text-white/90">৳</span>
                   {item.price.toLocaleString()}
                 </div>
               </div>
-              <button onClick={() => setIsOrderOpen(true)} className="bg-[#01a3a4] text-white h-6 md:h-10 px-3 md:px-8 font-black rounded-none text-[6px] md:text-[10px] hover:bg-white hover:text-black transition-all uppercase tracking-widest flex items-center gap-1 shadow-2xl w-fit mt-1">
-                <ShoppingCart className="h-2 w-2 md:h-3.5 md:w-3.5" /> অর্ডার করুন
+              <button onClick={() => setIsOrderOpen(true)} className="bg-[#01a3a4] text-white h-5 md:h-9 px-3 md:px-6 font-black rounded-none text-[6px] md:text-[9px] hover:bg-white hover:text-black transition-all uppercase tracking-widest flex items-center gap-1 shadow-2xl w-fit mt-1">
+                <ShoppingCart className="h-2 w-2 md:h-3 md:w-3" /> অর্ডার করুন
               </button>
             </div>
           </div>
@@ -63,7 +63,7 @@ const SlideItem = memo(({ item, priority }: { item: any, priority: boolean }) =>
           priority={priority} 
         />
         <div className="absolute inset-0 bg-black/5 flex flex-col justify-center px-4 md:px-12">
-           <h2 className="text-[10px] md:text-2xl font-black text-white uppercase tracking-tight max-w-[400px] leading-none drop-shadow-2xl">{item.title}</h2>
+           <h2 className="text-[9px] md:text-xl font-black text-white uppercase tracking-tight max-w-[400px] leading-none drop-shadow-2xl">{item.title}</h2>
         </div>
       </div>
     </CarouselItem>
@@ -109,21 +109,21 @@ const FlashOfferCard = memo(() => {
             className="object-cover" 
             priority={true}
           />
-          <div className="absolute top-2 left-2 bg-[#01a3a4] px-1.5 md:px-4 py-1 text-[6px] md:text-[9px] font-black text-white uppercase tracking-widest z-10 shadow-lg">FLASH</div>
-          <div className="absolute bottom-0 w-full bg-gradient-to-t from-black/80 via-black/20 to-transparent pt-6 pb-2 text-center px-2">
-             <p className="text-white font-black text-[7px] md:text-[12px] uppercase tracking-widest mb-0.5 truncate drop-shadow-2xl">{activeItem.name || activeItem.title}</p>
+          <div className="absolute top-1 left-1 bg-[#01a3a4] px-1 md:px-3 py-0.5 text-[5px] md:text-[8px] font-black text-white uppercase tracking-widest z-10 shadow-lg">FLASH</div>
+          <div className="absolute bottom-0 w-full bg-gradient-to-t from-black/80 via-black/20 to-transparent pt-4 pb-1 text-center px-1">
+             <p className="text-white font-black text-[6px] md:text-[10px] uppercase tracking-widest mb-0.5 truncate drop-shadow-2xl">{activeItem.name || activeItem.title}</p>
              {activeItem.price && (
                <div className="flex flex-col items-center">
-                 <span className="text-[#01a3a4] font-black text-[9px] md:text-lg drop-shadow-2xl">৳{activeItem.price.toLocaleString()}</span>
+                 <span className="text-[#01a3a4] font-black text-[8px] md:text-sm drop-shadow-2xl">৳{activeItem.price.toLocaleString()}</span>
                </div>
              )}
-             <button onClick={() => setIsOrderOpen(true)} className="bg-[#01a3a4] text-white px-2 md:px-6 py-1 md:h-10 font-black text-[6px] md:text-[9px] uppercase tracking-widest transition-all mt-1 active:scale-95 shadow-xl">অর্ডার করুন</button>
+             <button onClick={() => setIsOrderOpen(true)} className="bg-[#01a3a4] text-white px-2 md:px-4 py-0.5 md:h-8 font-black text-[5px] md:text-[8px] uppercase tracking-widest transition-all mt-0.5 active:scale-95 shadow-xl">অর্ডার করুন</button>
              <OrderModal product={activeItem} isOpen={isOrderOpen} onClose={() => setIsOrderOpen(false)} />
           </div>
         </div>
       ) : (
         <div className="h-full flex flex-col items-center justify-center gap-2">
-          <Loader2 className="h-4 w-4 text-[#01a3a4] animate-spin" />
+          <Loader2 className="h-3 w-3 text-[#01a3a4] animate-spin" />
         </div>
       )}
     </div>
@@ -171,22 +171,22 @@ export default function Home() {
       <Navbar />
       
       {settings?.liveStatus && (
-        <div className="bg-black/80 backdrop-blur-md border-b border-white/5 py-1.5 px-4 overflow-hidden whitespace-nowrap">
+        <div className="bg-black/80 backdrop-blur-md border-b border-white/5 py-1 px-4 overflow-hidden whitespace-nowrap">
           <div className="container mx-auto flex items-center gap-6 animate-marquee">
-            <div className="flex items-center gap-2 text-[8px] md:text-[10px] font-black text-[#01a3a4] uppercase tracking-widest shrink-0">
-              <Radio className="h-2.5 w-2.5 animate-pulse" /> LIVE STATUS:
+            <div className="flex items-center gap-2 text-[8px] md:text-[9px] font-black text-[#01a3a4] uppercase tracking-widest shrink-0">
+              <Radio className="h-2 w-2 animate-pulse" /> LIVE STATUS:
             </div>
-            <p className="text-[8px] md:text-[10px] font-black text-white uppercase tracking-[0.2em] flex items-center gap-3">
+            <p className="text-[8px] md:text-[9px] font-black text-white uppercase tracking-[0.2em] flex items-center gap-3">
               {settings.liveStatus} <span className="text-white/20">•</span> 
-              <MapPin className="h-2.5 w-2.5 text-[#01a3a4]" /> {settings.liveLocation || 'BANANI, DHAKA'}
+              <MapPin className="h-2 w-2 text-[#01a3a4]" /> {settings.liveLocation || 'BANANI, DHAKA'}
             </p>
           </div>
         </div>
       )}
 
-      <main className="flex-grow container mx-auto space-y-2">
-        {/* DESKTOP-LIKE 3-COLUMN LAYOUT ON ALL DEVICES */}
-        <section className="grid grid-cols-12 gap-0 h-[220px] md:h-[420px]">
+      <main className="flex-grow container mx-auto space-y-1">
+        {/* COMPACT HERO SECTION */}
+        <section className="grid grid-cols-12 gap-0 h-[160px] md:h-[320px]">
           <div className="col-span-3 h-full"><FlashOfferCard /></div>
           <div className="col-span-6 h-full relative overflow-hidden bg-black">
             {combinedSliderItems.length > 0 ? (
@@ -197,47 +197,47 @@ export default function Home() {
               </Carousel>
             ) : (
               <div className="h-full flex flex-col items-center justify-center gap-2">
-                <Loader2 className="h-6 w-6 text-[#01a3a4] animate-spin" />
+                <Loader2 className="h-4 w-4 text-[#01a3a4] animate-spin" />
               </div>
             )}
           </div>
-          <div className="col-span-3 h-full bg-[#01a3a4] flex flex-col items-center justify-center p-2 md:p-8 space-y-3 md:space-y-6">
-            <h3 className="text-white font-black text-[8px] md:text-xl uppercase tracking-widest italic text-center drop-shadow-xl">DOWNLOAD APP</h3>
-            <div className="bg-white p-1 md:p-2 w-16 h-16 md:w-36 md:h-36 flex items-center justify-center border-2 md:border-4 border-white/20 shadow-2xl">
+          <div className="col-span-3 h-full bg-[#01a3a4] flex flex-col items-center justify-center p-1.5 md:p-6 space-y-2 md:space-y-4">
+            <h3 className="text-white font-black text-[7px] md:text-lg uppercase tracking-widest italic text-center drop-shadow-xl">DOWNLOAD APP</h3>
+            <div className="bg-white p-0.5 md:p-1.5 w-14 h-14 md:w-32 md:h-32 flex items-center justify-center border md:border-2 border-white/20 shadow-2xl">
               <Image src={qrCodeUrl} alt="QR Code" width={150} height={150} className="w-full h-full" loading="lazy" />
             </div>
-            <div className="flex flex-col gap-1.5 md:gap-3 w-full max-w-[280px]">
-              <button className="w-full bg-white text-black h-6 md:h-10 px-2 md:px-6 flex items-center justify-center gap-1.5 md:gap-4 font-black text-[6px] md:text-[10px] uppercase shadow-lg hover:bg-black hover:text-white transition-all active:scale-95"><Apple className="h-2 w-2 md:h-4 md:w-4" /> APP STORE</button>
-              <button className="w-full bg-white text-black h-6 md:h-10 px-2 md:px-6 flex items-center justify-center gap-1.5 md:gap-4 font-black text-[6px] md:text-[10px] uppercase shadow-lg hover:bg-black hover:text-white transition-all active:scale-95"><Play className="h-2 w-2 md:h-4 md:w-4" /> PLAY STORE</button>
+            <div className="flex flex-col gap-1 md:gap-2 w-full max-w-[240px]">
+              <button className="w-full bg-white text-black h-5 md:h-9 px-2 md:px-4 flex items-center justify-center gap-1 md:gap-3 font-black text-[5px] md:text-[9px] uppercase shadow-lg hover:bg-black hover:text-white transition-all active:scale-95"><Apple className="h-2 w-2 md:h-3.5 md:w-3.5" /> APP STORE</button>
+              <button className="w-full bg-white text-black h-5 md:h-9 px-2 md:px-4 flex items-center justify-center gap-1 md:gap-3 font-black text-[5px] md:text-[9px] uppercase shadow-lg hover:bg-black hover:text-white transition-all active:scale-95"><Play className="h-2 w-2 md:h-3.5 md:w-3.5" /> PLAY STORE</button>
             </div>
           </div>
         </section>
 
-        <section className="py-10 md:py-12 px-4 md:px-10">
-          <div className="flex items-center justify-between mb-8">
+        <section className="py-8 md:py-10 px-4 md:px-10">
+          <div className="flex items-center justify-between mb-6">
             <div className="flex items-center gap-2">
-              <div className="h-6 w-1.5 bg-[#01a3a4]" />
-              <h2 className="text-lg md:text-xl font-black text-white uppercase tracking-tighter">TOP SELLING PRODUCTS</h2>
+              <div className="h-5 w-1 bg-[#01a3a4]" />
+              <h2 className="text-md md:text-xl font-black text-white uppercase tracking-tighter">TOP SELLING PRODUCTS</h2>
             </div>
-            <Link href="/shop" className="text-[8px] md:text-[10px] font-black text-[#01a3a4] uppercase tracking-[0.3em] hover:text-white transition-colors flex items-center gap-2">
-              VIEW ALL <ArrowRight className="h-3 w-3" />
+            <Link href="/shop" className="text-[7px] md:text-[9px] font-black text-[#01a3a4] uppercase tracking-[0.3em] hover:text-white transition-colors flex items-center gap-2">
+              VIEW ALL <ArrowRight className="h-2 w-2" />
             </Link>
           </div>
           
           <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-3 md:gap-4 min-h-[400px]">
             {isProductsLoading ? (
               <div className="col-span-full flex flex-col items-center justify-center py-20 gap-4">
-                <Loader2 className="h-10 w-10 text-[#01a3a4] animate-spin" />
-                <p className="text-[10px] font-black text-[#01a3a4] uppercase tracking-widest">Loading Products...</p>
+                <Loader2 className="h-8 w-8 text-[#01a3a4] animate-spin" />
+                <p className="text-[9px] font-black text-[#01a3a4] uppercase tracking-widest">Loading Products...</p>
               </div>
             ) : products?.map((p, i) => (
               <ProductCard key={p.id} product={p} index={i} />
             ))}
           </div>
 
-          <div className="mt-12 md:mt-16 flex justify-center px-4">
+          <div className="mt-10 md:mt-12 flex justify-center px-4">
             <Link href="/shop" className="w-full md:w-auto">
-              <button className="w-full bg-white/5 border border-white/10 hover:border-[#01a3a4] text-white px-12 h-14 md:h-16 font-black uppercase tracking-widest text-[10px] md:text-[12px] flex items-center justify-center gap-4 transition-all hover:bg-[#01a3a4] hover:text-black active:scale-95 shadow-2xl">
+              <button className="w-full bg-white/5 border border-white/10 hover:border-[#01a3a4] text-white px-10 h-12 md:h-14 font-black uppercase tracking-widest text-[9px] md:text-[11px] flex items-center justify-center gap-4 transition-all hover:bg-[#01a3a4] hover:text-black active:scale-95 shadow-2xl">
                 MORE PRODUCT
               </button>
             </Link>

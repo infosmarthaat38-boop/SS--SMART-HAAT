@@ -54,15 +54,15 @@ export function Navbar() {
             </Link>
 
             {/* RIGHT: NAVIGATION LINKS */}
-            <div className="flex items-center gap-2 md:gap-4 shrink-0">
+            <div className="flex items-center gap-2 md:gap-4 shrink-0 flex-grow justify-end">
               <div className="flex items-center gap-2 md:gap-4 text-[9px] md:text-[10px] font-black uppercase tracking-widest text-white">
                 
-                {/* Desktop Search (WIDER VERSION) */}
-                <div className="hidden md:flex items-center relative">
+                {/* Desktop Search (ULTRA WIDE) */}
+                <div className="hidden md:flex items-center relative flex-grow max-w-[700px]">
                   <Input 
                     type="search" 
                     placeholder="SEARCH PRODUCTS..." 
-                    className="bg-black/10 border-white/20 h-9 w-64 lg:w-96 focus:lg:w-[450px] transition-all rounded-none text-[9px] text-white uppercase placeholder:text-white/70"
+                    className="bg-black/10 border-white/20 h-9 w-[400px] lg:w-[650px] focus:lg:w-[700px] transition-all rounded-none text-[9px] text-white uppercase placeholder:text-white/70"
                   />
                   <Search className="absolute right-3 h-3.5 w-3.5 text-white/50" />
                 </div>
@@ -78,7 +78,6 @@ export function Navbar() {
                   <Languages className="h-3 w-3 md:h-3.5 md:w-3.5" /> {language}
                 </button>
 
-                {/* Desktop Location (Visible only on desktop) */}
                 <button 
                   onClick={() => setIsLocationModalOpen(true)}
                   className="hidden md:flex items-center gap-1 hover:text-black transition-colors"
@@ -95,7 +94,6 @@ export function Navbar() {
                   </DropdownMenuTrigger>
                   <DropdownMenuContent className="bg-white border-none rounded-none shadow-2xl p-2 min-w-[160px] z-[100]">
                     
-                    {/* Mobile Only inside 3-dot */}
                     <DropdownMenuItem className="p-3 cursor-pointer md:hidden" onClick={() => setShowSearchInput(!showSearchInput)}>
                       <Search className="h-4 w-4 mr-2 text-[#01a3a4]" />
                       <span className="text-[10px] font-black uppercase text-black">{language === 'EN' ? "SEARCH" : "খুঁজুন"}</span>
@@ -106,7 +104,6 @@ export function Navbar() {
                       <span className="text-[10px] font-black uppercase text-black">{language === 'EN' ? "LOCATION" : "লোকেশন"}</span>
                     </DropdownMenuItem>
 
-                    {/* Admin (Always inside 3-dot) */}
                     <DropdownMenuItem className="p-3 cursor-pointer" onClick={() => setIsAdminModalOpen(true)}>
                       <User className="h-4 w-4 mr-2 text-[#01a3a4]" />
                       <span className="text-[10px] font-black uppercase text-black">ADMIN</span>

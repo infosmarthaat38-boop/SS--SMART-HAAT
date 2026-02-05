@@ -8,7 +8,8 @@ import {
   DialogContent, 
   DialogHeader, 
   DialogTitle,
-  DialogDescription
+  DialogDescription,
+  DialogClose
 } from "@/components/ui/dialog";
 import { Button } from '@/components/ui/button';
 import { 
@@ -22,7 +23,8 @@ import {
   Send,
   MessageCircle,
   Hash,
-  ArrowLeft
+  ArrowLeft,
+  X
 } from 'lucide-react';
 import { useFirestore, useCollection, useMemoFirebase } from '@/firebase';
 import { collection, query, where, doc } from 'firebase/firestore';
@@ -158,15 +160,22 @@ export function OrderModal({ product, isOpen, onClose }: OrderModalProps) {
     <Dialog open={isOpen} onOpenChange={(val) => !val && onClose()}>
       <DialogContent className={cn(
         "p-0 bg-white border-none rounded-none overflow-hidden gap-0 shadow-2xl transition-all duration-300",
-        step === 'SUCCESS' ? "max-w-[320px]" : isMobile ? "max-w-full h-full sm:h-auto sm:max-w-[480px]" : "max-w-[480px]"
+        step === 'SUCCESS' ? "max-w-[320px]" : isMobile ? "max-w-full h-full sm:h-auto sm:max-w-[480px]" : "max-w-[500px]"
       )}>
+        {/* GLOBAL CLOSE BUTTON */}
+        <button 
+          onClick={onClose}
+          className="absolute right-4 top-4 z-50 p-2 text-gray-400 hover:text-black hover:bg-gray-100 transition-all"
+        >
+          <X className="h-5 w-5" />
+        </button>
+
         <div className="flex flex-col h-full max-h-[100vh] sm:max-h-[95vh]">
           {step === 'FORM' ? (
             <>
-              {/* ORDER FORM VIEW */}
               <div className="flex-grow p-6 space-y-4 bg-white overflow-y-auto relative">
                 {/* SMALL PRODUCT IMAGE IN CORNER */}
-                <div className="absolute top-4 right-4 w-12 h-12 md:w-16 md:h-16 border border-gray-100 shadow-sm z-10 bg-white">
+                <div className="absolute top-4 right-12 w-12 h-12 md:w-16 md:h-16 border border-gray-100 shadow-sm z-10 bg-white">
                   <Image 
                     src={product.imageUrl} 
                     alt={product.name} 
@@ -176,15 +185,29 @@ export function OrderModal({ product, isOpen, onClose }: OrderModalProps) {
                   />
                 </div>
 
+                {/* DESKTOP PRODUCT INFO AT TOP */}
+                {!isMobile && (
+                  <div className="p-4 bg-gray-50 border border-gray-100 mb-6 flex gap-4">
+                    <div className="relative w-20 h-20 shrink-0 border border-gray-200">
+                      <Image src={product.imageUrl} alt={product.name} fill className="object-cover" />
+                    </div>
+                    <div className="flex-grow">
+                      <h3 className="text-sm font-black text-black uppercase tracking-tighter">{product.name}</h3>
+                      <p className="text-[#01a3a4] font-black text-lg">৳{product.price.toLocaleString()}</p>
+                      <span className="text-[8px] font-black text-gray-400 uppercase tracking-widest">{product.category}</span>
+                    </div>
+                  </div>
+                )}
+
                 <div className="space-y-0.5">
                   <div className="flex items-center gap-2">
                     <div className="h-5 w-1 bg-[#01a3a4]" />
                     <DialogTitle className="text-xl font-black text-black uppercase tracking-tighter leading-none font-headline">ORDER CONFIRM</DialogTitle>
                   </div>
-                  <p className="text-[9px] font-bold text-[#01a3a4] uppercase tracking-widest truncate pr-16">{product.name}</p>
+                  {isMobile && <p className="text-[9px] font-bold text-[#01a3a4] uppercase tracking-widest truncate pr-16">{product.name}</p>}
                 </div>
 
-                <form onSubmit={handleSubmit} className="space-y-4 pt-4">
+                <form onSubmit={handleSubmit} className="space-y-4 pt-2">
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-1.5">
                       <label className="text-[8px] font-black text-gray-400 uppercase tracking-widest flex items-center gap-1.5">
@@ -263,7 +286,7 @@ export function OrderModal({ product, isOpen, onClose }: OrderModalProps) {
                         value={formData.address}
                         onChange={(e) => setFormData({...formData, address: e.target.value})}
                         placeholder="AREA & CITY"
-                        className="w-full bg-gray-50 border border-gray-200 rounded-none p-3 text-[11px] font-black uppercase tracking-widest min-h-[70px] focus:outline-none focus:border-[#01a3a4] focus:bg-white text-black"
+                        className="w-full bg-gray-50 border border-gray-200 rounded-none p-3 text-[11px] font-black uppercase tracking-widest min-h-[60px] focus:outline-none focus:border-[#01a3a4] focus:bg-white text-black"
                       />
                     </div>
                   </div>
@@ -279,7 +302,7 @@ export function OrderModal({ product, isOpen, onClose }: OrderModalProps) {
                     <button 
                       type="button"
                       onClick={() => setStep('CHAT')}
-                      className="w-full flex items-center justify-center gap-2 text-[9px] font-black text-[#01a3a4] uppercase tracking-widest py-2 hover:bg-gray-50 transition-all"
+                      className="w-full flex items-center justify-center gap-2 text-[10px] font-black text-[#01a3a4] uppercase tracking-widest py-2 hover:bg-gray-50 transition-all"
                     >
                       <MessageCircle className="h-4 w-4" /> CHAT
                     </button>
@@ -287,35 +310,24 @@ export function OrderModal({ product, isOpen, onClose }: OrderModalProps) {
                 </form>
               </div>
 
-              {/* DESKTOP ONLY: INLINE CHAT (Ager moto) */}
+              {/* DESKTOP CHAT AT BOTTOM */}
               {!isMobile && (
-                <div className="flex flex-col bg-gray-50 h-[220px] shrink-0 border-t border-gray-100">
-                  <div className="p-3 bg-white border-b border-gray-100 flex items-center justify-between">
+                <div className="flex flex-col bg-gray-50 h-[180px] shrink-0 border-t border-gray-100">
+                  <div className="p-2.5 bg-white border-b border-gray-100 flex items-center justify-between">
                     <div className="flex items-center gap-2">
-                      <MessageCircle className="h-4 w-4 text-[#01a3a4]" />
-                      <h3 className="text-[9px] font-black text-black uppercase tracking-widest">SUPPORT CHAT</h3>
-                    </div>
-                    <div className="flex items-center gap-1.5">
-                      <div className="h-1.5 w-1.5 bg-green-500 rounded-full animate-pulse" />
-                      <span className="text-[8px] font-black text-gray-400 uppercase">ONLINE</span>
+                      <MessageCircle className="h-3.5 w-3.5 text-[#01a3a4]" />
+                      <h3 className="text-[8px] font-black text-black uppercase tracking-widest">SUPPORT CHAT</h3>
                     </div>
                   </div>
 
                   <div 
                     ref={chatScrollContainerRef}
-                    className="flex-grow overflow-y-auto p-4 space-y-3 bg-gray-50/50"
+                    className="flex-grow overflow-y-auto p-4 space-y-3 bg-gray-50/30"
                   >
-                    {chatHistory.length === 0 && (
-                      <div className="text-center py-4 opacity-40">
-                        <p className="text-[8px] font-black text-gray-500 uppercase tracking-widest leading-relaxed">
-                          অর্ডার নিয়ে কোনো প্রশ্ন থাকলে এখানে মেসেজ দিন।
-                        </p>
-                      </div>
-                    )}
                     {chatHistory.map((msg, i) => (
                       <div key={i} className={cn("flex flex-col", msg.sender === 'CUSTOMER' ? 'items-end' : 'items-start')}>
                         <div className={cn(
-                          "max-w-[80%] p-3 text-[10px] font-bold leading-tight",
+                          "max-w-[85%] p-2 text-[9px] font-bold leading-tight",
                           msg.sender === 'CUSTOMER' 
                             ? 'bg-[#01a3a4] text-white rounded-l-lg rounded-tr-lg' 
                             : 'bg-white border border-gray-200 text-black rounded-r-lg rounded-tl-lg'
@@ -326,46 +338,34 @@ export function OrderModal({ product, isOpen, onClose }: OrderModalProps) {
                     ))}
                   </div>
 
-                  <form onSubmit={handleSendMessage} className="p-3 bg-white border-t border-gray-100 flex gap-2">
+                  <form onSubmit={handleSendMessage} className="p-2 bg-white border-t border-gray-100 flex gap-2">
                     <input 
                       value={chatMessage}
                       onChange={(e) => setChatMessage(e.target.value)}
                       placeholder="MESSAGE..."
-                      className="flex-grow bg-gray-50 border border-gray-200 h-10 px-4 text-[10px] font-black uppercase text-black focus:outline-none focus:border-[#01a3a4]"
+                      className="flex-grow bg-gray-50 border border-gray-200 h-9 px-3 text-[9px] font-black uppercase text-black focus:outline-none focus:border-[#01a3a4]"
                     />
-                    <Button type="submit" size="icon" className="h-10 w-10 bg-[#01a3a4] hover:bg-black rounded-none shrink-0 border-none">
-                      <Send className="h-4 w-4 text-white" />
+                    <Button type="submit" size="icon" className="h-9 w-9 bg-[#01a3a4] hover:bg-black rounded-none shrink-0 border-none">
+                      <Send className="h-3.5 w-3.5 text-white" />
                     </Button>
                   </form>
                 </div>
               )}
             </>
           ) : step === 'CHAT' ? (
-            /* MOBILE SEPARATE CHAT VIEW */
-            <div className="flex flex-col h-full bg-white">
-              <div className="p-4 bg-[#01a3a4] flex items-center gap-4">
-                <button onClick={() => setStep('FORM')} className="text-white hover:scale-110 transition-transform">
-                  <ArrowLeft className="h-6 w-6" />
-                </button>
-                <div className="flex-grow">
-                  <h3 className="text-white font-black text-sm uppercase tracking-tighter">SUPPORT CHAT</h3>
-                  <div className="flex items-center gap-1.5">
-                    <div className="h-1.5 w-1.5 bg-white rounded-full animate-pulse" />
-                    <span className="text-[8px] font-black text-white/70 uppercase">LIVE AGENT</span>
-                  </div>
-                </div>
+            <div className="flex flex-col h-full bg-white relative">
+              <button onClick={() => setStep('FORM')} className="absolute left-4 top-4 z-50 p-2 text-white hover:scale-110 transition-all">
+                <ArrowLeft className="h-6 w-6" />
+              </button>
+
+              <div className="p-4 bg-[#01a3a4] flex items-center justify-center">
+                <h3 className="text-white font-black text-sm uppercase tracking-tighter">SUPPORT CHAT</h3>
               </div>
 
               <div 
                 ref={chatScrollContainerRef}
                 className="flex-grow overflow-y-auto p-6 space-y-4 bg-gray-50"
               >
-                {chatHistory.length === 0 && (
-                  <div className="text-center py-20 opacity-30">
-                    <MessageCircle className="h-12 w-12 mx-auto mb-4 text-[#01a3a4]" />
-                    <p className="text-[10px] font-black text-gray-500 uppercase tracking-widest">কিভাবে সাহায্য করতে পারি?</p>
-                  </div>
-                )}
                 {chatHistory.map((msg, i) => (
                   <div key={i} className={cn("flex flex-col", msg.sender === 'CUSTOMER' ? 'items-end' : 'items-start')}>
                     <div className={cn(
@@ -393,7 +393,6 @@ export function OrderModal({ product, isOpen, onClose }: OrderModalProps) {
               </form>
             </div>
           ) : (
-            /* SUCCESS VIEW */
             <div className="w-full p-8 text-center space-y-4 flex flex-col justify-center bg-white items-center min-h-[300px]">
               <div className="relative">
                 <div className="w-16 h-16 bg-[#01a3a4]/5 rounded-full flex items-center justify-center mx-auto mb-2 border-[2px] border-[#01a3a4]">
