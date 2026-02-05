@@ -29,10 +29,10 @@ const SlideItem = ({ item, priority }: { item: any, priority: boolean }) => {
             sizes="100vw"
             className="object-cover"
             priority={priority}
-            quality={50}
+            quality={40}
           />
           <div className="absolute inset-0 bg-black/40 flex flex-col justify-center px-12 space-y-4">
-            <h2 className="text-3xl md:text-4xl font-headline font-black text-white uppercase tracking-tighter max-w-[500px] leading-tight">
+            <h2 className="text-xl md:text-2xl font-headline font-black text-white uppercase tracking-tight max-w-[400px] leading-tight">
               {item.name}
             </h2>
             <div className="flex items-center gap-4">
@@ -54,9 +54,9 @@ const SlideItem = ({ item, priority }: { item: any, priority: boolean }) => {
   return (
     <CarouselItem className="h-full">
       <div className="relative h-[420px] w-full bg-black">
-        <Image src={item.imageUrl} alt={item.title || "Banner"} fill sizes="100vw" className="object-cover" priority={priority} quality={50} />
+        <Image src={item.imageUrl} alt={item.title || "Banner"} fill sizes="100vw" className="object-cover" priority={priority} quality={40} />
         <div className="absolute inset-0 bg-black/20 flex flex-col justify-center px-12">
-           <h2 className="text-4xl font-black text-white uppercase tracking-tighter max-w-[500px] leading-none">{item.title}</h2>
+           <h2 className="text-xl md:text-2xl font-black text-white uppercase tracking-tight max-w-[400px] leading-none">{item.title}</h2>
         </div>
       </div>
     </CarouselItem>
@@ -88,7 +88,7 @@ const FlashOfferCard = () => {
     <div className="h-[420px] bg-black overflow-hidden relative group w-full">
       {activeItem ? (
         <div className="h-full w-full relative">
-          <Image src={activeItem.imageUrl} alt="Flash Offer" fill sizes="(max-width: 768px) 100vw, 25vw" className="object-cover" priority quality={50} />
+          <Image src={activeItem.imageUrl} alt="Flash Offer" fill sizes="(max-width: 768px) 100vw, 25vw" className="object-cover" priority quality={40} />
           <div className="absolute top-4 left-4 bg-[#01a3a4] px-4 py-1.5 text-[9px] font-black text-white uppercase tracking-widest z-10">FLASH OFFER</div>
           <div className="absolute bottom-6 w-full text-center px-4">
              <p className="text-white font-black text-[12px] uppercase tracking-widest mb-1">{activeItem.name || activeItem.title}</p>
@@ -126,13 +126,13 @@ export default function Home() {
             {combinedSliderItems.length > 0 ? (
               <Carousel className="w-full h-full" opts={{ loop: true }} plugins={[plugin.current]}>
                 <CarouselContent className="h-[420px]">
-                  {combinedSliderItems.map((item, index) => <SlideItem key={index} item={item} priority={index < 1} />)}
+                  {combinedSliderItems.map((item, index) => <SlideItem key={index} item={item} priority={index < 2} />)}
                 </CarouselContent>
               </Carousel>
             ) : <div className="h-full flex items-center justify-center"><Loader2 className="h-10 w-10 text-[#01a3a4] animate-spin" /></div>}
           </div>
           <div className="col-span-3 bg-[#01a3a4] flex flex-col items-center justify-center p-8 space-y-8 h-[420px]">
-            <h3 className="text-white font-black text-4xl uppercase tracking-tighter leading-none italic">DOWNLOAD APP</h3>
+            <h3 className="text-white font-black text-xl uppercase tracking-widest leading-none italic text-center">DOWNLOAD APP</h3>
             <div className="bg-white p-1.5 w-32 h-32 flex items-center justify-center border-4 border-white/20">
               <Image 
                 src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://sssmarthaat.com" 
@@ -151,11 +151,11 @@ export default function Home() {
 
         <section className="py-2 px-10">
           <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center gap-3">
-              <div className="h-4 w-1 bg-[#01a3a4]" />
-              <h2 className="text-lg font-black text-white uppercase tracking-tighter">TOP SELLING</h2>
+            <div className="flex items-center gap-2">
+              <div className="h-3 w-1 bg-[#01a3a4]" />
+              <h2 className="text-sm font-black text-white uppercase tracking-tighter">TOP SELLING</h2>
             </div>
-            <Link href="/shop" className="text-[9px] font-black text-[#01a3a4] uppercase tracking-widest">VIEW ALL</Link>
+            <Link href="/shop" className="text-[8px] font-black text-[#01a3a4] uppercase tracking-widest">VIEW ALL</Link>
           </div>
           <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
             {products?.map((p, i) => <ProductCard key={p.id} product={p} index={i} />)}
