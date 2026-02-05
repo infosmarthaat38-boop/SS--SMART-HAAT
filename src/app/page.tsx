@@ -14,7 +14,7 @@ import { useFirestore, useCollection, useMemoFirebase, useDoc } from '@/firebase
 import { collection, query, where, limit, orderBy, doc, increment, setDoc } from 'firebase/firestore';
 import { OrderModal } from '@/components/OrderModal';
 
-// Memoized SlideItem for faster carousel performance
+// Memoized SlideItem for extreme performance
 const SlideItem = memo(({ item, priority }: { item: any, priority: boolean }) => {
   const [isOrderOpen, setIsOrderOpen] = useState(false);
 
@@ -29,7 +29,8 @@ const SlideItem = memo(({ item, priority }: { item: any, priority: boolean }) =>
             sizes="100vw"
             className="object-cover"
             priority={priority}
-            quality={40} // Optimized for performance
+            loading={priority ? "eager" : "lazy"}
+            quality={40}
           />
           <div className="absolute inset-0 bg-black/40 flex flex-col justify-center px-6 md:px-12 space-y-4">
             <h2 className="text-lg md:text-2xl font-headline font-black text-white uppercase tracking-tight max-w-[400px] leading-tight">
@@ -47,7 +48,7 @@ const SlideItem = memo(({ item, priority }: { item: any, priority: boolean }) =>
                   ৳{item.originalPrice.toLocaleString()}
                 </span>
               )}
-              <button onClick={() => setIsOrderOpen(true)} className="bg-[#01a3a4] text-white h-9 md:h-10 px-6 md:px-8 font-black rounded-none text-[9px] md:text-[10px] hover:bg-black transition-all uppercase tracking-widest flex items-center gap-2 shadow-xl w-fit mt-2">
+              <button onClick={() => setIsOrderOpen(true)} className="bg-[#01a3a4] text-white h-9 md:h-10 px-6 md:px-8 font-black rounded-none text-[9px] md:text-[10px] hover:bg-white hover:text-black transition-all uppercase tracking-widest flex items-center gap-2 shadow-xl w-fit mt-2">
                 <ShoppingCart className="h-3.5 w-3.5" /> অর্ডার করুন
               </button>
             </div>
@@ -61,7 +62,7 @@ const SlideItem = memo(({ item, priority }: { item: any, priority: boolean }) =>
   return (
     <CarouselItem className="h-full">
       <div className="relative h-[300px] md:h-[420px] w-full bg-black">
-        <Image src={item.imageUrl} alt={item.title || "Banner"} fill sizes="100vw" className="object-cover" priority={priority} quality={40} />
+        <Image src={item.imageUrl} alt={item.title || "Banner"} fill sizes="100vw" className="object-cover" priority={priority} loading={priority ? "eager" : "lazy"} quality={40} />
         <div className="absolute inset-0 bg-black/20 flex flex-col justify-center px-6 md:px-12">
            <h2 className="text-lg md:text-2xl font-black text-white uppercase tracking-tight max-w-[400px] leading-none">{item.title}</h2>
         </div>
@@ -97,7 +98,7 @@ const FlashOfferCard = memo(() => {
     <div className="h-[300px] md:h-[420px] bg-black overflow-hidden relative group w-full">
       {activeItem ? (
         <div className="h-full w-full relative">
-          <Image src={activeItem.imageUrl} alt="Flash Offer" fill sizes="(max-width: 768px) 100vw, 25vw" className="object-cover" priority quality={40} />
+          <Image src={activeItem.imageUrl} alt="Flash Offer" fill sizes="(max-width: 768px) 100vw, 25vw" className="object-cover" priority loading="eager" quality={30} />
           <div className="absolute top-4 left-4 bg-[#01a3a4] px-3 md:px-4 py-1.5 text-[8px] md:text-[9px] font-black text-white uppercase tracking-widest z-10">FLASH OFFER</div>
           <div className="absolute bottom-6 w-full text-center px-4 space-y-2">
              <p className="text-white font-black text-[10px] md:text-[12px] uppercase tracking-widest mb-1 truncate">{activeItem.name || activeItem.title}</p>
@@ -140,7 +141,6 @@ export default function Home() {
     return `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(link)}`;
   }, [settings?.qrCodeLink]);
 
-  // Optimized Visitor Tracking - Non-blocking
   useEffect(() => {
     const trackVisit = async () => {
       const today = new Date().toISOString().split('T')[0];
@@ -183,7 +183,7 @@ export default function Home() {
           <div className="col-span-12 md:col-span-3 order-3 bg-[#01a3a4] flex flex-col items-center justify-center p-6 md:p-8 space-y-6 h-[250px] md:h-[420px]">
             <h3 className="text-white font-black text-lg md:text-xl uppercase tracking-widest leading-none italic text-center">DOWNLOAD APP</h3>
             <div className="bg-white p-2 w-28 h-28 md:w-36 md:h-36 flex items-center justify-center border-4 border-white/20">
-              <Image src={qrCodeUrl} alt="QR Code" width={150} height={150} className="w-full h-full" />
+              <Image src={qrCodeUrl} alt="QR Code" width={150} height={150} className="w-full h-full" loading="lazy" />
             </div>
             <div className="flex flex-row md:flex-col gap-3 w-full max-w-[280px]">
               <button className="flex-1 bg-white text-black h-9 md:h-10 px-4 md:px-6 flex items-center justify-center gap-2 md:gap-4 font-black text-[8px] md:text-[10px] uppercase shadow-lg hover:bg-black hover:text-white transition-all active:scale-95"><Apple className="h-3 w-3 md:h-4 md:w-4" /> APP STORE</button>
