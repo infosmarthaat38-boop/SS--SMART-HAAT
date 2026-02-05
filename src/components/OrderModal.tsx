@@ -24,8 +24,8 @@ import {
   Hash
 } from 'lucide-react';
 import { useFirestore, useCollection, useMemoFirebase } from '@/firebase';
-import { collection, query, where, addDoc, doc, updateDoc } from 'firebase/firestore';
-import { addDocumentNonBlocking } from '@/firebase/non-blocking-updates';
+import { collection, query, where, doc } from 'firebase/firestore';
+import { addDocumentNonBlocking, updateDocumentNonBlocking } from '@/firebase/non-blocking-updates';
 import { cn } from '@/lib/utils';
 
 interface OrderModalProps {
@@ -37,7 +37,6 @@ interface OrderModalProps {
 export function OrderModal({ product, isOpen, onClose }: OrderModalProps) {
   const db = useFirestore();
   const [step, setStep] = useState<'FORM' | 'SUCCESS'>('FORM');
-  const [loading, setLoading] = useState(false);
   const [isActualMobile, setIsActualMobile] = useState(false);
   const [chatMessage, setChatMessage] = useState('');
   
@@ -52,7 +51,7 @@ export function OrderModal({ product, isOpen, onClose }: OrderModalProps) {
     quantity: 1
   });
 
-  // Auto-close success modal after 3 seconds
+  // Auto-close success modal after exactly 3 seconds
   useEffect(() => {
     if (step === 'SUCCESS') {
       const timer = setTimeout(() => {
@@ -103,12 +102,11 @@ export function OrderModal({ product, isOpen, onClose }: OrderModalProps) {
     }
   }, [chatHistory]);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.name || !formData.phone || !formData.address) return;
 
-    setLoading(true);
-
+    // We transition instantly to SUCCESS to provide a super fast experience
     const orderData = {
       customerName: formData.name.toUpperCase(),
       customerPhone: formData.phone,
@@ -124,36 +122,28 @@ export function OrderModal({ product, isOpen, onClose }: OrderModalProps) {
       createdAt: new Date().toISOString()
     };
 
-    try {
-      // Execute both actions in parallel for speed
-      await Promise.all([
-        addDoc(collection(db, 'orders'), orderData),
-        (async () => {
-          const productRef = doc(db, 'products', product.id);
-          if (product.sizeStock && formData.selectedSize) {
-            const currentSizeQty = product.sizeStock[formData.selectedSize] || 0;
-            const newSizeStock = { 
-              ...product.sizeStock, 
-              [formData.selectedSize]: Math.max(0, currentSizeQty - formData.quantity) 
-            };
-            return updateDoc(productRef, {
-              sizeStock: newSizeStock,
-              stockQuantity: Math.max(0, (product.stockQuantity || 0) - formData.quantity)
-            });
-          } else {
-            return updateDoc(productRef, {
-              stockQuantity: Math.max(0, (product.stockQuantity || 0) - formData.quantity)
-            });
-          }
-        })()
-      ]);
-
-      setLoading(false);
-      setStep('SUCCESS');
-    } catch (err) {
-      console.error("Order failed:", err);
-      setLoading(false);
+    // Initiate writes without awaiting to ensure instant UI response
+    addDocumentNonBlocking(collection(db, 'orders'), orderData);
+    
+    // Stock update logic initiated in background
+    const productRef = doc(db, 'products', product.id);
+    if (product.sizeStock && formData.selectedSize) {
+      const currentSizeQty = product.sizeStock[formData.selectedSize] || 0;
+      const newSizeStock = { 
+        ...product.sizeStock, 
+        [formData.selectedSize]: Math.max(0, currentSizeQty - formData.quantity) 
+      };
+      updateDocumentNonBlocking(productRef, {
+        sizeStock: newSizeStock,
+        stockQuantity: Math.max(0, (product.stockQuantity || 0) - formData.quantity)
+      });
+    } else {
+      updateDocumentNonBlocking(productRef, {
+        stockQuantity: Math.max(0, (product.stockQuantity || 0) - formData.quantity)
+      });
     }
+
+    setStep('SUCCESS');
   };
 
   const handleSendMessage = (e: React.FormEvent) => {
@@ -174,16 +164,16 @@ export function OrderModal({ product, isOpen, onClose }: OrderModalProps) {
   return (
     <Dialog open={isOpen} onOpenChange={(val) => !val && onClose()}>
       <DialogContent className={cn(
-        "p-0 bg-white border-none rounded-none overflow-hidden gap-0 shadow-2xl transition-all duration-500",
-        step === 'SUCCESS' ? "max-w-md" : "max-w-[1100px]"
+        "p-0 bg-white border-none rounded-none overflow-hidden gap-0 shadow-2xl transition-all duration-300",
+        step === 'SUCCESS' ? "max-w-[320px]" : "max-w-[1100px]"
       )}>
         <div className={cn(
           "flex flex-col md:flex-row h-full overflow-hidden",
-          step === 'SUCCESS' ? "min-h-[400px]" : "max-h-[90vh] min-h-[600px]"
+          step === 'SUCCESS' ? "min-h-[300px]" : "max-h-[90vh] min-h-[600px]"
         )}>
           
           <div className={cn(
-            "flex flex-col md:flex-row bg-white transition-all duration-500",
+            "flex flex-col md:flex-row bg-white transition-all duration-300",
             step === 'SUCCESS' ? 'w-full' : 'w-full md:w-2/3'
           )}>
             {step === 'FORM' ? (
@@ -211,33 +201,30 @@ export function OrderModal({ product, isOpen, onClose }: OrderModalProps) {
                 )}
 
                 <div className={cn(
-                  "p-10 space-y-8 bg-white overflow-y-auto border-r border-gray-100",
+                  "p-8 space-y-6 bg-white overflow-y-auto border-r border-gray-100",
                   isActualMobile ? 'w-full' : 'w-3/5'
                 )}>
-                  <div className="space-y-2">
+                  <div className="space-y-1">
                     <div className="flex items-center gap-3">
-                      <div className="h-8 w-1.5 bg-[#01a3a4]" />
-                      <DialogTitle className="text-3xl font-black text-black uppercase tracking-tighter leading-none font-headline">CONFIRM YOUR ORDER</DialogTitle>
+                      <div className="h-6 w-1 bg-[#01a3a4]" />
+                      <DialogTitle className="text-2xl font-black text-black uppercase tracking-tighter leading-none font-headline">ORDER CONFIRM</DialogTitle>
                     </div>
-                    <DialogDescription className="text-[10px] text-[#01a3a4] uppercase font-black tracking-[0.2em]">
-                      PLEASE PROVIDE ACCURATE INFORMATION TO COMPLETE YOUR ORDER
-                    </DialogDescription>
                   </div>
 
-                  <form onSubmit={handleSubmit} className="space-y-6">
-                    <div className="grid grid-cols-2 gap-4">
-                      <div className="space-y-3">
-                        <label className="text-[9px] font-black text-gray-600 uppercase tracking-widest flex items-center gap-2">
-                          <Ruler className="h-3.5 w-3.5 text-[#01a3a4]" /> SIZE
+                  <form onSubmit={handleSubmit} className="space-y-5">
+                    <div className="grid grid-cols-2 gap-3">
+                      <div className="space-y-2">
+                        <label className="text-[8px] font-black text-gray-400 uppercase tracking-widest flex items-center gap-1.5">
+                          <Ruler className="h-3 w-3 text-[#01a3a4]" /> SIZE
                         </label>
-                        <div className="flex flex-wrap gap-1.5">
+                        <div className="flex flex-wrap gap-1">
                           {product?.sizes?.length > 0 ? product.sizes.map((size: string) => (
                             <button
                               key={size}
                               type="button"
                               onClick={() => setFormData({...formData, selectedSize: size})}
                               className={cn(
-                                "px-4 py-2 border text-[10px] font-black uppercase transition-all",
+                                "px-3 py-1.5 border text-[9px] font-black uppercase transition-all",
                                 formData.selectedSize === size 
                                   ? 'bg-[#01a3a4] border-[#01a3a4] text-white' 
                                   : 'bg-gray-50 border-gray-200 text-gray-400 hover:border-[#01a3a4]'
@@ -246,14 +233,14 @@ export function OrderModal({ product, isOpen, onClose }: OrderModalProps) {
                               {size}
                             </button>
                           )) : (
-                            <span className="text-[9px] font-black text-gray-400 uppercase">ONE SIZE / N/A</span>
+                            <span className="text-[8px] font-black text-gray-400 uppercase">N/A</span>
                           )}
                         </div>
                       </div>
 
-                      <div className="space-y-3">
-                        <label className="text-[9px] font-black text-gray-600 uppercase tracking-widest flex items-center gap-2">
-                          <Hash className="h-3.5 w-3.5 text-[#01a3a4]" /> QUANTITY (PCS)
+                      <div className="space-y-2">
+                        <label className="text-[8px] font-black text-gray-400 uppercase tracking-widest flex items-center gap-1.5">
+                          <Hash className="h-3 w-3 text-[#01a3a4]" /> QTY
                         </label>
                         <input 
                           type="number"
@@ -261,28 +248,28 @@ export function OrderModal({ product, isOpen, onClose }: OrderModalProps) {
                           required
                           value={formData.quantity}
                           onChange={(e) => setFormData({...formData, quantity: parseInt(e.target.value) || 1})}
-                          className="w-full bg-gray-50 border border-gray-200 rounded-none h-11 px-4 text-[13px] font-black tracking-widest focus:outline-none focus:border-[#01a3a4] focus:bg-white text-black"
+                          className="w-full bg-gray-50 border border-gray-200 rounded-none h-9 px-3 text-[12px] font-black tracking-widest focus:outline-none focus:border-[#01a3a4] focus:bg-white text-black"
                         />
                       </div>
                     </div>
 
-                    <div className="space-y-5">
-                      <div className="space-y-1.5">
-                        <label className="text-[9px] font-black text-gray-600 uppercase tracking-widest flex items-center gap-2">
-                          <User className="h-3 w-3 text-[#01a3a4]" /> YOUR NAME
+                    <div className="space-y-4">
+                      <div className="space-y-1">
+                        <label className="text-[8px] font-black text-gray-400 uppercase tracking-widest flex items-center gap-1.5">
+                          <User className="h-3 w-3 text-[#01a3a4]" /> NAME
                         </label>
                         <input 
                           required
                           value={formData.name}
                           onChange={(e) => setFormData({...formData, name: e.target.value})}
-                          placeholder="ENTER FULL NAME"
-                          className="w-full bg-gray-50 border border-gray-200 rounded-none h-12 px-4 text-[13px] font-black uppercase tracking-widest focus:outline-none focus:border-[#01a3a4] focus:bg-white text-black placeholder:text-gray-400"
+                          placeholder="FULL NAME"
+                          className="w-full bg-gray-50 border border-gray-200 rounded-none h-11 px-3 text-[12px] font-black uppercase tracking-widest focus:outline-none focus:border-[#01a3a4] focus:bg-white text-black"
                         />
                       </div>
 
-                      <div className="space-y-1.5">
-                        <label className="text-[9px] font-black text-gray-600 uppercase tracking-widest flex items-center gap-2">
-                          <Phone className="h-3 w-3 text-[#01a3a4]" /> PHONE NUMBER
+                      <div className="space-y-1">
+                        <label className="text-[8px] font-black text-gray-400 uppercase tracking-widest flex items-center gap-1.5">
+                          <Phone className="h-3 w-3 text-[#01a3a4]" /> PHONE
                         </label>
                         <input 
                           required
@@ -290,58 +277,55 @@ export function OrderModal({ product, isOpen, onClose }: OrderModalProps) {
                           value={formData.phone}
                           onChange={(e) => setFormData({...formData, phone: e.target.value})}
                           placeholder="01XXXXXXXXX"
-                          className="w-full bg-gray-50 border border-gray-200 rounded-none h-12 px-4 text-[13px] font-black tracking-widest focus:outline-none focus:border-[#01a3a4] focus:bg-white text-black placeholder:text-gray-400"
+                          className="w-full bg-gray-50 border border-gray-200 rounded-none h-11 px-3 text-[12px] font-black tracking-widest focus:outline-none focus:border-[#01a3a4] focus:bg-white text-black"
                         />
                       </div>
 
-                      <div className="space-y-1.5">
-                        <label className="text-[9px] font-black text-gray-600 uppercase tracking-widest flex items-center gap-2">
+                      <div className="space-y-1">
+                        <label className="text-[8px] font-black text-gray-400 uppercase tracking-widest flex items-center gap-1.5">
                           <MapPin className="h-3 w-3 text-[#01a3a4]" /> ADDRESS
                         </label>
                         <textarea 
                           required
                           value={formData.address}
                           onChange={(e) => setFormData({...formData, address: e.target.value})}
-                          placeholder="HOUSE NO, AREA AND CITY"
-                          className="w-full bg-gray-50 border border-gray-200 rounded-none p-4 text-[13px] font-black uppercase tracking-widest min-h-[100px] focus:outline-none focus:border-[#01a3a4] focus:bg-white text-black placeholder:text-gray-400"
+                          placeholder="AREA & CITY"
+                          className="w-full bg-gray-50 border border-gray-200 rounded-none p-3 text-[12px] font-black uppercase tracking-widest min-h-[80px] focus:outline-none focus:border-[#01a3a4] focus:bg-white text-black"
                         />
                       </div>
                     </div>
 
                     <Button 
-                      disabled={loading}
                       type="submit" 
-                      className="w-full bg-[#01a3a4] hover:bg-black text-white h-10 font-black uppercase tracking-[0.3em] rounded-none shadow-xl text-[11px] border-none"
+                      className="w-full bg-[#01a3a4] hover:bg-black text-white h-10 font-black uppercase tracking-[0.3em] rounded-none shadow-xl text-[10px] border-none"
                     >
-                      {loading ? <Loader2 className="animate-spin h-5 w-5" /> : "অর্ডার নিশ্চিত করুন"}
+                      অর্ডার নিশ্চিত করুন
                     </Button>
                   </form>
                 </div>
               </>
             ) : (
-              <div className="w-full p-8 md:p-12 text-center space-y-6 flex flex-col justify-center bg-white border-2 border-[#01a3a4] items-center">
+              <div className="w-full p-6 text-center space-y-4 flex flex-col justify-center bg-white border-2 border-[#01a3a4] items-center">
                 <div className="relative">
-                  <div className="w-20 h-20 bg-[#01a3a4]/5 rounded-full flex items-center justify-center mx-auto mb-4 border-[3px] border-[#01a3a4] shadow-xl">
-                    <CheckCircle2 className="h-10 w-10 text-[#01a3a4]" />
+                  <div className="w-16 h-16 bg-[#01a3a4]/5 rounded-full flex items-center justify-center mx-auto mb-2 border-[2px] border-[#01a3a4]">
+                    <CheckCircle2 className="h-8 w-8 text-[#01a3a4]" />
                   </div>
-                  <PartyPopper className="absolute -top-2 right-[38%] h-8 w-8 text-[#01a3a4] animate-bounce" />
+                  <PartyPopper className="absolute -top-1 right-[35%] h-6 w-6 text-[#01a3a4] animate-bounce" />
                 </div>
 
-                <div className="space-y-4">
-                  <div className="space-y-1">
-                    <DialogTitle className="text-4xl font-black text-black uppercase tracking-tighter leading-none font-headline">
-                      THANK YOU
-                    </DialogTitle>
-                    <p className="text-[12px] font-black text-[#01a3a4] uppercase tracking-[0.4em] mt-1">অর্ডার সফল হয়েছে</p>
-                  </div>
+                <div className="space-y-3">
+                  <DialogTitle className="text-3xl font-black text-black uppercase tracking-tighter leading-none font-headline">
+                    THANK YOU
+                  </DialogTitle>
+                  <p className="text-[10px] font-black text-[#01a3a4] uppercase tracking-[0.3em]">অর্ডার সফল হয়েছে</p>
                   
-                  <div className="py-4 border-y border-gray-100">
-                    <p className="text-[15px] font-bold text-black font-headline leading-relaxed">
+                  <div className="py-3 border-y border-gray-50">
+                    <p className="text-[13px] font-bold text-black font-headline leading-tight">
                       আমাদের প্রতিনিধি শীঘ্রই আপনার সাথে যোগাযোগ করবেন।
                     </p>
                   </div>
 
-                  <p className="text-[8px] font-black text-gray-400 uppercase tracking-widest">স্বয়ংক্রিয়ভাবে বন্ধ হয়ে যাবে...</p>
+                  <p className="text-[7px] font-black text-gray-300 uppercase tracking-widest">স্বয়ংক্রিয়ভাবে বন্ধ হয়ে যাবে...</p>
                 </div>
               </div>
             )}
@@ -349,31 +333,31 @@ export function OrderModal({ product, isOpen, onClose }: OrderModalProps) {
 
           {step === 'FORM' && (
             <div className="w-full md:w-1/3 flex flex-col bg-gray-50 min-h-[500px] md:min-h-0 border-l border-gray-100">
-              <div className="p-5 bg-white border-b border-gray-100 flex items-center justify-between">
+              <div className="p-4 bg-white border-b border-gray-100 flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <MessageCircle className="h-4 w-4 text-[#01a3a4]" />
-                  <h3 className="text-[10px] font-black text-black uppercase tracking-widest">LIVE SUPPORT</h3>
+                  <MessageCircle className="h-3.5 w-3.5 text-[#01a3a4]" />
+                  <h3 className="text-[9px] font-black text-black uppercase tracking-widest">LIVE SUPPORT</h3>
                 </div>
                 <div className="flex items-center gap-1.5">
-                  <div className="h-2 w-2 bg-green-500 rounded-full animate-pulse" />
-                  <span className="text-[8px] font-black text-gray-400 uppercase">ONLINE</span>
+                  <div className="h-1.5 w-1.5 bg-green-500 rounded-full animate-pulse" />
+                  <span className="text-[7px] font-black text-gray-400 uppercase">ONLINE</span>
                 </div>
               </div>
 
               <div 
                 ref={chatScrollContainerRef}
-                className="flex-grow overflow-y-auto p-5 space-y-4"
+                className="flex-grow overflow-y-auto p-4 space-y-3"
               >
                 {isChatLoading && (
-                  <div className="flex justify-center py-10">
-                    <Loader2 className="h-5 w-5 animate-spin text-[#01a3a4]" />
+                  <div className="flex justify-center py-6">
+                    <Loader2 className="h-4 w-4 animate-spin text-[#01a3a4]" />
                   </div>
                 )}
                 
                 {chatHistory.length === 0 && !isChatLoading && (
-                  <div className="text-center py-10 opacity-40">
-                    <p className="text-[9px] font-black text-gray-500 uppercase tracking-widest leading-relaxed px-4">
-                      FEEL FREE TO SEND US A MESSAGE. OUR TEAM IS READY TO ASSIST YOU.
+                  <div className="text-center py-6 opacity-40">
+                    <p className="text-[8px] font-black text-gray-500 uppercase tracking-widest leading-relaxed px-4">
+                      FEEL FREE TO SEND US A MESSAGE.
                     </p>
                   </div>
                 )}
@@ -381,29 +365,26 @@ export function OrderModal({ product, isOpen, onClose }: OrderModalProps) {
                 {chatHistory.map((msg, i) => (
                   <div key={i} className={cn("flex flex-col", msg.sender === 'CUSTOMER' ? 'items-end' : 'items-start')}>
                     <div className={cn(
-                      "max-w-[85%] p-3.5 text-[11px] font-bold leading-relaxed",
+                      "max-w-[85%] p-3 text-[10px] font-bold leading-tight",
                       msg.sender === 'CUSTOMER' 
-                        ? 'bg-[#01a3a4] text-white rounded-l-xl rounded-tr-xl shadow-md' 
-                        : 'bg-white border border-gray-200 text-black rounded-r-xl rounded-tl-xl shadow-sm'
+                        ? 'bg-[#01a3a4] text-white rounded-l-lg rounded-tr-lg shadow-sm' 
+                        : 'bg-white border border-gray-200 text-black rounded-r-lg rounded-tl-lg shadow-sm'
                     )}>
                       {msg.text}
                     </div>
-                    <span className="text-[7px] font-black text-gray-400 uppercase mt-1 px-1">
-                      {msg.sender === 'CUSTOMER' ? 'YOU' : 'ADMIN'} • {new Date(msg.createdAt).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
-                    </span>
                   </div>
                 ))}
               </div>
 
-              <form onSubmit={handleSendMessage} className="p-4 bg-white border-t border-gray-100 flex gap-2">
+              <form onSubmit={handleSendMessage} className="p-3 bg-white border-t border-gray-100 flex gap-2">
                 <input 
                   value={chatMessage}
                   onChange={(e) => setChatMessage(e.target.value)}
-                  placeholder="TYPE A MESSAGE..."
-                  className="flex-grow bg-gray-50 border border-gray-200 h-12 px-4 text-[11px] font-black uppercase text-black focus:outline-none focus:border-[#01a3a4] transition-all"
+                  placeholder="MESSAGE..."
+                  className="flex-grow bg-gray-50 border border-gray-200 h-10 px-3 text-[10px] font-black uppercase text-black focus:outline-none focus:border-[#01a3a4]"
                 />
-                <Button type="submit" size="icon" className="h-12 w-12 bg-[#01a3a4] hover:bg-black rounded-none shrink-0 border-none">
-                  <Send className="h-4 w-4 text-white" />
+                <Button type="submit" size="icon" className="h-10 w-10 bg-[#01a3a4] hover:bg-black rounded-none shrink-0 border-none">
+                  <Send className="h-3.5 w-3.5 text-white" />
                 </Button>
               </form>
             </div>
