@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { memo, useState } from 'react';
@@ -20,95 +19,49 @@ export const ProductCard = memo(({ product, index = 0 }: ProductCardProps) => {
 
   return (
     <>
-      <Card className="group overflow-hidden bg-black border-none rounded-none flex flex-col h-full relative">
-        
-        {/* IMAGE CONTAINER - FULL COVERAGE, NO BACKGROUND */}
-        <Link href={`/products/${product.id}`} className="block relative aspect-square overflow-hidden">
+      <Card className="group bg-black border-none rounded-none flex flex-col h-full overflow-hidden">
+        <Link href={`/products/${product.id}`} className="relative aspect-square overflow-hidden bg-black">
           <Image
             src={product.imageUrl}
             alt={product.name}
             fill
             sizes="(max-width: 768px) 50vw, 15vw"
             priority={index < 4}
-            loading={index < 4 ? "eager" : "lazy"}
-            quality={60}
-            className="object-cover transition-transform duration-1000 group-hover:scale-105"
+            quality={50}
+            className="object-cover transition-transform duration-700 group-hover:scale-105"
           />
           {isOutOfStock && (
-            <div className="absolute inset-0 bg-black/70 flex items-center justify-center z-10">
-              <span className="bg-black text-white text-[9px] font-black px-3 py-1.5 uppercase tracking-widest border border-white/20">OUT OF ARCHIVE</span>
+            <div className="absolute inset-0 bg-black/60 flex items-center justify-center">
+              <span className="text-white text-[8px] font-black border border-white/20 px-2 py-1 uppercase">SOLD OUT</span>
             </div>
           )}
         </Link>
         
-        {/* CONTENT AREA */}
-        <CardContent className="p-6 flex flex-col flex-grow bg-black space-y-5">
-          <Link href={`/products/${product.id}`} className="block">
-            <h3 className="font-black text-[16px] leading-tight text-white uppercase tracking-[0.1em] font-headline truncate">
-              {product.name}
-            </h3>
-          </Link>
+        <CardContent className="p-4 flex flex-col flex-grow bg-black space-y-3">
+          <h3 className="font-black text-[13px] text-white uppercase truncate font-headline">{product.name}</h3>
           
           <div className="flex items-center justify-between">
-            {/* MAIN PRICE - LARGE TEAL BOLD WITH TINY CURRENCY SYMBOL */}
             <div className="flex items-baseline text-[#01a3a4]">
-              <span className="text-[7px] font-normal mr-1 translate-y-[-14px] text-white/50">৳</span>
-              <span className="font-black text-[34px] tracking-tighter leading-none">
+              <span className="text-[7px] font-normal mr-1 translate-y-[-12px] text-white/50">৳</span>
+              <span className="font-black text-[28px] tracking-tighter leading-none">
                 {product.price.toLocaleString()}
               </span>
             </div>
-            
-            {/* DISCOUNT BOX */}
             {product.discountPercentage > 0 && (
-              <div className="px-3 py-2 border border-[#01a3a4] flex items-center justify-center">
-                <span className="text-[11px] font-black text-[#01a3a4] leading-none">
-                  -{product.discountPercentage}%
-                </span>
-              </div>
+              <span className="text-[9px] font-black text-[#01a3a4] border border-[#01a3a4] px-1.5 py-0.5">-{product.discountPercentage}%</span>
             )}
           </div>
 
-          {/* OLD PRICE */}
-          {product.originalPrice > product.price && (
-            <div className="flex items-baseline text-white/30 -mt-3">
-              <span className="text-[6px] font-normal mr-1 translate-y-[-4px]">৳</span>
-              <span className="text-white/30 line-through text-[18px] font-bold">
-                {product.originalPrice.toLocaleString()}
-              </span>
-            </div>
-          )}
-
-          {/* STOCK STATUS */}
-          <div className="flex items-center gap-2.5 pt-2">
-            <div className={`h-2.5 w-2.5 rounded-full ${isOutOfStock ? 'bg-red-600' : 'bg-green-600 animate-pulse'}`} />
-            <span className={`text-[10px] font-black uppercase tracking-[0.2em] ${isOutOfStock ? 'text-red-600' : 'text-green-600'}`}>
-              {isOutOfStock ? 'OUT OF STOCK' : 'AVAILABLE IN STOCK'}
-            </span>
-          </div>
-          
-          <div className="mt-auto pt-4">
-            <Button 
-              disabled={isOutOfStock}
-              onClick={(e) => {
-                e.preventDefault();
-                setIsOrderOpen(true);
-              }}
-              className={`w-full ${isOutOfStock ? 'bg-white/5 text-white/10' : 'bg-[#01a3a4] text-white hover:bg-white hover:text-black'} transition-all duration-500 font-black text-[13px] h-14 rounded-none uppercase px-6 flex items-center justify-center gap-4 shadow-2xl`}
-            >
-              <div className="w-6 h-6 border border-white/20 flex items-center justify-center">
-                <ShoppingBag className="h-4 w-4" /> 
-              </div>
-              <span className="tracking-[0.1em] font-black">অর্ডার করুন</span>
-            </Button>
-          </div>
+          <Button 
+            disabled={isOutOfStock}
+            onClick={(e) => { e.preventDefault(); setIsOrderOpen(true); }}
+            className={`w-full ${isOutOfStock ? 'bg-white/5' : 'bg-[#01a3a4] hover:bg-white hover:text-black'} text-white font-black text-[11px] h-12 rounded-none uppercase flex items-center justify-center gap-2`}
+          >
+            <ShoppingBag className="h-3.5 w-3.5" /> অর্ডার করুন
+          </Button>
         </CardContent>
       </Card>
-
-      <OrderModal 
-        product={product} 
-        isOpen={isOrderOpen} 
-        onClose={() => setIsOrderOpen(false)} 
-      />
+      <OrderModal product={product} isOpen={isOrderOpen} onClose={() => setIsOrderOpen(false)} />
     </>
   );
 });
