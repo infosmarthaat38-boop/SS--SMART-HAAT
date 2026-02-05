@@ -157,10 +157,12 @@ export const OrderModal = memo(({ product, isOpen, onClose }: OrderModalProps) =
   return (
     <Dialog open={isOpen} onOpenChange={(val) => !val && onClose()}>
       <DialogContent className={cn(
-        "p-0 bg-white border-none rounded-none overflow-hidden gap-0 shadow-2xl transition-all duration-300 gpu-accelerated fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-[100]",
-        step === 'SUCCESS' ? "max-w-[350px]" : isMobile ? "w-full h-full" : "max-w-[950px] w-[95vw]"
+        "p-0 bg-white border-none rounded-none overflow-hidden gap-0 shadow-2xl transition-all duration-300 fixed z-[100] outline-none",
+        // Force absolute centering for Desktop, Full Screen for Mobile
+        "left-[50%] top-[50%] translate-x-[-50%] translate-y-[-50%]",
+        step === 'SUCCESS' ? "max-w-[350px] w-[90vw]" : isMobile ? "w-full h-full" : "max-w-[950px] w-[95vw]"
       )}>
-        {/* GLOBAL CLOSE BUTTON */}
+        {/* CORNER CLOSE BUTTON */}
         <button 
           onClick={onClose}
           className="absolute right-4 top-4 z-[60] p-2 text-gray-400 hover:text-black hover:bg-gray-100 transition-all rounded-full"
@@ -168,11 +170,11 @@ export const OrderModal = memo(({ product, isOpen, onClose }: OrderModalProps) =
           <X className="h-5 w-5" />
         </button>
 
-        <div className="flex flex-col h-full max-h-[90vh]">
+        <div className="flex flex-col h-full max-h-[95vh] relative">
           {step === 'FORM' ? (
             <div className="flex flex-col md:flex-row h-full overflow-hidden">
               
-              {/* DESKTOP LEFT: PRODUCT INFO */}
+              {/* DESKTOP LEFT: PRODUCT IMAGE (BAM SIDE IMAGE) */}
               {!isMobile && (
                 <div className="md:w-[280px] bg-gray-50 border-r border-gray-100 p-6 flex flex-col shrink-0 overflow-y-auto no-scrollbar">
                   <div className="relative w-full aspect-square border border-gray-200 mb-6 bg-white shadow-sm overflow-hidden">
@@ -191,7 +193,7 @@ export const OrderModal = memo(({ product, isOpen, onClose }: OrderModalProps) =
                 </div>
               )}
 
-              {/* MIDDLE: ORDER FORM */}
+              {/* MIDDLE: ORDER FORM (DANSIDE FROM) */}
               <div className={cn(
                 "flex-grow p-6 md:p-8 space-y-6 bg-white overflow-y-auto relative no-scrollbar",
                 !isMobile && "md:w-[350px]"
@@ -314,7 +316,7 @@ export const OrderModal = memo(({ product, isOpen, onClose }: OrderModalProps) =
                 </form>
               </div>
 
-              {/* DESKTOP RIGHT: SUPPORT CHAT */}
+              {/* DESKTOP RIGHT: SUPPORT CHAT (DAN SITEY CHATE) */}
               {!isMobile && (
                 <div className="md:w-[320px] flex flex-col bg-gray-50 shrink-0 border-l border-gray-100 h-full">
                   <div className="p-5 bg-white border-b border-gray-100 flex items-center justify-between">
@@ -370,7 +372,7 @@ export const OrderModal = memo(({ product, isOpen, onClose }: OrderModalProps) =
               )}
             </div>
           ) : step === 'CHAT' ? (
-            <div className="flex flex-col h-full bg-white relative gpu-accelerated">
+            <div className="flex flex-col h-full bg-white relative">
               <button onClick={() => setStep('FORM')} className="absolute left-4 top-4 z-[60] p-2 text-white hover:scale-110 transition-all active:scale-90">
                 <ArrowLeft className="h-6 w-6" />
               </button>
@@ -424,7 +426,7 @@ export const OrderModal = memo(({ product, isOpen, onClose }: OrderModalProps) =
               </form>
             </div>
           ) : (
-            <div className="w-full p-12 text-center space-y-6 flex flex-col justify-center bg-white items-center min-h-[400px] gpu-accelerated">
+            <div className="w-full p-12 text-center space-y-6 flex flex-col justify-center bg-white items-center min-h-[400px]">
               <div className="relative">
                 <div className="w-20 h-20 bg-[#01a3a4]/5 rounded-full flex items-center justify-center mx-auto mb-2 border-[3px] border-[#01a3a4] shadow-2xl animate-in zoom-in-50 duration-500">
                   <CheckCircle2 className="h-10 w-10 text-[#01a3a4]" />
@@ -433,13 +435,13 @@ export const OrderModal = memo(({ product, isOpen, onClose }: OrderModalProps) =
               </div>
 
               <div className="space-y-4">
-                <DialogTitle className="text-4xl font-black text-black uppercase tracking-tighter leading-none font-headline animate-in slide-in-from-bottom-2 duration-700">
+                <DialogTitle className="text-3xl font-black text-black uppercase tracking-tighter leading-none font-headline animate-in slide-in-from-bottom-2 duration-700">
                   THANK YOU
                 </DialogTitle>
                 <div className="h-1 w-12 bg-[#01a3a4] mx-auto rounded-full" />
                 <p className="text-[12px] font-black text-[#01a3a4] uppercase tracking-[0.4em]">অর্ডার সফল হয়েছে</p>
                 <div className="py-2 px-6">
-                  <p className="text-[12px] font-bold text-black font-headline leading-relaxed">
+                  <p className="text-[14px] font-bold text-black font-headline leading-relaxed">
                     যত দ্রুত সম্ভব আমাদের প্রতিনিধি আপনার সাথে যোগাযোগ করবে
                   </p>
                 </div>
