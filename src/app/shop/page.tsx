@@ -49,7 +49,7 @@ export default function ShopPage() {
                   className="bg-[#01a3a4] hover:bg-white hover:text-black text-white px-16 h-16 font-black uppercase tracking-[0.4em] text-[11px] flex items-center gap-3 transition-all shadow-2xl shadow-[#01a3a4]/10 disabled:opacity-50"
                 >
                   {isLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Plus className="h-4 w-4" />} 
-                  LOAD MORE PRODUCTS
+                  MORE PRODUCT
                 </button>
                 <p className="text-[8px] font-black text-white/20 uppercase tracking-[0.3em]">Viewing {products.length} of our total archive</p>
               </div>

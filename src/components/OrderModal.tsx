@@ -107,6 +107,7 @@ export function OrderModal({ product, isOpen, onClose }: OrderModalProps) {
       productId: product.id,
       productName: product.name,
       productPrice: product.price,
+      productImageUrl: product.imageUrl, // Save image for PDF report
       status: 'PENDING',
       chatId: chatSessionId,
       createdAt: new Date().toISOString()
@@ -294,9 +295,9 @@ export function OrderModal({ product, isOpen, onClose }: OrderModalProps) {
                 </div>
               </>
             ) : (
-              <div className="w-full p-20 text-center space-y-10 flex flex-col justify-center bg-white">
+              <div className="w-full p-20 text-center space-y-10 flex flex-col justify-center bg-white border-2 border-[#01a3a4]">
                 <div className="relative">
-                  <div className="w-28 h-28 bg-[#01a3a4]/5 rounded-full flex items-center justify-center mx-auto mb-6 border-[4px] border-[#01a3a4]">
+                  <div className="w-28 h-28 bg-[#01a3a4]/5 rounded-full flex items-center justify-center mx-auto mb-6 border-[4px] border-[#01a3a4] shadow-2xl">
                     <CheckCircle2 className="h-14 w-14 text-[#01a3a4]" />
                   </div>
                   <PartyPopper className="absolute -top-3 right-[42%] h-10 w-10 text-[#01a3a4] animate-bounce" />
@@ -304,18 +305,20 @@ export function OrderModal({ product, isOpen, onClose }: OrderModalProps) {
 
                 <div className="space-y-6">
                   <div className="space-y-2">
-                    <p className="text-[12px] font-black text-[#01a3a4] uppercase tracking-[0.5em]">SUCCESSFUL</p>
-                    <DialogTitle className="text-5xl font-black text-black uppercase tracking-tighter leading-none font-headline">
-                      THANK YOU FOR YOUR ORDER
+                    <DialogTitle className="text-6xl font-black text-black uppercase tracking-tighter leading-none font-headline">
+                      THANK YOU
                     </DialogTitle>
+                    <p className="text-[14px] font-black text-[#01a3a4] uppercase tracking-[0.5em] mt-2">অর্ডার সফল হয়েছে</p>
                   </div>
                   
-                  <p className="text-[22px] font-bold text-black italic font-headline py-10 border-y border-gray-100 leading-relaxed">
-                    OUR REPRESENTATIVE WILL CONTACT YOU SHORTLY TO FINALIZE THE DELIVERY.
-                  </p>
+                  <div className="py-8 border-y border-gray-100">
+                    <p className="text-[20px] font-bold text-black font-headline leading-relaxed">
+                      আপনার অর্ডারের জন্য ধন্যবাদ। আমাদের প্রতিনিধি শীঘ্রই আপনার সাথে যোগাযোগ করে ডেলিভারি নিশ্চিত করবেন।
+                    </p>
+                  </div>
 
-                  <Button onClick={onClose} className="w-full bg-black hover:bg-[#01a3a4] text-white font-black uppercase h-16 rounded-none text-[15px] tracking-[0.4em]">
-                    CLOSE
+                  <Button onClick={onClose} className="w-full bg-black hover:bg-[#01a3a4] text-white font-black uppercase h-16 rounded-none text-[15px] tracking-[0.4em] transition-all">
+                    CLOSE / বন্ধ করুন
                   </Button>
                 </div>
               </div>

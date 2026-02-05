@@ -218,7 +218,7 @@ export default function Home() {
           <div className="mt-16 flex justify-center">
             <Link href="/shop" className="group">
               <button className="bg-white/5 border border-white/10 hover:border-[#01a3a4] text-white px-12 h-16 font-black uppercase tracking-[0.5em] text-[12px] flex items-center gap-4 transition-all hover:bg-[#01a3a4] hover:text-black">
-                DISCOVER MORE PRODUCTS <ArrowRight className="h-4 w-4 group-hover:translate-x-2 transition-transform" />
+                MORE PRODUCT <ArrowRight className="h-4 w-4 group-hover:translate-x-2 transition-transform" />
               </button>
             </Link>
           </div>

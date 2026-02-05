@@ -140,8 +140,9 @@ export default function AdminOrders() {
     doc.setFont("helvetica", "normal");
     doc.text(`${new Date(order.createdAt).toLocaleDateString()}`, 165, 53);
 
+    // BOX FOR CUSTOMER DETAILS
     doc.setFillColor(250, 250, 250);
-    doc.rect(15, 65, 180, 45, 'F');
+    doc.rect(15, 65, 120, 45, 'F');
     
     doc.setFontSize(10);
     doc.setTextColor(primaryColor[0], primaryColor[1], primaryColor[2]);
@@ -163,8 +164,19 @@ export default function AdminOrders() {
     doc.setFont("helvetica", "bold");
     doc.text("ADDRESS:", 20, 95);
     doc.setFont("helvetica", "normal");
-    const splitAddress = doc.splitTextToSize(order.customerAddress.toUpperCase(), 130);
+    const splitAddress = doc.splitTextToSize(order.customerAddress.toUpperCase(), 85);
     doc.text(splitAddress, 45, 95);
+
+    // ADD PRODUCT IMAGE TO PDF
+    if (order.productImageUrl) {
+      try {
+        doc.setDrawColor(240, 240, 240);
+        doc.rect(145, 65, 45, 45); // Image Box
+        doc.addImage(order.productImageUrl, 'JPEG', 146, 66, 43, 43);
+      } catch (err) {
+        console.error("PDF Image Error:", err);
+      }
+    }
 
     const itemDesc = order.selectedSize ? `${order.productName.toUpperCase()} (SIZE: ${order.selectedSize})` : order.productName.toUpperCase();
 
