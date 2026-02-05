@@ -155,37 +155,37 @@ export function OrderModal({ product, isOpen, onClose }: OrderModalProps) {
     <Dialog open={isOpen} onOpenChange={(val) => !val && onClose()}>
       <DialogContent className={cn(
         "p-0 bg-white border-none rounded-none overflow-hidden gap-0 shadow-2xl transition-all duration-300",
-        step === 'SUCCESS' ? "max-w-[320px]" : "max-w-[500px]"
+        step === 'SUCCESS' ? "max-w-[320px]" : "max-w-[480px]"
       )}>
-        <div className="flex flex-col max-h-[90vh]">
+        <div className="flex flex-col max-h-[95vh]">
           {step === 'FORM' ? (
             <>
               {/* TOP SECTION: FORM */}
-              <div className="p-6 md:p-8 space-y-6 bg-white overflow-y-auto relative border-b border-gray-100">
+              <div className="p-5 md:p-6 space-y-4 bg-white overflow-y-auto relative border-b border-gray-100">
                 {/* SMALL PRODUCT IMAGE IN CORNER */}
-                <div className="absolute top-6 right-6 w-16 h-16 md:w-20 md:h-20 border border-gray-100 shadow-sm z-10 bg-white">
+                <div className="absolute top-4 right-4 w-12 h-12 md:w-16 md:h-16 border border-gray-100 shadow-sm z-10 bg-white">
                   <Image 
                     src={product.imageUrl} 
                     alt={product.name} 
                     fill 
                     className="object-cover"
-                    sizes="80px"
+                    sizes="64px"
                   />
                 </div>
 
-                <div className="space-y-1">
-                  <div className="flex items-center gap-3">
-                    <div className="h-6 w-1 bg-[#01a3a4]" />
-                    <DialogTitle className="text-xl md:text-2xl font-black text-black uppercase tracking-tighter leading-none font-headline">ORDER CONFIRM</DialogTitle>
+                <div className="space-y-0.5">
+                  <div className="flex items-center gap-2">
+                    <div className="h-5 w-1 bg-[#01a3a4]" />
+                    <DialogTitle className="text-lg md:text-xl font-black text-black uppercase tracking-tighter leading-none font-headline">ORDER CONFIRM</DialogTitle>
                   </div>
-                  <p className="text-[10px] font-bold text-[#01a3a4] uppercase tracking-widest">{product.name}</p>
+                  <p className="text-[8px] font-bold text-[#01a3a4] uppercase tracking-widest truncate pr-16">{product.name}</p>
                 </div>
 
-                <form onSubmit={handleSubmit} className="space-y-4 pt-4">
+                <form onSubmit={handleSubmit} className="space-y-3 pt-2">
                   <div className="grid grid-cols-2 gap-3">
-                    <div className="space-y-1.5">
-                      <label className="text-[8px] font-black text-gray-400 uppercase tracking-widest flex items-center gap-1.5">
-                        <Ruler className="h-3 w-3 text-[#01a3a4]" /> SIZE
+                    <div className="space-y-1">
+                      <label className="text-[7px] font-black text-gray-400 uppercase tracking-widest flex items-center gap-1">
+                        <Ruler className="h-2.5 w-2.5 text-[#01a3a4]" /> SIZE
                       </label>
                       <div className="flex flex-wrap gap-1">
                         {product?.sizes?.length > 0 ? product.sizes.map((size: string) => (
@@ -194,7 +194,7 @@ export function OrderModal({ product, isOpen, onClose }: OrderModalProps) {
                             type="button"
                             onClick={() => setFormData({...formData, selectedSize: size})}
                             className={cn(
-                              "px-2 py-1 border text-[9px] font-black uppercase transition-all",
+                              "px-1.5 py-0.5 border text-[8px] font-black uppercase transition-all",
                               formData.selectedSize === size 
                                 ? 'bg-[#01a3a4] border-[#01a3a4] text-white' 
                                 : 'bg-gray-50 border-gray-200 text-gray-400 hover:border-[#01a3a4]'
@@ -203,14 +203,14 @@ export function OrderModal({ product, isOpen, onClose }: OrderModalProps) {
                             {size}
                           </button>
                         )) : (
-                          <span className="text-[8px] font-black text-gray-400 uppercase">N/A</span>
+                          <span className="text-[7px] font-black text-gray-400 uppercase">N/A</span>
                         )}
                       </div>
                     </div>
 
-                    <div className="space-y-1.5">
-                      <label className="text-[8px] font-black text-gray-400 uppercase tracking-widest flex items-center gap-1.5">
-                        <Hash className="h-3 w-3 text-[#01a3a4]" /> QTY
+                    <div className="space-y-1">
+                      <label className="text-[7px] font-black text-gray-400 uppercase tracking-widest flex items-center gap-1">
+                        <Hash className="h-2.5 w-2.5 text-[#01a3a4]" /> QTY
                       </label>
                       <input 
                         type="number"
@@ -218,28 +218,28 @@ export function OrderModal({ product, isOpen, onClose }: OrderModalProps) {
                         required
                         value={formData.quantity}
                         onChange={(e) => setFormData({...formData, quantity: parseInt(e.target.value) || 1})}
-                        className="w-full bg-gray-50 border border-gray-200 rounded-none h-8 px-3 text-[11px] font-black tracking-widest focus:outline-none focus:border-[#01a3a4] focus:bg-white text-black"
+                        className="w-full bg-gray-50 border border-gray-200 rounded-none h-7 px-2 text-[10px] font-black tracking-widest focus:outline-none focus:border-[#01a3a4] focus:bg-white text-black"
                       />
                     </div>
                   </div>
 
-                  <div className="space-y-3">
-                    <div className="space-y-1">
-                      <label className="text-[8px] font-black text-gray-400 uppercase tracking-widest flex items-center gap-1.5">
-                        <User className="h-3 w-3 text-[#01a3a4]" /> NAME
+                  <div className="space-y-2.5">
+                    <div className="space-y-0.5">
+                      <label className="text-[7px] font-black text-gray-400 uppercase tracking-widest flex items-center gap-1">
+                        <User className="h-2.5 w-2.5 text-[#01a3a4]" /> NAME
                       </label>
                       <input 
                         required
                         value={formData.name}
                         onChange={(e) => setFormData({...formData, name: e.target.value})}
                         placeholder="FULL NAME"
-                        className="w-full bg-gray-50 border border-gray-200 rounded-none h-10 px-3 text-[11px] font-black uppercase tracking-widest focus:outline-none focus:border-[#01a3a4] focus:bg-white text-black"
+                        className="w-full bg-gray-50 border border-gray-200 rounded-none h-9 px-3 text-[10px] font-black uppercase tracking-widest focus:outline-none focus:border-[#01a3a4] focus:bg-white text-black"
                       />
                     </div>
 
-                    <div className="space-y-1">
-                      <label className="text-[8px] font-black text-gray-400 uppercase tracking-widest flex items-center gap-1.5">
-                        <Phone className="h-3 w-3 text-[#01a3a4]" /> PHONE
+                    <div className="space-y-0.5">
+                      <label className="text-[7px] font-black text-gray-400 uppercase tracking-widest flex items-center gap-1">
+                        <Phone className="h-2.5 w-2.5 text-[#01a3a4]" /> PHONE
                       </label>
                       <input 
                         required
@@ -247,59 +247,59 @@ export function OrderModal({ product, isOpen, onClose }: OrderModalProps) {
                         value={formData.phone}
                         onChange={(e) => setFormData({...formData, phone: e.target.value})}
                         placeholder="01XXXXXXXXX"
-                        className="w-full bg-gray-50 border border-gray-200 rounded-none h-10 px-3 text-[11px] font-black tracking-widest focus:outline-none focus:border-[#01a3a4] focus:bg-white text-black"
+                        className="w-full bg-gray-50 border border-gray-200 rounded-none h-9 px-3 text-[10px] font-black tracking-widest focus:outline-none focus:border-[#01a3a4] focus:bg-white text-black"
                       />
                     </div>
 
-                    <div className="space-y-1">
-                      <label className="text-[8px] font-black text-gray-400 uppercase tracking-widest flex items-center gap-1.5">
-                        <MapPin className="h-3 w-3 text-[#01a3a4]" /> ADDRESS
+                    <div className="space-y-0.5">
+                      <label className="text-[7px] font-black text-gray-400 uppercase tracking-widest flex items-center gap-1">
+                        <MapPin className="h-2.5 w-2.5 text-[#01a3a4]" /> ADDRESS
                       </label>
                       <textarea 
                         required
                         value={formData.address}
                         onChange={(e) => setFormData({...formData, address: e.target.value})}
                         placeholder="AREA & CITY"
-                        className="w-full bg-gray-50 border border-gray-200 rounded-none p-2 text-[11px] font-black uppercase tracking-widest min-h-[60px] focus:outline-none focus:border-[#01a3a4] focus:bg-white text-black"
+                        className="w-full bg-gray-50 border border-gray-200 rounded-none p-2 text-[10px] font-black uppercase tracking-widest min-h-[50px] focus:outline-none focus:border-[#01a3a4] focus:bg-white text-black"
                       />
                     </div>
                   </div>
 
                   <Button 
                     type="submit" 
-                    className="w-full bg-[#01a3a4] hover:bg-black text-white h-12 font-black uppercase tracking-[0.3em] rounded-none shadow-xl text-[11px] border-none mt-2"
+                    className="w-full bg-[#01a3a4] hover:bg-black text-white h-11 font-black uppercase tracking-[0.3em] rounded-none shadow-xl text-[10px] border-none mt-1"
                   >
                     অর্ডার নিশ্চিত করুন
                   </Button>
                 </form>
               </div>
 
-              {/* BOTTOM SECTION: CHAT */}
-              <div className="flex flex-col bg-gray-50 h-[250px] shrink-0">
-                <div className="p-3 bg-white border-b border-gray-100 flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <MessageCircle className="h-3.5 w-3.5 text-[#01a3a4]" />
-                    <h3 className="text-[9px] font-black text-black uppercase tracking-widest">LIVE SUPPORT CHAT</h3>
-                  </div>
+              {/* BOTTOM SECTION: CHAT (SMALLER AS REQUESTED) */}
+              <div className="flex flex-col bg-gray-50 h-[170px] shrink-0 border-t border-gray-100">
+                <div className="p-2 bg-white border-b border-gray-100 flex items-center justify-between">
                   <div className="flex items-center gap-1.5">
-                    <div className="h-1.5 w-1.5 bg-green-500 rounded-full animate-pulse" />
-                    <span className="text-[7px] font-black text-gray-400 uppercase">ONLINE</span>
+                    <MessageCircle className="h-3 w-3 text-[#01a3a4]" />
+                    <h3 className="text-[8px] font-black text-black uppercase tracking-widest">SUPPORT CHAT</h3>
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <div className="h-1 w-1 bg-green-500 rounded-full animate-pulse" />
+                    <span className="text-[6px] font-black text-gray-400 uppercase">ONLINE</span>
                   </div>
                 </div>
 
                 <div 
                   ref={chatScrollContainerRef}
-                  className="flex-grow overflow-y-auto p-4 space-y-3"
+                  className="flex-grow overflow-y-auto p-3 space-y-2 bg-gray-50/50"
                 >
                   {isChatLoading && (
-                    <div className="flex justify-center py-4">
-                      <Loader2 className="h-4 w-4 animate-spin text-[#01a3a4]" />
+                    <div className="flex justify-center py-2">
+                      <Loader2 className="h-3 w-3 animate-spin text-[#01a3a4]" />
                     </div>
                   )}
                   
                   {chatHistory.length === 0 && !isChatLoading && (
-                    <div className="text-center py-4 opacity-40">
-                      <p className="text-[8px] font-black text-gray-500 uppercase tracking-widest leading-relaxed px-4">
+                    <div className="text-center py-2 opacity-40">
+                      <p className="text-[7px] font-black text-gray-500 uppercase tracking-widest leading-relaxed px-4">
                         অর্ডার নিয়ে কোনো প্রশ্ন থাকলে এখানে মেসেজ দিন।
                       </p>
                     </div>
@@ -308,10 +308,10 @@ export function OrderModal({ product, isOpen, onClose }: OrderModalProps) {
                   {chatHistory.map((msg, i) => (
                     <div key={i} className={cn("flex flex-col", msg.sender === 'CUSTOMER' ? 'items-end' : 'items-start')}>
                       <div className={cn(
-                        "max-w-[85%] p-2.5 text-[10px] font-bold leading-tight",
+                        "max-w-[85%] p-2 text-[9px] font-bold leading-tight",
                         msg.sender === 'CUSTOMER' 
-                          ? 'bg-[#01a3a4] text-white rounded-l-lg rounded-tr-lg' 
-                          : 'bg-white border border-gray-200 text-black rounded-r-lg rounded-tl-lg'
+                          ? 'bg-[#01a3a4] text-white rounded-l-md rounded-tr-md' 
+                          : 'bg-white border border-gray-200 text-black rounded-r-md rounded-tl-md'
                       )}>
                         {msg.text}
                       </div>
@@ -319,15 +319,15 @@ export function OrderModal({ product, isOpen, onClose }: OrderModalProps) {
                   ))}
                 </div>
 
-                <form onSubmit={handleSendMessage} className="p-3 bg-white border-t border-gray-100 flex gap-2">
+                <form onSubmit={handleSendMessage} className="p-2 bg-white border-t border-gray-100 flex gap-2">
                   <input 
                     value={chatMessage}
                     onChange={(e) => setChatMessage(e.target.value)}
                     placeholder="MESSAGE..."
-                    className="flex-grow bg-gray-50 border border-gray-200 h-9 px-3 text-[10px] font-black uppercase text-black focus:outline-none focus:border-[#01a3a4]"
+                    className="flex-grow bg-gray-50 border border-gray-200 h-8 px-3 text-[9px] font-black uppercase text-black focus:outline-none focus:border-[#01a3a4]"
                   />
-                  <Button type="submit" size="icon" className="h-9 w-9 bg-[#01a3a4] hover:bg-black rounded-none shrink-0 border-none">
-                    <Send className="h-3.5 w-3.5 text-white" />
+                  <Button type="submit" size="icon" className="h-8 w-8 bg-[#01a3a4] hover:bg-black rounded-none shrink-0 border-none">
+                    <Send className="h-3 w-3 text-white" />
                   </Button>
                 </form>
               </div>

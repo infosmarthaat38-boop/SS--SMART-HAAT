@@ -56,6 +56,7 @@ export function Navbar() {
             {/* RIGHT: NAVIGATION LINKS */}
             <div className="flex items-center gap-2 md:gap-4 shrink-0">
               <div className="flex items-center gap-3 md:gap-4 text-[9px] md:text-[10px] font-black uppercase tracking-widest text-white">
+                {/* Visible outside for both Mobile and Desktop */}
                 <Link href="/shop" className="hover:text-black transition-colors flex items-center gap-1">
                   <LayoutGrid className="h-3 w-3 md:h-3.5 md:w-3.5" /> {language === 'EN' ? "SHOP" : "দোকান"}
                 </Link>
@@ -67,7 +68,7 @@ export function Navbar() {
                   <Languages className="h-3 w-3 md:h-3.5 md:w-3.5" /> {language}
                 </button>
 
-                {/* 3-DOT MENU FOR SEARCH, LOCATION, ADMIN */}
+                {/* 3-DOT MENU: ONLY Search, Admin, and Location inside as requested */}
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button variant="ghost" size="icon" className="h-9 w-9 text-white hover:bg-black/10 rounded-none border border-white/20 flex items-center justify-center">
@@ -91,6 +92,7 @@ export function Navbar() {
                 </DropdownMenu>
               </div>
 
+              {/* Shopping Bag always visible */}
               <Button variant="ghost" size="icon" className="relative h-9 w-9 rounded-none hover:bg-black/10 text-white group border border-white/20">
                 <ShoppingBag className="h-5 w-5 transition-transform group-hover:scale-110" />
                 <span className="absolute -top-1 -right-1 w-4 h-4 bg-black text-white text-[8px] font-black rounded-none flex items-center justify-center border border-[#01a3a4]">
