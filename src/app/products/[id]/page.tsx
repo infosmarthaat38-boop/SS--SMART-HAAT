@@ -4,7 +4,7 @@
 import React, { useState } from 'react';
 import Image from 'next/image';
 import { useParams, useRouter } from 'next/navigation';
-import { ArrowLeft, ShoppingCart, Heart, Share2, Loader2, Package, Ruler } from 'lucide-react';
+import { ArrowLeft, ShoppingCart, Heart, Share2, Loader2, Package, Ruler, MapPin } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Navbar } from '@/components/Navbar';
 import { Footer } from '@/components/Footer';
@@ -20,7 +20,10 @@ export default function ProductDetails() {
   const [isOrderOpen, setIsOrderOpen] = useState(false);
   
   const productRef = useMemoFirebase(() => doc(db, 'products', id as string), [db, id]);
+  const settingsRef = useMemoFirebase(() => doc(db, 'settings', 'site-config'), [db]);
+  
   const { data: product, isLoading } = useDoc(productRef);
+  const { data: settings } = useDoc(settingsRef);
 
   if (isLoading) {
     return (
@@ -90,6 +93,12 @@ export default function ProductDetails() {
               <div className="space-y-6">
                 <div className="flex items-center justify-between">
                   <Badge className="rounded-none uppercase tracking-[0.3em] text-[10px] bg-[#01a3a4] text-white font-black border-none px-4 py-1.5">{product.category}</Badge>
+                  
+                  {/* PRODUCT LOCATION TAG */}
+                  <div className="flex items-center gap-2 bg-white/5 px-3 py-1 border border-white/10">
+                    <MapPin className="h-3 w-3 text-[#01a3a4]" />
+                    <span className="text-[8px] font-black text-white uppercase tracking-widest">SHIPPED FROM: {settings?.liveLocation || 'BANANI, DHAKA'}</span>
+                  </div>
                 </div>
                 <h1 className="text-5xl md:text-7xl font-black font-headline text-white leading-none uppercase tracking-tighter">{product.name}</h1>
                 

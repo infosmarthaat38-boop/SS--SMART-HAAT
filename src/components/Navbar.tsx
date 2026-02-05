@@ -3,14 +3,16 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { Search, ShoppingBag, Languages, User } from 'lucide-react';
+import { Search, ShoppingBag, Languages, User, MapPin } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { AdminLoginModal } from '@/components/AdminLoginModal';
+import { LocationModal } from '@/components/LocationModal';
 import { useRouter } from 'next/navigation';
 
 export function Navbar() {
   const [isAdminModalOpen, setIsAdminModalOpen] = useState(false);
+  const [isLocationModalOpen, setIsLocationModalOpen] = useState(false);
   const [language, setLanguage] = useState<'EN' | 'BN'>('EN');
   const router = useRouter();
 
@@ -23,7 +25,6 @@ export function Navbar() {
     const newLang = language === 'EN' ? 'BN' : 'EN';
     setLanguage(newLang);
     localStorage.setItem('app_lang', newLang);
-    // In a real app, this would trigger i18n context update
   };
 
   const handleAdminClick = (e: React.MouseEvent) => {
@@ -69,6 +70,14 @@ export function Navbar() {
                 <li className="hidden md:block"><Link href="/shop" className="hover:text-black transition-colors">{language === 'EN' ? "SHOP" : "দোকান"}</Link></li>
                 <li>
                   <button 
+                    onClick={() => setIsLocationModalOpen(true)}
+                    className="flex items-center gap-1.5 hover:text-black transition-colors font-black uppercase tracking-widest"
+                  >
+                    <MapPin className="h-3.5 w-3.5" /> {language === 'EN' ? "LOCATION" : "লোকেশন"}
+                  </button>
+                </li>
+                <li>
+                  <button 
                     onClick={toggleLanguage}
                     className="flex items-center gap-1.5 hover:text-black transition-colors font-black uppercase tracking-widest"
                   >
@@ -80,7 +89,7 @@ export function Navbar() {
                     onClick={handleAdminClick}
                     className="flex items-center gap-1.5 hover:text-black transition-colors font-black uppercase tracking-widest"
                   >
-                    <User className="h-3.5 w-3.5" /> ADMIN
+                    ADMIN
                   </button>
                 </li>
               </ul>
@@ -101,6 +110,11 @@ export function Navbar() {
       <AdminLoginModal 
         isOpen={isAdminModalOpen} 
         onClose={() => setIsAdminModalOpen(false)} 
+      />
+
+      <LocationModal 
+        isOpen={isLocationModalOpen}
+        onClose={() => setIsLocationModalOpen(false)}
       />
     </>
   );
