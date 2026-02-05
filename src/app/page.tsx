@@ -21,7 +21,7 @@ const SlideItem = memo(({ item, priority }: { item: any, priority: boolean }) =>
   if (item.price !== undefined) {
     return (
       <CarouselItem className="h-full">
-        <div className="relative h-[300px] md:h-[420px] w-full bg-black overflow-hidden group">
+        <div className="relative h-[300px] md:h-[420px] w-full bg-black overflow-hidden group [transform:translateZ(0)]">
           <Image
             src={item.imageUrl}
             alt={item.name}
@@ -30,7 +30,7 @@ const SlideItem = memo(({ item, priority }: { item: any, priority: boolean }) =>
             className="object-cover"
             priority={priority}
             loading={priority ? "eager" : "lazy"}
-            quality={40}
+            quality={30}
           />
           <div className="absolute inset-0 bg-black/40 flex flex-col justify-center px-6 md:px-12 space-y-4">
             <h2 className="text-lg md:text-2xl font-headline font-black text-white uppercase tracking-tight max-w-[400px] leading-tight">
@@ -61,8 +61,17 @@ const SlideItem = memo(({ item, priority }: { item: any, priority: boolean }) =>
 
   return (
     <CarouselItem className="h-full">
-      <div className="relative h-[300px] md:h-[420px] w-full bg-black">
-        <Image src={item.imageUrl} alt={item.title || "Banner"} fill sizes="100vw" className="object-cover" priority={priority} loading={priority ? "eager" : "lazy"} quality={40} />
+      <div className="relative h-[300px] md:h-[420px] w-full bg-black [transform:translateZ(0)]">
+        <Image 
+          src={item.imageUrl} 
+          alt={item.title || "Banner"} 
+          fill 
+          sizes="100vw" 
+          className="object-cover" 
+          priority={priority} 
+          loading={priority ? "eager" : "lazy"} 
+          quality={30} 
+        />
         <div className="absolute inset-0 bg-black/20 flex flex-col justify-center px-6 md:px-12">
            <h2 className="text-lg md:text-2xl font-black text-white uppercase tracking-tight max-w-[400px] leading-none">{item.title}</h2>
         </div>
@@ -95,10 +104,19 @@ const FlashOfferCard = memo(() => {
   const activeItem = combinedItems[currentIndex];
 
   return (
-    <div className="h-[300px] md:h-[420px] bg-black overflow-hidden relative group w-full">
+    <div className="h-[300px] md:h-[420px] bg-black overflow-hidden relative group w-full [transform:translateZ(0)]">
       {activeItem ? (
         <div className="h-full w-full relative">
-          <Image src={activeItem.imageUrl} alt="Flash Offer" fill sizes="(max-width: 768px) 100vw, 25vw" className="object-cover" priority loading="eager" quality={30} />
+          <Image 
+            src={activeItem.imageUrl} 
+            alt="Flash Offer" 
+            fill 
+            sizes="(max-width: 768px) 100vw, 25vw" 
+            className="object-cover" 
+            priority={true} 
+            loading="eager" 
+            quality={30} 
+          />
           <div className="absolute top-4 left-4 bg-[#01a3a4] px-3 md:px-4 py-1.5 text-[8px] md:text-[9px] font-black text-white uppercase tracking-widest z-10">FLASH OFFER</div>
           <div className="absolute bottom-6 w-full text-center px-4 space-y-2">
              <p className="text-white font-black text-[10px] md:text-[12px] uppercase tracking-widest mb-1 truncate">{activeItem.name || activeItem.title}</p>
@@ -171,11 +189,11 @@ export default function Home() {
       <main className="flex-grow container mx-auto space-y-2">
         <section className="grid grid-cols-12 gap-0 overflow-hidden">
           <div className="col-span-12 md:col-span-3 order-2 md:order-1"><FlashOfferCard /></div>
-          <div className="col-span-12 md:col-span-6 order-1 md:order-2 relative overflow-hidden h-[300px] md:h-[420px] bg-black">
+          <div className="col-span-12 md:col-span-6 order-1 md:order-2 relative overflow-hidden h-[300px] md:h-[420px] bg-black [transform:translateZ(0)]">
             {combinedSliderItems.length > 0 ? (
               <Carousel className="w-full h-full" opts={{ loop: true }} plugins={[autoplay.current]}>
                 <CarouselContent className="h-full">
-                  {combinedSliderItems.map((item, index) => <SlideItem key={index} item={item} priority={index < 1} />)}
+                  {combinedSliderItems.map((item, index) => <SlideItem key={index} item={item} priority={index < 2} />)}
                 </CarouselContent>
               </Carousel>
             ) : <div className="h-full flex items-center justify-center"><Loader2 className="h-8 w-8 text-[#01a3a4] animate-spin" /></div>}

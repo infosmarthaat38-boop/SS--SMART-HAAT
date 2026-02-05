@@ -21,18 +21,21 @@ export const ProductCard = memo(({ product, index = 0 }: ProductCardProps) => {
   const [isOrderOpen, setIsOrderOpen] = useState(false);
   const isOutOfStock = (product.stockQuantity || 0) <= 0;
 
+  // Hyper-fast loading for first row
+  const isPriority = index < 6;
+
   return (
     <>
-      <Card className="group bg-black border-none rounded-none flex flex-col h-full overflow-hidden transition-all duration-300">
+      <Card className="group bg-black border-none rounded-none flex flex-col h-full overflow-hidden transition-all duration-300 [transform:translateZ(0)]">
         <Link href={`/products/${product.id}`} className="relative aspect-square overflow-hidden bg-black block">
           <Image
             src={product.imageUrl}
             alt={product.name}
             fill
             sizes="(max-width: 768px) 50vw, 15vw"
-            priority={index < 4}
-            loading={index < 4 ? "eager" : "lazy"}
-            quality={30} // Ultra-low quality for super fast paint
+            priority={isPriority}
+            loading={isPriority ? "eager" : "lazy"}
+            quality={25} // Aggressive quality for initial paint speed
             className="object-cover transition-transform duration-700 group-hover:scale-105"
           />
           {isOutOfStock && (
