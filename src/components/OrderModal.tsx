@@ -26,6 +26,7 @@ import {
 import { useFirestore, useCollection, useMemoFirebase } from '@/firebase';
 import { collection, query, where, addDoc, doc, updateDoc } from 'firebase/firestore';
 import { addDocumentNonBlocking } from '@/firebase/non-blocking-updates';
+import { cn } from '@/lib/utils';
 
 interface OrderModalProps {
   product: any;
@@ -50,6 +51,16 @@ export function OrderModal({ product, isOpen, onClose }: OrderModalProps) {
     selectedSize: '',
     quantity: 1
   });
+
+  // Auto-close success modal after 3 seconds
+  useEffect(() => {
+    if (step === 'SUCCESS') {
+      const timer = setTimeout(() => {
+        onClose();
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [step, onClose]);
 
   useEffect(() => {
     const userAgent = typeof window !== 'undefined' ? (navigator.userAgent || navigator.vendor || (window as any).opera) : '';
@@ -107,35 +118,35 @@ export function OrderModal({ product, isOpen, onClose }: OrderModalProps) {
       productId: product.id,
       productName: product.name,
       productPrice: product.price,
-      productImageUrl: product.imageUrl, // Save image for PDF report
+      productImageUrl: product.imageUrl,
       status: 'PENDING',
       chatId: chatSessionId,
       createdAt: new Date().toISOString()
     };
 
     try {
-      // 1. Add Order
-      await addDoc(collection(db, 'orders'), orderData);
-
-      // 2. Decrease Stock Automatically
-      const productRef = doc(db, 'products', product.id);
-      
-      if (product.sizeStock && formData.selectedSize) {
-        const currentSizeQty = product.sizeStock[formData.selectedSize] || 0;
-        const newSizeStock = { 
-          ...product.sizeStock, 
-          [formData.selectedSize]: Math.max(0, currentSizeQty - formData.quantity) 
-        };
-        
-        await updateDoc(productRef, {
-          sizeStock: newSizeStock,
-          stockQuantity: Math.max(0, (product.stockQuantity || 0) - formData.quantity)
-        });
-      } else {
-        await updateDoc(productRef, {
-          stockQuantity: Math.max(0, (product.stockQuantity || 0) - formData.quantity)
-        });
-      }
+      // Execute both actions in parallel for speed
+      await Promise.all([
+        addDoc(collection(db, 'orders'), orderData),
+        (async () => {
+          const productRef = doc(db, 'products', product.id);
+          if (product.sizeStock && formData.selectedSize) {
+            const currentSizeQty = product.sizeStock[formData.selectedSize] || 0;
+            const newSizeStock = { 
+              ...product.sizeStock, 
+              [formData.selectedSize]: Math.max(0, currentSizeQty - formData.quantity) 
+            };
+            return updateDoc(productRef, {
+              sizeStock: newSizeStock,
+              stockQuantity: Math.max(0, (product.stockQuantity || 0) - formData.quantity)
+            });
+          } else {
+            return updateDoc(productRef, {
+              stockQuantity: Math.max(0, (product.stockQuantity || 0) - formData.quantity)
+            });
+          }
+        })()
+      ]);
 
       setLoading(false);
       setStep('SUCCESS');
@@ -162,10 +173,19 @@ export function OrderModal({ product, isOpen, onClose }: OrderModalProps) {
 
   return (
     <Dialog open={isOpen} onOpenChange={(val) => !val && onClose()}>
-      <DialogContent className="max-w-[1100px] p-0 bg-white border-none rounded-none overflow-hidden gap-0 shadow-2xl">
-        <div className="flex flex-col md:flex-row h-full max-h-[90vh] min-h-[600px]">
+      <DialogContent className={cn(
+        "p-0 bg-white border-none rounded-none overflow-hidden gap-0 shadow-2xl transition-all duration-500",
+        step === 'SUCCESS' ? "max-w-md" : "max-w-[1100px]"
+      )}>
+        <div className={cn(
+          "flex flex-col md:flex-row h-full overflow-hidden",
+          step === 'SUCCESS' ? "min-h-[400px]" : "max-h-[90vh] min-h-[600px]"
+        )}>
           
-          <div className={`flex flex-col md:flex-row bg-white transition-all duration-500 ${step === 'SUCCESS' ? 'w-full' : 'w-full md:w-2/3'}`}>
+          <div className={cn(
+            "flex flex-col md:flex-row bg-white transition-all duration-500",
+            step === 'SUCCESS' ? 'w-full' : 'w-full md:w-2/3'
+          )}>
             {step === 'FORM' ? (
               <>
                 {!isActualMobile && (
@@ -190,7 +210,10 @@ export function OrderModal({ product, isOpen, onClose }: OrderModalProps) {
                   </div>
                 )}
 
-                <div className={`${isActualMobile ? 'w-full' : 'w-3/5'} p-10 space-y-8 bg-white overflow-y-auto border-r border-gray-100`}>
+                <div className={cn(
+                  "p-10 space-y-8 bg-white overflow-y-auto border-r border-gray-100",
+                  isActualMobile ? 'w-full' : 'w-3/5'
+                )}>
                   <div className="space-y-2">
                     <div className="flex items-center gap-3">
                       <div className="h-8 w-1.5 bg-[#01a3a4]" />
@@ -213,11 +236,12 @@ export function OrderModal({ product, isOpen, onClose }: OrderModalProps) {
                               key={size}
                               type="button"
                               onClick={() => setFormData({...formData, selectedSize: size})}
-                              className={`px-4 py-2 border text-[10px] font-black uppercase transition-all ${
+                              className={cn(
+                                "px-4 py-2 border text-[10px] font-black uppercase transition-all",
                                 formData.selectedSize === size 
                                   ? 'bg-[#01a3a4] border-[#01a3a4] text-white' 
                                   : 'bg-gray-50 border-gray-200 text-gray-400 hover:border-[#01a3a4]'
-                              }`}
+                              )}
                             >
                               {size}
                             </button>
@@ -295,31 +319,29 @@ export function OrderModal({ product, isOpen, onClose }: OrderModalProps) {
                 </div>
               </>
             ) : (
-              <div className="w-full p-20 text-center space-y-10 flex flex-col justify-center bg-white border-2 border-[#01a3a4]">
+              <div className="w-full p-8 md:p-12 text-center space-y-6 flex flex-col justify-center bg-white border-2 border-[#01a3a4] items-center">
                 <div className="relative">
-                  <div className="w-28 h-28 bg-[#01a3a4]/5 rounded-full flex items-center justify-center mx-auto mb-6 border-[4px] border-[#01a3a4] shadow-2xl">
-                    <CheckCircle2 className="h-14 w-14 text-[#01a3a4]" />
+                  <div className="w-20 h-20 bg-[#01a3a4]/5 rounded-full flex items-center justify-center mx-auto mb-4 border-[3px] border-[#01a3a4] shadow-xl">
+                    <CheckCircle2 className="h-10 w-10 text-[#01a3a4]" />
                   </div>
-                  <PartyPopper className="absolute -top-3 right-[42%] h-10 w-10 text-[#01a3a4] animate-bounce" />
+                  <PartyPopper className="absolute -top-2 right-[38%] h-8 w-8 text-[#01a3a4] animate-bounce" />
                 </div>
 
-                <div className="space-y-6">
-                  <div className="space-y-2">
-                    <DialogTitle className="text-6xl font-black text-black uppercase tracking-tighter leading-none font-headline">
+                <div className="space-y-4">
+                  <div className="space-y-1">
+                    <DialogTitle className="text-4xl font-black text-black uppercase tracking-tighter leading-none font-headline">
                       THANK YOU
                     </DialogTitle>
-                    <p className="text-[14px] font-black text-[#01a3a4] uppercase tracking-[0.5em] mt-2">অর্ডার সফল হয়েছে</p>
+                    <p className="text-[12px] font-black text-[#01a3a4] uppercase tracking-[0.4em] mt-1">অর্ডার সফল হয়েছে</p>
                   </div>
                   
-                  <div className="py-8 border-y border-gray-100">
-                    <p className="text-[20px] font-bold text-black font-headline leading-relaxed">
-                      আপনার অর্ডারের জন্য ধন্যবাদ। আমাদের প্রতিনিধি শীঘ্রই আপনার সাথে যোগাযোগ করে ডেলিভারি নিশ্চিত করবেন।
+                  <div className="py-4 border-y border-gray-100">
+                    <p className="text-[15px] font-bold text-black font-headline leading-relaxed">
+                      আমাদের প্রতিনিধি শীঘ্রই আপনার সাথে যোগাযোগ করবেন।
                     </p>
                   </div>
 
-                  <Button onClick={onClose} className="w-full bg-black hover:bg-[#01a3a4] text-white font-black uppercase h-16 rounded-none text-[15px] tracking-[0.4em] transition-all">
-                    CLOSE / বন্ধ করুন
-                  </Button>
+                  <p className="text-[8px] font-black text-gray-400 uppercase tracking-widest">স্বয়ংক্রিয়ভাবে বন্ধ হয়ে যাবে...</p>
                 </div>
               </div>
             )}
@@ -357,12 +379,13 @@ export function OrderModal({ product, isOpen, onClose }: OrderModalProps) {
                 )}
 
                 {chatHistory.map((msg, i) => (
-                  <div key={i} className={`flex flex-col ${msg.sender === 'CUSTOMER' ? 'items-end' : 'items-start'}`}>
-                    <div className={`max-w-[85%] p-3.5 text-[11px] font-bold leading-relaxed ${
+                  <div key={i} className={cn("flex flex-col", msg.sender === 'CUSTOMER' ? 'items-end' : 'items-start')}>
+                    <div className={cn(
+                      "max-w-[85%] p-3.5 text-[11px] font-bold leading-relaxed",
                       msg.sender === 'CUSTOMER' 
                         ? 'bg-[#01a3a4] text-white rounded-l-xl rounded-tr-xl shadow-md' 
                         : 'bg-white border border-gray-200 text-black rounded-r-xl rounded-tl-xl shadow-sm'
-                    }`}>
+                    )}>
                       {msg.text}
                     </div>
                     <span className="text-[7px] font-black text-gray-400 uppercase mt-1 px-1">
