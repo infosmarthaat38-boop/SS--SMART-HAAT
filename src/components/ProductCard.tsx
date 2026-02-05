@@ -28,9 +28,9 @@ export const ProductCard = memo(({ product, index = 0 }: ProductCardProps) => {
             src={product.imageUrl}
             alt={product.name}
             fill
-            sizes="(max-width: 768px) 50vw, (max-width: 1200px) 33vw, 16vw"
+            sizes="(max-width: 768px) 50vw, (max-width: 1200px) 25vw, 15vw"
             priority={index < 6}
-            quality={80}
+            quality={75}
             className="object-cover transition-transform duration-1000 group-hover:scale-105"
           />
           {isOutOfStock && (

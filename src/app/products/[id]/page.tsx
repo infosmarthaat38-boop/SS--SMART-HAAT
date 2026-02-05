@@ -75,9 +75,9 @@ export default function ProductDetails() {
                 alt={product.name} 
                 fill 
                 sizes="(max-width: 1024px) 100vw, 50vw" 
-                priority 
+                priority={true}
                 loading="eager"
-                quality={90}
+                quality={85}
                 className="object-cover transition-transform duration-[2000ms] group-hover:scale-105" 
               />
               {isOutOfStock && (
