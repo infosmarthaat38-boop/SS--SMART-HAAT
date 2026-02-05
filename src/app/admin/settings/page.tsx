@@ -17,7 +17,8 @@ import {
   Terminal,
   ExternalLink,
   Github,
-  Zap
+  Zap,
+  ShieldAlert
 } from 'lucide-react';
 import Link from 'next/link';
 import { useFirestore, useDoc, useMemoFirebase } from '@/firebase';
@@ -67,7 +68,7 @@ export default function AdminSettings() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-background">
+    <div className="min-h-screen flex flex-col bg-background selection:bg-[#01a3a4]/30">
       <Navbar />
       
       <main className="flex-grow container mx-auto px-4 py-12 max-w-5xl">
@@ -85,7 +86,7 @@ export default function AdminSettings() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           
-          <Card className="bg-card border-white/5 rounded-none shadow-2xl">
+          <Card className="bg-card border-white/5 rounded-none shadow-2xl overflow-hidden">
             <CardHeader className="bg-white/[0.02] border-b border-white/5 p-6">
               <CardTitle className="text-xs font-black uppercase tracking-[0.3em] text-[#01a3a4] flex items-center gap-2">
                 <ShieldCheck className="h-4 w-4" /> ADMIN AUTHENTICATION
@@ -93,6 +94,12 @@ export default function AdminSettings() {
             </CardHeader>
             <CardContent className="p-8">
               <form onSubmit={handleSaveAdmin} className="space-y-8">
+                <div className="p-4 bg-orange-500/5 border border-orange-500/20 mb-6 flex items-start gap-3">
+                  <ShieldAlert className="h-5 w-5 text-orange-500 shrink-0" />
+                  <p className="text-[9px] font-black text-orange-500 uppercase leading-relaxed tracking-widest">
+                    CAUTION: UPDATING THESE CREDENTIALS WILL REQUIRE YOU TO RE-LOGIN ON ALL SESSIONS.
+                  </p>
+                </div>
                 <div className="space-y-6">
                   <div className="space-y-2">
                     <label className="text-[10px] font-black text-muted-foreground uppercase flex items-center gap-2"><User className="h-3 w-3" /> USERNAME</label>
@@ -112,14 +119,14 @@ export default function AdminSettings() {
                     />
                   </div>
                 </div>
-                <Button type="submit" className="w-full bg-[#01a3a4] hover:bg-white hover:text-black text-white h-14 font-black uppercase tracking-widest rounded-none text-[10px] transition-all">
+                <Button type="submit" className="w-full bg-[#01a3a4] hover:bg-white hover:text-black text-white h-14 font-black uppercase tracking-widest rounded-none text-[10px] transition-all border-none">
                   <Save className="mr-3 h-4 w-4" /> UPDATE SECURITY
                 </Button>
               </form>
             </CardContent>
           </Card>
 
-          <Card className="bg-card border-white/5 rounded-none shadow-2xl">
+          <Card className="bg-card border-white/5 rounded-none shadow-2xl overflow-hidden">
             <CardHeader className="bg-white/[0.02] border-b border-white/5 p-6">
               <CardTitle className="text-xs font-black uppercase tracking-[0.3em] text-[#01a3a4] flex items-center gap-2">
                 <Terminal className="h-4 w-4" /> DEPLOYMENT HUB
@@ -128,15 +135,16 @@ export default function AdminSettings() {
             <CardContent className="p-8 space-y-8">
               <div className="space-y-4">
                 <h3 className="text-[11px] font-black text-white uppercase tracking-widest flex items-center gap-2"><Github className="h-4 w-4" /> GITHUB UPDATES</h3>
-                <div className="bg-black border border-white/10 p-4 font-mono text-[9px] text-green-400 space-y-2">
+                <div className="bg-black border border-white/10 p-4 font-mono text-[9px] text-green-400 space-y-2 shadow-inner">
+                  <p className="opacity-50"># AUTOMATED COMMIT LOG</p>
                   <p>git add .</p>
-                  <p>git commit -m "Update Product Logic"</p>
+                  <p>git commit -m "UI: POLISHED SETTINGS PANEL"</p>
                   <p>git push origin main</p>
                 </div>
               </div>
               <div className="space-y-4 pt-4 border-t border-white/5">
                 <h3 className="text-[11px] font-black text-white uppercase tracking-widest flex items-center gap-2"><Zap className="h-4 w-4 text-orange-500" /> LIVE VERCEL STATUS</h3>
-                <Button asChild className="w-full bg-white text-black hover:bg-white/90 h-12 font-black uppercase tracking-widest text-[9px] rounded-none">
+                <Button asChild className="w-full bg-white text-black hover:bg-white/90 h-12 font-black uppercase tracking-widest text-[9px] rounded-none border-none">
                   <a href="https://vercel.com/dashboard" target="_blank" rel="noopener noreferrer">
                     <ExternalLink className="mr-2 h-4 w-4" /> VERCEL DASHBOARD
                   </a>

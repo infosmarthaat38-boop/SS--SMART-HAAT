@@ -12,7 +12,6 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from '@/components/ui/button';
 import { 
-  ShoppingBag, 
   CheckCircle2, 
   Loader2, 
   Phone, 
@@ -39,7 +38,6 @@ export function OrderModal({ product, isOpen, onClose }: OrderModalProps) {
   const [step, setStep] = useState<'FORM' | 'SUCCESS'>('FORM');
   const [loading, setLoading] = useState(false);
   const [isActualMobile, setIsActualMobile] = useState(false);
-  const [currentOrderId, setCurrentOrderId] = useState<string | null>(null);
   const [chatMessage, setChatMessage] = useState('');
   
   const [chatSessionId] = useState(() => 'chat_' + Math.random().toString(36).substring(2, 11));
@@ -67,7 +65,6 @@ export function OrderModal({ product, isOpen, onClose }: OrderModalProps) {
       const resetTimer = setTimeout(() => {
         setStep('FORM');
         setFormData({ name: '', phone: '', address: '', selectedSize: '', quantity: 1 });
-        setCurrentOrderId(null);
       }, 300);
       return () => clearTimeout(resetTimer);
     }
@@ -90,15 +87,6 @@ export function OrderModal({ product, isOpen, onClose }: OrderModalProps) {
   }, [rawChatHistory]);
 
   useEffect(() => {
-    if (step === 'SUCCESS') {
-      const timer = setTimeout(() => {
-        onClose();
-      }, 5000);
-      return () => clearTimeout(timer);
-    }
-  }, [step, onClose]);
-
-  useEffect(() => {
     if (chatScrollContainerRef.current) {
       chatScrollContainerRef.current.scrollTop = chatScrollContainerRef.current.scrollHeight;
     }
@@ -114,7 +102,7 @@ export function OrderModal({ product, isOpen, onClose }: OrderModalProps) {
       customerName: formData.name.toUpperCase(),
       customerPhone: formData.phone,
       customerAddress: formData.address.toUpperCase(),
-      selectedSize: formData.selectedSize,
+      selectedSize: formData.selectedSize || 'N/A',
       quantity: formData.quantity,
       productId: product.id,
       productName: product.name,
@@ -124,17 +112,10 @@ export function OrderModal({ product, isOpen, onClose }: OrderModalProps) {
       createdAt: new Date().toISOString()
     };
 
-    const docPromise = addDoc(collection(db, 'orders'), orderData);
-    docPromise.then((docRef) => {
-      if (docRef) {
-        setCurrentOrderId(docRef.id);
-      }
-    });
-    
-    setTimeout(() => {
+    addDoc(collection(db, 'orders'), orderData).then(() => {
       setLoading(false);
       setStep('SUCCESS');
-    }, 1200);
+    });
   };
 
   const handleSendMessage = (e: React.FormEvent) => {
@@ -175,7 +156,7 @@ export function OrderModal({ product, isOpen, onClose }: OrderModalProps) {
                     <div className="absolute bottom-6 left-6 right-6">
                       <h2 className="text-xl font-black text-white uppercase tracking-tighter leading-tight">{product.name}</h2>
                       <div className="text-2xl font-black text-[#01a3a4] flex items-baseline tracking-tighter mt-1">
-                        <span className="text-[0.45em] font-normal mr-1 translate-y-[-0.1em] text-white/50">৳</span>
+                        <span className="text-[11px] font-normal mr-1 translate-y-[-4px] text-white/50">৳</span>
                         {product.price.toLocaleString()}
                       </div>
                     </div>
@@ -200,7 +181,7 @@ export function OrderModal({ product, isOpen, onClose }: OrderModalProps) {
                           <Ruler className="h-3.5 w-3.5 text-[#01a3a4]" /> SIZE
                         </label>
                         <div className="flex flex-wrap gap-1.5">
-                          {(product?.sizes?.length > 0 ? product.sizes : ['M', 'L', 'XL']).map((size: string) => (
+                          {product?.sizes?.length > 0 ? product.sizes.map((size: string) => (
                             <button
                               key={size}
                               type="button"
@@ -213,7 +194,9 @@ export function OrderModal({ product, isOpen, onClose }: OrderModalProps) {
                             >
                               {size}
                             </button>
-                          ))}
+                          )) : (
+                            <span className="text-[9px] font-black text-gray-400 uppercase">ONE SIZE / N/A</span>
+                          )}
                         </div>
                       </div>
 
@@ -367,7 +350,7 @@ export function OrderModal({ product, isOpen, onClose }: OrderModalProps) {
                   placeholder="TYPE A MESSAGE..."
                   className="flex-grow bg-gray-50 border border-gray-200 h-12 px-4 text-[11px] font-black uppercase text-black focus:outline-none focus:border-[#01a3a4] transition-all"
                 />
-                <Button type="submit" size="icon" className="h-12 w-12 bg-[#01a3a4] hover:bg-black rounded-none shrink-0">
+                <Button type="submit" size="icon" className="h-12 w-12 bg-[#01a3a4] hover:bg-black rounded-none shrink-0 border-none">
                   <Send className="h-4 w-4 text-white" />
                 </Button>
               </form>

@@ -11,7 +11,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { 
   ArrowLeft, 
   Save, 
-  Globe, 
   Mail, 
   Phone, 
   MapPin, 
@@ -22,7 +21,8 @@ import {
   Sparkles, 
   Loader2,
   Share2,
-  Contact2
+  Contact2,
+  Twitter
 } from 'lucide-react';
 import Link from 'next/link';
 import { useFirestore, useDoc, useMemoFirebase } from '@/firebase';
@@ -153,7 +153,7 @@ export default function AdminOthers() {
                   value={formData.descriptionBengali}
                   onChange={(e) => setFormData({...formData, descriptionBengali: e.target.value})}
                   placeholder="এসএস স্মার্ট হাট — বাংলাদেশের প্রিমিয়াম ফ্যাশন এবং লাইফস্টাইল..."
-                  className="bg-black border-white/10 rounded-none text-sm min-h-[180px] leading-relaxed"
+                  className="bg-black border-white/10 rounded-none text-sm min-h-[180px] leading-relaxed font-bold italic"
                 />
               </CardContent>
             </Card>
@@ -188,7 +188,7 @@ export default function AdminOthers() {
               </CardContent>
             </Card>
 
-            <Button type="submit" className="w-full bg-[#01a3a4] hover:bg-white hover:text-black text-white h-20 font-black uppercase tracking-[0.3em] rounded-none shadow-2xl shadow-[#01a3a4]/10 text-xs">
+            <Button type="submit" className="w-full bg-[#01a3a4] hover:bg-white hover:text-black text-white h-20 font-black uppercase tracking-[0.3em] rounded-none shadow-2xl text-xs border-none">
               <Save className="mr-3 h-5 w-5" /> SYNC ALL SITE SETTINGS
             </Button>
           </div>

@@ -1,7 +1,7 @@
 
 "use client";
 
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Navbar } from '@/components/Navbar';
 import { Footer } from '@/components/Footer';
 import { Button } from '@/components/ui/button';
@@ -17,7 +17,6 @@ import {
   Edit2, 
   Zap, 
   LayoutDashboard,
-  CheckCircle2,
   Package,
   Ruler,
   DollarSign
@@ -35,6 +34,7 @@ import { compressImage } from '@/lib/image-compression';
 export default function AdminProducts() {
   const db = useFirestore();
   const { toast } = useToast();
+  
   const [editingId, setEditingId] = useState<string | null>(null);
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
@@ -42,11 +42,14 @@ export default function AdminProducts() {
   const [originalPrice, setOriginalPrice] = useState('');
   const [category, setCategory] = useState('');
   const [stockQuantity, setStockQuantity] = useState('100');
-  const [sizes, setSizes] = useState('');
   const [showInSlider, setShowInSlider] = useState(false);
   const [showInFlashOffer, setShowInFlashOffer] = useState(false);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [isProcessingImage, setIsProcessingImage] = useState(false);
+  
+  // Size Management
+  const [sizeList, setSizeList] = useState<{size: string, qty: number}[]>([]);
+  const [newSize, setNewSize] = useState('');
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const productsRef = useMemoFirebase(() => query(collection(db, 'products'), orderBy('createdAt', 'desc'), limit(50)), [db]);
@@ -68,6 +71,29 @@ export default function AdminProducts() {
     }
   };
 
+  const addSizeRow = () => {
+    if (!newSize.trim()) return;
+    const exists = sizeList.find(s => s.size === newSize.toUpperCase());
+    if (exists) {
+      toast({ variant: "destructive", title: "DUPLICATE", description: "SIZE ALREADY EXISTS." });
+      return;
+    }
+    setSizeList([...sizeList, { size: newSize.toUpperCase(), qty: 0 }]);
+    setNewSize('');
+  };
+
+  const removeSizeRow = (index: number) => {
+    const newList = [...sizeList];
+    newList.splice(index, 1);
+    setSizeList(newList);
+  };
+
+  const updateSizeQty = (index: number, val: string) => {
+    const newList = [...sizeList];
+    newList[index].qty = parseInt(val) || 0;
+    setSizeList(newList);
+  };
+
   const handleSaveProduct = (e: React.FormEvent) => {
     e.preventDefault();
     if (!name || !price || !category || !imagePreview) {
@@ -75,14 +101,20 @@ export default function AdminProducts() {
       return;
     }
 
+    const sizeStock: Record<string, number> = {};
+    sizeList.forEach(s => {
+      sizeStock[s.size] = s.qty;
+    });
+
     const productData = {
       name: name.toUpperCase(),
       description: description || 'PREMIUM PRODUCT',
       price: parseFloat(price),
       originalPrice: originalPrice ? parseFloat(originalPrice) : parseFloat(price),
       category: category.toUpperCase(),
-      stockQuantity: parseInt(stockQuantity),
-      sizes: sizes.split(',').map(s => s.trim()).filter(s => s !== ''),
+      stockQuantity: sizeList.length > 0 ? sizeList.reduce((acc, curr) => acc + curr.qty, 0) : parseInt(stockQuantity),
+      sizes: sizeList.map(s => s.size),
+      sizeStock: sizeList.length > 0 ? sizeStock : null,
       showInSlider,
       showInFlashOffer,
       imageUrl: imagePreview,
@@ -108,7 +140,8 @@ export default function AdminProducts() {
     setOriginalPrice('');
     setCategory(''); 
     setStockQuantity('100');
-    setSizes('');
+    setSizeList([]);
+    setNewSize('');
     setShowInSlider(false);
     setShowInFlashOffer(false);
     setImagePreview(null);
@@ -116,7 +149,7 @@ export default function AdminProducts() {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background selection:bg-[#01a3a4]/30">
       <Navbar />
       <main className="container mx-auto px-4 py-10 max-w-7xl">
         <div className="flex items-center gap-4 mb-12">
@@ -131,59 +164,95 @@ export default function AdminProducts() {
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
           {/* FORM COLUMN */}
-          <Card className="lg:col-span-5 bg-card border-white/5 rounded-none shadow-2xl overflow-hidden h-fit">
+          <Card className="lg:col-span-5 bg-card border-white/5 rounded-none shadow-2xl h-fit overflow-hidden">
             <CardHeader className="bg-white/[0.02] border-b border-white/5 p-6">
               <CardTitle className="text-xs font-black uppercase text-[#01a3a4] flex items-center gap-2 tracking-[0.2em]">
-                {editingId ? <Edit2 className="h-4 w-4" /> : <Plus className="h-4 w-4" />} {editingId ? 'EDIT EXISTING' : 'ADD NEW'} PRODUCT
+                {editingId ? <Edit2 className="h-4 w-4" /> : <Plus className="h-4 w-4" />} {editingId ? 'EDIT' : 'ADD'} PRODUCT
               </CardTitle>
             </CardHeader>
             <CardContent className="p-8 space-y-6">
-              <div className="space-y-2">
-                <label className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">Basic Information</label>
-                <Input placeholder="PRODUCT NAME" value={name} onChange={(e) => setName(e.target.value)} className="bg-black border-white/10 h-14 uppercase font-black text-xs" />
-                <Textarea placeholder="DESCRIPTION" value={description} onChange={(e) => setDescription(e.target.value)} className="bg-black border-white/10 min-h-[100px] text-xs font-bold uppercase" />
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-4">
                 <div className="space-y-2">
-                  <label className="text-[9px] font-black text-muted-foreground uppercase flex items-center gap-1"><DollarSign className="h-3 w-3" /> SALE PRICE (৳)</label>
-                  <Input placeholder="E.G. 1200" type="number" value={price} onChange={(e) => setPrice(e.target.value)} className="bg-black border-white/10 h-12 text-xs font-black text-[#01a3a4]" />
+                  <label className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">PRODUCT NAME</label>
+                  <Input placeholder="E.G. PREMIUM JAMDANI" value={name} onChange={(e) => setName(e.target.value)} className="bg-black border-white/10 h-14 uppercase font-black text-xs" />
                 </div>
                 <div className="space-y-2">
-                  <label className="text-[9px] font-black text-muted-foreground uppercase flex items-center gap-1">ORIGINAL PRICE (৳)</label>
-                  <Input placeholder="E.G. 1800" type="number" value={originalPrice} onChange={(e) => setOriginalPrice(e.target.value)} className="bg-black border-white/10 h-12 text-xs font-bold text-white/40" />
+                  <label className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">DESCRIPTION</label>
+                  <Textarea placeholder="ENTER DETAILS..." value={description} onChange={(e) => setDescription(e.target.value)} className="bg-black border-white/10 min-h-[80px] text-xs font-bold uppercase" />
                 </div>
               </div>
 
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <label className="text-[9px] font-black text-muted-foreground uppercase flex items-center gap-1"><LayoutDashboard className="h-3 w-3" /> CATEGORY</label>
-                  <Select value={category} onValueChange={setCategory}>
-                    <SelectTrigger className="bg-black border-white/10 h-12 uppercase font-black text-[10px]"><SelectValue placeholder="SELECT" /></SelectTrigger>
-                    <SelectContent className="bg-card border-white/10">
-                      {categories?.map((c) => <SelectItem key={c.id} value={c.name} className="uppercase font-black text-[10px]">{c.name}</SelectItem>)}
-                    </SelectContent>
-                  </Select>
+                  <label className="text-[9px] font-black text-[#01a3a4] uppercase flex items-center gap-1"><DollarSign className="h-3 w-3" /> SALE PRICE (৳)</label>
+                  <Input placeholder="0.00" type="number" value={price} onChange={(e) => setPrice(e.target.value)} className="bg-black border-white/10 h-12 text-xs font-black text-[#01a3a4]" />
                 </div>
                 <div className="space-y-2">
-                  <label className="text-[9px] font-black text-muted-foreground uppercase flex items-center gap-1"><Package className="h-3 w-3" /> STOCK QTY</label>
-                  <Input type="number" value={stockQuantity} onChange={(e) => setStockQuantity(e.target.value)} className="bg-black border-white/10 h-12 text-xs font-black" />
+                  <label className="text-[9px] font-black text-white/40 uppercase">ORIGINAL PRICE (৳)</label>
+                  <Input placeholder="0.00" type="number" value={originalPrice} onChange={(e) => setOriginalPrice(e.target.value)} className="bg-black border-white/10 h-12 text-xs font-bold text-white/40" />
                 </div>
               </div>
 
               <div className="space-y-2">
-                <label className="text-[9px] font-black text-muted-foreground uppercase flex items-center gap-1"><Ruler className="h-3 w-3" /> AVAILABLE SIZES (COMMA SEPARATED)</label>
-                <Input placeholder="E.G. M, L, XL, XXL" value={sizes} onChange={(e) => setSizes(e.target.value)} className="bg-black border-white/10 h-12 text-xs uppercase font-bold" />
+                <label className="text-[9px] font-black text-muted-foreground uppercase flex items-center gap-1"><LayoutDashboard className="h-3 w-3" /> CATEGORY</label>
+                <Select value={category} onValueChange={setCategory}>
+                  <SelectTrigger className="bg-black border-white/10 h-12 uppercase font-black text-[10px]"><SelectValue placeholder="SELECT CATEGORY" /></SelectTrigger>
+                  <SelectContent className="bg-card border-white/10">
+                    {categories?.map((c) => <SelectItem key={c.id} value={c.name} className="uppercase font-black text-[10px]">{c.name}</SelectItem>)}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* SIZE WISE QTY SECTION */}
+              <div className="space-y-4 p-5 bg-white/[0.02] border border-white/5">
+                <label className="text-[9px] font-black text-[#01a3a4] uppercase tracking-[0.2em] flex items-center gap-2">
+                  <Ruler className="h-4 w-4" /> SIZE-WISE INVENTORY (OPTIONAL)
+                </label>
+                
+                <div className="flex gap-2">
+                  <Input 
+                    placeholder="SIZE (E.G. XL)" 
+                    value={newSize} 
+                    onChange={(e) => setNewSize(e.target.value)} 
+                    className="bg-black border-white/10 h-10 text-[10px] uppercase font-black" 
+                  />
+                  <Button onClick={addSizeRow} type="button" className="bg-[#01a3a4] h-10 rounded-none text-[8px] font-black uppercase px-4">ADD SIZE</Button>
+                </div>
+
+                <div className="space-y-2 max-h-[150px] overflow-y-auto pr-2">
+                  {sizeList.map((s, i) => (
+                    <div key={i} className="flex items-center gap-3 bg-black/50 p-2 border border-white/5">
+                      <span className="text-[10px] font-black text-white w-12">{s.size}</span>
+                      <Input 
+                        type="number" 
+                        placeholder="QTY" 
+                        value={s.qty} 
+                        onChange={(e) => updateSizeQty(i, e.target.value)}
+                        className="h-8 bg-transparent border-white/10 text-[10px] font-black text-[#01a3a4] flex-grow" 
+                      />
+                      <Button onClick={() => removeSizeRow(i)} variant="ghost" size="icon" className="h-8 w-8 text-red-500/50 hover:text-red-500">
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  ))}
+                </div>
+
+                {sizeList.length === 0 && (
+                  <div className="space-y-2 pt-2 border-t border-white/5">
+                    <label className="text-[9px] font-black text-white/40 uppercase">GENERAL STOCK QUANTITY</label>
+                    <Input type="number" value={stockQuantity} onChange={(e) => setStockQuantity(e.target.value)} className="bg-black border-white/10 h-12 text-xs font-black" />
+                  </div>
+                )}
               </div>
 
               <div className="grid grid-cols-2 gap-4 p-4 bg-white/5 border border-white/5">
                 <div className="flex items-center space-x-3">
                   <Checkbox id="slider" checked={showInSlider} onCheckedChange={(val) => setShowInSlider(!!val)} className="border-[#01a3a4] data-[state=checked]:bg-[#01a3a4]" />
-                  <label htmlFor="slider" className="text-[9px] font-black text-white uppercase cursor-pointer flex items-center gap-1"><LayoutDashboard className="h-3 w-3 text-[#01a3a4]" /> SHOW IN SLIDER</label>
+                  <label htmlFor="slider" className="text-[9px] font-black text-white uppercase cursor-pointer flex items-center gap-1">SLIDER BAR</label>
                 </div>
                 <div className="flex items-center space-x-3">
                   <Checkbox id="flash" checked={showInFlashOffer} onCheckedChange={(val) => setShowInFlashOffer(!!val)} className="border-[#01a3a4] data-[state=checked]:bg-[#01a3a4]" />
-                  <label htmlFor="flash" className="text-[9px] font-black text-white uppercase cursor-pointer flex items-center gap-1"><Zap className="h-3 w-3 text-orange-500" /> FLASH OFFER</label>
+                  <label htmlFor="flash" className="text-[9px] font-black text-white uppercase cursor-pointer flex items-center gap-1">FLASH OFFER</label>
                 </div>
               </div>
 
@@ -195,7 +264,7 @@ export default function AdminProducts() {
                 ) : (
                   <div className="space-y-2">
                     <Upload className="h-8 w-8 text-[#01a3a4] opacity-30 group-hover:opacity-100 mx-auto transition-all" />
-                    <p className="text-[8px] font-black uppercase text-white/40 tracking-widest">UPLOAD PRODUCT VISUAL</p>
+                    <p className="text-[8px] font-black uppercase text-white/40 tracking-widest">UPLOAD VISUAL</p>
                   </div>
                 )}
                 <input type="file" ref={fileInputRef} onChange={handleFileChange} accept="image/*" className="hidden" />
@@ -203,8 +272,8 @@ export default function AdminProducts() {
 
               <div className="flex gap-4">
                 {editingId && <Button onClick={resetForm} variant="outline" className="flex-1 border-white/10 text-white font-black h-14 rounded-none uppercase text-[10px]">CANCEL</Button>}
-                <Button onClick={handleSaveProduct} className="flex-[2] bg-[#01a3a4] hover:bg-white hover:text-black text-white font-black h-14 rounded-none uppercase tracking-widest text-[10px] shadow-2xl shadow-[#01a3a4]/10">
-                  {editingId ? 'UPDATE RECORD' : 'SAVE TO DATABASE'}
+                <Button onClick={handleSaveProduct} className="flex-[2] bg-[#01a3a4] hover:bg-white hover:text-black text-white font-black h-14 rounded-none uppercase tracking-widest text-[10px] shadow-2xl">
+                  {editingId ? 'UPDATE RECORD' : 'SAVE TO SYSTEM'}
                 </Button>
               </div>
             </CardContent>
@@ -213,10 +282,10 @@ export default function AdminProducts() {
           {/* LIST COLUMN */}
           <Card className="lg:col-span-7 bg-card border-white/5 rounded-none shadow-2xl overflow-hidden">
             <CardHeader className="bg-white/[0.02] border-b border-white/5 p-6 flex flex-row items-center justify-between">
-              <CardTitle className="text-xs font-black uppercase text-[#01a3a4] tracking-[0.2em]">EXISTING ARCHIVE ({products?.length || 0})</CardTitle>
+              <CardTitle className="text-xs font-black uppercase text-[#01a3a4] tracking-[0.2em]">ACTIVE ARCHIVE ({products?.length || 0})</CardTitle>
             </CardHeader>
             <CardContent className="p-0">
-              <div className="max-h-[800px] overflow-y-auto">
+              <div className="max-h-[900px] overflow-y-auto">
                 {products?.map((p) => (
                   <div key={p.id} className="flex items-center gap-6 p-5 border-b border-white/[0.03] hover:bg-white/[0.02] transition-all group">
                     <div className="relative h-16 w-16 bg-black border border-white/10 shrink-0 overflow-hidden">
@@ -228,10 +297,11 @@ export default function AdminProducts() {
                         {p.showInSlider && <LayoutDashboard className="h-3 w-3 text-[#01a3a4]" />}
                         {p.showInFlashOffer && <Zap className="h-3 w-3 text-orange-500" />}
                       </div>
-                      <div className="flex items-center gap-3">
+                      <div className="flex flex-wrap gap-x-4 gap-y-1 items-center">
                         <span className="text-[#01a3a4] font-black text-[13px]">৳{p.price}</span>
                         {p.originalPrice > p.price && <span className="text-white/20 line-through text-[10px]">৳{p.originalPrice}</span>}
                         <span className="text-[8px] font-black text-white/40 uppercase bg-white/5 px-2 py-0.5">{p.category}</span>
+                        <span className="text-[8px] font-black text-green-500/70 uppercase">STOCK: {p.stockQuantity}</span>
                       </div>
                     </div>
                     <div className="flex gap-2 shrink-0">
@@ -243,14 +313,20 @@ export default function AdminProducts() {
                         setOriginalPrice(p.originalPrice?.toString() || '');
                         setCategory(p.category); 
                         setStockQuantity(p.stockQuantity?.toString() || '100');
-                        setSizes(p.sizes?.join(', ') || '');
                         setShowInSlider(!!p.showInSlider);
                         setShowInFlashOffer(!!p.showInFlashOffer);
-                        setImagePreview(p.imageUrl); 
-                      }} size="icon" variant="ghost" className="h-10 w-10 text-white/40 hover:text-[#01a3a4] hover:bg-[#01a3a4]/10 transition-all">
+                        setImagePreview(p.imageUrl);
+                        
+                        // Map sizeStock back to list
+                        if (p.sizeStock) {
+                          setSizeList(Object.entries(p.sizeStock).map(([size, qty]) => ({ size, qty: qty as number })));
+                        } else {
+                          setSizeList([]);
+                        }
+                      }} size="icon" variant="ghost" className="h-10 w-10 text-white/40 hover:text-[#01a3a4] hover:bg-[#01a3a4]/10">
                         <Edit2 className="h-4 w-4" />
                       </Button>
-                      <Button onClick={() => deleteDocumentNonBlocking(doc(db, 'products', p.id))} size="icon" variant="ghost" className="h-10 w-10 text-white/40 hover:text-red-500 hover:bg-red-500/10 transition-all">
+                      <Button onClick={() => deleteDocumentNonBlocking(doc(db, 'products', p.id))} size="icon" variant="ghost" className="h-10 w-10 text-white/40 hover:text-red-500 hover:bg-red-500/10">
                         <Trash2 className="h-4 w-4" />
                       </Button>
                     </div>
