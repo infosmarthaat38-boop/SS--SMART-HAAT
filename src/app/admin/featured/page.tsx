@@ -14,19 +14,17 @@ import {
   Upload, 
   X, 
   Zap, 
-  ImageIcon, 
-  Loader2, 
-  Smartphone,
-  LayoutDashboard
+  Loader2,
 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import Link from 'next/link';
 import { useFirestore, useCollection, useMemoFirebase } from '@/firebase';
-import { collection, doc, query, orderBy } from 'firebase/firestore';
+import { collection, doc, query, orderBy, limit } from 'firebase/firestore';
 import { addDocumentNonBlocking, deleteDocumentNonBlocking } from '@/firebase/non-blocking-updates';
 import Image from 'next/image';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from '@/hooks/use-toast';
+import { compressImage } from '@/lib/image-compression';
 
 export default function FeaturedManager() {
   const db = useFirestore();
@@ -34,23 +32,24 @@ export default function FeaturedManager() {
   const [type, setType] = useState<'SLIDER' | 'FLASH'>('SLIDER');
   const [title, setTitle] = useState('');
   const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [isProcessingImage, setIsProcessingImage] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const bannersRef = useMemoFirebase(() => query(collection(db, 'featured_banners'), orderBy('createdAt', 'desc')), [db]);
+  const bannersRef = useMemoFirebase(() => query(collection(db, 'featured_banners'), orderBy('createdAt', 'desc'), limit(30)), [db]);
   const { data: banners, isLoading } = useCollection(bannersRef);
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      if (file.size > 1024 * 1024) {
-        toast({ variant: "destructive", title: "IMAGE TOO LARGE", description: "MAXIMUM IMAGE SIZE IS 1MB." });
-        return;
+      setIsProcessingImage(true);
+      try {
+        const compressedDataUrl = await compressImage(file, 1200, 600); // Banners can be wider
+        setImagePreview(compressedDataUrl);
+      } catch (err) {
+        toast({ variant: "destructive", title: "ERROR", description: "FAILED TO PROCESS BANNER IMAGE." });
+      } finally {
+        setIsProcessingImage(false);
       }
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setImagePreview(reader.result as string);
-      };
-      reader.readAsDataURL(file);
     }
   };
 
@@ -65,7 +64,7 @@ export default function FeaturedManager() {
       createdAt: new Date().toISOString()
     });
 
-    toast({ title: "BANNER ADDED", description: "THE NEW CONTENT IS NOW LIVE IN THE SELECTED SECTION." });
+    toast({ title: "BANNER ADDED", description: "THE NEW CONTENT IS NOW LIVE." });
     resetForm();
   };
 
@@ -81,7 +80,7 @@ export default function FeaturedManager() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-background selection:bg-[#01a3a4]/30">
+    <div className="min-h-screen flex flex-col bg-background">
       <Navbar />
       
       <main className="flex-grow container mx-auto px-4 py-12">
@@ -96,7 +95,6 @@ export default function FeaturedManager() {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-          {/* BANNER ADD FORM */}
           <Card className="bg-card border-white/5 rounded-none lg:col-span-4 h-fit shadow-2xl">
             <CardHeader className="border-b border-white/5 p-6">
               <CardTitle className="text-xs font-black uppercase tracking-[0.3em] text-[#01a3a4] flex items-center gap-2">
@@ -112,98 +110,66 @@ export default function FeaturedManager() {
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent className="bg-card border-white/10 rounded-none">
-                      <SelectItem value="SLIDER" className="uppercase text-[10px] font-black focus:bg-[#01a3a4] focus:text-white py-3">MAIN SLIDER BAR</SelectItem>
-                      <SelectItem value="FLASH" className="uppercase text-[10px] font-black focus:bg-[#01a3a4] focus:text-white py-3">FLASH OFFER BAR</SelectItem>
+                      <SelectItem value="SLIDER" className="uppercase text-[10px] font-black py-3">MAIN SLIDER BAR</SelectItem>
+                      <SelectItem value="FLASH" className="uppercase text-[10px] font-black py-3">FLASH OFFER BAR</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
 
                 <div className="space-y-2">
-                  <label className="text-[10px] font-black text-muted-foreground uppercase">Banner Label (Internal)</label>
-                  <Input 
-                    value={title} 
-                    onChange={(e) => setTitle(e.target.value)} 
-                    placeholder="E.G. SUMMER COLLECTION BANNER" 
-                    className="bg-black/50 border-white/10 rounded-none h-12 text-xs uppercase font-bold"
-                  />
+                  <label className="text-[10px] font-black text-muted-foreground uppercase">Banner Label</label>
+                  <Input value={title} onChange={(e) => setTitle(e.target.value)} placeholder="E.G. SUMMER COLLECTION" className="bg-black/50 border-white/10 rounded-none h-12 text-xs uppercase font-bold" />
                 </div>
                 
                 <div className="space-y-2">
                   <label className="text-[10px] font-black text-muted-foreground uppercase">Visualization</label>
-                  <div 
-                    onClick={() => fileInputRef.current?.click()} 
-                    className="border-2 border-dashed border-white/10 p-6 text-center cursor-pointer transition-all bg-black/30 flex flex-col items-center justify-center min-h-[200px] relative group overflow-hidden"
-                  >
-                    {imagePreview ? (
-                      <div className="relative w-full aspect-video animate-in zoom-in duration-300">
+                  <div onClick={() => fileInputRef.current?.click()} className="border-2 border-dashed border-white/10 p-6 text-center cursor-pointer transition-all bg-black/30 flex flex-col items-center justify-center min-h-[200px] relative group overflow-hidden">
+                    {isProcessingImage ? (
+                      <Loader2 className="h-8 w-8 text-[#01a3a4] animate-spin" />
+                    ) : imagePreview ? (
+                      <div className="relative w-full aspect-video">
                         <Image src={imagePreview} alt="Preview" fill className="object-cover" />
-                        <button type="button" onClick={(e) => { e.stopPropagation(); setImagePreview(null); }} className="absolute top-2 right-2 bg-red-600 p-2 text-white z-10 shadow-xl"><X className="h-5 w-5" /></button>
+                        <button type="button" onClick={(e) => { e.stopPropagation(); setImagePreview(null); }} className="absolute top-2 right-2 bg-red-600 p-2 text-white z-10"><X className="h-5 w-5" /></button>
                       </div>
                     ) : (
                       <div className="space-y-3">
                         <Upload className="h-10 w-10 mx-auto text-[#01a3a4] opacity-50" />
-                        <p className="text-[10px] font-black uppercase tracking-widest text-white">UPLOAD IMAGE (MAX 1MB)</p>
+                        <p className="text-[10px] font-black uppercase tracking-widest text-white">UPLOAD IMAGE (AUTO-COMPRESS)</p>
                       </div>
                     )}
                     <input type="file" ref={fileInputRef} onChange={handleFileChange} accept="image/*" className="hidden" />
                   </div>
                 </div>
 
-                <div className="pt-2">
-                  <p className="text-[9px] text-white/40 uppercase tracking-widest font-bold leading-relaxed mb-4">
-                    * This option adds images directly to the zones without linking to a product. Perfect for branding and sales announcements.
-                  </p>
-                  <Button type="submit" disabled={!imagePreview} className="w-full bg-[#01a3a4] hover:bg-white hover:text-black text-white font-black rounded-none uppercase text-[10px] h-14 tracking-[0.2em] shadow-2xl transition-all">
-                    <Plus className="mr-2 h-4 w-4" /> ADD TO DISPLAY
-                  </Button>
-                </div>
+                <Button type="submit" disabled={!imagePreview || isProcessingImage} className="w-full bg-[#01a3a4] hover:bg-white hover:text-black text-white font-black rounded-none uppercase text-[10px] h-14 shadow-2xl">
+                  <Plus className="mr-2 h-4 w-4" /> ADD TO DISPLAY
+                </Button>
               </form>
             </CardContent>
           </Card>
 
-          {/* ACTIVE BANNERS LIST */}
           <Card className="bg-card border-white/5 rounded-none lg:col-span-8 shadow-2xl overflow-hidden">
-            <CardHeader className="bg-white/[0.02] border-b border-white/5 p-6 flex flex-row items-center justify-between">
-              <CardTitle className="text-xs font-black uppercase tracking-[0.3em] text-[#01a3a4]">ACTIVE DIRECT CONTENT ({banners?.length || 0})</CardTitle>
-              <Badge className="bg-[#01a3a4] text-white font-black text-[9px] rounded-none px-4 py-1">LIVE SYNCED</Badge>
+            <CardHeader className="bg-white/[0.02] border-b border-white/5 p-6">
+              <CardTitle className="text-xs font-black uppercase tracking-[0.3em] text-[#01a3a4]">ACTIVE CONTENT ({banners?.length || 0})</CardTitle>
             </CardHeader>
             <CardContent className="p-6">
-              {isLoading ? (
-                <div className="flex flex-col items-center justify-center py-40 gap-4">
-                  <Loader2 className="h-12 w-12 text-[#01a3a4] animate-spin" />
-                  <p className="text-[10px] font-black uppercase text-[#01a3a4] animate-pulse tracking-widest">Accessing Archive...</p>
-                </div>
-              ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {banners?.map((b) => (
-                    <div key={b.id} className="relative aspect-video bg-black border border-white/5 group overflow-hidden">
-                      <Image src={b.imageUrl} alt={b.title} fill className="object-cover opacity-60 group-hover:opacity-100 transition-all duration-700" />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black to-transparent" />
-                      <div className="absolute top-3 left-3 flex gap-2">
-                        <Badge className="rounded-none bg-[#01a3a4] text-white text-[8px] font-black border-none px-3 py-1 uppercase">{b.type}</Badge>
-                      </div>
-                      <div className="absolute bottom-3 left-3 right-3 flex items-center justify-between">
-                        <p className="text-[10px] font-black text-white uppercase tracking-tighter truncate max-w-[70%]">{b.title}</p>
-                        <Button onClick={() => handleDelete(b.id)} size="icon" variant="ghost" className="h-8 w-8 text-white/40 hover:text-red-500 hover:bg-red-500/10 rounded-none">
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
-                      </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {banners?.map((b) => (
+                  <div key={b.id} className="relative aspect-video bg-black border border-white/5 group overflow-hidden">
+                    <Image src={b.imageUrl} alt={b.title} fill className="object-cover opacity-60 group-hover:opacity-100 transition-all duration-700" />
+                    <div className="absolute top-3 left-3"><Badge className="bg-[#01a3a4] text-white text-[8px] font-black rounded-none px-3 py-1">{b.type}</Badge></div>
+                    <div className="absolute bottom-3 left-3 right-3 flex items-center justify-between">
+                      <p className="text-[10px] font-black text-white uppercase truncate max-w-[70%]">{b.title}</p>
+                      <Button onClick={() => handleDelete(b.id)} size="icon" variant="ghost" className="h-8 w-8 text-white/40 hover:text-red-500 hover:bg-red-500/10"><Trash2 className="h-4 w-4" /></Button>
                     </div>
-                  ))}
-                  {banners?.length === 0 && (
-                    <div className="col-span-full text-center py-20 bg-white/[0.02] border border-dashed border-white/10">
-                      <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">No direct banners discovered.</p>
-                    </div>
-                  )}
-                </div>
-              )}
+                  </div>
+                ))}
+              </div>
             </CardContent>
           </Card>
         </div>
       </main>
-      
       <Footer />
     </div>
   );
 }
-

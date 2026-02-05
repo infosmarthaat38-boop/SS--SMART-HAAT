@@ -11,7 +11,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Plus, Trash2, ArrowLeft, Package, Upload, X, Loader2, Edit2, Save, AlertTriangle, Ruler, ShoppingBag } from 'lucide-react';
 import Link from 'next/link';
 import { useFirestore, useCollection, useMemoFirebase } from '@/firebase';
-import { collection, doc, query, orderBy } from 'firebase/firestore';
+import { collection, doc, query, orderBy, limit } from 'firebase/firestore';
 import { addDocumentNonBlocking, deleteDocumentNonBlocking, updateDocumentNonBlocking } from '@/firebase/non-blocking-updates';
 import Image from 'next/image';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -60,15 +60,12 @@ export default function AdminProducts() {
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const productsRef = useMemoFirebase(() => query(collection(db, 'products'), orderBy('createdAt', 'desc')), [db]);
+  // Performance Logic: Limit admin list to 20 for instant management feel.
+  const productsRef = useMemoFirebase(() => query(collection(db, 'products'), orderBy('createdAt', 'desc'), limit(20)), [db]);
   const categoriesRef = useMemoFirebase(() => collection(db, 'categories'), [db]);
   
   const { data: products, isLoading: productsLoading } = useCollection(productsRef);
   const { data: categories } = useCollection(categoriesRef);
-
-  const calculatedTotalStock = sizeEntries.length > 0 
-    ? sizeEntries.reduce((acc, curr) => acc + (curr.quantity || 0), 0)
-    : parseInt(manualStockQuantity) || 0;
 
   useEffect(() => {
     if (editingId) return;
@@ -87,56 +84,21 @@ export default function AdminProducts() {
     if (file) {
       setIsProcessingImage(true);
       try {
-        // Automatic compression for performance with 10k+ images
         const compressedDataUrl = await compressImage(file);
         setImagePreview(compressedDataUrl);
       } catch (err) {
-        toast({
-          variant: "destructive",
-          title: "PROCESSING ERROR",
-          description: "COULD NOT PROCESS THE IMAGE. PLEASE TRY AGAIN.",
-        });
+        toast({ variant: "destructive", title: "ERROR", description: "IMAGE PROCESSING FAILED." });
       } finally {
         setIsProcessingImage(false);
       }
     }
   };
 
-  const addSizeEntry = () => {
-    setSizeEntries([...sizeEntries, { size: '', quantity: 1 }]);
-  };
-
-  const removeSizeEntry = (index: number) => {
-    const newEntries = sizeEntries.filter((_, i) => i !== index);
-    setSizeEntries(newEntries);
-  };
-
-  const updateSizeEntry = (index: number, field: keyof SizeEntry, value: string | number) => {
-    const newEntries = [...sizeEntries];
-    if (field === 'quantity') {
-      newEntries[index][field] = parseInt(value.toString()) || 0;
-    } else {
-      newEntries[index][field] = value.toString().toUpperCase();
-    }
-    setSizeEntries(newEntries);
-  };
-
   const handleSaveProduct = (e: React.FormEvent) => {
     e.preventDefault();
-    
-    const isNameMissing = !name;
-    const isPriceMissing = !price;
-    const isCategoryMissing = !category;
-    const isImageMissing = !imagePreview;
-    const isStockMissing = sizeEntries.length === 0 && !manualStockQuantity;
-
-    if (isNameMissing || isPriceMissing || isCategoryMissing || isImageMissing || isStockMissing) {
+    if (!name || !price || !category || !imagePreview) {
       setShowValidation(true);
-      toast({
-        variant: "destructive",
-        title: "MISSING INFORMATION",
-        description: "PLEASE FILL ALL RED HIGHLIGHTED FIELDS BEFORE SAVING.",
-      });
+      toast({ variant: "destructive", title: "MISSING FIELDS", description: "FILL ALL REQUIRED INFORMATION." });
       return;
     }
 
@@ -151,7 +113,6 @@ export default function AdminProducts() {
       originalPrice: parseFloat(originalPrice) || parseFloat(price),
       discountPercentage: parseInt(discountPercentage) || 0,
       category: category.toUpperCase(),
-      sizes: sizeEntries.length > 0 ? sizeEntries.map(s => s.size) : [],
       sizeInventory: sizeEntries,
       stockQuantity: finalStock,
       imageUrl: imagePreview,
@@ -162,338 +123,123 @@ export default function AdminProducts() {
 
     if (editingId) {
       updateDocumentNonBlocking(doc(db, 'products', editingId), productData);
-      toast({
-        title: "RECORD UPDATED",
-        description: "PRODUCT INFORMATION HAS BEEN SUCCESSFULLY SYNCED.",
-      });
+      toast({ title: "RECORD UPDATED" });
       setEditingId(null);
     } else {
-      addDocumentNonBlocking(collection(db, 'products'), {
-        ...productData,
-        createdAt: new Date().toISOString()
-      });
-      toast({
-        title: "PRODUCT REGISTERED",
-        description: "NEW ITEM HAS BEEN ADDED TO THE INVENTORY ARCHIVE.",
-      });
+      addDocumentNonBlocking(collection(db, 'products'), { ...productData, createdAt: new Date().toISOString() });
+      toast({ title: "PRODUCT REGISTERED" });
     }
     resetForm();
   };
 
   const resetForm = () => {
-    setEditingId(null);
-    setName('');
-    setDescription('');
-    setPrice('');
-    setOriginalPrice('');
-    setDiscountPercentage('0');
-    setCategory('');
-    setManualStockQuantity('');
-    setSizeEntries([]);
-    setImagePreview(null);
-    setShowInSlider(false);
-    setShowInFlashOffer(false);
-    setShowValidation(false);
+    setEditingId(null); setName(''); setDescription(''); setPrice(''); setOriginalPrice('');
+    setCategory(''); setManualStockQuantity(''); setSizeEntries([]); setImagePreview(null);
+    setShowInSlider(false); setShowInFlashOffer(false); setShowValidation(false);
     if (fileInputRef.current) fileInputRef.current.value = '';
   };
 
   const handleEdit = (product: any) => {
-    setEditingId(product.id);
-    setName(product.name);
-    setDescription(product.description || '');
-    setPrice(product.price.toString());
-    setOriginalPrice(product.originalPrice?.toString() || product.price.toString());
-    setDiscountPercentage(product.discountPercentage?.toString() || '0');
-    setCategory(product.category);
-    setSizeEntries(product.sizeInventory || []);
-    if (!product.sizeInventory || product.sizeInventory.length === 0) {
-      setManualStockQuantity(product.stockQuantity?.toString() || '');
-    } else {
-      setManualStockQuantity('');
-    }
-    setImagePreview(product.imageUrl);
-    setShowInSlider(!!product.showInSlider);
-    setShowInFlashOffer(!!product.showInFlashOffer);
-    setShowValidation(false);
+    setEditingId(product.id); setName(product.name); setDescription(product.description || '');
+    setPrice(product.price.toString()); setOriginalPrice(product.originalPrice?.toString() || product.price.toString());
+    setCategory(product.category); setSizeEntries(product.sizeInventory || []);
+    if (!product.sizeInventory?.length) setManualStockQuantity(product.stockQuantity?.toString() || '');
+    else setManualStockQuantity('');
+    setImagePreview(product.imageUrl); setShowInSlider(!!product.showInSlider); setShowInFlashOffer(!!product.showInFlashOffer);
     window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
-
-  const confirmDelete = (id: string) => {
-    setDeleteId(id);
-    setIsAlertOpen(true);
   };
 
   const handleFinalDelete = () => {
     if (deleteId) {
       deleteDocumentNonBlocking(doc(db, 'products', deleteId));
-      toast({
-        variant: "destructive",
-        title: "PRODUCT REMOVED",
-        description: "RECORD HAS BEEN PERMANENTLY DELETED FROM ARCHIVE.",
-      });
-      setDeleteId(null);
-      setIsAlertOpen(false);
+      toast({ variant: "destructive", title: "RECORD REMOVED" });
+      setDeleteId(null); setIsAlertOpen(false);
     }
   };
 
   return (
     <div className="min-h-screen flex flex-col bg-background selection:bg-orange-600/30">
       <Navbar />
-      
       <main className="flex-grow container mx-auto px-4 py-12">
         <div className="flex items-center gap-4 mb-12">
-          <Button asChild variant="ghost" className="rounded-none hover:bg-white/5 text-white p-2 h-12 w-12 border border-white/10">
-            <Link href="/admin"><ArrowLeft className="h-6 w-6" /></Link>
-          </Button>
+          <Button asChild variant="ghost" className="rounded-none border border-white/10 h-12 w-12"><Link href="/admin"><ArrowLeft className="h-6 w-6" /></Link></Button>
           <div className="space-y-1">
             <p className="text-[10px] font-black text-orange-600 uppercase tracking-widest">Inventory Management</p>
-            <h1 className="text-4xl font-black uppercase tracking-tighter text-white">
-              {editingId ? 'EDITING PRODUCT' : 'PRODUCT CONTROL'}
-            </h1>
+            <h1 className="text-4xl font-black uppercase tracking-tighter text-white">{editingId ? 'EDITING RECORD' : 'PRODUCT CONTROL'}</h1>
           </div>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-          <Card className="bg-card border-white/5 rounded-none lg:col-span-4 h-fit sticky top-24 max-h-[85vh] overflow-y-auto shadow-2xl">
+          <Card className="bg-card border-white/5 rounded-none lg:col-span-4 h-fit shadow-2xl overflow-y-auto max-h-[85vh]">
             <CardHeader className="border-b border-white/5 p-6">
               <CardTitle className="text-xs font-black uppercase tracking-[0.3em] text-orange-600 flex items-center gap-2">
-                <ShoppingBag className="h-4 w-4" /> {editingId ? 'UPDATE RECORD' : 'REGISTER NEW ITEM'}
+                <ShoppingBag className="h-4 w-4" /> {editingId ? 'UPDATE ITEM' : 'REGISTER ITEM'}
               </CardTitle>
             </CardHeader>
             <CardContent className="p-6">
               <form onSubmit={handleSaveProduct} className="space-y-6">
                 <div className="space-y-2">
-                  <label className={cn("text-[10px] font-black uppercase", showValidation && !name ? "text-red-500" : "text-muted-foreground")}>
-                    Product Identity *
-                  </label>
-                  <Input 
-                    value={name} 
-                    onChange={(e) => setName(e.target.value)} 
-                    placeholder="E.G. PREMIUM POLO SHIRT" 
-                    className={cn(
-                      "bg-black/50 border-white/10 rounded-none h-12 text-xs uppercase font-bold",
-                      showValidation && !name && "border-red-600 focus-visible:ring-red-600"
-                    )}
-                  />
+                  <label className="text-[10px] font-black text-muted-foreground uppercase">Identity *</label>
+                  <Input value={name} onChange={(e) => setName(e.target.value)} placeholder="NAME" className="bg-black/50 border-white/10 rounded-none h-12 text-xs uppercase font-bold" />
                 </div>
-                
-                <div className="space-y-2">
-                  <label className="text-[10px] font-black text-muted-foreground uppercase">Description</label>
-                  <Textarea 
-                    value={description} 
-                    onChange={(e) => setDescription(e.target.value)} 
-                    placeholder="ENTER SPECIFICATIONS..." 
-                    className="bg-black/50 border-white/10 rounded-none text-xs min-h-[100px] leading-relaxed" 
-                  />
-                </div>
-                
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <label className="text-[10px] font-black text-muted-foreground uppercase">MSRP (৳)</label>
-                    <Input 
-                      type="number" 
-                      value={originalPrice} 
-                      onChange={(e) => setOriginalPrice(e.target.value)} 
-                      placeholder="0.00" 
-                      className="bg-black/50 border-white/10 rounded-none h-12 text-xs" 
-                    />
+                    <Input type="number" value={originalPrice} onChange={(e) => setOriginalPrice(e.target.value)} className="bg-black/50 border-white/10 rounded-none h-12 text-xs" />
                   </div>
                   <div className="space-y-2">
-                    <label className={cn("text-[10px] font-black uppercase", showValidation && !price ? "text-red-500" : "text-muted-foreground")}>
-                      Sales Price (৳) *
-                    </label>
-                    <Input 
-                      type="number" 
-                      value={price} 
-                      onChange={(e) => setPrice(e.target.value)} 
-                      placeholder="0.00" 
-                      className={cn(
-                        "bg-black/50 border-white/10 rounded-none h-12 text-xs text-orange-600 font-black",
-                        showValidation && !price && "border-red-600 focus-visible:ring-red-600"
-                      )}
-                    />
+                    <label className="text-[10px] font-black text-muted-foreground uppercase">Price (৳) *</label>
+                    <Input type="number" value={price} onChange={(e) => setPrice(e.target.value)} className="bg-black/50 border-white/10 rounded-none h-12 text-xs text-orange-600 font-black" />
                   </div>
                 </div>
-
-                <div className="space-y-4 pt-6 border-t border-white/5">
-                  <div className="flex items-center justify-between mb-4">
-                    <label className="text-[10px] font-black text-white uppercase flex items-center gap-2">
-                      <Ruler className="h-3 w-3 text-orange-600" /> SIZE SPECIFIC STOCK
-                    </label>
-                    <Button 
-                      type="button" 
-                      onClick={addSizeEntry} 
-                      variant="outline" 
-                      className="h-8 rounded-none border-orange-600/30 text-orange-600 hover:bg-orange-600 hover:text-white text-[9px] font-black uppercase tracking-widest"
-                    >
-                      + ADD SIZE
-                    </Button>
-                  </div>
-
-                  {sizeEntries.map((entry, index) => (
-                    <div key={index} className="flex gap-2 items-end animate-in fade-in slide-in-from-top-2 duration-300">
-                      <div className="flex-1 space-y-1">
-                         <label className="text-[8px] font-black text-muted-foreground uppercase">SIZE NAME</label>
-                         <Input 
-                            value={entry.size} 
-                            onChange={(e) => updateSizeEntry(index, 'size', e.target.value)}
-                            placeholder="E.G. XL"
-                            className="bg-black/50 border-white/10 rounded-none h-10 text-[10px] font-black"
-                         />
-                      </div>
-                      <div className="w-24 space-y-1">
-                         <label className="text-[8px] font-black text-muted-foreground uppercase">QTY (PCS)</label>
-                         <Input 
-                            type="number"
-                            value={entry.quantity} 
-                            onChange={(e) => updateSizeEntry(index, 'quantity', e.target.value)}
-                            placeholder="1"
-                            className="bg-black/50 border-white/10 rounded-none h-10 text-[10px] font-black text-orange-600"
-                         />
-                      </div>
-                      <Button type="button" onClick={() => removeSizeEntry(index)} variant="ghost" size="icon" className="h-10 w-10 text-muted-foreground hover:text-red-500 hover:bg-red-600/5">
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
-                    </div>
-                  ))}
-
-                  {sizeEntries.length === 0 && (
-                    <div className="space-y-2 p-4 bg-white/[0.02] border border-dashed border-white/10">
-                      <label className={cn("text-[10px] font-black uppercase", showValidation && !manualStockQuantity ? "text-red-500" : "text-muted-foreground")}>
-                        Manual Total Stock *
-                      </label>
-                      <Input 
-                        type="number" 
-                        value={manualStockQuantity} 
-                        onChange={(e) => setManualStockQuantity(e.target.value)} 
-                        placeholder="TOTAL UNITS" 
-                        className={cn(
-                          "bg-black/50 border-white/10 rounded-none h-12 text-xs font-black",
-                          showValidation && sizeEntries.length === 0 && !manualStockQuantity && "border-red-600 focus-visible:ring-red-600"
-                        )}
-                      />
-                    </div>
-                  )}
-                </div>
-
                 <div className="space-y-2">
-                  <label className={cn("text-[10px] font-black uppercase", showValidation && !category ? "text-red-500" : "text-muted-foreground")}>
-                    Classification *
-                  </label>
+                  <label className="text-[10px] font-black text-muted-foreground uppercase">Category *</label>
                   <Select value={category} onValueChange={(val) => setCategory(val)}>
-                    <SelectTrigger className={cn(
-                      "bg-black/50 border-white/10 rounded-none text-[10px] h-12 uppercase font-black",
-                      showValidation && !category && "border-red-600 ring-red-600"
-                    )}>
-                      <SelectValue placeholder="SELECT CATEGORY" />
-                    </SelectTrigger>
+                    <SelectTrigger className="bg-black/50 border-white/10 rounded-none text-[10px] h-12 uppercase font-black"><SelectValue placeholder="SELECT" /></SelectTrigger>
                     <SelectContent className="bg-card border-white/10 rounded-none">
                       {categories?.map((cat) => (
-                        <SelectItem key={cat.id} value={cat.name} className="uppercase text-[10px] font-black focus:bg-orange-600 focus:text-white py-3">
-                          {cat.name}
-                        </SelectItem>
+                        <SelectItem key={cat.id} value={cat.name} className="uppercase text-[10px] font-black py-3">{cat.name}</SelectItem>
                       ))}
                     </SelectContent>
                   </Select>
                 </div>
-
-                <div className="grid grid-cols-2 gap-4 pt-4 border-t border-white/5 mt-4">
-                  <div className="flex items-center space-x-3 p-3 bg-white/[0.02] border border-white/5">
-                    <Checkbox id="slider" checked={showInSlider} onCheckedChange={(checked) => setShowInSlider(!!checked)} className="border-white/20 data-[state=checked]:bg-orange-600" />
-                    <Label htmlFor="slider" className="text-[9px] font-black uppercase text-white cursor-pointer tracking-widest leading-none">Slider</Label>
-                  </div>
-                  <div className="flex items-center space-x-3 p-3 bg-white/[0.02] border border-white/5">
-                    <Checkbox id="flash" checked={showInFlashOffer} onCheckedChange={(checked) => setShowInFlashOffer(!!checked)} className="border-white/20 data-[state=checked]:bg-orange-600" />
-                    <Label htmlFor="flash" className="text-[9px] font-black uppercase text-white cursor-pointer tracking-widest leading-none">Flash Offer</Label>
-                  </div>
-                </div>
-                
                 <div className="space-y-2">
-                  <label className={cn("text-[10px] font-black uppercase", showValidation && !imagePreview ? "text-red-500" : "text-muted-foreground")}>
-                    Product Visualization *
-                  </label>
-                  <div 
-                    onClick={() => fileInputRef.current?.click()} 
-                    className={cn(
-                      "border-2 border-dashed p-6 text-center cursor-pointer transition-all bg-black/30 flex flex-col items-center justify-center min-h-[200px] relative group overflow-hidden",
-                      showValidation && !imagePreview ? "border-red-600" : "border-white/10 hover:border-orange-600"
-                    )}
-                  >
-                    {isProcessingImage ? (
-                      <div className="flex flex-col items-center gap-2">
-                        <Loader2 className="h-8 w-8 text-orange-600 animate-spin" />
-                        <p className="text-[8px] font-black text-orange-600 uppercase">Resizing for performance...</p>
-                      </div>
-                    ) : imagePreview ? (
-                      <div className="relative w-full aspect-square animate-in zoom-in duration-300">
-                        <Image src={imagePreview} alt="Preview" fill className="object-cover" />
-                        <button type="button" onClick={(e) => { e.stopPropagation(); setImagePreview(null); }} className="absolute top-2 right-2 bg-red-600 p-2 text-white z-10 shadow-xl"><X className="h-5 w-5" /></button>
-                      </div>
-                    ) : (
-                      <div className="space-y-3 group-hover:scale-110 transition-transform">
-                        <Upload className={cn("h-10 w-10 mx-auto", showValidation && !imagePreview ? "text-red-500" : "text-orange-600 opacity-50")} />
-                        <p className={cn("text-[10px] font-black uppercase tracking-widest", showValidation && !imagePreview ? "text-red-500" : "text-white")}>
-                          UPLOAD MASTER IMAGE
-                        </p>
-                      </div>
-                    )}
+                  <label className="text-[10px] font-black text-muted-foreground uppercase">Visualization *</label>
+                  <div onClick={() => fileInputRef.current?.click()} className="border-2 border-dashed border-white/10 p-6 text-center cursor-pointer bg-black/30 min-h-[200px] relative flex items-center justify-center overflow-hidden">
+                    {isProcessingImage ? <Loader2 className="h-8 w-8 text-orange-600 animate-spin" /> : 
+                     imagePreview ? <Image src={imagePreview} alt="Preview" fill className="object-cover" /> : 
+                     <Upload className="h-10 w-10 text-orange-600 opacity-50" />}
                     <input type="file" ref={fileInputRef} onChange={handleFileChange} accept="image/*" className="hidden" />
                   </div>
                 </div>
-
-                <div className="flex gap-3 pt-4">
-                  {editingId && (
-                    <Button type="button" onClick={resetForm} variant="outline" className="flex-1 border-white/10 rounded-none uppercase text-[10px] font-black h-14 hover:bg-white/5">
-                      DISCARD
-                    </Button>
-                  )}
-                  <Button type="submit" disabled={isProcessingImage} className="flex-grow bg-orange-600 hover:bg-orange-700 text-white font-black rounded-none uppercase text-[10px] h-14 tracking-[0.2em] shadow-2xl shadow-orange-600/10">
-                    {editingId ? <><Save className="mr-2 h-4 w-4" /> UPDATE RECORD</> : <><Plus className="mr-2 h-4 w-4" /> SAVE PRODUCT</>}
-                  </Button>
-                </div>
+                <Button type="submit" disabled={isProcessingImage} className="w-full bg-orange-600 hover:bg-orange-700 text-white font-black rounded-none uppercase text-[10px] h-14 shadow-2xl">
+                  {editingId ? <Save className="mr-2 h-4 w-4" /> : <Plus className="mr-2 h-4 w-4" />} {editingId ? 'UPDATE' : 'SAVE'}
+                </Button>
               </form>
             </CardContent>
           </Card>
 
           <Card className="bg-card border-white/5 rounded-none lg:col-span-8 shadow-2xl overflow-hidden">
-            <CardHeader className="bg-white/[0.02] border-b border-white/5 p-6 flex flex-row items-center justify-between">
-              <CardTitle className="text-xs font-black uppercase tracking-[0.3em] text-orange-600">INVENTORY ARCHIVE ({products?.length || 0})</CardTitle>
-              <Badge className="bg-orange-600 text-white font-black text-[9px] rounded-none px-4 py-1">REAL-TIME SYNCED</Badge>
+            <CardHeader className="bg-white/[0.02] border-b border-white/5 p-6 flex items-center justify-between">
+              <CardTitle className="text-xs font-black uppercase tracking-[0.3em] text-orange-600">INVENTORY ARCHIVE</CardTitle>
+              <Badge className="bg-orange-600 text-white font-black text-[9px] rounded-none px-4 py-1">LATEST 20 RECORDS</Badge>
             </CardHeader>
             <CardContent className="p-6">
-              {productsLoading ? (
-                <div className="flex flex-col items-center justify-center py-40 gap-4">
-                  <Loader2 className="h-12 w-12 text-orange-600 animate-spin" />
-                  <p className="text-[10px] font-black uppercase text-orange-600 animate-pulse tracking-widest">Accessing Database...</p>
-                </div>
-              ) : (
+              {productsLoading ? <div className="py-40 text-center"><Loader2 className="h-12 w-12 text-orange-600 animate-spin mx-auto" /></div> : (
                 <div className="flex flex-col gap-2">
                   {products?.map((p) => (
-                    <div key={p.id} className={`flex items-center gap-4 p-4 bg-white/5 border transition-all group ${editingId === p.id ? 'border-orange-600 bg-orange-600/5' : 'border-white/5 hover:border-white/20'}`}>
-                      <div className="relative w-20 h-20 shrink-0 bg-black overflow-hidden border border-white/10">
-                        <Image src={p.imageUrl} alt={p.name} fill className="object-cover opacity-80 group-hover:opacity-100" />
+                    <div key={p.id} className={`flex items-center gap-4 p-4 bg-white/5 border border-white/5 hover:border-white/20 transition-all ${editingId === p.id ? 'border-orange-600 bg-orange-600/5' : ''}`}>
+                      <div className="relative w-16 h-16 shrink-0 bg-black border border-white/10 overflow-hidden">
+                        <Image src={p.imageUrl} alt={p.name} fill className="object-cover opacity-80" />
                       </div>
-                      <div className="flex-grow min-w-0">
-                        <div className="flex items-center gap-2 mb-1">
-                          <p className="text-[8px] font-black text-orange-600 tracking-widest uppercase">{p.category}</p>
-                          {p.showInSlider && <Badge className="bg-blue-600 text-white rounded-none text-[6px] font-black uppercase h-3 px-1">SLIDER</Badge>}
-                          {p.showInFlashOffer && <Badge className="bg-red-600 text-white rounded-none text-[6px] font-black uppercase h-3 px-1">FLASH</Badge>}
-                        </div>
+                      <div className="flex-grow">
+                        <p className="text-[8px] font-black text-orange-600 tracking-widest uppercase">{p.category}</p>
                         <h3 className="text-[12px] font-black text-white uppercase truncate tracking-tighter">{p.name}</h3>
-                        <div className="flex items-center gap-4 mt-1">
-                           <p className="text-sm font-black text-white tracking-tighter">৳{p.price.toLocaleString()}</p>
-                           <Badge className={`rounded-none text-[7px] font-black uppercase h-4 px-2 border-none ${p.stockQuantity > 0 ? 'bg-green-600/20 text-green-500 border border-green-500/30' : 'bg-red-600/20 text-red-500 border border-red-500/30'}`}>
-                              {p.stockQuantity > 0 ? `STOCK: ${p.stockQuantity}` : 'OUT OF STOCK'}
-                           </Badge>
-                        </div>
+                        <p className="text-sm font-black text-white tracking-tighter">৳{p.price.toLocaleString()}</p>
                       </div>
-                      <div className="flex gap-2 shrink-0">
-                        <Button onClick={() => handleEdit(p)} variant="outline" size="icon" className="h-10 w-10 border-white/10 text-white hover:bg-orange-600 hover:text-white hover:border-orange-600 rounded-none transition-colors">
-                          <Edit2 className="h-4 w-4" />
-                        </Button>
-                        <Button onClick={() => confirmDelete(p.id)} variant="outline" size="icon" className="h-10 w-10 border-white/10 text-muted-foreground hover:bg-red-600 hover:text-white hover:border-red-600 rounded-none transition-colors">
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
+                      <div className="flex gap-2">
+                        <Button onClick={() => handleEdit(p)} variant="outline" size="icon" className="h-10 w-10 border-white/10 text-white hover:bg-orange-600 rounded-none"><Edit2 className="h-4 w-4" /></Button>
+                        <Button onClick={() => setIsAlertOpen(true)} variant="outline" size="icon" className="h-10 w-10 border-white/10 text-muted-foreground hover:bg-red-600 rounded-none"><Trash2 className="h-4 w-4" /></Button>
                       </div>
                     </div>
                   ))}
@@ -507,26 +253,15 @@ export default function AdminProducts() {
       <AlertDialog open={isAlertOpen} onOpenChange={setIsAlertOpen}>
         <AlertDialogContent className="bg-black border-orange-600/30 rounded-none p-10 max-w-md">
           <AlertDialogHeader className="space-y-6">
-            <div className="flex items-center gap-4">
-              <div className="h-14 w-14 bg-red-600/10 flex items-center justify-center border border-red-600/20 rounded-full">
-                <AlertTriangle className="h-8 w-8 text-red-600" />
-              </div>
-              <div>
-                <AlertDialogTitle className="text-2xl font-black text-white uppercase tracking-tighter">DELETE PRODUCT?</AlertDialogTitle>
-                <p className="text-[10px] font-black text-red-600 uppercase tracking-widest mt-1">Irreversible System Action</p>
-              </div>
-            </div>
-            <AlertDialogDescription className="text-[11px] text-muted-foreground uppercase font-black tracking-widest leading-relaxed">
-              THIS ACTION WILL PERMANENTLY REMOVE THIS RECORD FROM THE INVENTORY ARCHIVE. IT CANNOT BE RECOVERED.
-            </AlertDialogDescription>
+            <AlertDialogTitle className="text-2xl font-black text-white uppercase tracking-tighter">DELETE RECORD?</AlertDialogTitle>
+            <AlertDialogDescription className="text-[11px] text-muted-foreground uppercase font-black tracking-widest leading-relaxed">THIS ACTION IS PERMANENT.</AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter className="mt-10 gap-3">
-            <AlertDialogCancel className="flex-1 rounded-none border-white/10 text-white font-black uppercase text-[10px] h-14 hover:bg-white/5">CANCEL</AlertDialogCancel>
-            <AlertDialogAction onClick={handleFinalDelete} className="flex-1 bg-red-600 hover:bg-red-700 text-white font-black uppercase text-[10px] rounded-none h-14 shadow-2xl shadow-red-600/20">CONFIRM DELETE</AlertDialogAction>
+            <AlertDialogCancel className="flex-1 rounded-none border-white/10 text-white font-black uppercase text-[10px] h-14">CANCEL</AlertDialogCancel>
+            <AlertDialogAction onClick={handleFinalDelete} className="flex-1 bg-red-600 hover:bg-red-700 text-white font-black uppercase text-[10px] rounded-none h-14 shadow-2xl">CONFIRM</AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
-      
       <Footer />
     </div>
   );

@@ -77,16 +77,17 @@ const FlashOfferCard = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const db = useFirestore();
   
+  // Limit to 5 for performance
   const flashProductQuery = useMemoFirebase(() => query(
     collection(db, 'products'),
     where('showInFlashOffer', '==', true),
-    limit(10)
+    limit(5)
   ), [db]);
 
   const flashBannerQuery = useMemoFirebase(() => query(
     collection(db, 'featured_banners'),
     where('type', '==', 'FLASH'),
-    limit(10)
+    limit(5)
   ), [db]);
   
   const { data: flashProducts } = useCollection(flashProductQuery);
@@ -151,10 +152,10 @@ const FlashOfferCard = () => {
 
 export default function Home() {
   const db = useFirestore();
-  const categoriesRef = useMemoFirebase(() => collection(db, 'categories'), [db]);
+  const categoriesRef = useMemoFirebase(() => query(collection(db, 'categories'), limit(12)), [db]);
   const productsRef = useMemoFirebase(() => query(collection(db, 'products'), orderBy('createdAt', 'desc'), limit(18)), [db]);
-  const sliderProductQuery = useMemoFirebase(() => query(collection(db, 'products'), where('showInSlider', '==', true)), [db]);
-  const sliderBannerQuery = useMemoFirebase(() => query(collection(db, 'featured_banners'), where('type', '==', 'SLIDER'), orderBy('createdAt', 'desc')), [db]);
+  const sliderProductQuery = useMemoFirebase(() => query(collection(db, 'products'), where('showInSlider', '==', true), limit(5)), [db]);
+  const sliderBannerQuery = useMemoFirebase(() => query(collection(db, 'featured_banners'), where('type', '==', 'SLIDER'), orderBy('createdAt', 'desc'), limit(5)), [db]);
   
   const { data: categories, isLoading: categoriesLoading } = useCollection(categoriesRef);
   const { data: products, isLoading: productsLoading } = useCollection(productsRef);
