@@ -35,7 +35,7 @@ export async function compressImage(file: File, maxWidth: number = 400, maxHeigh
           return;
         }
 
-        // Fast rendering settings
+        // Fast rendering settings for GPU performance
         ctx.imageSmoothingEnabled = true;
         ctx.imageSmoothingQuality = 'low';
         ctx.drawImage(img, 0, 0, width, height);

@@ -185,7 +185,7 @@ export default function Home() {
       )}
 
       <main className="flex-grow container mx-auto space-y-1">
-        {/* COMPACT HERO SECTION */}
+        {/* COMPACT HERO SECTION - Side by side desktop look on mobile too */}
         <section className="grid grid-cols-12 gap-0 h-[160px] md:h-[320px] gpu-accelerated">
           <div className="col-span-3 h-full"><FlashOfferCard /></div>
           <div className="col-span-6 h-full relative overflow-hidden bg-black">
