@@ -15,11 +15,11 @@ import { Loader2, Package } from 'lucide-react';
 export default function ShopPage() {
   const db = useFirestore();
   
-  // Performance Logic: Limit to 48 products initially to ensure instant loading.
+  // Strict limit for instant mobile paint and fast JSON response.
   const productsRef = useMemoFirebase(() => query(
     collection(db, 'products'),
     orderBy('createdAt', 'desc'),
-    limit(48)
+    limit(30)
   ), [db]);
   
   const { data: products, isLoading } = useCollection(productsRef);

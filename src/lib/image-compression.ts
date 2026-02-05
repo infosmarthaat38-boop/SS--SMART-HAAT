@@ -2,7 +2,7 @@
  * Utility to compress and resize images on the client side before uploading to Firestore.
  * This ensures that even with thousands of products, the database remains lean and fast.
  */
-export async function compressImage(file: File, maxWidth: number = 600, maxHeight: number = 600): Promise<string> {
+export async function compressImage(file: File, maxWidth: number = 500, maxHeight: number = 500): Promise<string> {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
     reader.readAsDataURL(file);
@@ -37,8 +37,8 @@ export async function compressImage(file: File, maxWidth: number = 600, maxHeigh
 
         ctx.drawImage(img, 0, 0, width, height);
         
-        // Aggressive compression: JPEG with 0.6 quality for ultra-fast loading (20-50KB per image)
-        const dataUrl = canvas.toDataURL('image/jpeg', 0.6);
+        // Super aggressive compression: JPEG with 0.5 quality for instant loading (15-30KB per image)
+        const dataUrl = canvas.toDataURL('image/jpeg', 0.5);
         resolve(dataUrl);
       };
       img.onerror = reject;

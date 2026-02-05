@@ -29,6 +29,7 @@ const SlideItem = ({ item, priority }: { item: any, priority: boolean }) => {
             sizes="100vw"
             className="object-cover opacity-100"
             priority={priority}
+            loading={priority ? "eager" : "lazy"}
             quality={75}
           />
           <div className="absolute inset-0 bg-black/40 flex flex-col justify-center px-12 space-y-4">
@@ -63,7 +64,7 @@ const SlideItem = ({ item, priority }: { item: any, priority: boolean }) => {
   return (
     <CarouselItem className="h-full">
       <div className="relative h-[420px] w-full bg-black">
-        <Image src={item.imageUrl} alt={item.title || "Banner"} fill sizes="100vw" className="object-cover opacity-100" priority={priority} quality={75} />
+        <Image src={item.imageUrl} alt={item.title || "Banner"} fill sizes="100vw" className="object-cover opacity-100" priority={priority} loading={priority ? "eager" : "lazy"} quality={75} />
         <div className="absolute inset-0 bg-black/20 flex flex-col justify-center px-12">
            <h2 className="text-4xl font-black text-white uppercase tracking-tighter max-w-[500px] leading-none">{item.title}</h2>
         </div>
@@ -77,17 +78,17 @@ const FlashOfferCard = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const db = useFirestore();
   
-  // Limit to 5 for performance
+  // Super strict limit for flash offers
   const flashProductQuery = useMemoFirebase(() => query(
     collection(db, 'products'),
     where('showInFlashOffer', '==', true),
-    limit(5)
+    limit(3)
   ), [db]);
 
   const flashBannerQuery = useMemoFirebase(() => query(
     collection(db, 'featured_banners'),
     where('type', '==', 'FLASH'),
-    limit(5)
+    limit(3)
   ), [db]);
   
   const { data: flashProducts } = useCollection(flashProductQuery);
