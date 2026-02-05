@@ -157,24 +157,24 @@ export const OrderModal = memo(({ product, isOpen, onClose }: OrderModalProps) =
   return (
     <Dialog open={isOpen} onOpenChange={(val) => !val && onClose()}>
       <DialogContent className={cn(
-        "p-0 bg-white border-none rounded-none overflow-hidden gap-0 shadow-2xl transition-all duration-300 gpu-accelerated",
-        step === 'SUCCESS' ? "max-w-[350px]" : isMobile ? "max-w-full h-full sm:h-auto sm:max-w-[480px]" : "sm:max-w-[1000px]"
+        "p-0 bg-white border-none rounded-none overflow-hidden gap-0 shadow-2xl transition-all duration-300 gpu-accelerated fixed left-[50%] top-[50%] translate-x-[-50%] translate-y-[-50%]",
+        step === 'SUCCESS' ? "max-w-[350px]" : isMobile ? "max-w-full h-full sm:h-auto sm:max-w-[480px]" : "max-w-[95vw] lg:max-w-[1000px] w-full"
       )}>
         {/* GLOBAL CLOSE BUTTON */}
         <button 
           onClick={onClose}
-          className="absolute right-4 top-4 z-50 p-2 text-gray-400 hover:text-black hover:bg-gray-100 transition-all rounded-full"
+          className="absolute right-4 top-4 z-[60] p-2 text-gray-400 hover:text-black hover:bg-gray-100 transition-all rounded-full"
         >
           <X className="h-5 w-5" />
         </button>
 
-        <div className="flex flex-col h-full max-h-[100vh] sm:max-h-[95vh]">
+        <div className="flex flex-col h-full max-h-[95vh]">
           {step === 'FORM' ? (
-            <div className="flex flex-col sm:flex-row h-full">
+            <div className="flex flex-col sm:flex-row h-full overflow-hidden">
               
               {/* DESKTOP LEFT: PRODUCT IMAGE & INFO */}
               {!isMobile && (
-                <div className="sm:w-[300px] bg-gray-50 border-r border-gray-100 p-8 flex flex-col items-center shrink-0">
+                <div className="sm:w-[280px] bg-gray-50 border-r border-gray-100 p-6 flex flex-col items-center shrink-0 overflow-y-auto no-scrollbar">
                   <div className="relative w-full aspect-square border border-gray-200 mb-6 bg-white shadow-sm overflow-hidden">
                     <Image src={product.imageUrl} alt={product.name} fill className="object-cover" priority />
                   </div>
@@ -193,8 +193,8 @@ export const OrderModal = memo(({ product, isOpen, onClose }: OrderModalProps) =
 
               {/* MIDDLE (OR FULL ON MOBILE): ORDER FORM */}
               <div className={cn(
-                "flex-grow p-8 space-y-6 bg-white overflow-y-auto relative no-scrollbar",
-                !isMobile && "sm:w-[350px]"
+                "flex-grow p-6 sm:p-8 space-y-6 bg-white overflow-y-auto relative no-scrollbar",
+                !isMobile && "sm:w-[320px]"
               )}>
                 {/* SMALL PRODUCT IMAGE IN CORNER (FOR MOBILE ONLY) */}
                 {isMobile && (
@@ -216,7 +216,7 @@ export const OrderModal = memo(({ product, isOpen, onClose }: OrderModalProps) =
                     <DialogTitle className="text-2xl font-black text-black uppercase tracking-tighter leading-none font-headline">ORDER CONFIRM</DialogTitle>
                   </div>
                   <DialogDescription className="text-[10px] font-black text-gray-400 uppercase tracking-widest">
-                    Fill the details below to secure your elite purchase.
+                    Fill the details below to secure your purchase.
                   </DialogDescription>
                 </div>
 
@@ -325,7 +325,7 @@ export const OrderModal = memo(({ product, isOpen, onClose }: OrderModalProps) =
 
               {/* DESKTOP RIGHT: SUPPORT CHAT */}
               {!isMobile && (
-                <div className="sm:w-[350px] flex flex-col bg-gray-50 shrink-0 border-l border-gray-100 h-full">
+                <div className="sm:w-[320px] flex flex-col bg-gray-50 shrink-0 border-l border-gray-100 h-full">
                   <div className="p-5 bg-white border-b border-gray-100 flex items-center justify-between">
                     <div className="flex items-center gap-3">
                       <div className="h-2 w-2 bg-green-500 rounded-full animate-pulse" />
@@ -344,7 +344,7 @@ export const OrderModal = memo(({ product, isOpen, onClose }: OrderModalProps) =
                           <MessageCircle className="h-6 w-6 text-gray-200" />
                         </div>
                         <p className="text-[9px] font-black text-gray-400 uppercase tracking-widest leading-relaxed">
-                          HAVE ANY QUESTIONS ABOUT THIS PRODUCT? <br/> CHAT WITH OUR TEAM NOW.
+                          QUESTIONS? CHAT WITH US.
                         </p>
                       </div>
                     ) : chatHistory.map((msg, i) => (
@@ -368,7 +368,7 @@ export const OrderModal = memo(({ product, isOpen, onClose }: OrderModalProps) =
                     <input 
                       value={chatMessage}
                       onChange={(e) => setChatMessage(e.target.value)}
-                      placeholder="TYPE MESSAGE..."
+                      placeholder="MESSAGE..."
                       className="flex-grow bg-gray-50 border border-gray-200 h-11 px-4 text-[11px] font-black uppercase text-black focus:outline-none focus:border-[#01a3a4] transition-all"
                     />
                     <Button type="submit" size="icon" className="h-11 w-11 bg-[#01a3a4] hover:bg-black rounded-none shrink-0 border-none shadow-lg active:scale-90">
@@ -380,7 +380,7 @@ export const OrderModal = memo(({ product, isOpen, onClose }: OrderModalProps) =
             </div>
           ) : step === 'CHAT' ? (
             <div className="flex flex-col h-full bg-white relative gpu-accelerated">
-              <button onClick={() => setStep('FORM')} className="absolute left-4 top-4 z-50 p-2 text-white hover:scale-110 transition-all active:scale-90">
+              <button onClick={() => setStep('FORM')} className="absolute left-4 top-4 z-[60] p-2 text-white hover:scale-110 transition-all active:scale-90">
                 <ArrowLeft className="h-6 w-6" />
               </button>
 
@@ -409,7 +409,7 @@ export const OrderModal = memo(({ product, isOpen, onClose }: OrderModalProps) =
                       "max-w-[85%] p-4 text-[13px] font-bold leading-tight shadow-md",
                       msg.sender === 'CUSTOMER' 
                         ? 'bg-[#01a3a4] text-white rounded-l-2xl rounded-tr-2xl' 
-                        : 'bg-white border border-gray-100 text-black rounded-r-2xl rounded-tl-2xl'
+                        : 'bg-white border border-gray-200 text-black rounded-r-2xl rounded-tl-2xl'
                     )}>
                       {msg.text}
                     </div>
