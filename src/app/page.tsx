@@ -29,18 +29,19 @@ const SlideItem = memo(({ item, priority }: { item: any, priority: boolean }) =>
             className="object-cover"
             priority={priority}
           />
-          <div className="absolute inset-0 bg-black/40 flex flex-col justify-center px-6 md:px-12 space-y-4">
-            <h2 className="text-lg md:text-2xl font-headline font-black text-white uppercase tracking-tight max-w-[400px] leading-tight">
+          {/* Lighter overlay for much better brightness (from 40 to 10) */}
+          <div className="absolute inset-0 bg-black/10 flex flex-col justify-center px-6 md:px-12 space-y-4">
+            <h2 className="text-lg md:text-2xl font-headline font-black text-white uppercase tracking-tight max-w-[400px] leading-tight drop-shadow-lg">
               {item.name}
             </h2>
             <div className="flex flex-col space-y-1">
               <div className="flex items-center gap-4">
-                <div className="flex items-baseline text-[18px] md:text-[22px] font-black text-[#01a3a4] tracking-tighter">
-                  <span className="text-[11px] font-normal mr-1 translate-y-[-4px] text-white/50">৳</span>
+                <div className="flex items-baseline text-[18px] md:text-[22px] font-black text-[#01a3a4] tracking-tighter drop-shadow-md">
+                  <span className="text-[11px] font-normal mr-1 translate-y-[-4px] text-white/80">৳</span>
                   {item.price.toLocaleString()}
                 </div>
               </div>
-              <button onClick={() => setIsOrderOpen(true)} className="bg-[#01a3a4] text-white h-9 md:h-10 px-6 md:px-8 font-black rounded-none text-[9px] md:text-[10px] hover:bg-white hover:text-black transition-all uppercase tracking-widest flex items-center gap-2 shadow-xl w-fit mt-2">
+              <button onClick={() => setIsOrderOpen(true)} className="bg-[#01a3a4] text-white h-9 md:h-10 px-6 md:px-8 font-black rounded-none text-[9px] md:text-[10px] hover:bg-white hover:text-black transition-all uppercase tracking-widest flex items-center gap-2 shadow-2xl w-fit mt-2">
                 <ShoppingCart className="h-3.5 w-3.5" /> অর্ডার করুন
               </button>
             </div>
@@ -62,8 +63,9 @@ const SlideItem = memo(({ item, priority }: { item: any, priority: boolean }) =>
           className="object-cover" 
           priority={priority} 
         />
-        <div className="absolute inset-0 bg-black/20 flex flex-col justify-center px-6 md:px-12">
-           <h2 className="text-lg md:text-2xl font-black text-white uppercase tracking-tight max-w-[400px] leading-none">{item.title}</h2>
+        {/* Extremely light overlay (from 20 to 5) for maximum brightness */}
+        <div className="absolute inset-0 bg-black/5 flex flex-col justify-center px-6 md:px-12">
+           <h2 className="text-lg md:text-2xl font-black text-white uppercase tracking-tight max-w-[400px] leading-none drop-shadow-xl">{item.title}</h2>
         </div>
       </div>
     </CarouselItem>
@@ -109,15 +111,15 @@ const FlashOfferCard = memo(() => {
             className="object-cover" 
             priority={true}
           />
-          <div className="absolute top-4 left-4 bg-[#01a3a4] px-3 md:px-4 py-1.5 text-[8px] md:text-[9px] font-black text-white uppercase tracking-widest z-10">FLASH OFFER</div>
-          <div className="absolute bottom-6 w-full text-center px-4 space-y-2">
-             <p className="text-white font-black text-[10px] md:text-[12px] uppercase tracking-widest mb-1 truncate">{activeItem.name || activeItem.title}</p>
+          <div className="absolute top-4 left-4 bg-[#01a3a4] px-3 md:px-4 py-1.5 text-[8px] md:text-[9px] font-black text-white uppercase tracking-widest z-10 shadow-lg">FLASH OFFER</div>
+          <div className="absolute bottom-0 w-full bg-gradient-to-t from-black/80 via-black/40 to-transparent pt-12 pb-6 text-center px-4 space-y-2">
+             <p className="text-white font-black text-[10px] md:text-[12px] uppercase tracking-widest mb-1 truncate drop-shadow-md">{activeItem.name || activeItem.title}</p>
              {activeItem.price && (
                <div className="flex flex-col items-center">
-                 <span className="text-[#01a3a4] font-black text-base md:text-lg">৳{activeItem.price.toLocaleString()}</span>
+                 <span className="text-[#01a3a4] font-black text-base md:text-lg drop-shadow-md">৳{activeItem.price.toLocaleString()}</span>
                </div>
              )}
-             <button onClick={() => setIsOrderOpen(true)} className="bg-[#01a3a4] text-white px-4 md:px-6 py-2 h-9 md:h-10 font-black text-[8px] md:text-[9px] uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-all mt-2 active:scale-95">অর্ডার করুন</button>
+             <button onClick={() => setIsOrderOpen(true)} className="bg-[#01a3a4] text-white px-4 md:px-6 py-2 h-9 md:h-10 font-black text-[8px] md:text-[9px] uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-all mt-2 active:scale-95 shadow-xl">অর্ডার করুন</button>
              <OrderModal product={activeItem} isOpen={isOrderOpen} onClose={() => setIsOrderOpen(false)} />
           </div>
         </div>
@@ -201,8 +203,8 @@ export default function Home() {
             )}
           </div>
           <div className="col-span-12 md:col-span-3 order-3 bg-[#01a3a4] flex flex-col items-center justify-center p-6 md:p-8 space-y-6 h-[250px] md:h-[420px]">
-            <h3 className="text-white font-black text-lg md:text-xl uppercase tracking-widest leading-none italic text-center">DOWNLOAD APP</h3>
-            <div className="bg-white p-2 w-28 h-28 md:w-36 md:h-36 flex items-center justify-center border-4 border-white/20">
+            <h3 className="text-white font-black text-lg md:text-xl uppercase tracking-widest leading-none italic text-center drop-shadow-xl">DOWNLOAD APP</h3>
+            <div className="bg-white p-2 w-28 h-28 md:w-36 md:h-36 flex items-center justify-center border-4 border-white/20 shadow-2xl">
               <Image src={qrCodeUrl} alt="QR Code" width={150} height={150} className="w-full h-full" loading="lazy" />
             </div>
             <div className="flex flex-row md:flex-col gap-3 w-full max-w-[280px]">
@@ -236,7 +238,7 @@ export default function Home() {
 
           <div className="mt-12 md:mt-16 flex justify-center px-4">
             <Link href="/shop" className="w-full md:w-auto">
-              <button className="w-full bg-white/5 border border-white/10 hover:border-[#01a3a4] text-white px-12 h-14 md:h-16 font-black uppercase tracking-[0.4em] text-[10px] md:text-[12px] flex items-center justify-center gap-4 transition-all hover:bg-[#01a3a4] hover:text-black active:scale-95">
+              <button className="w-full bg-white/5 border border-white/10 hover:border-[#01a3a4] text-white px-12 h-14 md:h-16 font-black uppercase tracking-[0.4em] text-[10px] md:text-[12px] flex items-center justify-center gap-4 transition-all hover:bg-[#01a3a4] hover:text-black active:scale-95 shadow-2xl">
                 MORE PRODUCT <ArrowRight className="h-4 w-4" />
               </button>
             </Link>
