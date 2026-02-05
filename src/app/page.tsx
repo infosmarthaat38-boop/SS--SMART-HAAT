@@ -4,7 +4,7 @@
 import React, { useRef, useMemo, useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { ShoppingCart, Truck, Tag, Flame, Loader2, Apple, Play, MapPin, Radio } from 'lucide-react';
+import { ShoppingCart, Truck, Tag, Flame, Loader2, Apple, Play, MapPin, Radio, ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Navbar } from '@/components/Navbar';
 import { Footer } from '@/components/Footer';
@@ -200,16 +200,27 @@ export default function Home() {
           </div>
         </section>
 
-        <section className="py-2 px-10">
-          <div className="flex items-center justify-between mb-6">
+        <section className="py-12 px-10">
+          <div className="flex items-center justify-between mb-8">
             <div className="flex items-center gap-2">
-              <div className="h-4 w-1 bg-[#01a3a4]" />
-              <h2 className="text-sm font-black text-white uppercase tracking-tighter">TOP SELLING</h2>
+              <div className="h-6 w-1.5 bg-[#01a3a4]" />
+              <h2 className="text-xl font-black text-white uppercase tracking-tighter">TOP SELLING PRODUCTS</h2>
             </div>
-            <Link href="/shop" className="text-[8px] font-black text-[#01a3a4] uppercase tracking-widest">VIEW ALL</Link>
+            <Link href="/shop" className="text-[10px] font-black text-[#01a3a4] uppercase tracking-[0.3em] hover:text-white transition-colors flex items-center gap-2">
+              VIEW ALL <ArrowRight className="h-3 w-3" />
+            </Link>
           </div>
+          
           <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
             {products?.map((p, i) => <ProductCard key={p.id} product={p} index={i} />)}
+          </div>
+
+          <div className="mt-16 flex justify-center">
+            <Link href="/shop" className="group">
+              <button className="bg-white/5 border border-white/10 hover:border-[#01a3a4] text-white px-12 h-16 font-black uppercase tracking-[0.5em] text-[12px] flex items-center gap-4 transition-all hover:bg-[#01a3a4] hover:text-black">
+                DISCOVER MORE PRODUCTS <ArrowRight className="h-4 w-4 group-hover:translate-x-2 transition-transform" />
+              </button>
+            </Link>
           </div>
         </section>
       </main>
