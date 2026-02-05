@@ -68,7 +68,6 @@ export default function AdminPanel() {
     }));
   }, [products, categories]);
 
-  // Dynamic config for Pie Chart to avoid useChart context error
   const pieChartConfig = useMemo(() => {
     const config: ChartConfig = {};
     categoryStats.forEach(stat => {
@@ -88,7 +87,6 @@ export default function AdminPanel() {
   }, [orders, today]);
 
   const dailyChartData = useMemo(() => {
-    // Mock daily data for visualization based on last 7 days
     return [
       { day: "SAT", sales: 42000 },
       { day: "SUN", sales: 38000 },
@@ -108,8 +106,9 @@ export default function AdminPanel() {
       
       if (now - orderTime < 10000) {
         toast({
+          variant: "destructive",
           title: "🚨 NEW ORDER RECEIVED",
-          description: `${latestOrder.customerName} just ordered ${latestOrder.productName}.`,
+          description: `${latestOrder.customerName} just ordered ${latestOrder.productName}. CHECK ORDERS NOW!`,
         });
       }
     }
@@ -124,7 +123,7 @@ export default function AdminPanel() {
 
   const quickLinks = [
     { title: "FEATURED CONTENT", icon: Zap, href: "/admin/featured" },
-    { title: "ORDER INTELLIGENCE", icon: ShoppingBag, href: "/admin/orders", badge: pendingOrders?.length },
+    { title: "ORDER INTELLIGENCE", icon: ShoppingBag, href: "/admin/orders", badge: pendingOrders?.length, isAlert: true },
     { title: "LIVE MESSAGE CENTER", icon: MessageSquare, href: "/admin/messages" },
     { title: "PRODUCT INVENTORY", icon: Package, href: "/admin/products" },
     { title: "SYSTEM STRUCTURE", icon: Layers, href: "/admin/categories" },
@@ -158,7 +157,6 @@ export default function AdminPanel() {
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
           <div className="lg:col-span-4 space-y-6">
-            {/* COMMAND CENTER */}
             <Card className="bg-card border-white/5 rounded-none shadow-2xl">
               <CardHeader className="py-4 px-6 border-b border-white/5 bg-white/[0.02]">
                 <CardTitle className="text-[10px] font-black uppercase tracking-[0.3em] text-[#01a3a4]">COMMAND CENTER</CardTitle>
@@ -169,13 +167,13 @@ export default function AdminPanel() {
                     <Link key={i} href={link.href}>
                       <div className={`flex items-center justify-between p-4 hover:bg-[#01a3a4]/5 transition-all group border-b border-white/[0.02] last:border-0`}>
                         <div className="flex items-center gap-4">
-                          <link.icon className={`h-4 w-4 text-[#01a3a4] opacity-50 group-hover:opacity-100`} />
-                          <span className="text-[10px] font-black text-white uppercase tracking-widest group-hover:text-[#01a3a4]">{link.title}</span>
+                          <link.icon className={`h-4 w-4 text-[#01a3a4] ${link.isAlert && link.badge && link.badge > 0 ? 'text-red-600 animate-pulse' : 'opacity-50'} group-hover:opacity-100`} />
+                          <span className={`text-[10px] font-black uppercase tracking-widest group-hover:text-[#01a3a4] ${link.isAlert && link.badge && link.badge > 0 ? 'text-red-600' : 'text-white'}`}>{link.title}</span>
                           {link.badge ? (
-                            <Badge className="bg-[#01a3a4] text-white text-[7px] font-black h-4 px-1.5 rounded-none border-none">{link.badge}</Badge>
+                            <Badge className={`${link.isAlert ? 'bg-red-600 animate-pulse shadow-lg shadow-red-600/20' : 'bg-[#01a3a4]'} text-white text-[7px] font-black h-4 px-1.5 rounded-none border-none`}>{link.badge}</Badge>
                           ) : null}
                         </div>
-                        <ChevronRight className="h-3 w-3 text-white/20 group-hover:text-[#01a3a4] group-hover:translate-x-1 transition-all" />
+                        <ChevronRight className={`h-3 w-3 text-white/20 group-hover:translate-x-1 transition-all ${link.isAlert && link.badge && link.badge > 0 ? 'text-red-600' : 'group-hover:text-[#01a3a4]'}`} />
                       </div>
                     </Link>
                   ))}
@@ -183,7 +181,6 @@ export default function AdminPanel() {
               </CardContent>
             </Card>
 
-            {/* CATEGORY BREAKDOWN */}
             <Card className="bg-card border-white/5 rounded-none shadow-2xl overflow-hidden">
               <CardHeader className="py-4 px-6 border-b border-white/5 bg-white/[0.02]">
                 <CardTitle className="text-[10px] font-black uppercase tracking-[0.3em] text-[#01a3a4]">CATEGORY BREAKDOWN</CardTitle>
@@ -225,7 +222,6 @@ export default function AdminPanel() {
           </div>
 
           <div className="lg:col-span-8 space-y-6">
-            {/* REVENUE ARCHIVE */}
             <Card className="bg-card border-white/5 rounded-none shadow-2xl">
               <CardHeader className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-white/5 p-6 gap-4 bg-white/[0.01]">
                 <div className="space-y-1">
@@ -261,7 +257,6 @@ export default function AdminPanel() {
             </Card>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {/* AI STRATEGIST */}
               <Card className="bg-card border-white/5 rounded-none overflow-hidden shadow-2xl">
                 <CardHeader className="py-4 px-6 border-b border-white/5 bg-white/[0.02]">
                   <div className="flex items-center justify-between">
@@ -272,7 +267,6 @@ export default function AdminPanel() {
                 <StyleAssistant />
               </Card>
 
-              {/* LIVE RECENT ACTIVITY */}
               <Card className="bg-card border-white/5 rounded-none overflow-hidden shadow-2xl">
                 <CardHeader className="py-4 px-6 border-b border-white/5 bg-white/[0.02]">
                   <CardTitle className="text-[10px] font-black uppercase tracking-[0.3em] text-[#01a3a4]">LIVE ACTIVITY</CardTitle>
@@ -282,7 +276,7 @@ export default function AdminPanel() {
                     <div key={i} className="p-3 bg-white/5 border border-white/5 flex flex-col gap-1">
                       <div className="flex justify-between items-center">
                         <span className="text-[10px] font-black text-white uppercase truncate">{order.customerName}</span>
-                        <Badge className="bg-[#01a3a4] text-white text-[7px] font-black rounded-none border-none">NEW</Badge>
+                        <Badge className="bg-red-600 text-white text-[7px] font-black rounded-none border-none animate-pulse">NEW ORDER</Badge>
                       </div>
                       <p className="text-[8px] font-black text-[#01a3a4] uppercase truncate">{order.productName}</p>
                       <span className="text-[7px] font-mono text-white/30 uppercase">{new Date(order.createdAt).toLocaleTimeString()}</span>

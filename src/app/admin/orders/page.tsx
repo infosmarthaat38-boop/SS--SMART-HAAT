@@ -21,7 +21,8 @@ import {
   AlertTriangle,
   Calendar,
   Ruler,
-  Hash
+  Hash,
+  Bell
 } from 'lucide-react';
 import {
   Dialog,
@@ -43,7 +44,7 @@ import {
 import { Input } from "@/components/ui/input";
 import Link from 'next/link';
 import { useFirestore, useCollection, useMemoFirebase } from '@/firebase';
-import { collection, query, orderBy, doc } from 'firebase/firestore';
+import { collection, query, orderBy, doc, where } from 'firebase/firestore';
 import { updateDocumentNonBlocking, deleteDocumentNonBlocking } from '@/firebase/non-blocking-updates';
 import { Badge } from '@/components/ui/badge';
 import { jsPDF } from "jspdf";
@@ -58,7 +59,10 @@ export default function AdminOrders() {
   const [alertConfig, setAlertConfig] = useState<{title: string, desc: string, action: () => void} | null>(null);
 
   const ordersRef = useMemoFirebase(() => query(collection(db, 'orders'), orderBy('createdAt', 'desc')), [db]);
+  const pendingOrdersQuery = useMemoFirebase(() => query(collection(db, 'orders'), where('status', '==', 'PENDING')), [db]);
+  
   const { data: orders, isLoading } = useCollection(ordersRef);
+  const { data: pendingOrders } = useCollection(pendingOrdersQuery);
 
   const handleOpenConfirm = (order: any) => {
     setSelectedOrder(order);
@@ -108,7 +112,7 @@ export default function AdminOrders() {
     const dCharge = order.deliveryCharge || 0;
     const subtotal = order.productPrice * (order.quantity || 1);
     const total = subtotal + dCharge;
-    const primaryColor = [1, 163, 164]; // #01a3a4
+    const primaryColor = [1, 163, 164];
     
     doc.setFontSize(22);
     doc.setTextColor(0, 0, 0);
@@ -140,7 +144,6 @@ export default function AdminOrders() {
     doc.setFont("helvetica", "normal");
     doc.text(`${new Date(order.createdAt).toLocaleDateString()}`, 165, 53);
 
-    // BOX FOR CUSTOMER DETAILS
     doc.setFillColor(250, 250, 250);
     doc.rect(15, 65, 120, 45, 'F');
     
@@ -167,11 +170,10 @@ export default function AdminOrders() {
     const splitAddress = doc.splitTextToSize(order.customerAddress.toUpperCase(), 85);
     doc.text(splitAddress, 45, 95);
 
-    // ADD PRODUCT IMAGE TO PDF
     if (order.productImageUrl) {
       try {
         doc.setDrawColor(240, 240, 240);
-        doc.rect(145, 65, 45, 45); // Image Box
+        doc.rect(145, 65, 45, 45); 
         doc.addImage(order.productImageUrl, 'JPEG', 146, 66, 43, 43);
       } catch (err) {
         console.error("PDF Image Error:", err);
@@ -262,14 +264,30 @@ export default function AdminOrders() {
       <Navbar />
       
       <main className="flex-grow container mx-auto px-4 py-12">
+        {/* NEW ORDER RED SIGNAL BANNER */}
+        {pendingOrders && pendingOrders.length > 0 && (
+          <div className="mb-8 p-4 bg-red-600/10 border border-red-600/30 flex items-center justify-between animate-pulse">
+            <div className="flex items-center gap-3">
+              <Bell className="h-5 w-5 text-red-600 animate-bounce" />
+              <p className="text-[10px] font-black text-red-600 uppercase tracking-[0.3em]">
+                ATTENTION: {pendingOrders.length} NEW UNCONFIRMED ORDERS DETECTED IN SYSTEM!
+              </p>
+            </div>
+            <Badge className="bg-red-600 text-white text-[8px] font-black rounded-none">ACTION REQUIRED</Badge>
+          </div>
+        )}
+
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-12">
           <div className="flex items-center gap-4">
-            <Button asChild variant="ghost" className="rounded-none hover:bg-white/5 text-white p-2 h-12 w-12">
+            <Button asChild variant="ghost" className="rounded-none hover:bg-white/5 text-white p-2 h-12 w-12 border border-white/10">
               <Link href="/admin"><ArrowLeft className="h-6 w-6" /></Link>
             </Button>
             <div className="space-y-1">
               <p className="text-[10px] font-black text-[#01a3a4] uppercase tracking-widest">Business Operations</p>
-              <h1 className="text-4xl font-black uppercase tracking-tighter text-white">ORDER INTELLIGENCE</h1>
+              <h1 className="text-4xl font-black uppercase tracking-tighter text-white flex items-center gap-3">
+                ORDER INTELLIGENCE 
+                {pendingOrders && pendingOrders.length > 0 && <div className="h-3 w-3 bg-red-600 rounded-full animate-ping" />}
+              </h1>
             </div>
           </div>
           <Badge className="bg-white/5 border-white/10 text-white font-black text-[12px] uppercase rounded-none px-6 py-3 h-14">
@@ -298,9 +316,12 @@ export default function AdminOrders() {
             </div>
 
             {orders.map((order) => (
-              <div key={order.id} className="grid grid-cols-1 lg:grid-cols-12 gap-4 p-6 bg-card border border-white/5 hover:border-[#01a3a4]/30 transition-all group items-center">
+              <div key={order.id} className={`grid grid-cols-1 lg:grid-cols-12 gap-4 p-6 bg-card border transition-all group items-center ${order.status === 'PENDING' ? 'border-red-600/30 bg-red-600/[0.02]' : 'border-white/5 hover:border-[#01a3a4]/30'}`}>
                 <div className="col-span-2 space-y-1">
-                  <p className="text-[9px] font-black text-[#01a3a4] uppercase tracking-widest">Client Name</p>
+                  <div className="flex items-center gap-2">
+                    <p className="text-[9px] font-black text-[#01a3a4] uppercase tracking-widest">Client Name</p>
+                    {order.status === 'PENDING' && <div className="h-1.5 w-1.5 bg-red-600 rounded-full animate-pulse" />}
+                  </div>
                   <p className="text-[14px] font-black text-white uppercase truncate">{order.customerName}</p>
                   <div className="flex items-center gap-1.5 mt-1">
                     <Calendar className="h-2.5 w-2.5 text-white/30" />
@@ -345,7 +366,7 @@ export default function AdminOrders() {
 
                 <div className="col-span-1 flex justify-center">
                   <Badge className={`rounded-none text-[8px] font-black uppercase px-2 py-1 ${
-                    order.status === 'PENDING' ? 'bg-yellow-500/20 text-yellow-500 border-yellow-500/30' : 
+                    order.status === 'PENDING' ? 'bg-red-600/20 text-red-600 border-red-600/30' : 
                     order.status === 'CONFIRMED' ? 'bg-blue-500/20 text-blue-500 border-blue-500/30' :
                     order.status === 'CANCELLED' ? 'bg-red-500/20 text-red-500 border-red-500/30' :
                     'bg-green-500/20 text-green-500 border-green-500/30'
@@ -358,9 +379,9 @@ export default function AdminOrders() {
                   {order.status === 'PENDING' && (
                     <Button 
                       onClick={() => handleOpenConfirm(order)}
-                      className="bg-[#01a3a4] hover:bg-[#01a3a4]/90 text-white font-black text-[9px] uppercase rounded-none h-10 px-4"
+                      className="bg-red-600 hover:bg-red-700 text-white font-black text-[9px] uppercase rounded-none h-10 px-4"
                     >
-                      <CheckCircle className="mr-2 h-3.5 w-3.5" /> CONFIRM
+                      <CheckCircle className="mr-2 h-3.5 w-3.5" /> CONFIRM NOW
                     </Button>
                   )}
                   
