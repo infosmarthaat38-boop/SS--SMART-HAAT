@@ -1,9 +1,9 @@
 
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { Search, ShoppingBag, Menu, X } from 'lucide-react';
+import { Search, ShoppingBag, Languages, User } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { AdminLoginModal } from '@/components/AdminLoginModal';
@@ -11,7 +11,20 @@ import { useRouter } from 'next/navigation';
 
 export function Navbar() {
   const [isAdminModalOpen, setIsAdminModalOpen] = useState(false);
+  const [language, setLanguage] = useState<'EN' | 'BN'>('EN');
   const router = useRouter();
+
+  useEffect(() => {
+    const storedLang = localStorage.getItem('app_lang') as 'EN' | 'BN';
+    if (storedLang) setLanguage(storedLang);
+  }, []);
+
+  const toggleLanguage = () => {
+    const newLang = language === 'EN' ? 'BN' : 'EN';
+    setLanguage(newLang);
+    localStorage.setItem('app_lang', newLang);
+    // In a real app, this would trigger i18n context update
+  };
 
   const handleAdminClick = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -40,27 +53,34 @@ export function Navbar() {
             <div className="flex-grow max-w-lg relative group">
               <Input 
                 type="search" 
-                placeholder="SEARCH PRODUCTS..." 
+                placeholder={language === 'EN' ? "SEARCH PRODUCTS..." : "পণ্য খুঁজুন..."} 
                 className="w-full bg-black/10 border-white/20 h-8 pl-10 pr-20 focus-visible:ring-black focus-visible:bg-black/20 transition-all rounded-none text-[10px] text-white uppercase placeholder:text-white/70 font-bold"
               />
               <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-white" />
               <Button className="absolute right-0 top-0 h-8 rounded-none px-4 bg-black text-white hover:bg-black/90 font-black text-[10px] uppercase border-l border-white/10">
-                SEARCH
+                {language === 'EN' ? "SEARCH" : "খুঁজুন"}
               </Button>
             </div>
 
             {/* RIGHT: LINKS */}
             <div className="flex items-center gap-6 shrink-0">
               <ul className="flex items-center gap-6 text-[10px] font-black uppercase tracking-widest text-white">
-                <li><Link href="/" className="hover:text-black transition-colors">HOME</Link></li>
-                <li><Link href="/shop" className="hover:text-black transition-colors">SHOP</Link></li>
-                <li><Link href="/categories" className="hover:text-black transition-colors">CATEGORY</Link></li>
+                <li className="hidden md:block"><Link href="/" className="hover:text-black transition-colors">{language === 'EN' ? "HOME" : "মূল পাতা"}</Link></li>
+                <li className="hidden md:block"><Link href="/shop" className="hover:text-black transition-colors">{language === 'EN' ? "SHOP" : "দোকান"}</Link></li>
+                <li>
+                  <button 
+                    onClick={toggleLanguage}
+                    className="flex items-center gap-1.5 hover:text-black transition-colors font-black uppercase tracking-widest"
+                  >
+                    <Languages className="h-3.5 w-3.5" /> {language}
+                  </button>
+                </li>
                 <li>
                   <button 
                     onClick={handleAdminClick}
-                    className="hover:text-black transition-colors font-black uppercase tracking-widest"
+                    className="flex items-center gap-1.5 hover:text-black transition-colors font-black uppercase tracking-widest"
                   >
-                    ADMIN
+                    <User className="h-3.5 w-3.5" /> ADMIN
                   </button>
                 </li>
               </ul>

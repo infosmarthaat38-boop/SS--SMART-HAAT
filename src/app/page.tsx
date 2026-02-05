@@ -4,14 +4,14 @@
 import React, { useRef, useMemo, useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { ShoppingCart, Truck, Tag, Flame, Loader2, Apple, Play } from 'lucide-react';
+import { ShoppingCart, Truck, Tag, Flame, Loader2, Apple, Play, MapPin, Radio } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Navbar } from '@/components/Navbar';
 import { Footer } from '@/components/Footer';
 import { ProductCard } from '@/components/ProductCard';
 import { Carousel, CarouselContent, CarouselItem } from "@/components/ui/carousel";
 import Autoplay from "embla-carousel-autoplay";
-import { useFirestore, useCollection, useMemoFirebase } from '@/firebase';
+import { useFirestore, useCollection, useMemoFirebase, useDoc } from '@/firebase';
 import { collection, query, where, limit, orderBy, doc, increment, setDoc } from 'firebase/firestore';
 import { OrderModal } from '@/components/OrderModal';
 
@@ -122,16 +122,18 @@ export default function Home() {
   const productsRef = useMemoFirebase(() => query(collection(db, 'products'), orderBy('createdAt', 'desc'), limit(12)), [db]);
   const sliderProductQuery = useMemoFirebase(() => query(collection(db, 'products'), where('showInSlider', '==', true), limit(3)), [db]);
   const sliderBannerQuery = useMemoFirebase(() => query(collection(db, 'featured_banners'), where('type', '==', 'SLIDER'), orderBy('createdAt', 'desc'), limit(3)), [db]);
+  const settingsRef = useMemoFirebase(() => doc(db, 'settings', 'site-config'), [db]);
   
   const { data: categories } = useCollection(categoriesRef);
   const { data: products } = useCollection(productsRef);
   const { data: sliderProducts } = useCollection(sliderProductQuery);
   const { data: sliderBanners } = useCollection(sliderBannerQuery);
+  const { data: settings } = useDoc(settingsRef);
 
   const combinedSliderItems = useMemo(() => [...(sliderBanners || []), ...(sliderProducts || [])], [sliderProducts, sliderBanners]);
   const plugin = useRef(Autoplay({ delay: 5000, stopOnInteraction: false }));
 
-  // Visitor Tracking Logic
+  // Visitor Tracking
   useEffect(() => {
     const trackVisit = async () => {
       const today = new Date().toISOString().split('T')[0];
@@ -147,6 +149,22 @@ export default function Home() {
   return (
     <div className="min-h-screen flex flex-col bg-background">
       <Navbar />
+      
+      {/* LIVE LOCATION & STATUS BANNER */}
+      {settings?.liveStatus && (
+        <div className="bg-black/80 backdrop-blur-md border-b border-white/5 py-2 px-4 overflow-hidden whitespace-nowrap">
+          <div className="container mx-auto flex items-center gap-6 animate-marquee">
+            <div className="flex items-center gap-2 text-[10px] font-black text-[#01a3a4] uppercase tracking-widest">
+              <Radio className="h-3 w-3 animate-pulse" /> LIVE STATUS:
+            </div>
+            <p className="text-[10px] font-black text-white uppercase tracking-[0.2em] flex items-center gap-3">
+              {settings.liveStatus} <span className="text-white/20">•</span> 
+              <MapPin className="h-3 w-3 text-[#01a3a4]" /> {settings.liveLocation || 'BANANI, DHAKA'}
+            </p>
+          </div>
+        </div>
+      )}
+
       <main className="flex-grow container mx-auto space-y-2">
         <section className="grid grid-cols-12 gap-0 h-[420px] overflow-hidden">
           <div className="col-span-3"><FlashOfferCard /></div>

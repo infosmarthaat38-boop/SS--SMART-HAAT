@@ -17,9 +17,9 @@ import {
   Terminal,
   ExternalLink,
   Github,
-  Zap,
   ShieldAlert,
-  ChevronRight
+  MapPin,
+  Clock
 } from 'lucide-react';
 import Link from 'next/link';
 import { useFirestore, useDoc, useMemoFirebase } from '@/firebase';
@@ -38,12 +38,23 @@ export default function AdminSettings() {
     adminPassword: ''
   });
 
+  const [locationData, setLocationData] = useState({
+    liveLocation: '',
+    liveStatus: '',
+    verificationPassword: ''
+  });
+
   useEffect(() => {
     if (settings) {
       setAdminData({
         adminUsername: settings.adminUsername || 'ADMIN',
         adminPassword: settings.adminPassword || '4321'
       });
+      setLocationData(prev => ({
+        ...prev,
+        liveLocation: settings.liveLocation || 'BANANI, DHAKA',
+        liveStatus: settings.liveStatus || 'OPEN & READY TO SHIP'
+      }));
     }
   }, [settings]);
 
@@ -54,6 +65,32 @@ export default function AdminSettings() {
       title: "SECURITY UPDATED",
       description: "ADMIN CREDENTIALS HAVE BEEN SUCCESSFULLY CHANGED.",
     });
+  };
+
+  const handleSaveLocation = (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    // Verify password before updating location
+    if (locationData.verificationPassword !== adminData.adminPassword) {
+      toast({
+        variant: "destructive",
+        title: "ACCESS DENIED",
+        description: "INVALID PASSWORD. CANNOT UPDATE LOCATION.",
+      });
+      return;
+    }
+
+    setDocumentNonBlocking(settingsRef, {
+      liveLocation: locationData.liveLocation.toUpperCase(),
+      liveStatus: locationData.liveStatus.toUpperCase()
+    }, { merge: true });
+
+    toast({
+      title: "LOCATION UPDATED",
+      description: "STORE STATUS HAS BEEN BROADCAST TO CUSTOMERS.",
+    });
+    
+    setLocationData(prev => ({ ...prev, verificationPassword: '' }));
   };
 
   if (isLoading) {
@@ -80,52 +117,101 @@ export default function AdminSettings() {
             </Button>
           </Link>
           <div className="space-y-1">
-            <p className="text-[10px] font-black text-[#01a3a4] uppercase tracking-[0.3em]">Security Operations</p>
+            <p className="text-[10px] font-black text-[#01a3a4] uppercase tracking-[0.3em]">Security & Operations</p>
             <h1 className="text-4xl font-black uppercase tracking-tighter text-white">SYSTEM SETTINGS</h1>
           </div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           
-          <Card className="bg-card border-white/5 rounded-none shadow-2xl overflow-hidden">
-            <CardHeader className="bg-white/[0.02] border-b border-white/5 p-6">
-              <CardTitle className="text-xs font-black uppercase tracking-[0.3em] text-[#01a3a4] flex items-center gap-2">
-                <ShieldCheck className="h-4 w-4" /> ADMIN AUTHENTICATION
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="p-8">
-              <form onSubmit={handleSaveAdmin} className="space-y-8">
-                <div className="p-4 bg-orange-500/5 border border-orange-500/20 mb-6 flex items-start gap-3">
-                  <ShieldAlert className="h-5 w-5 text-orange-500 shrink-0" />
-                  <p className="text-[9px] font-black text-orange-500 uppercase leading-relaxed tracking-widest">
-                    CAUTION: UPDATING THESE CREDENTIALS WILL REQUIRE YOU TO RE-LOGIN ON ALL SESSIONS.
-                  </p>
-                </div>
-                <div className="space-y-6">
-                  <div className="space-y-2">
-                    <label className="text-[10px] font-black text-muted-foreground uppercase flex items-center gap-2"><User className="h-3 w-3" /> USERNAME</label>
-                    <Input 
-                      value={adminData.adminUsername}
-                      onChange={(e) => setAdminData({...adminData, adminUsername: e.target.value})}
-                      className="bg-black border-white/10 rounded-none h-14 text-sm font-black text-white"
-                    />
+          <div className="space-y-8">
+            {/* ADMIN AUTH */}
+            <Card className="bg-card border-white/5 rounded-none shadow-2xl overflow-hidden">
+              <CardHeader className="bg-white/[0.02] border-b border-white/5 p-6">
+                <CardTitle className="text-xs font-black uppercase tracking-[0.3em] text-[#01a3a4] flex items-center gap-2">
+                  <ShieldCheck className="h-4 w-4" /> ADMIN AUTHENTICATION
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="p-8">
+                <form onSubmit={handleSaveAdmin} className="space-y-6">
+                  <div className="p-3 bg-orange-500/5 border border-orange-500/20 mb-4 flex items-start gap-3">
+                    <ShieldAlert className="h-4 w-4 text-orange-500 shrink-0" />
+                    <p className="text-[8px] font-black text-orange-500 uppercase leading-relaxed tracking-widest">
+                      CAUTION: CREDENTIALS CHANGE WILL REQUIRE RE-LOGIN.
+                    </p>
                   </div>
-                  <div className="space-y-2">
-                    <label className="text-[10px] font-black text-muted-foreground uppercase flex items-center gap-2"><Lock className="h-3 w-3" /> ACCESS PASSWORD</label>
-                    <Input 
-                      value={adminData.adminPassword}
-                      onChange={(e) => setAdminData({...adminData, adminPassword: e.target.value})}
-                      type="text"
-                      className="bg-black border-white/10 rounded-none h-14 text-sm font-black text-white"
-                    />
+                  <div className="space-y-4">
+                    <div className="space-y-2">
+                      <label className="text-[9px] font-black text-muted-foreground uppercase flex items-center gap-2"><User className="h-3 w-3" /> USERNAME</label>
+                      <Input 
+                        value={adminData.adminUsername}
+                        onChange={(e) => setAdminData({...adminData, adminUsername: e.target.value})}
+                        className="bg-black border-white/10 rounded-none h-12 text-xs font-black text-white"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-[9px] font-black text-muted-foreground uppercase flex items-center gap-2"><Lock className="h-3 w-3" /> ACCESS PASSWORD</label>
+                      <Input 
+                        value={adminData.adminPassword}
+                        onChange={(e) => setAdminData({...adminData, adminPassword: e.target.value})}
+                        type="text"
+                        className="bg-black border-white/10 rounded-none h-12 text-xs font-black text-white"
+                      />
+                    </div>
                   </div>
-                </div>
-                <Button type="submit" className="w-full bg-[#01a3a4] hover:bg-white hover:text-black text-white h-14 font-black uppercase tracking-widest rounded-none text-[10px] transition-all border-none">
-                  <Save className="mr-3 h-4 w-4" /> UPDATE SECURITY
-                </Button>
-              </form>
-            </CardContent>
-          </Card>
+                  <Button type="submit" className="w-full bg-[#01a3a4] hover:bg-white hover:text-black text-white h-12 font-black uppercase tracking-widest rounded-none text-[9px]">
+                    UPDATE SECURITY
+                  </Button>
+                </form>
+              </CardContent>
+            </Card>
+
+            {/* LOCATION & STATUS */}
+            <Card className="bg-card border-white/5 rounded-none shadow-2xl overflow-hidden">
+              <CardHeader className="bg-white/[0.02] border-b border-white/5 p-6">
+                <CardTitle className="text-xs font-black uppercase tracking-[0.3em] text-[#01a3a4] flex items-center gap-2">
+                  <MapPin className="h-4 w-4" /> LOCATION & LIVE STATUS
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="p-8">
+                <form onSubmit={handleSaveLocation} className="space-y-6">
+                  <div className="space-y-4">
+                    <div className="space-y-2">
+                      <label className="text-[9px] font-black text-muted-foreground uppercase">CURRENT LOCATION</label>
+                      <Input 
+                        value={locationData.liveLocation}
+                        onChange={(e) => setLocationData({...locationData, liveLocation: e.target.value})}
+                        className="bg-black border-white/10 rounded-none h-12 text-xs font-black text-white"
+                        placeholder="E.G. BANANI, DHAKA"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-[9px] font-black text-muted-foreground uppercase">LIVE STATUS MESSAGE</label>
+                      <Input 
+                        value={locationData.liveStatus}
+                        onChange={(e) => setLocationData({...locationData, liveStatus: e.target.value})}
+                        className="bg-black border-white/10 rounded-none h-12 text-xs font-black text-white"
+                        placeholder="E.G. OPEN & READY TO SHIP"
+                      />
+                    </div>
+                    <div className="space-y-2 border-t border-white/5 pt-4">
+                      <label className="text-[9px] font-black text-orange-500 uppercase flex items-center gap-2"><Lock className="h-3 w-3" /> VERIFY PASSWORD TO UPDATE</label>
+                      <Input 
+                        type="password"
+                        value={locationData.verificationPassword}
+                        onChange={(e) => setLocationData({...locationData, verificationPassword: e.target.value})}
+                        className="bg-black border-orange-500/20 rounded-none h-12 text-xs font-black text-white"
+                        placeholder="••••"
+                      />
+                    </div>
+                  </div>
+                  <Button type="submit" className="w-full bg-orange-600 hover:bg-orange-700 text-white h-12 font-black uppercase tracking-widest rounded-none text-[9px]">
+                    BROADCAST UPDATE
+                  </Button>
+                </form>
+              </CardContent>
+            </Card>
+          </div>
 
           <Card className="bg-card border-white/5 rounded-none shadow-2xl overflow-hidden">
             <CardHeader className="bg-white/[0.02] border-b border-white/5 p-6">
