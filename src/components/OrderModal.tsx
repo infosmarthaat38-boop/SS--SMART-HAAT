@@ -24,7 +24,7 @@ import {
   Hash
 } from 'lucide-react';
 import { useFirestore, useCollection, useMemoFirebase } from '@/firebase';
-import { collection, query, where, addDoc } from 'firebase/firestore';
+import { collection, query, where, addDoc, doc, updateDoc } from 'firebase/firestore';
 import { addDocumentNonBlocking } from '@/firebase/non-blocking-updates';
 
 interface OrderModalProps {
@@ -112,10 +112,36 @@ export function OrderModal({ product, isOpen, onClose }: OrderModalProps) {
       createdAt: new Date().toISOString()
     };
 
-    addDoc(collection(db, 'orders'), orderData).then(() => {
+    try {
+      // 1. Add Order
+      await addDoc(collection(db, 'orders'), orderData);
+
+      // 2. Decrease Stock Automatically
+      const productRef = doc(db, 'products', product.id);
+      
+      if (product.sizeStock && formData.selectedSize) {
+        const currentSizeQty = product.sizeStock[formData.selectedSize] || 0;
+        const newSizeStock = { 
+          ...product.sizeStock, 
+          [formData.selectedSize]: Math.max(0, currentSizeQty - formData.quantity) 
+        };
+        
+        await updateDoc(productRef, {
+          sizeStock: newSizeStock,
+          stockQuantity: Math.max(0, (product.stockQuantity || 0) - formData.quantity)
+        });
+      } else {
+        await updateDoc(productRef, {
+          stockQuantity: Math.max(0, (product.stockQuantity || 0) - formData.quantity)
+        });
+      }
+
       setLoading(false);
       setStep('SUCCESS');
-    });
+    } catch (err) {
+      console.error("Order failed:", err);
+      setLoading(false);
+    }
   };
 
   const handleSendMessage = (e: React.FormEvent) => {
@@ -155,7 +181,7 @@ export function OrderModal({ product, isOpen, onClose }: OrderModalProps) {
                     <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
                     <div className="absolute bottom-6 left-6 right-6">
                       <h2 className="text-xl font-black text-white uppercase tracking-tighter leading-tight">{product.name}</h2>
-                      <div className="text-2xl font-black text-[#01a3a4] flex items-baseline tracking-tighter mt-1">
+                      <div className="text-[22px] font-black text-[#01a3a4] flex items-baseline tracking-tighter mt-1">
                         <span className="text-[11px] font-normal mr-1 translate-y-[-4px] text-white/50">৳</span>
                         {product.price.toLocaleString()}
                       </div>
@@ -260,7 +286,7 @@ export function OrderModal({ product, isOpen, onClose }: OrderModalProps) {
                     <Button 
                       disabled={loading}
                       type="submit" 
-                      className="w-full bg-[#01a3a4] hover:bg-black text-white h-14 font-black uppercase tracking-[0.3em] rounded-none shadow-xl text-[12px] border-none"
+                      className="w-full bg-[#01a3a4] hover:bg-black text-white h-10 font-black uppercase tracking-[0.3em] rounded-none shadow-xl text-[11px] border-none"
                     >
                       {loading ? <Loader2 className="animate-spin h-5 w-5" /> : "অর্ডার নিশ্চিত করুন"}
                     </Button>

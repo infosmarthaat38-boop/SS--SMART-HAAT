@@ -20,7 +20,7 @@ import {
   ArrowUpRight,
   Calendar,
   Zap,
-  LayoutDashboard
+  Users
 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { StyleAssistant } from '@/components/StyleAssistant';
@@ -64,14 +64,14 @@ export default function AdminPanel() {
   const ordersRef = useMemoFirebase(() => query(collection(db, 'orders'), orderBy('createdAt', 'desc')), [db]);
   const pendingOrdersRef = useMemoFirebase(() => query(collection(db, 'orders'), where('status', '==', 'PENDING'), orderBy('createdAt', 'desc')), [db]);
   const messagesRef = useMemoFirebase(() => collection(db, 'messages'), [db]);
-  const loginStatsRef = useMemoFirebase(() => doc(db, 'loginStats', today), [db, today]);
+  const visitorStatsRef = useMemoFirebase(() => doc(db, 'visitorStats', today), [db, today]);
   
   const { data: products } = useCollection(productsRef);
   const { data: categories } = useCollection(categoriesRef);
   const { data: orders } = useCollection(ordersRef);
   const { data: pendingOrders } = useCollection(pendingOrdersRef);
   const { data: messages } = useCollection(messagesRef);
-  const { data: dailyStats } = useDoc(loginStatsRef);
+  const { data: dailyVisitors } = useDoc(visitorStatsRef);
 
   useEffect(() => {
     if (pendingOrders && pendingOrders.length > 0) {
@@ -91,7 +91,7 @@ export default function AdminPanel() {
   const stats = [
     { title: "ORDERS", value: orders?.length || 0, change: pendingOrders?.length ? `${pendingOrders.length} PENDING` : "UP TO DATE", icon: ShoppingBag, color: "text-[#01a3a4]", href: "/admin/orders" },
     { title: "MESSAGES", value: messages?.length || 0, change: "LIVE CHAT", icon: MessageSquare, color: "text-orange-500", href: "/admin/messages" },
-    { title: "DAILY LOGINS", value: dailyStats?.count || 0, change: "TODAY", icon: LogIn, color: "text-purple-500", href: "/admin/settings" },
+    { title: "DAILY VISITORS", value: dailyVisitors?.count || 0, change: "TODAY", icon: Users, color: "text-purple-500", href: "/admin/settings" },
     { title: "CATEGORIES", value: categories?.length || 0, change: "SYNCED", icon: Layers, color: "text-green-500", href: "/admin/categories" }
   ];
 

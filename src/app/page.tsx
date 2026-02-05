@@ -12,7 +12,7 @@ import { ProductCard } from '@/components/ProductCard';
 import { Carousel, CarouselContent, CarouselItem } from "@/components/ui/carousel";
 import Autoplay from "embla-carousel-autoplay";
 import { useFirestore, useCollection, useMemoFirebase } from '@/firebase';
-import { collection, query, where, limit, orderBy } from 'firebase/firestore';
+import { collection, query, where, limit, orderBy, doc, increment, setDoc } from 'firebase/firestore';
 import { OrderModal } from '@/components/OrderModal';
 
 const SlideItem = ({ item, priority }: { item: any, priority: boolean }) => {
@@ -35,19 +35,19 @@ const SlideItem = ({ item, priority }: { item: any, priority: boolean }) => {
             <h2 className="text-xl md:text-2xl font-headline font-black text-white uppercase tracking-tight max-w-[400px] leading-tight">
               {item.name}
             </h2>
-            <div className="flex flex-col space-y-2">
+            <div className="flex flex-col space-y-1">
               <div className="flex items-center gap-4">
-                <div className="flex items-baseline text-2xl font-black text-[#01a3a4] tracking-tighter">
+                <div className="flex items-baseline text-[22px] font-black text-[#01a3a4] tracking-tighter">
                   <span className="text-[11px] font-normal mr-1 translate-y-[-4px] text-white/50">৳</span>
                   {item.price.toLocaleString()}
                 </div>
-                {item.originalPrice > item.price && (
-                  <span className="text-[10px] text-white/40 line-through font-bold translate-y-1">
-                    ৳{item.originalPrice.toLocaleString()}
-                  </span>
-                )}
               </div>
-              <button onClick={() => setIsOrderOpen(true)} className="bg-[#01a3a4] text-white h-10 px-8 font-black rounded-none text-[10px] hover:bg-black transition-all uppercase tracking-widest flex items-center gap-2 shadow-xl w-fit">
+              {item.originalPrice > item.price && (
+                <span className="text-[10px] text-white/40 line-through font-bold translate-y-[-4px]">
+                  ৳{item.originalPrice.toLocaleString()}
+                </span>
+              )}
+              <button onClick={() => setIsOrderOpen(true)} className="bg-[#01a3a4] text-white h-10 px-8 font-black rounded-none text-[10px] hover:bg-black transition-all uppercase tracking-widest flex items-center gap-2 shadow-xl w-fit mt-2">
                 <ShoppingCart className="h-3.5 w-3.5" /> অর্ডার করুন
               </button>
             </div>
@@ -100,14 +100,14 @@ const FlashOfferCard = () => {
           <div className="absolute bottom-6 w-full text-center px-4 space-y-2">
              <p className="text-white font-black text-[12px] uppercase tracking-widest mb-1">{activeItem.name || activeItem.title}</p>
              {activeItem.price && (
-               <div className="flex items-center justify-center gap-3">
+               <div className="flex flex-col items-center">
                  <span className="text-[#01a3a4] font-black text-lg">৳{activeItem.price.toLocaleString()}</span>
                  {activeItem.originalPrice > activeItem.price && (
-                   <span className="text-white/40 line-through text-xs">৳{activeItem.originalPrice.toLocaleString()}</span>
+                   <span className="text-white/40 line-through text-[10px] font-bold">৳{activeItem.originalPrice.toLocaleString()}</span>
                  )}
                </div>
              )}
-             <button onClick={() => setIsOrderOpen(true)} className="bg-[#01a3a4] text-white px-6 py-2 h-10 font-black text-[9px] uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-all">অর্ডার করুন</button>
+             <button onClick={() => setIsOrderOpen(true)} className="bg-[#01a3a4] text-white px-6 py-2 h-10 font-black text-[9px] uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-all mt-2">অর্ডার করুন</button>
              <OrderModal product={activeItem} isOpen={isOrderOpen} onClose={() => setIsOrderOpen(false)} />
           </div>
         </div>
@@ -131,6 +131,19 @@ export default function Home() {
   const combinedSliderItems = useMemo(() => [...(sliderBanners || []), ...(sliderProducts || [])], [sliderProducts, sliderBanners]);
   const plugin = useRef(Autoplay({ delay: 5000, stopOnInteraction: false }));
 
+  // Visitor Tracking Logic
+  useEffect(() => {
+    const trackVisit = async () => {
+      const today = new Date().toISOString().split('T')[0];
+      const statsRef = doc(db, 'visitorStats', today);
+      await setDoc(statsRef, { 
+        count: increment(1),
+        date: today
+      }, { merge: true });
+    };
+    trackVisit();
+  }, [db]);
+
   return (
     <div className="min-h-screen flex flex-col bg-background">
       <Navbar />
@@ -148,7 +161,7 @@ export default function Home() {
           </div>
           <div className="col-span-3 bg-[#01a3a4] flex flex-col items-center justify-center p-8 space-y-6 h-[420px]">
             <h3 className="text-white font-black text-xl uppercase tracking-widest leading-none italic text-center">DOWNLOAD APP</h3>
-            <div className="bg-white p-1.5 w-32 h-32 flex items-center justify-center border-4 border-white/20">
+            <div className="bg-white p-2 w-36 h-36 flex items-center justify-center border-4 border-white/20">
               <Image 
                 src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://sssmarthaat.com" 
                 alt="QR Code" 

@@ -18,7 +18,8 @@ import {
   ExternalLink,
   Github,
   Zap,
-  ShieldAlert
+  ShieldAlert,
+  ChevronRight
 } from 'lucide-react';
 import Link from 'next/link';
 import { useFirestore, useDoc, useMemoFirebase } from '@/firebase';
@@ -129,24 +130,38 @@ export default function AdminSettings() {
           <Card className="bg-card border-white/5 rounded-none shadow-2xl overflow-hidden">
             <CardHeader className="bg-white/[0.02] border-b border-white/5 p-6">
               <CardTitle className="text-xs font-black uppercase tracking-[0.3em] text-[#01a3a4] flex items-center gap-2">
-                <Terminal className="h-4 w-4" /> DEPLOYMENT HUB
+                <Terminal className="h-4 w-4" /> ডেপ্লয়মেন্ট গাইড (স্টেপ-বাই-স্টেপ)
               </CardTitle>
             </CardHeader>
-            <CardContent className="p-8 space-y-8">
+            <CardContent className="p-8 space-y-6">
               <div className="space-y-4">
-                <h3 className="text-[11px] font-black text-white uppercase tracking-widest flex items-center gap-2"><Github className="h-4 w-4" /> GITHUB UPDATES</h3>
-                <div className="bg-black border border-white/10 p-4 font-mono text-[9px] text-green-400 space-y-2 shadow-inner">
-                  <p className="opacity-50"># AUTOMATED COMMIT LOG</p>
-                  <p>git add .</p>
-                  <p>git commit -m "UI: POLISHED SETTINGS PANEL"</p>
-                  <p>git push origin main</p>
+                <div className="flex items-start gap-3 p-3 bg-white/[0.02] border border-white/5">
+                  <div className="h-6 w-6 rounded-full bg-[#01a3a4] text-white flex items-center justify-center text-[10px] font-black shrink-0">১</div>
+                  <p className="text-[10px] font-black text-white uppercase leading-relaxed">গিটহাবে (GitHub) আপনার সব পরিবর্তন সেভ বা 'Commit' করুন।</p>
+                </div>
+                <div className="flex items-start gap-3 p-3 bg-white/[0.02] border border-white/5">
+                  <div className="h-6 w-6 rounded-full bg-[#01a3a4] text-white flex items-center justify-center text-[10px] font-black shrink-0">২</div>
+                  <p className="text-[10px] font-black text-white uppercase leading-relaxed">'Main' ব্রাঞ্চে কোড পুশ (Push) করুন।</p>
+                </div>
+                <div className="flex items-start gap-3 p-3 bg-white/[0.02] border border-white/5">
+                  <div className="h-6 w-6 rounded-full bg-[#01a3a4] text-white flex items-center justify-center text-[10px] font-black shrink-0">৩</div>
+                  <p className="text-[10px] font-black text-white uppercase leading-relaxed">Vercel বা Firebase ড্যাশবোর্ডে গিয়ে বিল্ড প্রসেস চেক করুন।</p>
+                </div>
+                <div className="flex items-start gap-3 p-3 bg-[#01a3a4]/10 border border-[#01a3a4]/20">
+                  <div className="h-6 w-6 rounded-full bg-[#01a3a4] text-white flex items-center justify-center text-[10px] font-black shrink-0">৪</div>
+                  <p className="text-[10px] font-black text-[#01a3a4] uppercase leading-relaxed">বিল্ড শেষ হলে আপনার সাইট অটোমেটিক আপডেট হয়ে যাবে।</p>
                 </div>
               </div>
-              <div className="space-y-4 pt-4 border-t border-white/5">
-                <h3 className="text-[11px] font-black text-white uppercase tracking-widest flex items-center gap-2"><Zap className="h-4 w-4 text-orange-500" /> LIVE VERCEL STATUS</h3>
-                <Button asChild className="w-full bg-white text-black hover:bg-white/90 h-12 font-black uppercase tracking-widest text-[9px] rounded-none border-none">
+
+              <div className="grid grid-cols-1 gap-3 pt-4 border-t border-white/5">
+                <Button asChild variant="outline" className="w-full border-white/10 text-white hover:bg-white hover:text-black h-12 font-black uppercase tracking-widest text-[9px] rounded-none">
+                  <a href="https://github.com" target="_blank" rel="noopener noreferrer">
+                    <Github className="mr-2 h-4 w-4" /> ওপেন গিটহাব (GITHUB)
+                  </a>
+                </Button>
+                <Button asChild className="w-full bg-[#01a3a4] text-white hover:bg-white hover:text-black h-12 font-black uppercase tracking-widest text-[9px] rounded-none border-none">
                   <a href="https://vercel.com/dashboard" target="_blank" rel="noopener noreferrer">
-                    <ExternalLink className="mr-2 h-4 w-4" /> VERCEL DASHBOARD
+                    <ExternalLink className="mr-2 h-4 w-4" /> ওপেন কন্ট্রোল প্যানেল
                   </a>
                 </Button>
               </div>
