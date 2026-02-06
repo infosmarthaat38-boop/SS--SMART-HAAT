@@ -126,6 +126,12 @@
   will-change: transform, opacity;
 }
 
+/* SAVES MEMORY ON LONG PAGES */
+section, main {
+  content-visibility: auto;
+  contain-intrinsic-size: 1px 500px;
+}
+
 img {
   content-visibility: auto;
 }
