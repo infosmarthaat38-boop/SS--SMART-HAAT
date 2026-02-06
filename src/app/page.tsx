@@ -207,14 +207,14 @@ export default function Home() {
       <Navbar />
       
       {settings?.liveStatus && (
-        <div className="bg-black/80 backdrop-blur-md border-b border-white/5 py-1 px-4 overflow-hidden whitespace-nowrap">
-          <div className="container mx-auto flex items-center gap-6 animate-marquee">
-            <div className="flex items-center gap-2 text-[8px] md:text-[9px] font-black text-white uppercase tracking-widest shrink-0">
-              <Radio className="h-2 w-2 animate-pulse text-white" /> LIVE STATUS:
+        <div className="bg-black border-b border-[#01a3a4]/20 py-2 px-4 overflow-hidden whitespace-nowrap z-40">
+          <div className="container mx-auto flex items-center gap-10 animate-marquee">
+            <div className="flex items-center gap-2 text-[10px] md:text-[12px] font-black text-[#01a3a4] uppercase tracking-widest shrink-0">
+              <Radio className="h-3 w-3 animate-pulse text-[#01a3a4]" /> LIVE STATUS:
             </div>
-            <p className="text-[8px] md:text-[9px] font-black text-white uppercase tracking-[0.2em] flex items-center gap-3">
-              {settings.liveStatus} <span className="text-white/40">•</span> 
-              <MapPin className="h-2 w-2 text-white" /> {settings.liveLocation || 'BANANI, DHAKA'}
+            <p className="text-[10px] md:text-[13px] font-black text-white uppercase tracking-[0.3em] flex items-center gap-4">
+              {settings.liveStatus} <span className="text-[#01a3a4]/40">||</span> 
+              <MapPin className="h-3 w-3 text-[#01a3a4]" /> {settings.liveLocation || 'BANANI, DHAKA'}
             </p>
           </div>
         </div>
