@@ -9,9 +9,11 @@ import { AdminLoginModal } from '@/components/AdminLoginModal';
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
   const [showLogin, setShowLogin] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
+    setIsMounted(true);
     const authStatus = sessionStorage.getItem('is_admin_authenticated') === 'true';
     if (!authStatus) {
       setIsAuthenticated(false);
@@ -21,7 +23,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     }
   }, []);
 
-  if (isAuthenticated === null) {
+  // Prevent hydration flicker and immediate hanging
+  if (!isMounted || isAuthenticated === null) {
     return (
       <div className="min-h-screen bg-black flex flex-col items-center justify-center gap-4">
         <Loader2 className="h-10 w-10 text-orange-600 animate-spin" />

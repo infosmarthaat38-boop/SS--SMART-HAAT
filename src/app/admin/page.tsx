@@ -1,7 +1,7 @@
 
 "use client";
 
-import React, { useMemo, useEffect } from 'react';
+import React, { useMemo, useEffect, useState } from 'react';
 import Link from 'next/link';
 import { Navbar } from '@/components/Navbar';
 import { Footer } from '@/components/Footer';
@@ -14,15 +14,11 @@ import {
   Layers, 
   ChevronRight,
   Bell,
-  AlertCircle,
   MessageSquare,
-  ArrowUpRight,
-  Calendar,
-  Zap,
-  Users,
   TrendingUp,
-  BarChart3,
-  MapPin
+  Users,
+  Zap,
+  Loader2
 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { StyleAssistant } from '@/components/StyleAssistant';
@@ -34,13 +30,14 @@ import {
   ChartTooltip, 
   ChartTooltipContent 
 } from "@/components/ui/chart";
-import { Bar, BarChart, CartesianGrid, XAxis, YAxis, Pie, PieChart, Cell, ResponsiveContainer } from "recharts";
+import { Bar, BarChart, CartesianGrid, XAxis, YAxis, Pie, PieChart, Cell } from "recharts";
 import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
 
 export default function AdminPanel() {
   const db = useFirestore();
   const { toast } = useToast();
+  const [isMounted, setIsMounted] = useState(false);
   
   const today = useMemo(() => new Date().toISOString().split('T')[0], []);
   
@@ -57,6 +54,10 @@ export default function AdminPanel() {
   const { data: pendingOrders } = useCollection(pendingOrdersRef);
   const { data: messages } = useCollection(messagesRef);
   const { data: dailyVisitors } = useDoc(visitorStatsRef);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   // Advanced Analytics Calculations
   const categoryStats = useMemo(() => {
@@ -104,11 +105,12 @@ export default function AdminPanel() {
       const orderTime = new Date(latestOrder.createdAt).getTime();
       const now = new Date().getTime();
       
-      if (now - orderTime < 10000) {
+      // Only toast if it's a very fresh order (within last 30 seconds)
+      if (now - orderTime < 30000) {
         toast({
           variant: "destructive",
           title: "🚨 NEW ORDER RECEIVED",
-          description: `${latestOrder.customerName} just ordered ${latestOrder.productName}. CHECK ORDERS NOW!`,
+          description: `${latestOrder.customerName} just ordered ${latestOrder.productName}.`,
         });
       }
     }
@@ -186,25 +188,29 @@ export default function AdminPanel() {
                 <CardTitle className="text-[10px] font-black uppercase tracking-[0.3em] text-[#01a3a4]">CATEGORY BREAKDOWN</CardTitle>
               </CardHeader>
               <CardContent className="p-6">
-                <div className="h-[200px] w-full">
-                  <ChartContainer config={pieChartConfig} className="h-full w-full">
-                    <PieChart>
-                      <Pie
-                        data={categoryStats}
-                        cx="50%"
-                        cy="50%"
-                        innerRadius={60}
-                        outerRadius={80}
-                        paddingAngle={5}
-                        dataKey="count"
-                      >
-                        {categoryStats.map((entry, index) => (
-                          <Cell key={`cell-${index}`} fill={entry.color} />
-                        ))}
-                      </Pie>
-                      <ChartTooltip content={<ChartTooltipContent className="bg-black border-white/10 rounded-none p-2" />} />
-                    </PieChart>
-                  </ChartContainer>
+                <div className="h-[200px] w-full flex items-center justify-center">
+                  {isMounted ? (
+                    <ChartContainer config={pieChartConfig} className="h-full w-full">
+                      <PieChart>
+                        <Pie
+                          data={categoryStats}
+                          cx="50%"
+                          cy="50%"
+                          innerRadius={60}
+                          outerRadius={80}
+                          paddingAngle={5}
+                          dataKey="count"
+                        >
+                          {categoryStats.map((entry, index) => (
+                            <Cell key={`cell-${index}`} fill={entry.color} />
+                          ))}
+                        </Pie>
+                        <ChartTooltip content={<ChartTooltipContent className="bg-black border-white/10 rounded-none p-2" />} />
+                      </PieChart>
+                    </ChartContainer>
+                  ) : (
+                    <Loader2 className="h-6 w-6 text-[#01a3a4] animate-spin" />
+                  )}
                 </div>
                 <div className="mt-4 space-y-2">
                   {categoryStats.map((cat, i) => (
@@ -231,28 +237,34 @@ export default function AdminPanel() {
                 <Badge variant="outline" className="rounded-none border-white/10 text-[8px] h-6 px-3 w-fit font-black text-white/40">DATABASE: LIVE SYNCED</Badge>
               </CardHeader>
               <CardContent className="p-8">
-                <ChartContainer config={{ sales: { label: "Revenue", color: "#01a3a4" } }} className="h-[300px] w-full">
-                  <BarChart data={dailyChartData}>
-                    <CartesianGrid vertical={false} stroke="rgba(255,255,255,0.03)" />
-                    <XAxis
-                      dataKey="day"
-                      tickLine={false}
-                      axisLine={false}
-                      tick={{ fontSize: 9, fontWeight: 900, fill: '#666' }}
-                    />
-                    <YAxis
-                      tickLine={false}
-                      axisLine={false}
-                      tickFormatter={(value) => `৳${value/1000}K`}
-                      tick={{ fontSize: 9, fontWeight: 900, fill: '#666' }}
-                    />
-                    <ChartTooltip
-                      cursor={{ fill: 'rgba(1,163,164,0.05)' }}
-                      content={<ChartTooltipContent className="bg-black border-white/10 rounded-none p-4" hideLabel />}
-                    />
-                    <Bar dataKey="sales" fill="#01a3a4" radius={[1, 1, 0, 0]} />
-                  </BarChart>
-                </ChartContainer>
+                <div className="h-[300px] w-full flex items-center justify-center">
+                  {isMounted ? (
+                    <ChartContainer config={{ sales: { label: "Revenue", color: "#01a3a4" } }} className="h-full w-full">
+                      <BarChart data={dailyChartData}>
+                        <CartesianGrid vertical={false} stroke="rgba(255,255,255,0.03)" />
+                        <XAxis
+                          dataKey="day"
+                          tickLine={false}
+                          axisLine={false}
+                          tick={{ fontSize: 9, fontWeight: 900, fill: '#666' }}
+                        />
+                        <YAxis
+                          tickLine={false}
+                          axisLine={false}
+                          tickFormatter={(value) => `৳${value/1000}K`}
+                          tick={{ fontSize: 9, fontWeight: 900, fill: '#666' }}
+                        />
+                        <ChartTooltip
+                          cursor={{ fill: 'rgba(1,163,164,0.05)' }}
+                          content={<ChartTooltipContent className="bg-black border-white/10 rounded-none p-4" hideLabel />}
+                        />
+                        <Bar dataKey="sales" fill="#01a3a4" radius={[1, 1, 0, 0]} />
+                      </BarChart>
+                    </ChartContainer>
+                  ) : (
+                    <Loader2 className="h-8 w-8 text-[#01a3a4] animate-spin" />
+                  )}
+                </div>
               </CardContent>
             </Card>
 
