@@ -32,29 +32,24 @@ export function Navbar() {
   const [showSearchInput, setShowSearchInput] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [isMounted, setIsMounted] = useState(false);
+  const [todayDate, setTodayDate] = useState('');
   const router = useRouter();
   const db = useFirestore();
 
-  // Stable Today's date for daily order tracking
-  const today = useMemo(() => {
-    if (typeof window === 'undefined') return '';
-    return new Date().toISOString().split('T')[0];
-  }, []);
-
-  const todayOrdersQuery = useMemoFirebase(() => {
-    if (!db || !today) return null;
-    // Query orders created today
-    return query(collection(db, 'orders'), where('createdAt', '>=', today));
-  }, [db, today]);
-  
-  const { data: todayOrders } = useCollection(todayOrdersQuery);
-  const orderCount = todayOrders?.length || 0;
-
   useEffect(() => {
     setIsMounted(true);
+    setTodayDate(new Date().toISOString().split('T')[0]);
     const storedLang = localStorage.getItem('app_lang') as 'EN' | 'BN';
     if (storedLang) setLanguage(storedLang);
   }, []);
+
+  const todayOrdersQuery = useMemoFirebase(() => {
+    if (!db || !todayDate) return null;
+    return query(collection(db, 'orders'), where('createdAt', '>=', todayDate));
+  }, [db, todayDate]);
+  
+  const { data: todayOrders } = useCollection(todayOrdersQuery);
+  const orderCount = todayOrders?.length || 0;
 
   const toggleLanguage = () => {
     const newLang = language === 'EN' ? 'BN' : 'EN';
@@ -135,19 +130,11 @@ export function Navbar() {
                   <MapPin className="h-3.5 w-3.5" /> {language === 'EN' ? "LOCATION" : "লোকেশন"}
                 </button>
 
-                {/* 3-DOT MENU WITH NOTIFICATION BUBBLE */}
+                {/* 3-DOT MENU (NOTIFICATION BUBBLE REMOVED FROM TOP) */}
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" size="icon" className="relative h-9 w-9 text-white hover:bg-black/10 rounded-none border border-white/20 flex items-center justify-center">
+                    <Button variant="ghost" size="icon" className="h-9 w-9 text-white hover:bg-black/10 rounded-none border border-white/20 flex items-center justify-center">
                       <MoreVertical className="h-5 w-5" />
-                      {orderCount > 0 && (
-                        <span className="absolute -top-1 -right-1 flex h-4 w-4">
-                          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
-                          <span className="relative inline-flex rounded-none h-4 w-4 bg-red-600 text-[7px] font-black items-center justify-center border border-white/20">
-                            {orderCount}
-                          </span>
-                        </span>
-                      )}
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent className="bg-white border-none rounded-none shadow-2xl p-2 min-w-[160px] z-[100]">
@@ -167,7 +154,7 @@ export function Navbar() {
                         <span className="text-[10px] font-black uppercase text-black">ADMIN</span>
                       </div>
                       {orderCount > 0 && (
-                        <Badge className="bg-red-600 text-white text-[8px] font-black rounded-none border-none">
+                        <Badge className="bg-red-600 text-white text-[8px] font-black rounded-none border-none animate-pulse">
                           {orderCount} NEW
                         </Badge>
                       )}
