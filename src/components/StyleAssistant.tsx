@@ -45,7 +45,7 @@ export function StyleAssistant() {
             </div>
             <div className="space-y-2">
               <p className="text-white font-black uppercase text-[10px] tracking-widest">Consult your system intelligence</p>
-              <p className="text-muted-foreground italic font-black uppercase text-[8px] tracking-[0.2em] px-4 leading-relaxed">
+              <p className="text-white/90 italic font-black uppercase text-[8px] tracking-[0.2em] px-4 leading-relaxed">
                 "ADVICE ON FASHION, INVENTORY, OR SITE OPTIMIZATION"
               </p>
             </div>
@@ -90,7 +90,7 @@ export function StyleAssistant() {
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           placeholder="ASK ABOUT STYLE OR SITE OPTIMIZATION..." 
-          className="bg-white/5 border-white/10 focus:ring-[#01a3a4] h-12 rounded-none text-[10px] font-black uppercase placeholder:text-white/20"
+          className="bg-white/5 border-white/10 focus:ring-[#01a3a4] h-12 rounded-none text-[10px] font-black uppercase placeholder:text-white/20 text-white"
         />
         <Button disabled={loading} size="icon" className="h-12 w-12 rounded-none bg-[#01a3a4] hover:bg-[#01a3a4]/90 shadow-lg shadow-[#01a3a4]/20">
           <Send className="h-5 w-5 text-white" />
