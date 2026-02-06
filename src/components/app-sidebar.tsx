@@ -1,4 +1,3 @@
-
 "use client";
 
 import * as React from "react";
@@ -37,7 +36,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       <SidebarHeader className="h-28 flex flex-col items-start justify-center px-6">
         <div className="flex items-center gap-4">
           <div className="w-14 h-14 bg-primary rounded-2xl flex items-center justify-center shadow-xl shadow-primary/10 border border-white/5">
-            <span className="text-background font-black text-4xl italic tracking-tighter">S</span>
+            <span className="text-background font-black text-4xl tracking-tighter">SS</span>
           </div>
           <div className="flex flex-col group-data-[collapsible=icon]:hidden">
             <span className="font-headline font-bold text-xl leading-none tracking-tight text-primary uppercase">

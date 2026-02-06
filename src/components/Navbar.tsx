@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useState, useEffect } from 'react';
@@ -17,8 +16,8 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 const LogoIcon = () => (
-  <div className="w-8 h-8 bg-black rounded-none flex items-center justify-center shadow-lg transition-transform group-hover:scale-105 border border-white/10">
-    <span className="text-[#01a3a4] font-black text-xl italic tracking-tighter">S</span>
+  <div className="w-10 h-10 bg-black rounded-none flex items-center justify-center shadow-lg transition-transform group-hover:scale-105 border border-white/10">
+    <span className="text-[#01a3a4] font-black text-xl tracking-tighter">SS</span>
   </div>
 );
 

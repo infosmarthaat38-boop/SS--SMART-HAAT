@@ -1,7 +1,6 @@
-
 "use client";
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Facebook, Instagram, Twitter, Youtube, Mail, Phone, MapPin } from 'lucide-react';
 import { useFirestore, useDoc, useMemoFirebase } from '@/firebase';
@@ -39,8 +38,8 @@ export function Footer() {
           
           <div className="lg:col-span-4 space-y-8">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-[#01a3a4] rounded-none flex items-center justify-center shadow-lg shadow-[#01a3a4]/10 border border-white/5">
-                <span className="text-black font-black text-2xl italic tracking-tighter">S</span>
+              <div className="w-12 h-12 bg-[#01a3a4] rounded-none flex items-center justify-center shadow-lg shadow-[#01a3a4]/10 border border-white/5">
+                <span className="text-black font-black text-2xl tracking-tighter">SS</span>
               </div>
               <div>
                 <h3 className="text-2xl font-black font-headline text-white tracking-tighter uppercase">SS SMART HAAT</h3>
