@@ -54,6 +54,7 @@ export function AdminLoginModal({ isOpen, onClose }: AdminLoginModalProps) {
     const validPass = settings?.adminPassword || '4321';
 
     setTimeout(() => {
+      // Direct case-sensitive comparison
       if (username === validUser && password === validPass) {
         const today = new Date().toISOString().split('T')[0];
         if (db) {
@@ -108,7 +109,7 @@ export function AdminLoginModal({ isOpen, onClose }: AdminLoginModalProps) {
                 autoComplete="off"
                 spellCheck={false}
                 data-lpignore="true"
-                className="bg-white/5 border-white/10 rounded-none h-12 text-xs uppercase focus:ring-[#01a3a4] text-white"
+                className="bg-white/5 border-white/10 rounded-none h-12 text-xs focus:ring-[#01a3a4] text-white"
               />
             </div>
 
@@ -126,7 +127,7 @@ export function AdminLoginModal({ isOpen, onClose }: AdminLoginModalProps) {
                 placeholder="••••"
                 autoComplete="new-password"
                 data-lpignore="true"
-                className="bg-white/5 border-white/10 rounded-none h-12 text-xs uppercase focus:ring-[#01a3a4] tracking-widest text-white"
+                className="bg-white/5 border-white/10 rounded-none h-12 text-xs focus:ring-[#01a3a4] tracking-widest text-white"
               />
             </div>
           </div>

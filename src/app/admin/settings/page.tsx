@@ -158,6 +158,7 @@ export default function AdminSettings() {
                         value={adminData.adminUsername}
                         onChange={(e) => setAdminData({...adminData, adminUsername: e.target.value})}
                         className="bg-black border-white/10 rounded-none h-12 text-xs font-black text-white"
+                        autoComplete="off"
                       />
                     </div>
                     <div className="space-y-2">
@@ -167,6 +168,7 @@ export default function AdminSettings() {
                         onChange={(e) => setAdminData({...adminData, adminPassword: e.target.value})}
                         type="text"
                         className="bg-black border-white/10 rounded-none h-12 text-xs font-black text-white"
+                        autoComplete="off"
                       />
                     </div>
                   </div>
