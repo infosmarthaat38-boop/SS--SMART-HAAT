@@ -26,6 +26,7 @@ export function Navbar() {
   const [isLocationModalOpen, setIsLocationModalOpen] = useState(false);
   const [language, setLanguage] = useState<'EN' | 'BN'>('EN');
   const [showSearchInput, setShowSearchInput] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
   const router = useRouter();
 
   useEffect(() => {
@@ -37,6 +38,13 @@ export function Navbar() {
     const newLang = language === 'EN' ? 'BN' : 'EN';
     setLanguage(newLang);
     localStorage.setItem('app_lang', newLang);
+  };
+
+  const handleSearch = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter' && searchQuery.trim()) {
+      router.push(`/shop?search=${encodeURIComponent(searchQuery.trim().toUpperCase())}`);
+      setShowSearchInput(false);
+    }
   };
 
   return (
@@ -64,6 +72,9 @@ export function Navbar() {
                 <div className="hidden md:flex items-center relative flex-grow max-w-[700px]">
                   <Input 
                     type="search" 
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    onKeyDown={handleSearch}
                     placeholder="SEARCH PRODUCTS..." 
                     className="bg-black/10 border-white/20 h-9 w-[400px] lg:w-[650px] focus:lg:w-[700px] transition-all rounded-none text-[9px] text-white uppercase placeholder:text-white/70"
                   />
@@ -133,12 +144,18 @@ export function Navbar() {
             <div className="mt-2 pb-2 relative animate-in slide-in-from-top-2 duration-300 md:hidden">
               <Input 
                 type="search" 
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                onKeyDown={handleSearch}
                 placeholder={language === 'EN' ? "SEARCH PRODUCTS..." : "পণ্য খুঁজুন..."} 
                 className="w-full bg-black/10 border-white/20 h-10 pl-10 pr-10 focus-visible:ring-black focus-visible:bg-black/20 transition-all rounded-none text-[10px] text-white uppercase placeholder:text-white/70 font-bold"
               />
               <Search className="absolute left-3.5 top-[20px] -translate-y-1/2 h-4 w-4 text-white" />
               <button 
-                onClick={() => setShowSearchInput(false)}
+                onClick={() => {
+                  setShowSearchInput(false);
+                  setSearchQuery('');
+                }}
                 className="absolute right-3 top-[20px] -translate-y-1/2 text-white/50 hover:text-white"
               >
                 <X className="h-4 w-4" />
