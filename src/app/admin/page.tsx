@@ -48,12 +48,28 @@ export default function AdminPanel() {
     setToday(new Date().toISOString().split('T')[0]);
   }, []);
   
-  const productsRef = useMemoFirebase(() => collection(db, 'products'), [db]);
-  const categoriesRef = useMemoFirebase(() => collection(db, 'categories'), [db]);
-  const ordersRef = useMemoFirebase(() => query(collection(db, 'orders'), orderBy('createdAt', 'desc')), [db]);
-  const pendingOrdersRef = useMemoFirebase(() => query(collection(db, 'orders'), where('status', '==', 'PENDING'), orderBy('createdAt', 'desc')), [db]);
+  const productsRef = useMemoFirebase(() => {
+    if (!db) return null;
+    return collection(db, 'products');
+  }, [db]);
+
+  const categoriesRef = useMemoFirebase(() => {
+    if (!db) return null;
+    return collection(db, 'categories');
+  }, [db]);
+
+  const ordersRef = useMemoFirebase(() => {
+    if (!db) return null;
+    return query(collection(db, 'orders'), orderBy('createdAt', 'desc'));
+  }, [db]);
+
+  const pendingOrdersRef = useMemoFirebase(() => {
+    if (!db) return null;
+    return query(collection(db, 'orders'), where('status', '==', 'PENDING'), orderBy('createdAt', 'desc'));
+  }, [db]);
+
   const visitorStatsRef = useMemoFirebase(() => {
-    if (!today) return null;
+    if (!db || !today) return null;
     return doc(db, 'visitorStats', today);
   }, [db, today]);
   
@@ -132,6 +148,15 @@ export default function AdminPanel() {
     { title: "OTHERS CONFIG", icon: LinkIcon, href: "/admin/others" },
     { title: "SECURITY & LOCATION", icon: Settings, href: "/admin/settings" }
   ];
+
+  if (!db) {
+    return (
+      <div className="min-h-screen bg-black flex flex-col items-center justify-center gap-4">
+        <Loader2 className="h-10 w-10 text-[#01a3a4] animate-spin" />
+        <p className="text-[10px] font-black text-[#01a3a4] uppercase tracking-widest">Waking Up System...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen flex flex-col bg-background selection:bg-[#01a3a4]/30">

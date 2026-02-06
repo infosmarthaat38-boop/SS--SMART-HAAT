@@ -31,7 +31,10 @@ import { useToast } from '@/hooks/use-toast';
 export default function AdminSettings() {
   const db = useFirestore();
   const { toast } = useToast();
-  const settingsRef = useMemoFirebase(() => doc(db, 'settings', 'site-config'), [db]);
+  const settingsRef = useMemoFirebase(() => {
+    if (!db) return null;
+    return doc(db, 'settings', 'site-config');
+  }, [db]);
   const { data: settings, isLoading } = useDoc(settingsRef);
 
   const [adminData, setAdminData] = useState({
@@ -61,15 +64,23 @@ export default function AdminSettings() {
 
   const handleSaveAdmin = (e: React.FormEvent) => {
     e.preventDefault();
-    setDocumentNonBlocking(settingsRef, adminData, { merge: true });
+    if (!settingsRef) return;
+    
+    // DIRECT FIREBASE UPDATE FOR CREDENTIALS
+    setDocumentNonBlocking(settingsRef, {
+      adminUsername: adminData.adminUsername,
+      adminPassword: adminData.adminPassword
+    }, { merge: true });
+
     toast({
       title: "SECURITY UPDATED",
-      description: "ADMIN CREDENTIALS HAVE BEEN SUCCESSFULLY CHANGED.",
+      description: "ADMIN CREDENTIALS HAVE BEEN SUCCESSFULLY CHANGED IN SYSTEM.",
     });
   };
 
   const handleSaveLocation = (e: React.FormEvent) => {
     e.preventDefault();
+    if (!settingsRef) return;
     
     if (locationData.verificationPassword !== adminData.adminPassword) {
       toast({
@@ -93,7 +104,7 @@ export default function AdminSettings() {
     setLocationData(prev => ({ ...prev, verificationPassword: '' }));
   };
 
-  if (isLoading) {
+  if (isLoading || !db) {
     return (
       <div className="min-h-screen flex flex-col bg-background">
         <Navbar />

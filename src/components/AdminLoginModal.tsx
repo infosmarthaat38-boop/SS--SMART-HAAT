@@ -30,7 +30,10 @@ export function AdminLoginModal({ isOpen, onClose }: AdminLoginModalProps) {
   const router = useRouter();
   
   const db = useFirestore();
-  const settingsRef = useMemoFirebase(() => doc(db, 'settings', 'site-config'), [db]);
+  const settingsRef = useMemoFirebase(() => {
+    if (!db) return null;
+    return doc(db, 'settings', 'site-config');
+  }, [db]);
   const { data: settings } = useDoc(settingsRef);
 
   useEffect(() => {
@@ -46,17 +49,20 @@ export function AdminLoginModal({ isOpen, onClose }: AdminLoginModalProps) {
     setLoading(true);
     setError('');
 
+    // SYNC WITH FIREBASE DATA OR DEFAULTS
     const validUser = settings?.adminUsername || 'ADMIN';
     const validPass = settings?.adminPassword || '4321';
 
     setTimeout(() => {
       if (username === validUser && password === validPass) {
         const today = new Date().toISOString().split('T')[0];
-        const statsRef = doc(db, 'loginStats', today);
-        setDocumentNonBlocking(statsRef, { 
-          count: increment(1),
-          date: today
-        }, { merge: true });
+        if (db) {
+          const statsRef = doc(db, 'loginStats', today);
+          setDocumentNonBlocking(statsRef, { 
+            count: increment(1),
+            date: today
+          }, { merge: true });
+        }
 
         sessionStorage.setItem('is_admin_authenticated', 'true');
         onClose();
@@ -102,7 +108,7 @@ export function AdminLoginModal({ isOpen, onClose }: AdminLoginModalProps) {
                 autoComplete="off"
                 spellCheck={false}
                 data-lpignore="true"
-                className="bg-white/5 border-white/10 rounded-none h-12 text-xs uppercase focus:ring-[#01a3a4]"
+                className="bg-white/5 border-white/10 rounded-none h-12 text-xs uppercase focus:ring-[#01a3a4] text-white"
               />
             </div>
 
@@ -120,13 +126,13 @@ export function AdminLoginModal({ isOpen, onClose }: AdminLoginModalProps) {
                 placeholder="••••"
                 autoComplete="new-password"
                 data-lpignore="true"
-                className="bg-white/5 border-white/10 rounded-none h-12 text-xs uppercase focus:ring-[#01a3a4] tracking-widest"
+                className="bg-white/5 border-white/10 rounded-none h-12 text-xs uppercase focus:ring-[#01a3a4] tracking-widest text-white"
               />
             </div>
           </div>
 
           {error && (
-            <div className="p-3 bg-red-600/10 border border-red-600/30 flex items-center gap-2 animate-shake">
+            <div className="p-3 bg-red-600/10 border border-red-600/30 flex items-center gap-2">
               <ShieldAlert className="h-4 w-4 text-red-600" />
               <p className="text-[9px] font-black text-red-600 uppercase">{error}</p>
             </div>
