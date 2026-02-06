@@ -31,12 +31,18 @@ export function Navbar() {
   const [language, setLanguage] = useState<'EN' | 'BN'>('EN');
   const [showSearchInput, setShowSearchInput] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const [isMounted, setIsMounted] = useState(false);
   const router = useRouter();
   const db = useFirestore();
 
-  // Fetch today's orders for notification
-  const today = useMemo(() => new Date().toISOString().split('T')[0], []);
+  // Stable Today's date
+  const today = useMemo(() => {
+    if (typeof window === 'undefined') return '';
+    return new Date().toISOString().split('T')[0];
+  }, []);
+
   const todayOrdersQuery = useMemoFirebase(() => {
+    if (!db || !today) return null;
     return query(collection(db, 'orders'), where('createdAt', '>=', today));
   }, [db, today]);
   
@@ -44,6 +50,7 @@ export function Navbar() {
   const orderCount = todayOrders?.length || 0;
 
   useEffect(() => {
+    setIsMounted(true);
     const storedLang = localStorage.getItem('app_lang') as 'EN' | 'BN';
     if (storedLang) setLanguage(storedLang);
   }, []);
@@ -60,6 +67,16 @@ export function Navbar() {
       setShowSearchInput(false);
     }
   };
+
+  if (!isMounted) {
+    return (
+      <nav className="sticky top-0 z-50 w-full bg-[#01a3a4] py-2 h-16 shadow-lg">
+        <div className="container mx-auto px-4 flex items-center">
+          <LogoIcon />
+        </div>
+      </nav>
+    );
+  }
 
   return (
     <>

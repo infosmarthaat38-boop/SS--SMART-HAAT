@@ -79,8 +79,15 @@ const FlashOfferCard = memo(() => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const db = useFirestore();
   
-  const flashProductQuery = useMemoFirebase(() => query(collection(db, 'products'), where('showInFlashOffer', '==', true), limit(3)), [db]);
-  const flashBannerQuery = useMemoFirebase(() => query(collection(db, 'featured_banners'), where('type', '==', 'FLASH'), limit(3)), [db]);
+  const flashProductQuery = useMemoFirebase(() => {
+    if (!db) return null;
+    return query(collection(db, 'products'), where('showInFlashOffer', '==', true), limit(3));
+  }, [db]);
+
+  const flashBannerQuery = useMemoFirebase(() => {
+    if (!db) return null;
+    return query(collection(db, 'featured_banners'), where('type', '==', 'FLASH'), limit(3));
+  }, [db]);
   
   const { data: flashProducts } = useCollection(flashProductQuery);
   const { data: flashBanners } = useCollection(flashBannerQuery);
@@ -139,10 +146,25 @@ export default function Home() {
   const [isMounted, setIsMounted] = useState(false);
   const [today, setToday] = useState<string>('');
   
-  const productsRef = useMemoFirebase(() => query(collection(db, 'products'), orderBy('createdAt', 'desc'), limit(12)), [db]);
-  const sliderProductQuery = useMemoFirebase(() => query(collection(db, 'products'), where('showInSlider', '==', true), limit(3)), [db]);
-  const sliderBannerQuery = useMemoFirebase(() => query(collection(db, 'featured_banners'), where('type', '==', 'SLIDER'), orderBy('createdAt', 'desc'), limit(3)), [db]);
-  const settingsRef = useMemoFirebase(() => doc(db, 'settings', 'site-config'), [db]);
+  const productsRef = useMemoFirebase(() => {
+    if (!db) return null;
+    return query(collection(db, 'products'), orderBy('createdAt', 'desc'), limit(12));
+  }, [db]);
+
+  const sliderProductQuery = useMemoFirebase(() => {
+    if (!db) return null;
+    return query(collection(db, 'products'), where('showInSlider', '==', true), limit(3));
+  }, [db]);
+
+  const sliderBannerQuery = useMemoFirebase(() => {
+    if (!db) return null;
+    return query(collection(db, 'featured_banners'), where('type', '==', 'SLIDER'), orderBy('createdAt', 'desc'), limit(3));
+  }, [db]);
+
+  const settingsRef = useMemoFirebase(() => {
+    if (!db) return null;
+    return doc(db, 'settings', 'site-config');
+  }, [db]);
   
   const { data: products, isLoading: isProductsLoading } = useCollection(productsRef);
   const { data: sliderProducts } = useCollection(sliderProductQuery);
@@ -167,13 +189,18 @@ export default function Home() {
     const dateStr = new Date().toISOString().split('T')[0];
     setToday(dateStr);
     
-    // FIX: Optimized visit tracking using Non-Blocking call
-    const statsRef = doc(db, 'visitorStats', dateStr);
-    setDocumentNonBlocking(statsRef, { 
-      count: increment(1), 
-      date: dateStr 
-    }, { merge: true });
+    if (db) {
+      const statsRef = doc(db, 'visitorStats', dateStr);
+      setDocumentNonBlocking(statsRef, { 
+        count: increment(1), 
+        date: dateStr 
+      }, { merge: true });
+    }
   }, [db]);
+
+  if (!isMounted) {
+    return <div className="min-h-screen bg-black" />;
+  }
 
   return (
     <div className="min-h-screen flex flex-col bg-background selection:bg-primary/30">
@@ -198,7 +225,7 @@ export default function Home() {
         <section className="grid grid-cols-12 gap-0 h-[160px] md:h-[320px] gpu-accelerated">
           <div className="col-span-3 h-full"><FlashOfferCard /></div>
           <div className="col-span-6 h-full relative overflow-hidden bg-black">
-            {isMounted && combinedSliderItems.length > 0 ? (
+            {combinedSliderItems.length > 0 ? (
               <Carousel className="w-full h-full" opts={{ loop: true }} plugins={[autoplay.current]}>
                 <CarouselContent className="h-full">
                   {combinedSliderItems.map((item, index) => <SlideItem key={index} item={item} priority={index < 2} />)}

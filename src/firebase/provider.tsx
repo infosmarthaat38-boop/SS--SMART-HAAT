@@ -82,8 +82,6 @@ export const FirebaseProvider: React.FC<FirebaseProviderProps> = ({
   }, [auth]);
 
   const contextValue = useMemo((): FirebaseContextState => {
-    // FIX: Services are available if props exist, don't wait for isReady (auth check) to provide DB/Auth access.
-    // This prevents the "not available or still initialising" error during SSR and initial load.
     const servicesAvailable = !!(firebaseApp && firestore && auth);
     return {
       areServicesAvailable: servicesAvailable,
@@ -104,14 +102,14 @@ export const FirebaseProvider: React.FC<FirebaseProviderProps> = ({
   );
 };
 
-export const useFirebase = (): FirebaseServicesAndUser => {
+export const useFirebase = (): FirebaseServicesAndUser | null => {
   const context = useContext(FirebaseContext);
   if (context === undefined) {
-    throw new Error('useFirebase must be used within a FirebaseProvider.');
+    return null;
   }
-  // FIX: More relaxed guard to allow access to service instances as soon as they are initialized.
+  // Safe return for SSR or initialization period
   if (!context.firebaseApp || !context.firestore || !context.auth) {
-    throw new Error('Firebase core services not available. Ensure FirebaseClientProvider is at the root.');
+    return null;
   }
   return {
     firebaseApp: context.firebaseApp,
@@ -123,16 +121,29 @@ export const useFirebase = (): FirebaseServicesAndUser => {
   };
 };
 
-export const useAuth = (): Auth => useFirebase().auth;
-export const useFirestore = (): Firestore => useFirebase().firestore;
-export const useFirebaseApp = (): FirebaseApp => useFirebase().firebaseApp;
+export const useAuth = (): Auth | null => {
+  const services = useFirebase();
+  return services ? services.auth : null;
+};
 
-/** Simple useMemo wrapper for Firebase objects to maintain stable references. */
+export const useFirestore = (): Firestore | null => {
+  const services = useFirebase();
+  return services ? services.firestore : null;
+};
+
+export const useFirebaseApp = (): FirebaseApp | null => {
+  const services = useFirebase();
+  return services ? services.firebaseApp : null;
+};
+
 export function useMemoFirebase<T>(factory: () => T, deps: DependencyList): T {
   return useMemo(factory, deps);
 }
 
 export const useUser = (): UserHookResult => {
-  const { user, isUserLoading, userError } = useFirebase();
-  return { user, isUserLoading, userError };
+  const services = useFirebase();
+  if (!services) {
+    return { user: null, isUserLoading: true, userError: null };
+  }
+  return { user: services.user, isUserLoading: services.isUserLoading, userError: services.userError };
 };
