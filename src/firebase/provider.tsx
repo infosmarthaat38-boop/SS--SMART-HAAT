@@ -104,13 +104,15 @@ export const FirebaseProvider: React.FC<FirebaseProviderProps> = ({
 
 export const useFirebase = (): FirebaseServicesAndUser | null => {
   const context = useContext(FirebaseContext);
-  if (context === undefined) {
+  if (!context) {
     return null;
   }
-  // SILENT RETURN: No errors thrown to prevent app hang during initialisation
+  
+  // Return null instead of throwing to prevent app hanging during SSR/Initialization
   if (!context.firebaseApp || !context.firestore || !context.auth) {
     return null;
   }
+  
   return {
     firebaseApp: context.firebaseApp,
     firestore: context.firestore,

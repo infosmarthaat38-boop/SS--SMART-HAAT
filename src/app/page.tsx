@@ -207,7 +207,7 @@ export default function Home() {
       <Navbar />
       
       {settings?.liveStatus && (
-        <div className="bg-black border-b border-[#01a3a4]/20 py-3 px-4 overflow-hidden whitespace-nowrap z-40">
+        <div className="bg-black border-b border-[#01a3a4]/20 py-1.5 px-4 overflow-hidden whitespace-nowrap z-40">
           <div className="container mx-auto flex items-center gap-6 animate-marquee">
             <div className="flex items-center gap-3 text-[12px] md:text-[15px] font-black text-[#01a3a4] uppercase tracking-widest shrink-0">
               <Radio className="h-4 w-4 animate-pulse text-[#01a3a4]" /> LIVE STATUS:
