@@ -57,7 +57,7 @@ export const OrderModal = memo(({ product, isOpen, onClose }: OrderModalProps) =
 
   useEffect(() => {
     if (step === 'SUCCESS') {
-      const timer = setTimeout(() => onClose(), 3000);
+      const timer = setTimeout(() => onClose(), 5000);
       return () => clearTimeout(timer);
     }
   }, [step, onClose]);
@@ -102,7 +102,6 @@ export const OrderModal = memo(({ product, isOpen, onClose }: OrderModalProps) =
     const rawNumber = settings?.whatsappUrl || settings?.phone || '01700000000';
     let cleanPhone = rawNumber.replace(/[^0-9]/g, "");
     
-    // Add country code if missing
     if (cleanPhone.length === 11 && cleanPhone.startsWith('0')) {
       cleanPhone = '88' + cleanPhone;
     }
@@ -116,7 +115,7 @@ export const OrderModal = memo(({ product, isOpen, onClose }: OrderModalProps) =
       <DialogContent className={cn(
         "p-0 bg-white border-none rounded-none overflow-hidden gap-0 shadow-2xl fixed z-[150] outline-none",
         "left-[50%] top-[50%] translate-x-[-50%] translate-y-[-50%]",
-        step === 'SUCCESS' ? "max-w-[350px] w-[90vw]" : isMobile ? "w-full h-full" : "max-w-[700px] w-[95vw]"
+        step === 'SUCCESS' ? "max-w-[400px] w-[90vw]" : isMobile ? "w-full h-full" : "max-w-[700px] w-[95vw]"
       )}>
         <button 
           onClick={onClose}
@@ -204,15 +203,20 @@ export const OrderModal = memo(({ product, isOpen, onClose }: OrderModalProps) =
               </div>
             </div>
           ) : (
-            <div className="w-full p-8 text-center space-y-6 flex flex-col justify-center bg-white items-center min-h-[300px]">
+            <div className="w-full p-8 text-center space-y-6 flex flex-col justify-center bg-white items-center min-h-[350px]">
               <div className="relative">
-                <div className="w-16 h-16 bg-[#01a3a4]/5 rounded-full flex items-center justify-center mx-auto border-[3px] border-[#01a3a4] shadow-xl animate-in zoom-in-50 duration-700"><CheckCircle2 className="h-8 w-8 text-[#01a3a4]" /></div>
-                <PartyPopper className="absolute -top-3 -right-4 h-8 w-8 text-[#01a3a4] animate-bounce" />
+                <div className="w-20 h-20 bg-[#01a3a4]/5 rounded-full flex items-center justify-center mx-auto border-[3px] border-[#01a3a4] shadow-xl animate-in zoom-in-50 duration-700">
+                  <CheckCircle2 className="h-10 w-10 text-[#01a3a4]" />
+                </div>
+                <PartyPopper className="absolute -top-4 -right-5 h-10 w-10 text-[#01a3a4] animate-bounce" />
               </div>
-              <div className="space-y-3">
-                <DialogTitle className="text-3xl font-black text-black uppercase tracking-tighter leading-none font-headline">THANK YOU</DialogTitle>
-                <p className="text-[10px] font-black text-[#01a3a4] uppercase tracking-[0.3em]">অর্ডার সফল হয়েছে</p>
-                <p className="text-[12px] font-bold text-black leading-relaxed">আমাদের প্রতিনিধি আপনার সাথে যোগাযোগ করবে</p>
+              <div className="space-y-4">
+                <DialogTitle className="text-4xl font-black text-black uppercase tracking-tighter leading-none font-headline">THANK YOU</DialogTitle>
+                <div className="h-px w-12 bg-[#01a3a4] mx-auto" />
+                <p className="text-[14px] font-bold text-black leading-relaxed px-4">
+                  আমাদের ১ জন প্রতিনিধি যত দ্রুত সম্ভব আপনার সাথে যোগাযোগ করবে
+                </p>
+                <p className="text-[8px] font-black text-[#01a3a4] uppercase tracking-[0.4em]">SS SMART HAAT ENTERPRISE</p>
               </div>
             </div>
           )}
