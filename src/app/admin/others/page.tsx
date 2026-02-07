@@ -23,7 +23,8 @@ import {
   Share2,
   Contact2,
   Truck,
-  QrCode
+  QrCode,
+  MessageSquare
 } from 'lucide-react';
 import Link from 'next/link';
 import { useFirestore, useDoc, useMemoFirebase } from '@/firebase';
@@ -34,7 +35,7 @@ import { useToast } from '@/hooks/use-toast';
 export default function AdminOthers() {
   const db = useFirestore();
   const { toast } = useToast();
-  const settingsRef = useMemoFirebase(() => doc(db, 'settings', 'site-config'), [db]);
+  const settingsRef = useMemoFirebase(() => doc(db!, 'settings', 'site-config'), [db]);
   const { data: settings, isLoading } = useDoc(settingsRef);
 
   const [formData, setFormData] = useState({
@@ -46,7 +47,7 @@ export default function AdminOthers() {
     instagramUrl: '',
     twitterUrl: '',
     youtubeUrl: '',
-    whatsappUrl: '',
+    whatsappUrl: '', // This is our "CHAT LIVE" number
     qrCodeLink: '',
     deliveryChargeInside: '',
     deliveryChargeOutside: ''
@@ -73,7 +74,7 @@ export default function AdminOthers() {
 
   const handleSave = (e: React.FormEvent) => {
     e.preventDefault();
-    setDocumentNonBlocking(settingsRef, {
+    setDocumentNonBlocking(settingsRef!, {
       ...formData,
       deliveryChargeInside: parseFloat(formData.deliveryChargeInside),
       deliveryChargeOutside: parseFloat(formData.deliveryChargeOutside)
@@ -123,6 +124,21 @@ export default function AdminOthers() {
                 </CardTitle>
               </CardHeader>
               <CardContent className="p-8 space-y-6">
+                {/* NEW CHAT LIVE OPTION */}
+                <div className="space-y-2 p-4 bg-green-600/5 border border-green-600/20">
+                  <label className="text-[10px] font-black text-green-500 uppercase flex items-center gap-2">
+                    <MessageSquare className="h-3.5 w-3.5" /> CHAT LIVE (WHATSAPP NUMBER)
+                  </label>
+                  <Input 
+                    required
+                    value={formData.whatsappUrl}
+                    onChange={(e) => setFormData({...formData, whatsappUrl: e.target.value})}
+                    placeholder="E.G. 017XXXXXXXX"
+                    className="bg-black border-green-600/30 rounded-none h-12 text-sm font-black text-white focus:ring-green-500"
+                  />
+                  <p className="text-[8px] text-white/40 uppercase font-bold">THIS NUMBER WILL BE USED FOR ALL DIRECT CUSTOMER CHATS.</p>
+                </div>
+
                 <div className="space-y-2">
                   <label className="text-[10px] font-black text-muted-foreground uppercase flex items-center gap-2"><Mail className="h-3 w-3" /> EMAIL ADDRESS</label>
                   <Input 
@@ -202,10 +218,6 @@ export default function AdminOthers() {
                   <div className="space-y-2">
                     <label className="text-[9px] font-black text-muted-foreground uppercase flex items-center gap-2"><Instagram className="h-3 w-3 text-pink-500" /> INSTAGRAM URL</label>
                     <Input value={formData.instagramUrl} onChange={(e) => setFormData({...formData, instagramUrl: e.target.value})} className="bg-black border-white/10 h-11 text-[10px] font-bold" />
-                  </div>
-                  <div className="space-y-2">
-                    <label className="text-[9px] font-black text-muted-foreground uppercase flex items-center gap-2"><MessageCircle className="h-3 w-3 text-green-500" /> WHATSAPP URL</label>
-                    <Input value={formData.whatsappUrl} onChange={(e) => setFormData({...formData, whatsappUrl: e.target.value})} placeholder="HTTPS://WA.ME/..." className="bg-black border-white/10 h-11 text-[10px] font-bold" />
                   </div>
                   <div className="space-y-2">
                     <label className="text-[9px] font-black text-muted-foreground uppercase flex items-center gap-2"><Youtube className="h-3 w-3 text-red-500" /> YOUTUBE URL</label>

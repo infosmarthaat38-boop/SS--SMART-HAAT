@@ -92,13 +92,16 @@ export const OrderModal = memo(({ product, isOpen, onClose }: OrderModalProps) =
       createdAt: new Date().toISOString()
     };
 
-    addDocumentNonBlocking(collection(db!, 'orders'), orderData);
+    if (db) {
+      addDocumentNonBlocking(collection(db, 'orders'), orderData);
+    }
     setStep('SUCCESS');
   };
 
   const handleWhatsAppChat = () => {
-    const phone = settings?.whatsappUrl || settings?.phone || '+8801700000000';
-    const cleanPhone = phone.replace(/[^0-9]/g, "");
+    // Priority: CHAT LIVE number from settings, then general phone, then default
+    const chatNumber = settings?.whatsappUrl || settings?.phone || '01700000000';
+    const cleanPhone = chatNumber.replace(/[^0-9]/g, "");
     const message = `Hello SS SMART HAAT, I want to inquire about: ${product.name} (Price: ৳${product.price})`;
     window.open(`https://wa.me/${cleanPhone}?text=${encodeURIComponent(message)}`, '_blank');
   };
