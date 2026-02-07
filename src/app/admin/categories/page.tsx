@@ -2,7 +2,7 @@
 "use client";
 
 import React, { useState, useRef } from 'react';
-import { Navbar } from '@/components/Navbar';
+import { MainHeader } from '@/components/MainHeader';
 import { Footer } from '@/components/Footer';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -94,7 +94,7 @@ export default function AdminCategories() {
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
-      <Navbar />
+      <MainHeader />
       
       <main className="flex-grow container mx-auto px-4 py-12">
         <div className="flex items-center gap-4 mb-8">
@@ -148,7 +148,7 @@ export default function AdminCategories() {
       </main>
 
       <AlertDialog open={isAlertOpen} onOpenChange={setIsAlertOpen}>
-        <AlertDialogContent className="bg-black border-orange-600/30 rounded-none p-8 max-w-md relative">
+        <AlertDialogContent className="bg-black border-orange-600/30 rounded-none p-8 max-w-md relative fixed left-[50%] top-[50%] translate-x-[-50%] translate-y-[-50%]">
           <button 
             onClick={() => setIsAlertOpen(false)}
             className="absolute right-4 top-4 text-white/40 hover:text-white transition-colors"

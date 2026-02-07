@@ -1,7 +1,8 @@
+
 "use client";
 
 import React, { useState } from 'react';
-import { Navbar } from '@/components/Navbar';
+import { MainHeader } from '@/components/MainHeader';
 import { Footer } from '@/components/Footer';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from "@/components/ui/card";
@@ -261,7 +262,7 @@ export default function AdminOrders() {
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
-      <Navbar />
+      <MainHeader />
       
       <main className="flex-grow container mx-auto px-4 py-12">
         {/* NEW ORDER RED SIGNAL BANNER */}
@@ -368,7 +369,7 @@ export default function AdminOrders() {
                   <Badge className={`rounded-none text-[8px] font-black uppercase px-2 py-1 ${
                     order.status === 'PENDING' ? 'bg-red-600/20 text-red-600 border-red-600/30' : 
                     order.status === 'CONFIRMED' ? 'bg-blue-500/20 text-blue-500 border-blue-500/30' :
-                    order.status === 'CANCELLED' ? 'bg-red-500/20 text-red-500 border-red-500/30' :
+                    order.status === 'CANCELLED' ? 'bg-red-500/20 text-red-500 border-red-600/30' :
                     'bg-green-500/20 text-green-500 border-green-500/30'
                   } border`}>
                     {order.status}

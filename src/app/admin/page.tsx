@@ -1,8 +1,9 @@
+
 "use client";
 
 import React, { useMemo, useEffect, useState } from 'react';
 import Link from 'next/link';
-import { Navbar } from '@/components/Navbar';
+import { MainHeader } from '@/components/MainHeader';
 import { Footer } from '@/components/Footer';
 import { 
   ShoppingBag, 
@@ -131,7 +132,7 @@ export default function AdminPanel() {
 
   return (
     <div className="min-h-screen flex flex-col bg-background selection:bg-[#01a3a4]/30">
-      <Navbar />
+      <MainHeader />
       
       <main className="flex-grow container mx-auto px-4 py-8">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">

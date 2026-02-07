@@ -2,7 +2,7 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
-import { Navbar } from '@/components/Navbar';
+import { MainHeader } from '@/components/MainHeader';
 import { Footer } from '@/components/Footer';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -88,7 +88,7 @@ export default function AdminOthers() {
   if (isLoading) {
     return (
       <div className="min-h-screen flex flex-col bg-background">
-        <Navbar />
+        <MainHeader />
         <div className="flex-grow flex items-center justify-center">
           <Loader2 className="h-12 w-12 text-[#01a3a4] animate-spin" />
         </div>
@@ -99,7 +99,7 @@ export default function AdminOthers() {
 
   return (
     <div className="min-h-screen flex flex-col bg-background selection:bg-[#01a3a4]/30">
-      <Navbar />
+      <MainHeader />
       
       <main className="flex-grow container mx-auto px-4 py-12 max-w-6xl">
         <div className="flex items-center gap-4 mb-12">

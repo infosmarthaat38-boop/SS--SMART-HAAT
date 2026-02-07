@@ -2,7 +2,7 @@
 "use client";
 
 import React, { useState, useRef } from 'react';
-import { Navbar } from '@/components/Navbar';
+import { MainHeader } from '@/components/MainHeader';
 import { Footer } from '@/components/Footer';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -81,7 +81,7 @@ export default function FeaturedManager() {
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
-      <Navbar />
+      <MainHeader />
       
       <main className="flex-grow container mx-auto px-4 py-12">
         <div className="flex items-center gap-4 mb-12">
