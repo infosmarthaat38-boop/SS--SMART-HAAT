@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useState } from 'react';
@@ -72,14 +71,7 @@ export function LocationModal({ isOpen, onClose }: LocationModalProps) {
         setPassword('');
       }
     }}>
-      <DialogContent className="max-w-md bg-black border border-[#01a3a4]/30 rounded-none p-10 shadow-2xl relative">
-        <button 
-          onClick={onClose}
-          className="absolute right-4 top-4 z-50 text-white/40 hover:text-white transition-colors"
-        >
-          <X className="h-5 w-5" />
-        </button>
-
+      <DialogContent className="max-w-md bg-black border border-[#01a3a4]/30 rounded-none p-10 shadow-2xl fixed left-[50%] top-[50%] translate-x-[-50%] translate-y-[-50%]">
         <DialogHeader className="space-y-4 text-center">
           <div className="w-16 h-16 bg-[#01a3a4]/10 border border-[#01a3a4]/20 rounded-full flex items-center justify-center mx-auto mb-2">
             <Store className="h-8 w-8 text-[#01a3a4]" />
