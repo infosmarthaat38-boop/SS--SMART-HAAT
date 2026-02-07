@@ -9,7 +9,7 @@ import { Radio, MapPin } from 'lucide-react';
 
 /**
  * MainHeader - Combines Navbar and Live Status Bar with a fixed position.
- * Used across all pages for consistency.
+ * Shows both Live Status Message and Hub Location separately.
  */
 export function MainHeader() {
   const db = useFirestore();
@@ -21,6 +21,7 @@ export function MainHeader() {
 
   const broadcastColor = settings?.statusColor || '#ffffff';
   const liveLabel = settings?.liveStatusLabel || 'LIVE STATUS:';
+  const hubLocation = settings?.liveLocation || 'BANANI, DHAKA';
 
   return (
     <>
@@ -37,7 +38,9 @@ export function MainHeader() {
                 className="text-[10px] md:text-[14px] font-black uppercase tracking-[0.2em] flex items-center gap-6 shrink-0"
               >
                 {settings.liveStatus} <span className="text-[#01a3a4]/40">||</span> 
-                <MapPin className="h-3 w-3 text-[#01a3a4]" /> {settings.liveLocation || 'BANANI, DHAKA'}
+                <span className="flex items-center gap-2 text-white/60">
+                  <MapPin className="h-3 w-3 text-[#01a3a4]" /> HUB: {hubLocation}
+                </span>
               </p>
             </div>
           </div>

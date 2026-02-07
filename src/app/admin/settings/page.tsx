@@ -89,7 +89,7 @@ export default function AdminSettings() {
       liveStatus: statusData.liveStatus.toUpperCase(),
       statusColor: statusData.statusColor
     }, { merge: true });
-    toast({ title: "BROADCAST UPDATED" });
+    toast({ title: "SYSTEM BROADCAST UPDATED" });
     setStatusData(prev => ({ ...prev, verificationPassword: '' }));
   };
 
@@ -111,8 +111,13 @@ export default function AdminSettings() {
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="space-y-8 lg:col-span-1">
+            {/* ADMIN AUTH CARD */}
             <Card className="bg-card border-white/5 rounded-none shadow-2xl">
-              <CardHeader className="bg-white/[0.02] border-b border-white/5 p-6"><CardTitle className="text-xs font-black uppercase tracking-[0.3em] text-[#01a3a4] flex items-center gap-2"><ShieldCheck className="h-4 w-4" /> ADMIN AUTH</CardTitle></CardHeader>
+              <CardHeader className="bg-white/[0.02] border-b border-white/5 p-6">
+                <CardTitle className="text-xs font-black uppercase tracking-[0.3em] text-[#01a3a4] flex items-center gap-2">
+                  <ShieldCheck className="h-4 w-4" /> ADMIN AUTH
+                </CardTitle>
+              </CardHeader>
               <CardContent className="p-8">
                 <form onSubmit={handleSaveAdmin} className="space-y-6">
                   <div className="space-y-4">
@@ -133,31 +138,52 @@ export default function AdminSettings() {
               </CardContent>
             </Card>
 
+            {/* BROADCAST & HUB CARD - SEPARATED */}
             <Card className="bg-card border-white/5 rounded-none shadow-2xl">
-              <CardHeader className="bg-white/[0.02] border-b border-white/5 p-6"><CardTitle className="text-xs font-black uppercase tracking-[0.3em] text-[#01a3a4] flex items-center gap-2"><Zap className="h-4 w-4" /> BROADCAST & HUB</CardTitle></CardHeader>
+              <CardHeader className="bg-white/[0.02] border-b border-white/5 p-6">
+                <CardTitle className="text-xs font-black uppercase tracking-[0.3em] text-[#01a3a4] flex items-center gap-2">
+                  <Zap className="h-4 w-4" /> BROADCAST & HUB
+                </CardTitle>
+              </CardHeader>
               <CardContent className="p-8">
                 <form onSubmit={handleSaveStatus} className="space-y-6">
                   <div className="space-y-4">
-                    <div className="space-y-2 p-4 bg-white/5 border border-white/10">
-                      <label className="text-[9px] font-black text-[#01a3a4] uppercase flex items-center gap-2"><MapPin className="h-3 w-3 text-[#01a3a4]" /> HUB LOCATION</label>
-                      <Input value={statusData.liveLocation} onChange={(e) => setStatusData({...statusData, liveLocation: e.target.value})} placeholder="E.G. BANANI, DHAKA" className="bg-black border-white/10 rounded-none h-12 text-xs text-white uppercase" />
+                    {/* HUB LOCATION - CLEARLY SEPARATED */}
+                    <div className="space-y-2 p-4 bg-[#01a3a4]/5 border border-[#01a3a4]/20">
+                      <label className="text-[9px] font-black text-[#01a3a4] uppercase flex items-center gap-2">
+                        <MapPin className="h-3 w-3 text-[#01a3a4]" /> HUB LOCATION (PERMANENT)
+                      </label>
+                      <Input 
+                        required
+                        value={statusData.liveLocation} 
+                        onChange={(e) => setStatusData({...statusData, liveLocation: e.target.value})} 
+                        placeholder="E.G. BANANI, DHAKA" 
+                        className="bg-black border-white/10 rounded-none h-12 text-xs text-white uppercase focus:ring-[#01a3a4]" 
+                      />
+                      <p className="text-[7px] text-white/30 uppercase font-bold">This is your main business location shown across the site.</p>
                     </div>
 
-                    <div className="space-y-2">
-                      <label className="text-[9px] font-black text-muted-foreground uppercase">LIVE LABEL</label>
-                      <Input value={statusData.liveStatusLabel} onChange={(e) => setStatusData({...statusData, liveStatusLabel: e.target.value})} className="bg-black border-white/10 rounded-none h-12 text-xs text-white uppercase" />
+                    <div className="space-y-2 pt-2">
+                      <label className="text-[9px] font-black text-muted-foreground uppercase flex items-center gap-2">
+                        <Radio className="h-3 w-3 text-[#01a3a4]" /> LIVE BROADCAST MESSAGE
+                      </label>
+                      <Input value={statusData.liveStatus} onChange={(e) => setStatusData({...statusData, liveStatus: e.target.value})} placeholder="E.G. NEW ARRIVAL IS LIVE!" className="bg-black border-white/10 rounded-none h-12 text-xs text-white uppercase" />
                     </div>
-                    <div className="space-y-2">
-                      <label className="text-[9px] font-black text-muted-foreground uppercase">MESSAGE</label>
-                      <Input value={statusData.liveStatus} onChange={(e) => setStatusData({...statusData, liveStatus: e.target.value})} className="bg-black border-white/10 rounded-none h-12 text-xs text-white uppercase" />
-                    </div>
-                    <div className="space-y-2">
-                      <label className="text-[9px] font-black text-muted-foreground uppercase">STATUS COLOR</label>
-                      <div className="flex gap-3">
-                        <Input type="color" value={statusData.statusColor} onChange={(e) => setStatusData({...statusData, statusColor: e.target.value})} className="w-12 h-12 p-1 bg-black border-white/10 cursor-pointer" />
-                        <Input value={statusData.statusColor} onChange={(e) => setStatusData({...statusData, statusColor: e.target.value})} className="bg-black border-white/10 h-12 text-xs text-white font-mono uppercase" />
+
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <label className="text-[9px] font-black text-muted-foreground uppercase">LABEL</label>
+                        <Input value={statusData.liveStatusLabel} onChange={(e) => setStatusData({...statusData, liveStatusLabel: e.target.value})} className="bg-black border-white/10 rounded-none h-12 text-xs text-white uppercase" />
+                      </div>
+                      <div className="space-y-2">
+                        <label className="text-[9px] font-black text-muted-foreground uppercase">COLOR</label>
+                        <div className="flex gap-2">
+                          <Input type="color" value={statusData.statusColor} onChange={(e) => setStatusData({...statusData, statusColor: e.target.value})} className="w-12 h-12 p-1 bg-black border-white/10 cursor-pointer" />
+                          <Input value={statusData.statusColor} onChange={(e) => setStatusData({...statusData, statusColor: e.target.value})} className="bg-black border-white/10 h-12 text-[10px] text-white font-mono uppercase" />
+                        </div>
                       </div>
                     </div>
+
                     <div className="space-y-2 pt-4 border-t border-white/5">
                       <label className="text-[9px] font-black text-orange-500 uppercase flex items-center gap-2"><Lock className="h-3 w-3" /> VERIFY PASSWORD TO PUSH</label>
                       <Input type="password" value={statusData.verificationPassword} onChange={(e) => setStatusData({...statusData, verificationPassword: e.target.value})} className="bg-black border-orange-500/20 rounded-none h-12 text-xs text-white" />
@@ -170,8 +196,13 @@ export default function AdminSettings() {
           </div>
 
           <div className="space-y-8 lg:col-span-2">
+            {/* MOBILE PREVIEW CARD - UPDATED FOR REAL-TIME RENDERING */}
             <Card className="bg-card border-white/5 rounded-none shadow-2xl overflow-hidden">
-              <CardHeader className="bg-white/[0.02] border-b border-white/5 p-6"><CardTitle className="text-xs font-black uppercase tracking-[0.3em] text-[#01a3a4] flex items-center gap-2"><Smartphone className="h-4 w-4" /> MOBILE LIVE DISPLAY PREVIEW</CardTitle></CardHeader>
+              <CardHeader className="bg-white/[0.02] border-b border-white/5 p-6">
+                <CardTitle className="text-xs font-black uppercase tracking-[0.3em] text-[#01a3a4] flex items-center gap-2">
+                  <Smartphone className="h-4 w-4" /> MOBILE LIVE DISPLAY PREVIEW
+                </CardTitle>
+              </CardHeader>
               <CardContent className="p-10 flex flex-col items-center justify-center bg-[#050505] min-h-[600px]">
                 <div className="w-full max-w-[300px] aspect-[9/16] bg-black border-[10px] border-[#1a1a1a] rounded-[35px] relative overflow-hidden flex flex-col shadow-[0_0_50px_rgba(1,163,164,0.15)] scale-100 ring-4 ring-[#01a3a4]/10">
                   {/* Simulator Screen Top */}
@@ -237,24 +268,37 @@ export default function AdminSettings() {
             </Card>
 
             <Card className="bg-card border-white/5 rounded-none shadow-2xl">
-              <CardHeader className="bg-white/[0.02] border-b border-white/5 p-6"><CardTitle className="text-xs font-black uppercase tracking-[0.3em] text-[#01a3a4] flex items-center gap-2"><BookOpen className="h-4 w-4" /> ওয়েবসাইট পাবলিশ গাইড (বিস্তারিত)</CardTitle></CardHeader>
+              <CardHeader className="bg-white/[0.02] border-b border-white/5 p-6">
+                <CardTitle className="text-xs font-black uppercase tracking-[0.3em] text-[#01a3a4] flex items-center gap-2">
+                  <BookOpen className="h-4 w-4" /> ওয়েবসাইট পাবলিশ গাইড (বিস্তারিত)
+                </CardTitle>
+              </CardHeader>
               <CardContent className="p-8 space-y-8">
                 <div className="space-y-4">
-                  <div className="flex items-center gap-3 text-[#01a3a4]"><Github className="h-5 w-5" /><h3 className="text-lg font-black uppercase">ধাপ ১: কোড সিঙ্ক (GitHub Push)</h3></div>
+                  <div className="flex items-center gap-3 text-[#01a3a4]">
+                    <Github className="h-5 w-5" />
+                    <h3 className="text-lg font-black uppercase">ধাপ ১: কোড সিঙ্ক (GitHub Push)</h3>
+                  </div>
                   <p className="text-[11px] text-white/60 uppercase font-bold leading-relaxed">
                     আপনার লোকাল কম্পিউটারে করা কোড পরিবর্তনগুলো স্থায়ীভাবে সেভ করতে গিটহাবে 'Push' করুন। এটি আপনার সমস্ত ফাইল ক্লাউড স্টোরেজে ব্যাকআপ হিসেবে রাখে এবং ওয়েবসাইট আপডেটের জন্য মূল ভিত্তি হিসেবে কাজ করে।
                   </p>
                 </div>
                 
                 <div className="space-y-4 pt-6 border-t border-white/5">
-                  <div className="flex items-center gap-3 text-[#01a3a4]"><Globe className="h-5 w-5" /><h3 className="text-lg font-black uppercase">ধাপ ২: হোস্টিং কানেকশন (Vercel/Firebase)</h3></div>
+                  <div className="flex items-center gap-3 text-[#01a3a4]">
+                    <Globe className="h-5 w-5" />
+                    <h3 className="text-lg font-black uppercase">ধাপ ২: হোস্টিং কানেকশন (Vercel/Firebase)</h3>
+                  </div>
                   <p className="text-[11px] text-white/60 uppercase font-bold leading-relaxed">
                     আপনার গিটহাব রিপোজিটরিটি Vercel অথবা Firebase App Hosting-এর সাথে কানেক্ট করুন। এটি একবার সেটআপ করে রাখলেই হবে। হোস্টিং সার্ভিসটি আপনার গিটহাবের ফাইলের দিকে নজর রাখবে।
                   </p>
                 </div>
 
                 <div className="space-y-4 pt-6 border-t border-white/5">
-                  <div className="flex items-center gap-3 text-orange-500"><Zap className="h-5 w-5" /><h3 className="text-lg font-black uppercase">ধাপ ৩: অটো-লাইভ আপডেট (Continuous Deploy)</h3></div>
+                  <div className="flex items-center gap-3 text-orange-500">
+                    <Zap className="h-5 w-5" />
+                    <h3 className="text-lg font-black uppercase">ধাপ ৩: অটো-লাইভ আপডেট (Continuous Deploy)</h3>
+                  </div>
                   <p className="text-[11px] text-white/60 uppercase font-bold leading-relaxed">
                     একবার ডেপ্লয়মেন্ট সেটআপ হয়ে গেলে, আপনি যখনই কোড পরিবর্তন করে গিটহাবে পুশ করবেন, হোস্টিং সার্ভিসটি সেটি সাথে সাথে শনাক্ত করবে এবং কয়েক সেকেন্ডের মধ্যেই ওয়েবসাইটটি অটোমেটিক লাইভ আপডেট করে দেবে। আলাদা করে কোনো ফাইল আপলোড করার প্রয়োজন পড়বে না।
                   </p>
