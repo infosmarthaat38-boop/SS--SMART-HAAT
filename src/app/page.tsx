@@ -202,8 +202,8 @@ export default function Home() {
 
   return (
     <div className="min-h-screen flex flex-col bg-background selection:bg-primary/30">
-      {/* STICKY HEADER SECTION (NAVBAR + LIVE STATUS) */}
-      <div className="sticky top-0 z-50 shadow-2xl">
+      {/* ULTIMATE STICKY HEADER WRAPPER */}
+      <div className="sticky top-0 z-[100] shadow-2xl bg-black">
         <Navbar />
         {settings?.liveStatus && (
           <div className="bg-black border-b border-[#01a3a4]/20 py-1.5 px-4 overflow-hidden whitespace-nowrap">

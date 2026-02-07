@@ -66,7 +66,7 @@ export function Navbar() {
 
   if (!isMounted) {
     return (
-      <nav className="sticky top-0 z-50 w-full bg-[#01a3a4] py-2 h-16 shadow-lg">
+      <nav className="w-full bg-[#01a3a4] py-2 h-16 shadow-lg">
         <div className="container mx-auto px-4 flex items-center">
           <LogoIcon />
         </div>
@@ -76,7 +76,7 @@ export function Navbar() {
 
   return (
     <>
-      <nav className="sticky top-0 z-50 w-full bg-[#01a3a4] shadow-lg border-b border-black/10 py-2">
+      <nav className="w-full bg-[#01a3a4] shadow-lg border-b border-black/10 py-2">
         <div className="container mx-auto px-4">
           <div className="flex items-center justify-between gap-2 h-12">
             
@@ -130,7 +130,7 @@ export function Navbar() {
                   <MapPin className="h-3.5 w-3.5" /> {language === 'EN' ? "LOCATION" : "লোকেশন"}
                 </button>
 
-                {/* 3-DOT MENU (NOTIFICATION BUBBLE REMOVED FROM TOP) */}
+                {/* 3-DOT MENU */}
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button variant="ghost" size="icon" className="h-9 w-9 text-white hover:bg-black/10 rounded-none border border-white/20 flex items-center justify-center">

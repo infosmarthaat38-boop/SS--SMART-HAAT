@@ -70,7 +70,6 @@ export default function AdminSettings() {
     e.preventDefault();
     if (!settingsRef) return;
     
-    // DIRECT FIREBASE UPDATE FOR CREDENTIALS (CASE SENSITIVE)
     setDocumentNonBlocking(settingsRef, {
       adminUsername: adminData.adminUsername,
       adminPassword: adminData.adminPassword
@@ -140,7 +139,6 @@ export default function AdminSettings() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           
           <div className="space-y-8 lg:col-span-1">
-            {/* ADMIN AUTH */}
             <Card className="bg-card border-white/5 rounded-none shadow-2xl overflow-hidden">
               <CardHeader className="bg-white/[0.02] border-b border-white/5 p-6">
                 <CardTitle className="text-xs font-black uppercase tracking-[0.3em] text-[#01a3a4] flex items-center gap-2">
@@ -192,7 +190,6 @@ export default function AdminSettings() {
               </CardContent>
             </Card>
 
-            {/* LOCATION & STATUS */}
             <Card className="bg-card border-white/5 rounded-none shadow-2xl overflow-hidden">
               <CardHeader className="bg-white/[0.02] border-b border-white/5 p-6">
                 <CardTitle className="text-xs font-black uppercase tracking-[0.3em] text-[#01a3a4] flex items-center gap-2">
@@ -249,7 +246,6 @@ export default function AdminSettings() {
           </div>
 
           <div className="space-y-8 lg:col-span-2">
-            {/* MOBILE SCREEN PREVIEW SECTION */}
             <Card className="bg-card border-white/5 rounded-none shadow-2xl overflow-hidden">
               <CardHeader className="bg-white/[0.02] border-b border-white/5 p-6">
                 <CardTitle className="text-xs font-black uppercase tracking-[0.3em] text-[#01a3a4] flex items-center gap-2">
@@ -257,14 +253,10 @@ export default function AdminSettings() {
                 </CardTitle>
               </CardHeader>
               <CardContent className="p-8 flex flex-col md:flex-row items-center justify-center gap-12">
-                {/* IPHONE STYLE MOCKUP */}
                 <div className="relative w-[300px] h-[600px] bg-black rounded-[3rem] border-[12px] border-zinc-900 shadow-2xl overflow-hidden shrink-0">
-                  {/* Speaker Grill */}
                   <div className="absolute top-0 left-1/2 -translate-x-1/2 w-32 h-6 bg-zinc-900 rounded-b-2xl z-30 flex items-center justify-center">
                     <div className="w-12 h-1 bg-zinc-950 rounded-full" />
                   </div>
-                  
-                  {/* Live Iframe Content */}
                   <div className="absolute inset-0 pt-6">
                     <iframe 
                       src="/" 

@@ -51,12 +51,10 @@ export function AdminLoginModal({ isOpen, onClose }: AdminLoginModalProps) {
     setLoading(true);
     setError('');
 
-    // SYNC WITH FIREBASE DATA OR DEFAULTS
     const validUser = settings?.adminUsername || 'ADMIN';
     const validPass = settings?.adminPassword || '4321';
 
     setTimeout(() => {
-      // Direct case-sensitive comparison
       if (username === validUser && password === validPass) {
         const today = new Date().toISOString().split('T')[0];
         if (db) {
@@ -93,24 +91,16 @@ export function AdminLoginModal({ isOpen, onClose }: AdminLoginModalProps) {
         </DialogHeader>
 
         <form onSubmit={handleLogin} className="space-y-6 mt-6" autoComplete="off">
-          <input type="text" style={{ display: 'none' }} name="dummy_username_99" />
-          <input type="password" style={{ display: 'none' }} name="dummy_password_99" />
-          
           <div className="space-y-4">
             <div className="space-y-2">
               <label className="text-[10px] font-black text-muted-foreground uppercase flex items-center gap-2">
                 <User className="h-3 w-3" /> USERNAME
               </label>
               <Input 
-                id="sys_admin_u_field"
-                name="sys_admin_u_field"
                 required
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 placeholder="ENTER USERNAME"
-                autoComplete="off"
-                spellCheck={false}
-                data-lpignore="true"
                 className="bg-white/5 border-white/10 rounded-none h-12 text-sm focus:ring-[#01a3a4] text-white"
               />
             </div>
@@ -121,15 +111,11 @@ export function AdminLoginModal({ isOpen, onClose }: AdminLoginModalProps) {
               </label>
               <div className="relative">
                 <Input 
-                  id="sys_admin_p_field"
-                  name="sys_admin_p_field"
                   required
                   type={showPassword ? "text" : "password"}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••"
-                  autoComplete="new-password"
-                  data-lpignore="true"
                   className="bg-white/5 border-white/10 rounded-none h-12 text-sm focus:ring-[#01a3a4] tracking-widest text-white pr-10"
                 />
                 <button 
