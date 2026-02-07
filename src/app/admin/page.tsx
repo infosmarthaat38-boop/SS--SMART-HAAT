@@ -12,7 +12,6 @@ import {
   Sparkles, 
   Layers, 
   ChevronRight,
-  MessageSquare,
   TrendingUp,
   Users,
   Zap,
@@ -120,7 +119,6 @@ export default function AdminPanel() {
   const quickLinks = [
     { title: "FEATURED CONTENT", icon: Zap, href: "/admin/featured" },
     { title: "ORDER INTELLIGENCE", icon: ShoppingBag, href: "/admin/orders" },
-    { title: "LIVE MESSAGE CENTER", icon: MessageSquare, href: "/admin/messages" },
     { title: "PRODUCT INVENTORY", icon: Package, href: "/admin/products" },
     { title: "SYSTEM STRUCTURE", icon: Layers, href: "/admin/categories" },
     { title: "OTHERS CONFIG", icon: LinkIcon, href: "/admin/others" },

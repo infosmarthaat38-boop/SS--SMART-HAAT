@@ -1,4 +1,3 @@
-
 {
   "entities": {
     "Product": {
@@ -55,20 +54,6 @@
       },
       "required": ["customerName", "customerPhone", "customerAddress", "productId", "status", "quantity"]
     },
-    "Message": {
-      "title": "Message",
-      "type": "object",
-      "description": "A real-time chat message between customer and admin.",
-      "properties": {
-        "orderId": { "type": "string" },
-        "customerId": { "type": "string" },
-        "customerName": { "type": "string" },
-        "text": { "type": "string" },
-        "sender": { "type": "string", "enum": ["CUSTOMER", "ADMIN"] },
-        "createdAt": { "type": "string", "format": "date-time" }
-      },
-      "required": ["orderId", "text", "sender", "createdAt"]
-    },
     "SiteSettings": {
       "title": "SiteSettings",
       "type": "object",
@@ -109,7 +94,6 @@
     "/products/{productId}": { "schema": { "$ref": "#/backend/entities/Product" }, "description": "Stores product information." },
     "/categories/{categoryId}": { "schema": { "$ref": "#/backend/entities/Category" }, "description": "Stores product categories." },
     "/orders/{orderId}": { "schema": { "$ref": "#/backend/entities/Order" }, "description": "Stores customer orders." },
-    "/messages/{messageId}": { "schema": { "$ref": "#/backend/entities/Message" }, "description": "Stores chat messages." },
     "/settings/{settingId}": { "schema": { "$ref": "#/backend/entities/SiteSettings" }, "description": "Global site settings document." },
     "/loginStats/{date}": { "schema": { "$ref": "#/backend/entities/LoginStats" }, "description": "Stores daily login counts." }
   }
