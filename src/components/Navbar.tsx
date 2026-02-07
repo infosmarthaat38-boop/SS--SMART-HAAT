@@ -41,7 +41,7 @@ export function Navbar() {
     if (storedLang) setLanguage(storedLang);
   }, []);
 
-  // Notification Query: Always fetch pending orders for the badge
+  // REAL-TIME NOTIFICATION QUERY
   const pendingOrdersQuery = useMemoFirebase(() => {
     if (!db) return null;
     return query(
@@ -130,6 +130,7 @@ export function Navbar() {
                   <MapPin className="h-3.5 w-3.5" /> {language === 'EN' ? "LOCATION" : "লোকেশন"}
                 </button>
 
+                {/* NOTIFICATION TRIGGER ON 3-DOT MENU */}
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button variant="ghost" size="icon" className="relative h-9 w-9 text-white hover:bg-black/10 rounded-none border border-white/20 flex items-center justify-center group">

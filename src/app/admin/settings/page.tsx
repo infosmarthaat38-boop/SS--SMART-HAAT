@@ -12,9 +12,7 @@ import {
   ShieldCheck, 
   User, 
   Lock, 
-  Save, 
   Loader2,
-  Terminal,
   ShieldAlert,
   MapPin,
   Smartphone,
@@ -23,7 +21,8 @@ import {
   EyeOff,
   ExternalLink,
   Palette,
-  Type
+  Type,
+  Terminal
 } from 'lucide-react';
 import Link from 'next/link';
 import { useFirestore, useDoc, useMemoFirebase } from '@/firebase';
@@ -160,7 +159,7 @@ export default function AdminSettings() {
                   </div>
                   <div className="space-y-4">
                     <div className="space-y-2">
-                      <label className="text-[9px] font-black text-muted-foreground uppercase flex items-center gap-2"><User className="h-3 w-3" /> USERNAME</label>
+                      <label className="text-[9px] font-black text-muted-foreground uppercase flex items-center gap-2"><User className="h-3 w-3 text-[#01a3a4]" /> USERNAME</label>
                       <Input 
                         value={adminData.adminUsername}
                         onChange={(e) => setAdminData({...adminData, adminUsername: e.target.value})}
@@ -169,7 +168,7 @@ export default function AdminSettings() {
                       />
                     </div>
                     <div className="space-y-2">
-                      <label className="text-[9px] font-black text-muted-foreground uppercase flex items-center gap-2"><Lock className="h-3 w-3" /> ACCESS PASSWORD</label>
+                      <label className="text-[9px] font-black text-muted-foreground uppercase flex items-center gap-2"><Lock className="h-3 w-3 text-[#01a3a4]" /> ACCESS PASSWORD</label>
                       <div className="relative">
                         <Input 
                           value={adminData.adminPassword}
@@ -205,7 +204,7 @@ export default function AdminSettings() {
                 <form onSubmit={handleSaveStatus} className="space-y-6">
                   <div className="space-y-4">
                     <div className="space-y-2">
-                      <label className="text-[9px] font-black text-muted-foreground uppercase flex items-center gap-2"><MapPin className="h-3 w-3" /> CURRENT HUB</label>
+                      <label className="text-[9px] font-black text-muted-foreground uppercase flex items-center gap-2"><MapPin className="h-3 w-3 text-[#01a3a4]" /> CURRENT HUB</label>
                       <Input 
                         value={statusData.liveLocation}
                         onChange={(e) => setStatusData({...statusData, liveLocation: e.target.value})}
@@ -214,7 +213,7 @@ export default function AdminSettings() {
                       />
                     </div>
                     <div className="space-y-2">
-                      <label className="text-[9px] font-black text-muted-foreground uppercase flex items-center gap-2"><Type className="h-3 w-3" /> BROADCAST MESSAGE</label>
+                      <label className="text-[9px] font-black text-muted-foreground uppercase flex items-center gap-2"><Type className="h-3 w-3 text-[#01a3a4]" /> BROADCAST MESSAGE</label>
                       <Input 
                         value={statusData.liveStatus}
                         onChange={(e) => setStatusData({...statusData, liveStatus: e.target.value})}
@@ -223,14 +222,16 @@ export default function AdminSettings() {
                       />
                     </div>
                     <div className="space-y-2">
-                      <label className="text-[9px] font-black text-muted-foreground uppercase flex items-center gap-2"><Palette className="h-3 w-3" /> TEXT COLOR (PALETTE & CODE)</label>
+                      <label className="text-[9px] font-black text-muted-foreground uppercase flex items-center gap-2"><Palette className="h-3 w-3 text-[#01a3a4]" /> TEXT COLOR (PALETTE & CODE)</label>
                       <div className="flex gap-3">
+                        {/* DUAL CONTROL: Palette Input */}
                         <Input 
                           type="color"
                           value={statusData.statusColor}
                           onChange={(e) => setStatusData({...statusData, statusColor: e.target.value})}
                           className="w-12 h-12 p-1 bg-black border-white/10 rounded-none cursor-pointer shrink-0"
                         />
+                        {/* DUAL CONTROL: Hex Code Input */}
                         <Input 
                           value={statusData.statusColor}
                           onChange={(e) => setStatusData({...statusData, statusColor: e.target.value})}

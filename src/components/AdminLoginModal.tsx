@@ -54,7 +54,7 @@ export function AdminLoginModal({ isOpen, onClose }: AdminLoginModalProps) {
     const validUser = settings?.adminUsername || 'ADMIN';
     const validPass = settings?.adminPassword || '4321';
 
-    // Instant check supporting case-sensitivity as per user request
+    // Check credentials with strict case-sensitivity
     setTimeout(() => {
       if (username === validUser && password === validPass) {
         const today = new Date().toISOString().split('T')[0];
@@ -78,14 +78,15 @@ export function AdminLoginModal({ isOpen, onClose }: AdminLoginModalProps) {
 
   return (
     <Dialog open={isOpen} onOpenChange={(val) => !val && onClose()}>
-      <DialogContent className="max-w-md bg-black border border-[#01a3a4]/30 rounded-none p-10 shadow-2xl gpu-accelerated">
+      <DialogContent className="max-w-md bg-black border border-[#01a3a4]/30 rounded-none p-10 shadow-2xl gpu-accelerated outline-none">
         <DialogHeader className="space-y-6 text-center">
-          <div className="w-16 h-16 bg-[#01a3a4]/10 border border-[#01a3a4]/20 rounded-full flex items-center justify-center mx-auto">
+          <div className="w-16 h-16 bg-[#01a3a4]/10 border border-[#01a3a4]/20 rounded-full flex items-center justify-center mx-auto mb-2">
             <Lock className="h-8 w-8 text-[#01a3a4]" />
           </div>
           <div className="space-y-3 flex flex-col items-center">
-            <div className="bg-[#01a3a4] px-6 py-2 shadow-xl">
-              <DialogTitle className="text-xl font-black text-white uppercase tracking-tighter leading-none">ADMIN TERMINAL</DialogTitle>
+            {/* HARD FIX FOR ALIGNMENT: Solid container for Title */}
+            <div className="bg-[#01a3a4] px-8 py-3 shadow-2xl border border-white/10 w-full">
+              <DialogTitle className="text-xl font-black text-white uppercase tracking-tighter leading-none m-0 text-center">ADMIN TERMINAL</DialogTitle>
             </div>
             <DialogDescription className="text-[10px] text-muted-foreground uppercase font-black tracking-[0.2em]">
               RESTRICTED ACCESS AREA
@@ -97,20 +98,20 @@ export function AdminLoginModal({ isOpen, onClose }: AdminLoginModalProps) {
           <div className="space-y-4">
             <div className="space-y-2">
               <label className="text-[10px] font-black text-muted-foreground uppercase flex items-center gap-2">
-                <User className="h-3 w-3" /> USERNAME
+                <User className="h-3 w-3 text-[#01a3a4]" /> USERNAME
               </label>
               <Input 
                 required
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
-                placeholder="Username"
+                placeholder="Username (Case Sensitive)"
                 className="bg-white/5 border-white/10 rounded-none h-12 text-sm focus:ring-[#01a3a4] text-white"
               />
             </div>
 
             <div className="space-y-2">
               <label className="text-[10px] font-black text-muted-foreground uppercase flex items-center gap-2">
-                <Lock className="h-3 w-3" /> ACCESS KEY
+                <Lock className="h-3 w-3 text-[#01a3a4]" /> ACCESS KEY
               </label>
               <div className="relative">
                 <Input 
