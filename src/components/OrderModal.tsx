@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useState, useEffect, memo } from 'react';
@@ -114,21 +115,20 @@ export const OrderModal = memo(({ product, isOpen, onClose }: OrderModalProps) =
       <DialogContent className={cn(
         "p-0 bg-white border-none rounded-none overflow-hidden gap-0 shadow-2xl transition-all duration-300 fixed z-[150] outline-none",
         "left-[50%] top-[50%] translate-x-[-50%] translate-y-[-50%]",
-        step === 'SUCCESS' ? "max-w-[350px] w-[90vw]" : isMobile ? "w-full h-full" : "max-w-[700px] w-[95vw] h-auto"
+        step === 'SUCCESS' ? "max-w-[350px] w-[90vw]" : isMobile ? "w-full h-full" : "max-w-[750px] w-[95vw] h-auto"
       )}>
         <button 
           onClick={onClose}
           className="absolute right-3 top-3 z-[200] p-1.5 bg-black text-white hover:bg-[#01a3a4] transition-all border border-white/10 shadow-xl"
         >
-          <X className="h-5 w-5" />
+          <X className="h-4 w-4" />
         </button>
 
-        <div className="flex flex-col h-full max-h-[95vh] relative no-scrollbar">
+        <div className="flex flex-col h-full max-h-[90vh] relative no-scrollbar">
           {step === 'FORM' ? (
             <div className="flex flex-col md:flex-row h-full overflow-hidden">
-              
               {!isMobile && (
-                <div className="md:w-[240px] bg-gray-50 border-r border-gray-100 p-6 flex flex-col shrink-0">
+                <div className="md:w-[280px] bg-gray-50 border-r border-gray-100 p-5 flex flex-col shrink-0">
                   <div className="relative w-full aspect-square border-2 border-white mb-4 bg-white shadow-lg overflow-hidden group">
                     <Image 
                       src={product.imageUrl} 
@@ -138,77 +138,77 @@ export const OrderModal = memo(({ product, isOpen, onClose }: OrderModalProps) =
                       priority 
                     />
                   </div>
-                  <div className="w-full space-y-4">
+                  <div className="w-full space-y-3">
                     <div className="space-y-1">
-                      <h3 className="text-sm font-black text-black uppercase tracking-tighter leading-tight font-headline line-clamp-2">{product.name}</h3>
-                      <div className="text-[#01a3a4] font-black text-xl flex items-baseline">
-                        <span className="text-[10px] font-normal mr-0.5 translate-y-[-3px] text-gray-400">৳</span>
+                      <h3 className="text-xs font-black text-black uppercase tracking-tighter leading-tight font-headline line-clamp-2">{product.name}</h3>
+                      <div className="text-[#01a3a4] font-black text-lg flex items-baseline">
+                        <span className="text-[9px] font-normal mr-0.5 translate-y-[-2px] text-gray-400">৳</span>
                         {product.price.toLocaleString()}
                       </div>
                     </div>
-                    <div className="p-3 bg-white border border-gray-100 shadow-sm space-y-2">
+                    <div className="p-3 bg-white border border-gray-100 shadow-sm space-y-1.5">
                        <div className="flex items-center gap-2 text-[#01a3a4] mb-0.5">
-                         <Truck className="h-4 w-4" />
-                         <span className="text-[8px] font-black uppercase tracking-widest">ডেলিভারি চার্জ</span>
+                         <Truck className="h-3 w-3" />
+                         <span className="text-[7px] font-black uppercase tracking-widest">ডেলিভারি চার্জ</span>
                        </div>
-                       <p className="text-[10px] font-black text-black uppercase">ঢাকার ভিতরে: <span className="text-[#01a3a4]">৳{settings?.deliveryChargeInside || '60'}</span></p>
-                       <p className="text-[10px] font-black text-black uppercase">ঢাকার বাহিরে: <span className="text-[#01a3a4]">৳{settings?.deliveryChargeOutside || '120'}</span></p>
+                       <p className="text-[9px] font-black text-black uppercase">ঢাকার ভিতরে: <span className="text-[#01a3a4]">৳{settings?.deliveryChargeInside || '60'}</span></p>
+                       <p className="text-[9px] font-black text-black uppercase">ঢাকার বাহিরে: <span className="text-[#01a3a4]">৳{settings?.deliveryChargeOutside || '120'}</span></p>
                     </div>
                   </div>
                 </div>
               )}
 
               <div className={cn(
-                "flex-grow p-6 md:p-8 space-y-4 bg-white overflow-y-auto relative no-scrollbar",
-                !isMobile && "md:w-[460px]"
+                "flex-grow p-5 md:p-7 space-y-4 bg-white overflow-y-auto relative no-scrollbar",
+                !isMobile && "md:w-[470px]"
               )}>
                 <div className="space-y-1">
                   <div className="flex items-center gap-3">
-                    <div className="h-8 w-1.5 bg-[#01a3a4]" />
-                    <DialogTitle className="text-xl md:text-2xl font-black text-black uppercase tracking-tighter leading-none font-headline">ORDER NOW</DialogTitle>
+                    <div className="h-6 w-1 bg-[#01a3a4]" />
+                    <DialogTitle className="text-lg md:text-xl font-black text-black uppercase tracking-tighter leading-none font-headline">ORDER NOW</DialogTitle>
                   </div>
-                  <DialogDescription className="text-[8px] font-black text-gray-400 uppercase tracking-[0.3em] pl-4">PREMIUM SECURE CHECKOUT</DialogDescription>
+                  <DialogDescription className="text-[7px] font-black text-gray-400 uppercase tracking-[0.3em] pl-4">PREMIUM SECURE CHECKOUT</DialogDescription>
                 </div>
 
-                <form onSubmit={handleSubmit} className="space-y-4">
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <label className="text-[9px] font-black text-gray-400 uppercase tracking-widest flex items-center gap-2"><Ruler className="h-4 w-4 text-[#01a3a4]" /> SIZE</label>
-                      <div className="flex flex-wrap gap-1.5">
+                <form onSubmit={handleSubmit} className="space-y-3.5">
+                  <div className="grid grid-cols-2 gap-3">
+                    <div className="space-y-1.5">
+                      <label className="text-[8px] font-black text-gray-400 uppercase tracking-widest flex items-center gap-2"><Ruler className="h-3 w-3 text-[#01a3a4]" /> SIZE</label>
+                      <div className="flex flex-wrap gap-1">
                         {product?.sizes?.length > 0 ? product.sizes.map((size: string) => (
-                          <button key={size} type="button" onClick={() => setFormData({...formData, selectedSize: size})} className={cn("px-2.5 py-1.5 border-2 text-[10px] font-black uppercase transition-all min-w-[40px]", formData.selectedSize === size ? 'bg-[#01a3a4] border-[#01a3a4] text-white' : 'bg-gray-50 border-gray-100 text-gray-400 hover:border-[#01a3a4]')}>{size}</button>
-                        )) : <span className="text-[9px] font-black text-gray-400 uppercase italic">Standard</span>}
+                          <button key={size} type="button" onClick={() => setFormData({...formData, selectedSize: size})} className={cn("px-2 py-1 border-2 text-[9px] font-black uppercase transition-all min-w-[35px]", formData.selectedSize === size ? 'bg-[#01a3a4] border-[#01a3a4] text-white' : 'bg-gray-50 border-gray-100 text-gray-400 hover:border-[#01a3a4]')}>{size}</button>
+                        )) : <span className="text-[8px] font-black text-gray-400 uppercase italic">Standard</span>}
                       </div>
                     </div>
-                    <div className="space-y-2">
-                      <label className="text-[9px] font-black text-gray-400 uppercase tracking-widest flex items-center gap-2"><Hash className="h-4 w-4 text-[#01a3a4]" /> QTY</label>
-                      <input type="number" min="1" required value={formData.quantity} onChange={(e) => setFormData({...formData, quantity: parseInt(e.target.value) || 1})} className="w-full bg-gray-50 border-2 border-gray-100 rounded-none h-10 px-3 text-[14px] font-black tracking-widest focus:outline-none focus:border-[#01a3a4] text-black" />
+                    <div className="space-y-1.5">
+                      <label className="text-[8px] font-black text-gray-400 uppercase tracking-widest flex items-center gap-2"><Hash className="h-3 w-3 text-[#01a3a4]" /> QTY</label>
+                      <input type="number" min="1" required value={formData.quantity} onChange={(e) => setFormData({...formData, quantity: parseInt(e.target.value) || 1})} className="w-full bg-gray-50 border-2 border-gray-100 rounded-none h-9 px-3 text-[12px] font-black tracking-widest focus:outline-none focus:border-[#01a3a4] text-black" />
                     </div>
                   </div>
 
-                  <div className="space-y-3">
-                    <div className="space-y-1.5">
-                      <label className="text-[9px] font-black text-gray-400 uppercase tracking-widest flex items-center gap-2"><User className="h-4 w-4 text-[#01a3a4]" /> FULL NAME</label>
-                      <input required value={formData.name} onChange={(e) => setFormData({...formData, name: e.target.value})} placeholder="ENTER YOUR NAME" className="w-full bg-gray-50 border-2 border-gray-100 rounded-none h-10 px-4 text-[12px] font-black uppercase tracking-widest focus:outline-none focus:border-[#01a3a4] text-black" />
+                  <div className="space-y-2.5">
+                    <div className="space-y-1">
+                      <label className="text-[8px] font-black text-gray-400 uppercase tracking-widest flex items-center gap-2"><User className="h-3 w-3 text-[#01a3a4]" /> FULL NAME</label>
+                      <input required value={formData.name} onChange={(e) => setFormData({...formData, name: e.target.value})} placeholder="ENTER YOUR NAME" className="w-full bg-gray-50 border-2 border-gray-100 rounded-none h-9 px-4 text-[11px] font-black uppercase tracking-widest focus:outline-none focus:border-[#01a3a4] text-black" />
                     </div>
-                    <div className="space-y-1.5">
-                      <label className="text-[9px] font-black text-gray-400 uppercase tracking-widest flex items-center gap-2"><Phone className="h-4 w-4 text-[#01a3a4]" /> PHONE NUMBER</label>
-                      <input required type="tel" value={formData.phone} onChange={(e) => setFormData({...formData, phone: e.target.value})} placeholder="01XXXXXXXXX" className="w-full bg-gray-50 border-2 border-gray-100 rounded-none h-10 px-4 text-[12px] font-black uppercase tracking-widest focus:outline-none focus:border-[#01a3a4] text-black" />
+                    <div className="space-y-1">
+                      <label className="text-[8px] font-black text-gray-400 uppercase tracking-widest flex items-center gap-2"><Phone className="h-3 w-3 text-[#01a3a4]" /> PHONE NUMBER</label>
+                      <input required type="tel" value={formData.phone} onChange={(e) => setFormData({...formData, phone: e.target.value})} placeholder="01XXXXXXXXX" className="w-full bg-gray-50 border-2 border-gray-100 rounded-none h-9 px-4 text-[11px] font-black uppercase tracking-widest focus:outline-none focus:border-[#01a3a4] text-black" />
                     </div>
-                    <div className="space-y-1.5">
-                      <label className="text-[9px] font-black text-gray-400 uppercase tracking-widest flex items-center gap-2"><MapPin className="h-4 w-4 text-[#01a3a4]" /> ADDRESS</label>
-                      <textarea required value={formData.address} onChange={(e) => setFormData({...formData, address: e.target.value})} placeholder="HOUSE, ROAD, AREA, CITY" className="w-full bg-gray-50 border-2 border-gray-100 rounded-none p-3 text-[12px] font-black uppercase tracking-widest min-h-[60px] focus:outline-none focus:border-[#01a3a4] text-black shadow-sm no-scrollbar" />
+                    <div className="space-y-1">
+                      <label className="text-[8px] font-black text-gray-400 uppercase tracking-widest flex items-center gap-2"><MapPin className="h-3 w-3 text-[#01a3a4]" /> ADDRESS</label>
+                      <textarea required value={formData.address} onChange={(e) => setFormData({...formData, address: e.target.value})} placeholder="HOUSE, ROAD, AREA, CITY" className="w-full bg-gray-50 border-2 border-gray-100 rounded-none p-2 text-[11px] font-black uppercase tracking-widest min-h-[50px] focus:outline-none focus:border-[#01a3a4] text-black shadow-sm no-scrollbar" />
                     </div>
                   </div>
 
-                  <div className="flex flex-col gap-2 pt-2">
-                    <Button type="submit" className="w-full bg-[#01a3a4] hover:bg-black text-white h-12 font-black uppercase tracking-[0.4em] rounded-none shadow-xl text-[14px] border-none transition-all active:scale-95">অর্ডার নিশ্চিত করুন</Button>
+                  <div className="flex flex-col gap-2 pt-1">
+                    <Button type="submit" className="w-full bg-[#01a3a4] hover:bg-black text-white h-11 font-black uppercase tracking-[0.3em] rounded-none shadow-xl text-[12px] border-none transition-all active:scale-95">অর্ডার নিশ্চিত করুন</Button>
                     <button 
                       type="button"
                       onClick={handleWhatsAppChat}
-                      className="w-full flex items-center justify-center gap-2 h-10 bg-white border-2 border-green-500 text-green-600 font-black text-[10px] uppercase tracking-widest hover:bg-green-50 transition-all"
+                      className="w-full flex items-center justify-center gap-2 h-9 bg-white border-2 border-green-500 text-green-600 font-black text-[9px] uppercase tracking-widest hover:bg-green-50 transition-all"
                     >
-                      <MessageCircle className="h-4 w-4" /> CHAT WITH ADMIN
+                      <MessageCircle className="h-3 w-3" /> CHAT WITH ADMIN
                     </button>
                   </div>
                 </form>

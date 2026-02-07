@@ -52,9 +52,9 @@ export default function AdminProducts() {
   const [newSize, setNewSize] = useState('');
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const productsRef = useMemoFirebase(() => query(collection(db, 'products'), orderBy('createdAt', 'desc'), limit(50)), [db]);
+  const productsRef = useMemoFirebase(() => query(collection(db!, 'products'), orderBy('createdAt', 'desc'), limit(50)), [db]);
   const { data: products } = useCollection(productsRef);
-  const { data: categories } = useCollection(useMemoFirebase(() => collection(db, 'categories'), [db]));
+  const { data: categories } = useCollection(useMemoFirebase(() => collection(db!, 'categories'), [db]));
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -71,21 +71,21 @@ export default function AdminProducts() {
     }
   };
 
-  const addSizeRow = () => {
+  const addSizeRow = (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
     if (!newSize.trim()) return;
-    const exists = sizeList.find(s => s.size === newSize.toUpperCase());
+    const formattedSize = newSize.trim().toUpperCase();
+    const exists = sizeList.find(s => s.size === formattedSize);
     if (exists) {
       toast({ variant: "destructive", title: "DUPLICATE", description: "SIZE ALREADY EXISTS." });
       return;
     }
-    setSizeList([...sizeList, { size: newSize.toUpperCase(), qty: 0 }]);
+    setSizeList(prev => [...prev, { size: formattedSize, qty: 0 }]);
     setNewSize('');
   };
 
   const removeSizeRow = (index: number) => {
-    const newList = [...sizeList];
-    newList.splice(index, 1);
-    setSizeList(newList);
+    setSizeList(prev => prev.filter((_, i) => i !== index));
   };
 
   const updateSizeQty = (index: number, val: string) => {
@@ -122,11 +122,11 @@ export default function AdminProducts() {
     };
 
     if (editingId) {
-      updateDocumentNonBlocking(doc(db, 'products', editingId), productData);
+      updateDocumentNonBlocking(doc(db!, 'products', editingId), productData);
       toast({ title: "PRODUCT UPDATED" });
       setEditingId(null);
     } else {
-      addDocumentNonBlocking(collection(db, 'products'), { ...productData, createdAt: new Date().toISOString() });
+      addDocumentNonBlocking(collection(db!, 'products'), { ...productData, createdAt: new Date().toISOString() });
       toast({ title: "PRODUCT SAVED" });
     }
     resetForm();
@@ -163,7 +163,6 @@ export default function AdminProducts() {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-          {/* FORM COLUMN */}
           <Card className="lg:col-span-5 bg-card border-white/5 rounded-none shadow-2xl h-fit overflow-hidden">
             <CardHeader className="bg-white/[0.02] border-b border-white/5 p-6">
               <CardTitle className="text-xs font-black uppercase text-[#01a3a4] flex items-center gap-2 tracking-[0.2em]">
@@ -203,7 +202,6 @@ export default function AdminProducts() {
                 </Select>
               </div>
 
-              {/* SIZE WISE QTY SECTION */}
               <div className="space-y-4 p-5 bg-white/[0.02] border border-white/5">
                 <label className="text-[9px] font-black text-[#01a3a4] uppercase tracking-[0.2em] flex items-center gap-2">
                   <Ruler className="h-4 w-4" /> SIZE-WISE INVENTORY (OPTIONAL)
@@ -213,7 +211,8 @@ export default function AdminProducts() {
                   <Input 
                     placeholder="SIZE (E.G. XL)" 
                     value={newSize} 
-                    onChange={(e) => setNewSize(e.target.value)} 
+                    onChange={(e) => setNewSize(e.target.value.toUpperCase())}
+                    onKeyDown={(e) => e.key === 'Enter' && addSizeRow(e)}
                     className="bg-black border-white/10 h-10 text-[10px] uppercase font-black" 
                   />
                   <Button onClick={addSizeRow} type="button" className="bg-[#01a3a4] h-10 rounded-none text-[8px] font-black uppercase px-4">ADD SIZE</Button>
@@ -221,7 +220,7 @@ export default function AdminProducts() {
 
                 <div className="space-y-2 max-h-[150px] overflow-y-auto pr-2">
                   {sizeList.map((s, i) => (
-                    <div key={i} className="flex items-center gap-3 bg-black/50 p-2 border border-white/5">
+                    <div key={i} className="flex items-center gap-3 bg-black/50 p-2 border border-white/5 animate-in fade-in slide-in-from-left-2">
                       <span className="text-[10px] font-black text-white w-12">{s.size}</span>
                       <Input 
                         type="number" 
@@ -230,7 +229,7 @@ export default function AdminProducts() {
                         onChange={(e) => updateSizeQty(i, e.target.value)}
                         className="h-8 bg-transparent border-white/10 text-[10px] font-black text-[#01a3a4] flex-grow" 
                       />
-                      <Button onClick={() => removeSizeRow(i)} variant="ghost" size="icon" className="h-8 w-8 text-red-500/50 hover:text-red-500">
+                      <Button onClick={() => removeSizeRow(i)} type="button" variant="ghost" size="icon" className="h-8 w-8 text-red-500/50 hover:text-red-500">
                         <Trash2 className="h-4 w-4" />
                       </Button>
                     </div>
@@ -271,7 +270,7 @@ export default function AdminProducts() {
               </div>
 
               <div className="flex gap-4">
-                {editingId && <Button onClick={resetForm} variant="outline" className="flex-1 border-white/10 text-white font-black h-14 rounded-none uppercase text-[10px]">CANCEL</Button>}
+                {editingId && <Button onClick={resetForm} type="button" variant="outline" className="flex-1 border-white/10 text-white font-black h-14 rounded-none uppercase text-[10px]">CANCEL</Button>}
                 <Button onClick={handleSaveProduct} className="flex-[2] bg-[#01a3a4] hover:bg-white hover:text-black text-white font-black h-14 rounded-none uppercase tracking-widest text-[10px] shadow-2xl">
                   {editingId ? 'UPDATE RECORD' : 'SAVE TO SYSTEM'}
                 </Button>
@@ -279,7 +278,6 @@ export default function AdminProducts() {
             </CardContent>
           </Card>
 
-          {/* LIST COLUMN */}
           <Card className="lg:col-span-7 bg-card border-white/5 rounded-none shadow-2xl overflow-hidden">
             <CardHeader className="bg-white/[0.02] border-b border-white/5 p-6 flex flex-row items-center justify-between">
               <CardTitle className="text-xs font-black uppercase text-[#01a3a4] tracking-[0.2em]">ACTIVE ARCHIVE ({products?.length || 0})</CardTitle>
@@ -316,8 +314,6 @@ export default function AdminProducts() {
                         setShowInSlider(!!p.showInSlider);
                         setShowInFlashOffer(!!p.showInFlashOffer);
                         setImagePreview(p.imageUrl);
-                        
-                        // Map sizeStock back to list
                         if (p.sizeStock) {
                           setSizeList(Object.entries(p.sizeStock).map(([size, qty]) => ({ size, qty: qty as number })));
                         } else {
@@ -326,7 +322,7 @@ export default function AdminProducts() {
                       }} size="icon" variant="ghost" className="h-10 w-10 text-white/40 hover:text-[#01a3a4] hover:bg-[#01a3a4]/10">
                         <Edit2 className="h-4 w-4" />
                       </Button>
-                      <Button onClick={() => deleteDocumentNonBlocking(doc(db, 'products', p.id))} size="icon" variant="ghost" className="h-10 w-10 text-white/40 hover:text-red-500 hover:bg-red-500/10">
+                      <Button onClick={() => deleteDocumentNonBlocking(doc(db!, 'products', p.id))} size="icon" variant="ghost" className="h-10 w-10 text-white/40 hover:text-red-500 hover:bg-red-500/10">
                         <Trash2 className="h-4 w-4" />
                       </Button>
                     </div>

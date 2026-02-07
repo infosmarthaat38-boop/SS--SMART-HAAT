@@ -20,11 +20,9 @@ import {
   EyeOff,
   Palette,
   Type,
-  Terminal,
-  Github,
   Globe,
   Radio,
-  X,
+  Github,
   BookOpen
 } from 'lucide-react';
 import Link from 'next/link';
@@ -169,48 +167,51 @@ export default function AdminSettings() {
 
           <div className="space-y-8 lg:col-span-2">
             <Card className="bg-card border-white/5 rounded-none shadow-2xl overflow-hidden">
-              <CardHeader className="bg-white/[0.02] border-b border-white/5 p-6"><CardTitle className="text-xs font-black uppercase tracking-[0.3em] text-[#01a3a4] flex items-center gap-2"><Smartphone className="h-4 w-4" /> MOBILE LIVE PREVIEW</CardTitle></CardHeader>
-              <CardContent className="p-10 flex flex-col items-center justify-center">
-                <div className="w-full max-w-[300px] aspect-[9/16] bg-black border-[10px] border-[#1a1a1a] rounded-[35px] relative overflow-hidden flex flex-col shadow-2xl">
+              <CardHeader className="bg-white/[0.02] border-b border-white/5 p-6"><CardTitle className="text-xs font-black uppercase tracking-[0.3em] text-[#01a3a4] flex items-center gap-2"><Smartphone className="h-4 w-4" /> MOBILE LIVE DISPLAY PREVIEW</CardTitle></CardHeader>
+              <CardContent className="p-10 flex flex-col items-center justify-center bg-[#050505]">
+                <div className="w-full max-w-[300px] aspect-[9/16] bg-black border-[10px] border-[#1a1a1a] rounded-[35px] relative overflow-hidden flex flex-col shadow-2xl scale-100">
                   {/* Status Bar */}
-                  <div className="h-10 bg-black flex items-end px-6 pb-2 justify-between border-b border-white/5 shrink-0">
-                    <div className="text-[8px] text-white font-bold">12:00</div>
+                  <div className="h-8 bg-black flex items-end px-6 pb-1.5 justify-between border-b border-white/5 shrink-0">
+                    <div className="text-[7px] text-white font-bold">12:00</div>
                     <div className="flex gap-1">
-                      <div className="w-2 h-2 bg-white/40 rounded-full" />
-                      <div className="w-2 h-2 bg-[#01a3a4] rounded-full" />
+                      <div className="w-1.5 h-1.5 bg-white/40 rounded-full" />
+                      <div className="w-1.5 h-1.5 bg-[#01a3a4] rounded-full" />
                     </div>
                   </div>
                   {/* Website Header In Preview */}
                   <div className="h-10 bg-[#01a3a4] flex items-center px-4 justify-between shrink-0">
                     <div className="w-6 h-6 bg-black flex items-center justify-center text-[#01a3a4] text-[8px] font-black shadow-lg">SS</div>
-                    <div className="w-4 h-4 rounded-full border border-white/20" />
+                    <div className="flex gap-2">
+                       <div className="w-3 h-3 rounded-none border border-white/20" />
+                       <div className="w-3 h-3 rounded-none border border-white/20" />
+                    </div>
                   </div>
                   {/* Live Marquee Bar In Preview */}
                   <div className="bg-black border-b border-[#01a3a4]/20 h-8 flex items-center overflow-hidden whitespace-nowrap relative w-full shrink-0">
-                    <div className="flex items-center gap-4 animate-marquee w-full px-2">
+                    <div className="flex items-center gap-4 w-full px-2">
                       <div className="flex items-center gap-2 text-[7px] font-black text-[#01a3a4] uppercase shrink-0">
                         <Radio className="h-2 w-2 animate-pulse" /> {statusData.liveStatusLabel}
                       </div>
-                      <p style={{ color: statusData.statusColor }} className="text-[7px] font-black uppercase flex items-center gap-2 shrink-0">
-                        {statusData.liveStatus} <span className="text-[#01a3a4]/40">||</span> <MapPin className="h-2 w-2" /> {statusData.liveLocation}
+                      <p style={{ color: statusData.statusColor }} className="text-[7px] font-black uppercase flex items-center gap-2 shrink-0 truncate">
+                        {statusData.liveStatus}
                       </p>
                     </div>
                   </div>
-                  {/* Dummy Content In Preview */}
+                  {/* Simulated Content In Preview */}
                   <div className="flex-grow bg-[#0a0a0a] p-4 space-y-4 overflow-hidden">
                     <div className="w-full aspect-[16/9] bg-white/5 rounded-none border border-white/5 flex items-center justify-center">
-                       <span className="text-[6px] text-white/20 font-black uppercase tracking-widest">Banner Area</span>
+                       <span className="text-[6px] text-white/20 font-black uppercase tracking-widest italic">MAIN SLIDER BANNER</span>
                     </div>
                     <div className="grid grid-cols-2 gap-2">
-                      <div className="aspect-square bg-white/5 border border-white/5 flex flex-col items-center justify-center p-2 space-y-2">
+                      <div className="aspect-square bg-white/[0.02] border border-white/5 flex flex-col items-center justify-center p-2 space-y-2">
                          <div className="w-full h-2/3 bg-white/5" />
-                         <div className="w-3/4 h-1 bg-white/10" />
-                         <div className="w-1/2 h-1 bg-[#01a3a4]/20" />
+                         <div className="w-3/4 h-1 bg-[#01a3a4]/20" />
+                         <div className="w-1/2 h-1 bg-white/10" />
                       </div>
-                      <div className="aspect-square bg-white/5 border border-white/5 flex flex-col items-center justify-center p-2 space-y-2">
+                      <div className="aspect-square bg-white/[0.02] border border-white/5 flex flex-col items-center justify-center p-2 space-y-2">
                          <div className="w-full h-2/3 bg-white/5" />
-                         <div className="w-3/4 h-1 bg-white/10" />
-                         <div className="w-1/2 h-1 bg-[#01a3a4]/20" />
+                         <div className="w-3/4 h-1 bg-[#01a3a4]/20" />
+                         <div className="w-1/2 h-1 bg-white/10" />
                       </div>
                     </div>
                     <div className="space-y-2">
@@ -223,26 +224,26 @@ export default function AdminSettings() {
             </Card>
 
             <Card className="bg-card border-white/5 rounded-none shadow-2xl">
-              <CardHeader className="bg-white/[0.02] border-b border-white/5 p-6"><CardTitle className="text-xs font-black uppercase tracking-[0.3em] text-[#01a3a4] flex items-center gap-2"><BookOpen className="h-4 w-4" /> ওয়েবসাইট পাবলিশ গাইড (বাংলা)</CardTitle></CardHeader>
+              <CardHeader className="bg-white/[0.02] border-b border-white/5 p-6"><CardTitle className="text-xs font-black uppercase tracking-[0.3em] text-[#01a3a4] flex items-center gap-2"><BookOpen className="h-4 w-4" /> ওয়েবসাইট পাবলিশ গাইড (বিস্তারিত)</CardTitle></CardHeader>
               <CardContent className="p-8 space-y-8">
                 <div className="space-y-4">
-                  <div className="flex items-center gap-3 text-[#01a3a4]"><Github className="h-5 w-5" /><h3 className="text-lg font-black uppercase">ধাপ ১: গিটহাব পুশ (GitHub Sync)</h3></div>
+                  <div className="flex items-center gap-3 text-[#01a3a4]"><Github className="h-5 w-5" /><h3 className="text-lg font-black uppercase">ধাপ ১: কোড সিঙ্ক (GitHub Push)</h3></div>
                   <p className="text-[11px] text-white/60 uppercase font-bold leading-relaxed">
-                    আপনার লোকাল কম্পিউটারে করা কোড পরিবর্তনগুলো গিটহাবে 'Push' করুন। এতে আপনার ক্লাউড রিপোজিটরি আপডেট হবে এবং ওয়েবসাইট লাইভ হওয়ার জন্য প্রস্তুত হবে।
+                    আপনার লোকাল কম্পিউটারে করা কোড পরিবর্তনগুলো স্থায়ীভাবে সেভ করতে গিটহাবে 'Push' করুন। এটি আপনার সমস্ত ফাইল ক্লাউড স্টোরেজে ব্যাকআপ হিসেবে রাখে এবং ওয়েবসাইট আপডেটের জন্য মূল ভিত্তি হিসেবে কাজ করে।
                   </p>
                 </div>
                 
                 <div className="space-y-4 pt-6 border-t border-white/5">
-                  <div className="flex items-center gap-3 text-[#01a3a4]"><Globe className="h-5 w-5" /><h3 className="text-lg font-black uppercase">ধাপ ২: ভারসেল বা ফায়ারবেস কানেকশন</h3></div>
+                  <div className="flex items-center gap-3 text-[#01a3a4]"><Globe className="h-5 w-5" /><h3 className="text-lg font-black uppercase">ধাপ ২: হোস্টিং কানেকশন (Vercel/Firebase)</h3></div>
                   <p className="text-[11px] text-white/60 uppercase font-bold leading-relaxed">
-                    আপনার গিটহাব রিপোজিটরিটি Vercel অথবা Firebase App Hosting-এর সাথে কানেক্ট করুন। এটি একবার করে রাখলেই হবে, পরবর্তীতে সব অটোমেটিক কাজ করবে।
+                    আপনার গিটহাব রিপোজিটরিটি Vercel অথবা Firebase App Hosting-এর সাথে কানেক্ট করুন। এটি একবার সেটআপ করে রাখলেই হবে। হোস্টিং সার্ভিসটি আপনার গিটহাবের ফাইলের দিকে নজর রাখবে।
                   </p>
                 </div>
 
                 <div className="space-y-4 pt-6 border-t border-white/5">
-                  <div className="flex items-center gap-3 text-orange-500"><Zap className="h-5 w-5" /><h3 className="text-lg font-black uppercase">ধাপ ৩: অটোমেটিক লাইভ আপডেট</h3></div>
+                  <div className="flex items-center gap-3 text-orange-500"><Zap className="h-5 w-5" /><h3 className="text-lg font-black uppercase">ধাপ ৩: অটো-লাইভ আপডেট (Continuous Deploy)</h3></div>
                   <p className="text-[11px] text-white/60 uppercase font-bold leading-relaxed">
-                    একবার ডেপ্লয়মেন্ট সেটআপ হয়ে গেলে, আপনি যখনই কোড পরিবর্তন করে গিটহাবে পুশ করবেন, ওয়েবসাইটটি কয়েক সেকেন্ডের মধ্যেই অটোমেটিক আপডেট হয়ে লাইভ হয়ে যাবে। আলাদা করে কোনো ফাইল আপলোড করার প্রয়োজন নেই।
+                    একবার ডেপ্লয়মেন্ট সেটআপ হয়ে গেলে, আপনি যখনই কোড পরিবর্তন করে গিটহাবে পুশ করবেন, হোস্টিং সার্ভিসটি সেটি সাথে সাথে শনাক্ত করবে এবং কয়েক সেকেন্ডের মধ্যেই ওয়েবসাইটটি অটোমেটিক লাইভ আপডেট করে দেবে। আলাদা করে কোনো ফাইল আপলোড করার প্রয়োজন পড়বে না।
                   </p>
                 </div>
               </CardContent>
