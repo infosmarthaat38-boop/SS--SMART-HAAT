@@ -322,7 +322,7 @@ export default function AdminSettings() {
                   <ul className="space-y-2 list-disc list-inside text-[9px] text-white/60 uppercase">
                     <li>সর্বদা 'Main' ব্রাঞ্চে কোড পুশ করার চেষ্টা করুন।</li>
                     <li>বিল্ড এরর হলে Vercel Logs চেক করুন।</li>
-                    <li>ডোমেইন কানেক্ট করতে Vercel-এর 'Settings > Domains' ব্যবহার করুন।</li>
+                    <li>ডোমেইন কানেক্ট করতে Vercel-এর 'Settings &gt; Domains' ব্যবহার করুন।</li>
                   </ul>
                 </div>
               </CardContent>
