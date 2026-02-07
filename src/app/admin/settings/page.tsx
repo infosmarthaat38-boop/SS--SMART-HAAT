@@ -19,12 +19,13 @@ import {
   Zap,
   Eye,
   EyeOff,
-  ExternalLink,
   Palette,
   Type,
   Terminal,
   Github,
-  Globe
+  Globe,
+  Radio,
+  X
 } from 'lucide-react';
 import Link from 'next/link';
 import { useFirestore, useDoc, useMemoFirebase } from '@/firebase';
@@ -209,7 +210,7 @@ export default function AdminSettings() {
                 <form onSubmit={handleSaveStatus} className="space-y-6">
                   <div className="space-y-4">
                     <div className="space-y-2">
-                      <label className="text-[9px] font-black text-muted-foreground uppercase flex items-center gap-2"><Type className="h-3 w-3 text-[#01a3a4]" /> LIVE LABEL (E.G. LIVE STATUS:)</label>
+                      <label className="text-[9px] font-black text-muted-foreground uppercase flex items-center gap-2"><Type className="h-3 w-3 text-[#01a3a4]" /> LIVE LABEL</label>
                       <Input 
                         value={statusData.liveStatusLabel}
                         onChange={(e) => setStatusData({...statusData, liveStatusLabel: e.target.value})}
@@ -224,15 +225,6 @@ export default function AdminSettings() {
                         onChange={(e) => setStatusData({...statusData, liveStatus: e.target.value})}
                         className="bg-black border-white/10 rounded-none h-12 text-xs text-white focus:border-[#01a3a4]"
                         placeholder="OPEN & READY TO SHIP"
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <label className="text-[9px] font-black text-muted-foreground uppercase flex items-center gap-2"><MapPin className="h-3 w-3 text-[#01a3a4]" /> CURRENT HUB</label>
-                      <Input 
-                        value={statusData.liveLocation}
-                        onChange={(e) => setStatusData({...statusData, liveLocation: e.target.value})}
-                        className="bg-black border-white/10 rounded-none h-12 text-xs text-white focus:border-[#01a3a4]"
-                        placeholder="BANANI, DHAKA"
                       />
                     </div>
                     <div className="space-y-2">
@@ -272,6 +264,65 @@ export default function AdminSettings() {
           </div>
 
           <div className="space-y-8 lg:col-span-2">
+            {/* LIVE DISPLAY PREVIEW CARD */}
+            <Card className="bg-card border-white/5 rounded-none shadow-2xl overflow-hidden">
+              <CardHeader className="bg-white/[0.02] border-b border-white/5 p-6">
+                <CardTitle className="text-xs font-black uppercase tracking-[0.3em] text-[#01a3a4] flex items-center gap-2">
+                  <Smartphone className="h-4 w-4" /> MOBILE LIVE DISPLAY PREVIEW
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="p-10 flex flex-col items-center justify-center space-y-10">
+                <div className="w-full max-w-[320px] aspect-[9/16] bg-black border-[12px] border-[#1a1a1a] rounded-[40px] shadow-[0_0_50px_rgba(1,163,164,0.1)] relative overflow-hidden flex flex-col">
+                  {/* PHONE NOTCH */}
+                  <div className="absolute top-0 left-1/2 -translate-x-1/2 w-32 h-6 bg-[#1a1a1a] rounded-b-2xl z-50" />
+                  
+                  {/* PHONE TOP BAR */}
+                  <div className="h-14 bg-black flex items-end px-6 pb-2 justify-between border-b border-white/5">
+                    <div className="text-[10px] text-white font-bold uppercase">12:00</div>
+                    <div className="flex gap-1">
+                      <div className="w-3 h-3 border border-white/20 rounded-full" />
+                      <div className="w-3 h-3 bg-[#01a3a4] rounded-full" />
+                    </div>
+                  </div>
+
+                  {/* NAV PREVIEW */}
+                  <div className="h-14 bg-[#01a3a4] flex items-center px-4 justify-between shadow-lg">
+                    <div className="w-8 h-8 bg-black flex items-center justify-center"><span className="text-[#01a3a4] text-[10px] font-black">SS</span></div>
+                    <div className="flex gap-3">
+                      <div className="w-4 h-4 bg-white/20 rounded-full" />
+                      <div className="w-4 h-4 bg-white/20 rounded-full" />
+                    </div>
+                  </div>
+
+                  {/* LIVE BAR PREVIEW */}
+                  <div className="bg-black border-b border-[#01a3a4]/20 h-8 flex items-center overflow-hidden whitespace-nowrap py-0 relative w-full">
+                    <div className="flex items-center gap-4 animate-marquee w-full px-2">
+                      <div className="flex items-center gap-2 text-[8px] font-black text-[#01a3a4] uppercase tracking-widest shrink-0">
+                        <Radio className="h-2.5 w-2.5 animate-pulse text-[#01a3a4]" /> {statusData.liveStatusLabel}
+                      </div>
+                      <p 
+                        style={{ color: statusData.statusColor }}
+                        className="text-[8px] font-black uppercase tracking-[0.1em] flex items-center gap-4 shrink-0"
+                      >
+                        {statusData.liveStatus} <span className="text-[#01a3a4]/40">||</span> 
+                        <MapPin className="h-2.5 w-2.5 text-[#01a3a4]" /> {statusData.liveLocation}
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* MOCK CONTENT */}
+                  <div className="flex-grow bg-[#0a0a0a] p-4 space-y-4">
+                    <div className="w-full aspect-square bg-white/5 border border-white/5 animate-pulse" />
+                    <div className="h-4 w-3/4 bg-white/5" />
+                    <div className="h-4 w-1/2 bg-white/5" />
+                  </div>
+                </div>
+                <p className="text-[10px] font-black text-white/40 uppercase tracking-[0.3em] text-center">
+                  এটি একটি রিয়েল-টাইম মোবাইল ডিসপ্লে সিমুলেশন।
+                </p>
+              </CardContent>
+            </Card>
+
             <Card className="bg-card border-white/5 rounded-none shadow-2xl overflow-hidden">
               <CardHeader className="bg-white/[0.02] border-b border-white/5 p-6">
                 <CardTitle className="text-xs font-black uppercase tracking-[0.3em] text-[#01a3a4] flex items-center gap-2">
@@ -315,35 +366,6 @@ export default function AdminSettings() {
                       <p className="text-[9px] text-white/40 uppercase leading-relaxed">একবার কানেক্ট হয়ে গেলে, ভবিষ্যতে আপনি GitHub-এ কোড পুশ করলেই আপনার ওয়েবসাইট অটোমেটিক আপডেট হয়ে যাবে।</p>
                     </div>
                   </div>
-                </div>
-
-                <div className="p-6 bg-white/[0.02] border border-white/5 space-y-4">
-                  <p className="text-[10px] font-black text-[#01a3a4] uppercase tracking-widest">প্রো টিপস:</p>
-                  <ul className="space-y-2 list-disc list-inside text-[9px] text-white/60 uppercase">
-                    <li>সর্বদা 'Main' ব্রাঞ্চে কোড পুশ করার চেষ্টা করুন।</li>
-                    <li>বিল্ড এরর হলে Vercel Logs চেক করুন।</li>
-                    <li>ডোমেইন কানেক্ট করতে Vercel-এর 'Settings &gt; Domains' ব্যবহার করুন।</li>
-                  </ul>
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card className="bg-card border-white/5 rounded-none shadow-2xl overflow-hidden">
-              <CardHeader className="bg-white/[0.02] border-b border-white/5 p-6">
-                <CardTitle className="text-xs font-black uppercase tracking-[0.3em] text-[#01a3a4] flex items-center gap-2">
-                  <Smartphone className="h-4 w-4" /> মোবাইল ও স্পিড অপ্টিমাইজেশন
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="p-8 space-y-6">
-                <div className="p-6 bg-[#01a3a4]/5 border border-[#01a3a4]/20 space-y-4">
-                  <p className="text-[11px] font-black text-white uppercase leading-relaxed italic">
-                    "আমরা আপনার সাইটের মোবাইল লাইভ বার এবং স্লাইডার জিরো গ্যাপ ফিক্স করেছি। এখন মোবাইল স্ক্রিনেও সবকিছু নিখুঁতভাবে চলবে।"
-                  </p>
-                  <Button asChild variant="outline" className="w-full border-white/10 text-white hover:bg-white hover:text-black h-12 font-black uppercase tracking-widest text-[9px] rounded-none">
-                    <Link href="/" target="_blank" className="flex items-center justify-center gap-2">
-                      ওপেন লাইভ সাইট <ExternalLink className="h-3 w-3" />
-                    </Link>
-                  </Button>
                 </div>
               </CardContent>
             </Card>
