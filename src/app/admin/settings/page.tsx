@@ -17,14 +17,12 @@ import {
   Zap,
   Eye,
   EyeOff,
-  Palette,
-  Type,
-  Globe,
+  MapPin,
+  Store,
   Radio,
   Github,
-  BookOpen,
-  MapPin,
-  Store
+  Globe,
+  BookOpen
 } from 'lucide-react';
 import Link from 'next/link';
 import { useFirestore, useDoc, useMemoFirebase } from '@/firebase';
@@ -174,9 +172,9 @@ export default function AdminSettings() {
           <div className="space-y-8 lg:col-span-2">
             <Card className="bg-card border-white/5 rounded-none shadow-2xl overflow-hidden">
               <CardHeader className="bg-white/[0.02] border-b border-white/5 p-6"><CardTitle className="text-xs font-black uppercase tracking-[0.3em] text-[#01a3a4] flex items-center gap-2"><Smartphone className="h-4 w-4" /> MOBILE LIVE DISPLAY PREVIEW</CardTitle></CardHeader>
-              <CardContent className="p-10 flex flex-col items-center justify-center bg-[#050505]">
-                <div className="w-full max-w-[300px] aspect-[9/16] bg-black border-[10px] border-[#1a1a1a] rounded-[35px] relative overflow-hidden flex flex-col shadow-2xl scale-100">
-                  {/* Simulator Screen */}
+              <CardContent className="p-10 flex flex-col items-center justify-center bg-[#050505] min-h-[600px]">
+                <div className="w-full max-w-[300px] aspect-[9/16] bg-black border-[10px] border-[#1a1a1a] rounded-[35px] relative overflow-hidden flex flex-col shadow-[0_0_50px_rgba(1,163,164,0.15)] scale-100 ring-4 ring-[#01a3a4]/10">
+                  {/* Simulator Screen Top */}
                   <div className="h-8 bg-black flex items-end px-6 pb-1.5 justify-between border-b border-white/5 shrink-0">
                     <div className="text-[7px] text-white font-bold">12:00</div>
                     <div className="flex gap-1">
@@ -187,36 +185,49 @@ export default function AdminSettings() {
                   
                   {/* Mock Navbar */}
                   <div className="h-10 bg-[#01a3a4] flex items-center px-4 justify-between shrink-0">
-                    <div className="w-6 h-6 bg-black flex items-center justify-center text-[#01a3a4] text-[8px] font-black shadow-lg">SS</div>
+                    <div className="flex items-center gap-1.5">
+                      <div className="w-6 h-6 bg-black flex items-center justify-center text-[#01a3a4] text-[8px] font-black shadow-lg">SS</div>
+                      <div className="flex flex-col">
+                        <span className="text-[6px] font-black text-white leading-none">SS SMART HAAT</span>
+                        <span className="text-[4px] font-bold text-white/70 tracking-widest">PREMIUM</span>
+                      </div>
+                    </div>
                     <div className="flex gap-2">
                        <div className="w-3 h-3 rounded-none border border-white/20" />
                        <div className="w-3 h-3 rounded-none border border-white/20" />
                     </div>
                   </div>
 
-                  {/* Mock Live Bar */}
+                  {/* Mock Live Bar - REAL TIME SYNC */}
                   <div className="bg-black border-b border-[#01a3a4]/20 h-8 flex items-center overflow-hidden whitespace-nowrap relative w-full shrink-0">
                     <div className="flex items-center gap-4 w-full px-2">
                       <div className="flex items-center gap-2 text-[7px] font-black text-[#01a3a4] uppercase shrink-0">
                         <Radio className="h-2 w-2 animate-pulse" /> {statusData.liveStatusLabel || 'LIVE STATUS:'}
                       </div>
-                      <p style={{ color: statusData.statusColor }} className="text-[7px] font-black uppercase flex items-center gap-2 shrink-0 truncate">
-                        {statusData.liveStatus || 'BROADCASTING...'} <span className="text-[#01a3a4]/40">||</span> <MapPin className="h-2 w-2" /> {statusData.liveLocation || 'BANANI, DHAKA'}
+                      <p style={{ color: statusData.statusColor }} className="text-[7px] font-black uppercase flex items-center gap-2 shrink-0">
+                        {statusData.liveStatus || 'BROADCASTING...'} <span className="text-[#01a3a4]/40">||</span> <MapPin className="h-2 w-2 text-[#01a3a4]" /> {statusData.liveLocation || 'BANANI, DHAKA'}
                       </p>
                     </div>
                   </div>
 
                   {/* Mock Content */}
                   <div className="flex-grow bg-[#0a0a0a] p-4 space-y-4 overflow-hidden">
-                    <div className="w-full aspect-[16/9] bg-white/5 rounded-none border border-white/5 flex items-center justify-center">
-                       <span className="text-[6px] text-white/20 font-black uppercase tracking-widest italic text-center px-4">MAIN SLIDER CONTENT AREA</span>
+                    {/* Main Slider Area */}
+                    <div className="w-full aspect-[16/9] bg-white/5 rounded-none border border-white/5 flex flex-col items-center justify-center p-4">
+                       <div className="w-full h-1 bg-[#01a3a4]/30 mb-2" />
+                       <span className="text-[6px] text-white/20 font-black uppercase tracking-widest italic text-center">MAIN SLIDER CONTENT AREA</span>
+                       <div className="w-2/3 h-1 bg-white/5 mt-2" />
                     </div>
+                    
+                    {/* Product Grid Area */}
                     <div className="grid grid-cols-2 gap-2">
                       {[1, 2, 3, 4].map(i => (
-                        <div key={i} className="aspect-square bg-white/[0.02] border border-white/5 flex flex-col items-center justify-center p-2 space-y-2">
-                           <div className="w-full h-2/3 bg-white/5" />
-                           <div className="w-3/4 h-1 bg-[#01a3a4]/20" />
-                           <div className="w-1/2 h-1 bg-white/10" />
+                        <div key={i} className="aspect-[3/4] bg-white/[0.02] border border-white/5 flex flex-col p-2 space-y-2">
+                           <div className="w-full h-2/3 bg-white/5 relative">
+                              <div className="absolute top-1 left-1 w-4 h-1 bg-[#01a3a4]/20" />
+                           </div>
+                           <div className="w-3/4 h-1.5 bg-[#01a3a4]/40" />
+                           <div className="w-full h-3 bg-[#01a3a4] opacity-20" />
                         </div>
                       ))}
                     </div>

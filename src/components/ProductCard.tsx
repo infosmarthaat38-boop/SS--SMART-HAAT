@@ -43,7 +43,7 @@ export const ProductCard = memo(({ product, index = 0 }: ProductCardProps) => {
         <CardContent className="p-3 md:p-4 flex flex-col flex-grow bg-black space-y-3">
           <h3 className="font-black text-[11px] md:text-[13px] text-white uppercase truncate font-headline tracking-tight">{product.name}</h3>
           
-          <div className="space-y-1">
+          <div className="space-y-1 min-h-[48px]">
             <div className="flex items-center justify-between gap-2">
               <div className="flex items-baseline text-[#01a3a4]">
                 <span className="text-[11px] font-normal mr-1 translate-y-[-4px] text-white/50">৳</span>
@@ -71,10 +71,11 @@ export const ProductCard = memo(({ product, index = 0 }: ProductCardProps) => {
             </span>
           </div>
 
+          {/* mt-auto ensures all buttons align at the bottom of cards in a grid row */}
           <Button 
             disabled={isOutOfStock}
             onClick={(e) => { e.preventDefault(); setIsOrderOpen(true); }}
-            className={`w-full ${isOutOfStock ? 'bg-white/5 opacity-50' : 'bg-[#01a3a4] hover:bg-white hover:text-black'} text-white font-black text-[10px] md:text-[11px] h-9 md:h-10 rounded-none uppercase flex items-center justify-center gap-2 transition-all active:scale-95 shadow-lg shadow-black/20`}
+            className={`w-full mt-auto ${isOutOfStock ? 'bg-white/5 opacity-50' : 'bg-[#01a3a4] hover:bg-white hover:text-black'} text-white font-black text-[10px] md:text-[11px] h-9 md:h-10 rounded-none uppercase flex items-center justify-center gap-2 transition-all active:scale-95 shadow-lg shadow-black/20`}
           >
             <ShoppingBag className="h-3.5 w-3.5" /> অর্ডার করুন
           </Button>
