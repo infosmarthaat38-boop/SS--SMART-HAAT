@@ -1,7 +1,7 @@
 
 "use client";
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { 
   Dialog, 
   DialogContent, 
@@ -30,7 +30,7 @@ export function AdminLoginModal({ isOpen, onClose }: AdminLoginModalProps) {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
   
-  // DRAGGABLE LOGIC - OPTIMIZED TO PREVENT HANGS
+  // OPTIMIZED DRAGGABLE LOGIC
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const [isDragging, setIsDragging] = useState(false);
   const offsetRef = useRef({ x: 0, y: 0 });
@@ -52,21 +52,24 @@ export function AdminLoginModal({ isOpen, onClose }: AdminLoginModalProps) {
     }
   }, [isOpen]);
 
-  const handleMouseDown = (e: React.MouseEvent) => {
+  const handleMouseDown = useCallback((e: React.MouseEvent) => {
     setIsDragging(true);
     offsetRef.current = {
       x: e.clientX - position.x,
       y: e.clientY - position.y
     };
-  };
+  }, [position]);
 
   useEffect(() => {
     if (!isDragging) return;
 
     const handleMouseMove = (e: MouseEvent) => {
-      setPosition({
-        x: e.clientX - offsetRef.current.x,
-        y: e.clientY - offsetRef.current.y
+      // Use requestAnimationFrame for smoother dragging without hanging
+      requestAnimationFrame(() => {
+        setPosition({
+          x: e.clientX - offsetRef.current.x,
+          y: e.clientY - offsetRef.current.y
+        });
       });
     };
 
@@ -86,6 +89,7 @@ export function AdminLoginModal({ isOpen, onClose }: AdminLoginModalProps) {
     setLoading(true);
     setError('');
 
+    // Case-sensitive check
     const validUser = settings?.adminUsername || 'ADMIN';
     const validPass = settings?.adminPassword || '4321';
 
@@ -136,7 +140,7 @@ export function AdminLoginModal({ isOpen, onClose }: AdminLoginModalProps) {
               onMouseDown={handleMouseDown}
               className="bg-[#01a3a4] w-full h-10 shadow-xl border border-white/10 flex items-center justify-center cursor-grab active:cursor-grabbing"
             >
-              <DialogTitle className="text-[11px] font-black text-white uppercase tracking-tighter leading-none m-0 p-0">
+              <DialogTitle className="text-[11px] font-black text-white uppercase tracking-tighter leading-none m-0 p-0 text-center">
                 ADMIN TERMINAL
               </DialogTitle>
             </div>

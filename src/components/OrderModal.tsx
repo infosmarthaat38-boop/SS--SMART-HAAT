@@ -171,6 +171,7 @@ export const OrderModal = memo(({ product, isOpen, onClose }: OrderModalProps) =
         "left-[50%] top-[50%] translate-x-[-50%] translate-y-[-50%]",
         step === 'SUCCESS' ? "max-w-[350px] w-[90vw]" : isMobile ? "w-full h-full" : "max-w-[1200px] w-[95vw]"
       )}>
+        {/* HARDFIXED CLOSE BUTTON */}
         <button 
           onClick={onClose}
           className="absolute right-4 top-4 z-[150] p-2 bg-black text-white hover:bg-[#01a3a4] transition-all border border-white/10 shadow-xl"
@@ -219,7 +220,7 @@ export const OrderModal = memo(({ product, isOpen, onClose }: OrderModalProps) =
               )}
 
               <div className={cn(
-                "flex-grow p-6 md:p-16 md:pt-24 space-y-8 md:space-y-12 bg-white overflow-y-auto relative no-scrollbar",
+                "flex-grow p-6 md:p-16 pt-16 md:pt-24 space-y-8 md:space-y-12 bg-white overflow-y-auto relative no-scrollbar",
                 !isMobile && "md:w-[400px]"
               )}>
                 <div className="space-y-3">

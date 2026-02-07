@@ -51,13 +51,9 @@
   }
 
   .container {
+    @apply mx-auto px-4;
     width: 100% !important;
-    max-width: 100% !important;
-    min-width: unset !important;
-    margin-left: 0 !important;
-    margin-right: 0 !important;
-    padding-left: 0 !important;
-    padding-right: 0 !important;
+    max-width: 1400px !important;
   }
 }
 
@@ -85,8 +81,6 @@
 .gpu-accelerated {
   transform: translate3d(0, 0, 0);
   backface-visibility: hidden;
-  perspective: 1000px;
-  will-change: transform, opacity;
 }
 
 .animate-marquee {
@@ -98,14 +92,7 @@
   animation: fade-in-up 0.5s ease-out forwards;
 }
 
-/* SAVES MEMORY ON LONG PAGES - INSTANT LOADING */
-section, main {
-  content-visibility: auto;
-  contain-intrinsic-size: 1px 500px;
-}
-
 img {
-  content-visibility: auto;
   image-rendering: -webkit-optimize-contrast;
 }
 

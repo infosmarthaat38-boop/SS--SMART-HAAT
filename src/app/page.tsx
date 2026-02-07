@@ -186,12 +186,16 @@ export default function Home() {
   useEffect(() => {
     setIsMounted(true);
     if (db) {
-      const dateStr = new Date().toISOString().split('T')[0];
-      const statsRef = doc(db, 'visitorStats', dateStr);
-      setDocumentNonBlocking(statsRef, { 
-        count: increment(1), 
-        date: dateStr 
-      }, { merge: true });
+      try {
+        const dateStr = new Date().toISOString().split('T')[0];
+        const statsRef = doc(db, 'visitorStats', dateStr);
+        setDocumentNonBlocking(statsRef, { 
+          count: increment(1), 
+          date: dateStr 
+        }, { merge: true });
+      } catch (err) {
+        console.warn("Stats error handled.");
+      }
     }
   }, [db]);
 
