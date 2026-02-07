@@ -98,8 +98,8 @@ export default function AdminSettings() {
     }
 
     setDocumentNonBlocking(settingsRef, {
-      liveLocation: statusData.liveLocation.toUpperCase(),
-      liveStatus: statusData.liveStatus.toUpperCase(),
+      liveLocation: statusData.liveLocation,
+      liveStatus: statusData.liveStatus,
       statusColor: statusData.statusColor
     }, { merge: true });
 
@@ -208,7 +208,7 @@ export default function AdminSettings() {
                       <Input 
                         value={statusData.liveLocation}
                         onChange={(e) => setStatusData({...statusData, liveLocation: e.target.value})}
-                        className="bg-black border-white/10 rounded-none h-12 text-xs text-white uppercase focus:border-[#01a3a4]"
+                        className="bg-black border-white/10 rounded-none h-12 text-xs text-white focus:border-[#01a3a4]"
                         placeholder="E.G. BANANI, DHAKA"
                       />
                     </div>
@@ -217,21 +217,19 @@ export default function AdminSettings() {
                       <Input 
                         value={statusData.liveStatus}
                         onChange={(e) => setStatusData({...statusData, liveStatus: e.target.value})}
-                        className="bg-black border-white/10 rounded-none h-12 text-xs text-white uppercase focus:border-[#01a3a4]"
+                        className="bg-black border-white/10 rounded-none h-12 text-xs text-white focus:border-[#01a3a4]"
                         placeholder="E.G. OPEN & READY TO SHIP"
                       />
                     </div>
                     <div className="space-y-2">
                       <label className="text-[9px] font-black text-muted-foreground uppercase flex items-center gap-2"><Palette className="h-3 w-3 text-[#01a3a4]" /> TEXT COLOR (PALETTE & CODE)</label>
                       <div className="flex gap-3">
-                        {/* DUAL CONTROL: Palette Input */}
                         <Input 
                           type="color"
                           value={statusData.statusColor}
                           onChange={(e) => setStatusData({...statusData, statusColor: e.target.value})}
                           className="w-12 h-12 p-1 bg-black border-white/10 rounded-none cursor-pointer shrink-0"
                         />
-                        {/* DUAL CONTROL: Hex Code Input */}
                         <Input 
                           value={statusData.statusColor}
                           onChange={(e) => setStatusData({...statusData, statusColor: e.target.value})}

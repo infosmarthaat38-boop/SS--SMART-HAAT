@@ -62,6 +62,7 @@ export const FirebaseProvider: React.FC<FirebaseProviderProps> = ({
   const [isReady, setIsReady] = useState(false);
 
   useEffect(() => {
+    // Only run on client
     if (!auth) {
       setUserAuthState({ user: null, isUserLoading: false, userError: null });
       setIsReady(true);
@@ -95,6 +96,7 @@ export const FirebaseProvider: React.FC<FirebaseProviderProps> = ({
     };
   }, [firebaseApp, firestore, auth, userAuthState, isReady]);
 
+  // Prevent app-wide hanging by providing an empty shell while loading
   return (
     <FirebaseContext.Provider value={contextValue}>
       <FirebaseErrorListener />
@@ -109,7 +111,6 @@ export const useFirebase = (): FirebaseServicesAndUser | null => {
     return null;
   }
   
-  // Return null instead of throwing to prevent app hanging during initialization
   if (!context.firebaseApp || !context.firestore || !context.auth) {
     return null;
   }
@@ -140,13 +141,14 @@ export const useFirebaseApp = (): FirebaseApp | null => {
 };
 
 export function useMemoFirebase<T>(factory: () => T, deps: DependencyList): T {
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   return useMemo(factory, deps);
 }
 
 export const useUser = (): UserHookResult => {
-  const services = useFirebase();
-  if (!services) {
+  const context = useContext(FirebaseContext);
+  if (!context) {
     return { user: null, isUserLoading: true, userError: null };
   }
-  return { user: services.user, isUserLoading: services.isUserLoading, userError: services.userError };
+  return { user: context.user, isUserLoading: context.isUserLoading, userError: context.userError };
 };

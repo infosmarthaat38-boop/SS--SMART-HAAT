@@ -31,7 +31,7 @@ const SlideItem = memo(({ item, priority }: { item: any, priority: boolean }) =>
             className="object-cover"
             priority={priority}
           />
-          <div className="absolute inset-0 bg-black/5 flex flex-col justify-center px-4 md:px-12 space-y-1 md:space-y-2">
+          <div className="absolute inset-0 bg-black/10 flex flex-col justify-center px-4 md:px-12 space-y-1 md:space-y-2">
             <h2 className="text-[14px] md:text-2xl font-headline font-black text-white uppercase tracking-tight max-w-[400px] leading-tight drop-shadow-2xl">
               {item.name}
             </h2>
@@ -185,9 +185,8 @@ export default function Home() {
 
   useEffect(() => {
     setIsMounted(true);
-    const dateStr = new Date().toISOString().split('T')[0];
-    
     if (db) {
+      const dateStr = new Date().toISOString().split('T')[0];
       const statsRef = doc(db, 'visitorStats', dateStr);
       setDocumentNonBlocking(statsRef, { 
         count: increment(1), 
@@ -207,29 +206,29 @@ export default function Home() {
       <div className="fixed top-0 left-0 right-0 z-[120] shadow-2xl bg-black">
         <Navbar />
         {settings?.liveStatus && (
-          <div className="bg-black border-b border-[#01a3a4]/20 h-[28px] md:h-[32px] flex items-center overflow-hidden whitespace-nowrap py-0">
+          <div className="bg-black border-b border-[#01a3a4]/20 h-[24px] md:h-[28px] flex items-center overflow-hidden whitespace-nowrap py-0">
             <div className="container mx-auto flex items-center gap-6 animate-marquee">
-              <div className="flex items-center gap-3 text-[11px] md:text-[14px] font-black text-[#01a3a4] uppercase tracking-widest shrink-0">
-                <Radio className="h-3.5 w-3.5 animate-pulse text-[#01a3a4]" /> LIVE STATUS:
+              <div className="flex items-center gap-3 text-[10px] md:text-[13px] font-black text-[#01a3a4] uppercase tracking-widest shrink-0">
+                <Radio className="h-3 w-3 animate-pulse text-[#01a3a4]" /> LIVE STATUS:
               </div>
               <p 
                 style={{ color: broadcastColor }}
-                className="text-[11px] md:text-[15px] font-black uppercase tracking-[0.2em] flex items-center gap-6"
+                className="text-[10px] md:text-[14px] font-black uppercase tracking-[0.2em] flex items-center gap-6"
               >
                 {settings.liveStatus} <span className="text-[#01a3a4]/40">||</span> 
-                <MapPin className="h-3.5 w-3.5 text-[#01a3a4]" /> {settings.liveLocation || 'BANANI, DHAKA'}
+                <MapPin className="h-3 w-3 text-[#01a3a4]" /> {settings.liveLocation || 'BANANI, DHAKA'}
               </p>
             </div>
           </div>
         )}
       </div>
 
-      <div className={settings?.liveStatus ? "h-[92px] md:h-[96px]" : "h-[64px]"} />
+      <div className={settings?.liveStatus ? "h-[88px] md:h-[92px]" : "h-[64px]"} />
 
       <main className="flex-grow container mx-auto">
         <section className="grid grid-cols-12 gap-0 h-[160px] md:h-[320px] gpu-accelerated bg-black">
           <div className="col-span-3 h-full"><FlashOfferCard /></div>
-          <div className="col-span-6 h-full relative overflow-hidden bg-black">
+          <div className="col-span-6 h-full relative overflow-hidden bg-black border-none">
             {combinedSliderItems.length > 0 ? (
               <Carousel className="w-full h-full" opts={{ loop: true }} plugins={[autoplay.current]}>
                 <CarouselContent className="h-full">

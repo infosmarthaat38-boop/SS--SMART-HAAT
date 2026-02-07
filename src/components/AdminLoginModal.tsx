@@ -54,7 +54,7 @@ export function AdminLoginModal({ isOpen, onClose }: AdminLoginModalProps) {
     const validUser = settings?.adminUsername || 'ADMIN';
     const validPass = settings?.adminPassword || '4321';
 
-    // Check credentials with strict case-sensitivity
+    // Strict Case Sensitivity Check
     setTimeout(() => {
       if (username === validUser && password === validPass) {
         const today = new Date().toISOString().split('T')[0];
@@ -78,15 +78,17 @@ export function AdminLoginModal({ isOpen, onClose }: AdminLoginModalProps) {
 
   return (
     <Dialog open={isOpen} onOpenChange={(val) => !val && onClose()}>
-      <DialogContent className="max-w-md bg-black border border-[#01a3a4]/30 rounded-none p-10 shadow-2xl gpu-accelerated outline-none">
+      <DialogContent className="max-w-md bg-black border border-[#01a3a4]/30 rounded-none p-10 shadow-2xl gpu-accelerated outline-none overflow-hidden">
         <DialogHeader className="space-y-6 text-center">
           <div className="w-16 h-16 bg-[#01a3a4]/10 border border-[#01a3a4]/20 rounded-full flex items-center justify-center mx-auto mb-2">
             <Lock className="h-8 w-8 text-[#01a3a4]" />
           </div>
-          <div className="space-y-3 flex flex-col items-center">
-            {/* HARD FIX FOR ALIGNMENT: Solid container for Title */}
-            <div className="bg-[#01a3a4] px-8 py-3 shadow-2xl border border-white/10 w-full">
-              <DialogTitle className="text-xl font-black text-white uppercase tracking-tighter leading-none m-0 text-center">ADMIN TERMINAL</DialogTitle>
+          <div className="space-y-3 flex flex-col items-center w-full">
+            {/* SOLID CONTAINER FOR HEADER - HARD FIX FOR ALIGNMENT */}
+            <div className="bg-[#01a3a4] w-full py-4 shadow-xl border border-white/10 flex items-center justify-center">
+              <DialogTitle className="text-xl md:text-2xl font-black text-white uppercase tracking-tighter leading-none m-0 p-0">
+                ADMIN TERMINAL
+              </DialogTitle>
             </div>
             <DialogDescription className="text-[10px] text-muted-foreground uppercase font-black tracking-[0.2em]">
               RESTRICTED ACCESS AREA
@@ -104,7 +106,7 @@ export function AdminLoginModal({ isOpen, onClose }: AdminLoginModalProps) {
                 required
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
-                placeholder="Username (Case Sensitive)"
+                placeholder="Enter Username"
                 className="bg-white/5 border-white/10 rounded-none h-12 text-sm focus:ring-[#01a3a4] text-white"
               />
             </div>
@@ -125,7 +127,7 @@ export function AdminLoginModal({ isOpen, onClose }: AdminLoginModalProps) {
                 <button 
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-white/40 hover:text-white transition-colors"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-white/40 hover:text-white transition-colors z-10"
                 >
                   {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                 </button>
