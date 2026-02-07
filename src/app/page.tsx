@@ -144,7 +144,6 @@ FlashOfferCard.displayName = 'FlashOfferCard';
 export default function Home() {
   const db = useFirestore();
   const [isMounted, setIsMounted] = useState(false);
-  const [today, setToday] = useState<string>('');
   
   const productsRef = useMemoFirebase(() => {
     if (!db) return null;
@@ -187,7 +186,6 @@ export default function Home() {
   useEffect(() => {
     setIsMounted(true);
     const dateStr = new Date().toISOString().split('T')[0];
-    setToday(dateStr);
     
     if (db) {
       const statsRef = doc(db, 'visitorStats', dateStr);
@@ -204,21 +202,23 @@ export default function Home() {
 
   return (
     <div className="min-h-screen flex flex-col bg-background selection:bg-primary/30">
-      <Navbar />
-      
-      {settings?.liveStatus && (
-        <div className="bg-black border-b border-[#01a3a4]/20 py-1.5 px-4 overflow-hidden whitespace-nowrap z-40">
-          <div className="container mx-auto flex items-center gap-6 animate-marquee">
-            <div className="flex items-center gap-3 text-[12px] md:text-[15px] font-black text-[#01a3a4] uppercase tracking-widest shrink-0">
-              <Radio className="h-4 w-4 animate-pulse text-[#01a3a4]" /> LIVE STATUS:
+      {/* STICKY HEADER SECTION (NAVBAR + LIVE STATUS) */}
+      <div className="sticky top-0 z-50 shadow-2xl">
+        <Navbar />
+        {settings?.liveStatus && (
+          <div className="bg-black border-b border-[#01a3a4]/20 py-1.5 px-4 overflow-hidden whitespace-nowrap">
+            <div className="container mx-auto flex items-center gap-6 animate-marquee">
+              <div className="flex items-center gap-3 text-[12px] md:text-[15px] font-black text-[#01a3a4] uppercase tracking-widest shrink-0">
+                <Radio className="h-4 w-4 animate-pulse text-[#01a3a4]" /> LIVE STATUS:
+              </div>
+              <p className="text-[12px] md:text-[16px] font-black text-white uppercase tracking-[0.2em] flex items-center gap-6">
+                {settings.liveStatus} <span className="text-[#01a3a4]/40">||</span> 
+                <MapPin className="h-4 w-4 text-[#01a3a4]" /> {settings.liveLocation || 'BANANI, DHAKA'}
+              </p>
             </div>
-            <p className="text-[12px] md:text-[16px] font-black text-white uppercase tracking-[0.2em] flex items-center gap-6">
-              {settings.liveStatus} <span className="text-[#01a3a4]/40">||</span> 
-              <MapPin className="h-4 w-4 text-[#01a3a4]" /> {settings.liveLocation || 'BANANI, DHAKA'}
-            </p>
           </div>
-        </div>
-      )}
+        )}
+      </div>
 
       <main className="flex-grow container mx-auto space-y-1">
         <section className="grid grid-cols-12 gap-0 h-[160px] md:h-[320px] gpu-accelerated">

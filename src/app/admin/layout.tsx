@@ -14,17 +14,14 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
   useEffect(() => {
     setIsMounted(true);
-    // Add a small delay to ensure hydration is complete before session check
-    const timer = setTimeout(() => {
-      const authStatus = sessionStorage.getItem('is_admin_authenticated') === 'true';
-      if (!authStatus) {
-        setIsAuthenticated(false);
-        setShowLogin(true);
-      } else {
-        setIsAuthenticated(true);
-      }
-    }, 100);
-    return () => clearTimeout(timer);
+    // Instant session check after mount
+    const authStatus = sessionStorage.getItem('is_admin_authenticated') === 'true';
+    if (!authStatus) {
+      setIsAuthenticated(false);
+      setShowLogin(true);
+    } else {
+      setIsAuthenticated(true);
+    }
   }, []);
 
   // Prevent hydration flicker and immediate hanging

@@ -70,7 +70,7 @@ export default function AdminSettings() {
     e.preventDefault();
     if (!settingsRef) return;
     
-    // DIRECT FIREBASE UPDATE FOR CREDENTIALS
+    // DIRECT FIREBASE UPDATE FOR CREDENTIALS (CASE SENSITIVE)
     setDocumentNonBlocking(settingsRef, {
       adminUsername: adminData.adminUsername,
       adminPassword: adminData.adminPassword

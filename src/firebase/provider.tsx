@@ -63,7 +63,8 @@ export const FirebaseProvider: React.FC<FirebaseProviderProps> = ({
 
   useEffect(() => {
     if (!auth) {
-      setUserAuthState({ user: null, isUserLoading: false, userError: new Error("Auth service not provided.") });
+      setUserAuthState({ user: null, isUserLoading: false, userError: null });
+      setIsReady(true);
       return;
     }
 
@@ -108,7 +109,7 @@ export const useFirebase = (): FirebaseServicesAndUser | null => {
     return null;
   }
   
-  // Return null instead of throwing to prevent app hanging during SSR/Initialization
+  // Return null instead of throwing to prevent app hanging during initialization
   if (!context.firebaseApp || !context.firestore || !context.auth) {
     return null;
   }
