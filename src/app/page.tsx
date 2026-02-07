@@ -201,9 +201,9 @@ export default function Home() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-background selection:bg-primary/30">
-      {/* ULTIMATE STICKY HEADER WRAPPER */}
-      <div className="sticky top-0 z-[100] shadow-2xl bg-black">
+    <div className="min-h-screen flex flex-col bg-background selection:bg-primary/30 relative">
+      {/* ULTIMATE FIXED HEADER WRAPPER */}
+      <div className="fixed top-0 left-0 right-0 z-[100] shadow-2xl bg-black">
         <Navbar />
         {settings?.liveStatus && (
           <div className="bg-black border-b border-[#01a3a4]/20 py-1.5 px-4 overflow-hidden whitespace-nowrap">
@@ -219,6 +219,9 @@ export default function Home() {
           </div>
         )}
       </div>
+
+      {/* Dynamic Spacer based on live status presence */}
+      <div className={settings?.liveStatus ? "h-[104px] md:h-[116px]" : "h-[64px] md:h-[72px]"} />
 
       <main className="flex-grow container mx-auto space-y-1">
         <section className="grid grid-cols-12 gap-0 h-[160px] md:h-[320px] gpu-accelerated">

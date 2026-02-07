@@ -159,7 +159,7 @@ export default function AdminSettings() {
                       <Input 
                         value={adminData.adminUsername}
                         onChange={(e) => setAdminData({...adminData, adminUsername: e.target.value})}
-                        className="bg-black border-white/10 rounded-none h-12 text-sm text-white"
+                        className="bg-black border-white/10 rounded-none h-12 text-sm text-white normal-case"
                         autoComplete="off"
                       />
                     </div>
@@ -170,7 +170,7 @@ export default function AdminSettings() {
                           value={adminData.adminPassword}
                           onChange={(e) => setAdminData({...adminData, adminPassword: e.target.value})}
                           type={showPassword ? "text" : "password"}
-                          className="bg-black border-white/10 rounded-none h-12 text-sm text-white pr-10"
+                          className="bg-black border-white/10 rounded-none h-12 text-sm text-white pr-10 normal-case"
                           autoComplete="off"
                         />
                         <button 
@@ -224,7 +224,7 @@ export default function AdminSettings() {
                           type={showVerifyPassword ? "text" : "password"}
                           value={locationData.verificationPassword}
                           onChange={(e) => setLocationData({...locationData, verificationPassword: e.target.value})}
-                          className="bg-black border-orange-500/20 rounded-none h-12 text-xs text-white pr-10"
+                          className="bg-black border-orange-500/20 rounded-none h-12 text-xs text-white pr-10 normal-case"
                           placeholder="••••"
                         />
                         <button 
