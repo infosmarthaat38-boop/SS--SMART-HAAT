@@ -75,7 +75,7 @@ export default function AdminSettings() {
     if (!settingsRef) return;
     
     setDocumentNonBlocking(settingsRef, {
-      adminUsername: adminData.adminUsername, // Case-sensitive saved here
+      adminUsername: adminData.adminUsername, 
       adminPassword: adminData.adminPassword
     }, { merge: true });
 
@@ -164,7 +164,7 @@ export default function AdminSettings() {
                       <Input 
                         value={adminData.adminUsername}
                         onChange={(e) => setAdminData({...adminData, adminUsername: e.target.value})}
-                        className="bg-black border-white/10 rounded-none h-12 text-sm text-white"
+                        className="bg-black border-white/10 rounded-none h-12 text-sm text-white focus:border-[#01a3a4]"
                         autoComplete="off"
                       />
                     </div>
@@ -175,20 +175,20 @@ export default function AdminSettings() {
                           value={adminData.adminPassword}
                           onChange={(e) => setAdminData({...adminData, adminPassword: e.target.value})}
                           type={showPassword ? "text" : "password"}
-                          className="bg-black border-white/10 rounded-none h-12 text-sm text-white pr-10"
+                          className="bg-black border-white/10 rounded-none h-12 text-sm text-white pr-10 focus:border-[#01a3a4]"
                           autoComplete="off"
                         />
                         <button 
                           type="button"
                           onClick={() => setShowPassword(!showPassword)}
-                          className="absolute right-3 top-1/2 -translate-y-1/2 text-white/40 hover:text-white"
+                          className="absolute right-3 top-1/2 -translate-y-1/2 text-white/40 hover:text-white transition-colors"
                         >
                           {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                         </button>
                       </div>
                     </div>
                   </div>
-                  <Button type="submit" className="w-full bg-[#01a3a4] hover:bg-white hover:text-black text-white h-12 font-black uppercase tracking-widest rounded-none text-[9px]">
+                  <Button type="submit" className="w-full bg-[#01a3a4] hover:bg-white hover:text-black text-white h-12 font-black uppercase tracking-widest rounded-none text-[9px] transition-all">
                     UPDATE SECURITY
                   </Button>
                 </form>
@@ -209,7 +209,7 @@ export default function AdminSettings() {
                       <Input 
                         value={statusData.liveLocation}
                         onChange={(e) => setStatusData({...statusData, liveLocation: e.target.value})}
-                        className="bg-black border-white/10 rounded-none h-12 text-xs text-white"
+                        className="bg-black border-white/10 rounded-none h-12 text-xs text-white uppercase focus:border-[#01a3a4]"
                         placeholder="E.G. BANANI, DHAKA"
                       />
                     </div>
@@ -218,7 +218,7 @@ export default function AdminSettings() {
                       <Input 
                         value={statusData.liveStatus}
                         onChange={(e) => setStatusData({...statusData, liveStatus: e.target.value})}
-                        className="bg-black border-white/10 rounded-none h-12 text-xs text-white"
+                        className="bg-black border-white/10 rounded-none h-12 text-xs text-white uppercase focus:border-[#01a3a4]"
                         placeholder="E.G. OPEN & READY TO SHIP"
                       />
                     </div>
@@ -234,7 +234,7 @@ export default function AdminSettings() {
                         <Input 
                           value={statusData.statusColor}
                           onChange={(e) => setStatusData({...statusData, statusColor: e.target.value})}
-                          className="bg-black border-white/10 rounded-none h-12 text-xs text-white font-mono"
+                          className="bg-black border-white/10 rounded-none h-12 text-xs text-white font-mono focus:border-[#01a3a4]"
                           placeholder="#FFFFFF"
                         />
                       </div>
@@ -246,20 +246,20 @@ export default function AdminSettings() {
                           type={showVerifyPassword ? "text" : "password"}
                           value={statusData.verificationPassword}
                           onChange={(e) => setStatusData({...statusData, verificationPassword: e.target.value})}
-                          className="bg-black border-orange-500/20 rounded-none h-12 text-xs text-white pr-10"
+                          className="bg-black border-orange-500/20 rounded-none h-12 text-xs text-white pr-10 focus:border-orange-500"
                           placeholder="••••"
                         />
                         <button 
                           type="button"
                           onClick={() => setShowVerifyPassword(!showVerifyPassword)}
-                          className="absolute right-3 top-1/2 -translate-y-1/2 text-orange-500/40 hover:text-orange-500"
+                          className="absolute right-3 top-1/2 -translate-y-1/2 text-orange-500/40 hover:text-orange-500 transition-colors"
                         >
                           {showVerifyPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                         </button>
                       </div>
                     </div>
                   </div>
-                  <Button type="submit" className="w-full bg-orange-600 hover:bg-orange-700 text-white h-12 font-black uppercase tracking-widest rounded-none text-[9px]">
+                  <Button type="submit" className="w-full bg-orange-600 hover:bg-orange-700 text-white h-12 font-black uppercase tracking-widest rounded-none text-[9px] shadow-xl transition-all">
                     BROADCAST LIVE
                   </Button>
                 </form>

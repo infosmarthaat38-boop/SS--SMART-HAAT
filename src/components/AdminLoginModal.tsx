@@ -54,7 +54,7 @@ export function AdminLoginModal({ isOpen, onClose }: AdminLoginModalProps) {
     const validUser = settings?.adminUsername || 'ADMIN';
     const validPass = settings?.adminPassword || '4321';
 
-    // Fast credentials check without forced uppercase
+    // Fast credentials check supporting case-sensitivity
     setTimeout(() => {
       if (username === validUser && password === validPass) {
         const today = new Date().toISOString().split('T')[0];
@@ -83,8 +83,10 @@ export function AdminLoginModal({ isOpen, onClose }: AdminLoginModalProps) {
           <div className="w-16 h-16 bg-[#01a3a4]/10 border border-[#01a3a4]/20 rounded-full flex items-center justify-center mx-auto mb-2">
             <Lock className="h-8 w-8 text-[#01a3a4]" />
           </div>
-          <div className="space-y-1">
-            <DialogTitle className="text-2xl font-black text-white uppercase tracking-tighter">ADMIN TERMINAL</DialogTitle>
+          <div className="space-y-3">
+            <div className="bg-[#01a3a4] inline-block px-4 py-1.5 shadow-xl">
+              <DialogTitle className="text-xl font-black text-white uppercase tracking-tighter leading-none">ADMIN TERMINAL</DialogTitle>
+            </div>
             <DialogDescription className="text-[10px] text-muted-foreground uppercase font-black tracking-[0.2em]">
               RESTRICTED ACCESS AREA
             </DialogDescription>
@@ -101,7 +103,7 @@ export function AdminLoginModal({ isOpen, onClose }: AdminLoginModalProps) {
                 required
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
-                placeholder="ENTER USERNAME"
+                placeholder="Enter Username"
                 className="bg-white/5 border-white/10 rounded-none h-12 text-sm focus:ring-[#01a3a4] text-white"
               />
             </div>
@@ -116,13 +118,13 @@ export function AdminLoginModal({ isOpen, onClose }: AdminLoginModalProps) {
                   type={showPassword ? "text" : "password"}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  placeholder="••••"
+                  placeholder="••••••••"
                   className="bg-white/5 border-white/10 rounded-none h-12 text-sm focus:ring-[#01a3a4] text-white pr-10"
                 />
                 <button 
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-white/40 hover:text-white"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-white/40 hover:text-white transition-colors"
                 >
                   {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                 </button>
@@ -131,7 +133,7 @@ export function AdminLoginModal({ isOpen, onClose }: AdminLoginModalProps) {
           </div>
 
           {error && (
-            <div className="p-3 bg-red-600/10 border border-red-600/30 flex items-center gap-2">
+            <div className="p-3 bg-red-600/10 border border-red-600/30 flex items-center gap-2 animate-pulse">
               <ShieldAlert className="h-4 w-4 text-red-600" />
               <p className="text-[9px] font-black text-red-600 uppercase">{error}</p>
             </div>
@@ -140,7 +142,7 @@ export function AdminLoginModal({ isOpen, onClose }: AdminLoginModalProps) {
           <Button 
             disabled={loading}
             type="submit" 
-            className="w-full bg-[#01a3a4] hover:bg-[#01a3a4]/90 text-white h-14 font-black uppercase tracking-widest rounded-none shadow-xl shadow-[#01a3a4]/10"
+            className="w-full bg-[#01a3a4] hover:bg-white hover:text-black text-white h-14 font-black uppercase tracking-widest rounded-none shadow-xl shadow-[#01a3a4]/10 transition-all active:scale-95"
           >
             {loading ? <Loader2 className="animate-spin h-5 w-5" /> : "GRANT ACCESS"}
           </Button>

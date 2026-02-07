@@ -204,11 +204,11 @@ export default function Home() {
 
   return (
     <div className="min-h-screen flex flex-col bg-background selection:bg-primary/30 relative">
-      {/* ULTIMATE FIXED HEADER WRAPPER - HARD FREEZE */}
+      {/* ULTIMATE FIXED HEADER WRAPPER - HARD FREEZE WITH NO GAP */}
       <div className="fixed top-0 left-0 right-0 z-[100] shadow-2xl bg-black">
         <Navbar />
         {settings?.liveStatus && (
-          <div className="bg-black border-b border-[#01a3a4]/20 h-[28px] md:h-[32px] flex items-center overflow-hidden whitespace-nowrap">
+          <div className="bg-black border-b border-[#01a3a4]/20 h-[28px] md:h-[32px] flex items-center overflow-hidden whitespace-nowrap py-0">
             <div className="container mx-auto flex items-center gap-6 animate-marquee">
               <div className="flex items-center gap-3 text-[11px] md:text-[14px] font-black text-[#01a3a4] uppercase tracking-widest shrink-0">
                 <Radio className="h-3.5 w-3.5 animate-pulse text-[#01a3a4]" /> LIVE STATUS:
