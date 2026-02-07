@@ -29,7 +29,7 @@ export function AdminLoginModal({ isOpen, onClose }: AdminLoginModalProps) {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
   
-  // DRAGGABLE LOGIC - OPTIMIZED FOR 0 HANG
+  // DRAGGABLE LOGIC - HARD CENTERED FIX
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const [isDragging, setIsDragging] = useState(false);
   const offsetRef = useRef({ x: 0, y: 0 });
@@ -63,7 +63,6 @@ export function AdminLoginModal({ isOpen, onClose }: AdminLoginModalProps) {
     if (!isDragging) return;
 
     const handleMouseMove = (e: MouseEvent) => {
-      // Use requestAnimationFrame to prevent main thread blocking
       window.requestAnimationFrame(() => {
         setPosition({
           x: e.clientX - offsetRef.current.x,
@@ -96,10 +95,7 @@ export function AdminLoginModal({ isOpen, onClose }: AdminLoginModalProps) {
         const today = new Date().toISOString().split('T')[0];
         if (db) {
           const statsRef = doc(db, 'loginStats', today);
-          setDocumentNonBlocking(statsRef, { 
-            count: increment(1),
-            date: today
-          }, { merge: true });
+          setDocumentNonBlocking(statsRef, { count: increment(1), date: today }, { merge: true });
         }
         sessionStorage.setItem('is_admin_authenticated', 'true');
         onClose();
@@ -114,17 +110,16 @@ export function AdminLoginModal({ isOpen, onClose }: AdminLoginModalProps) {
   return (
     <Dialog open={isOpen} onOpenChange={(val) => !val && onClose()}>
       <DialogContent 
-        className="max-w-[320px] bg-black border border-[#01a3a4]/30 rounded-none p-6 shadow-2xl gpu-accelerated outline-none overflow-hidden transition-none select-none"
+        className="max-w-[320px] bg-black border border-[#01a3a4]/30 rounded-none p-6 shadow-2xl gpu-accelerated outline-none overflow-hidden transition-none select-none fixed z-[200]"
         style={{ 
           transform: `translate(calc(-50% + ${position.x}px), calc(-50% + ${position.y}px))`,
           top: '50%',
-          left: '50%',
-          position: 'fixed'
+          left: '50%'
         }}
       >
         <button 
           onClick={onClose}
-          className="absolute right-3 top-3 z-[100] p-1.5 bg-white/5 text-white/40 hover:text-white hover:bg-red-600 transition-all rounded-none border border-white/10"
+          className="absolute right-2 top-2 z-[250] p-1.5 bg-white/5 text-white/40 hover:text-white hover:bg-red-600 transition-all rounded-none border border-white/10"
         >
           <X className="h-4 w-4" />
         </button>
@@ -133,17 +128,17 @@ export function AdminLoginModal({ isOpen, onClose }: AdminLoginModalProps) {
           <div className="w-12 h-12 bg-[#01a3a4]/10 border border-[#01a3a4]/20 rounded-full flex items-center justify-center mx-auto">
             <Lock className="h-6 w-6 text-[#01a3a4]" />
           </div>
-          <div className="space-y-2 flex flex-col items-center">
+          <div className="space-y-2 flex flex-col items-center w-full">
             <div 
               onMouseDown={handleMouseDown}
-              className="bg-[#01a3a4] w-full h-10 shadow-xl border border-white/10 flex items-center justify-center cursor-grab active:cursor-grabbing"
+              className="bg-[#01a3a4] w-full h-10 shadow-xl border border-white/10 flex items-center justify-center cursor-grab active:cursor-grabbing px-2"
             >
-              <DialogTitle className="text-[11px] font-black text-white uppercase tracking-tighter leading-none m-0 p-0 text-center">
+              <DialogTitle className="text-[11px] font-black text-white uppercase tracking-tighter leading-none m-0 p-0 text-center whitespace-nowrap">
                 ADMIN TERMINAL
               </DialogTitle>
             </div>
             <DialogDescription className="text-[8px] text-muted-foreground uppercase font-black tracking-[0.2em] w-full text-center">
-              DRAG HEADER TO MOVE • RESTRICTED
+              DRAG TO MOVE • SECURE SESSION
             </DialogDescription>
           </div>
         </DialogHeader>

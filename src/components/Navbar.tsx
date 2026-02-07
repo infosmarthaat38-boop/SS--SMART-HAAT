@@ -49,12 +49,15 @@ export function Navbar() {
     }
   };
 
+  // HARD FIX FOR HANG: Delay modal opening to allow dropdown to close cleanly
+  const openAdminModal = () => {
+    setTimeout(() => setIsAdminModalOpen(true), 150);
+  };
+
   if (!isMounted) {
     return (
       <nav className="w-full bg-[#01a3a4] py-2 h-[64px] shadow-lg">
-        <div className="container mx-auto px-4 flex items-center">
-          <LogoIcon />
-        </div>
+        <div className="container mx-auto px-4 flex items-center"><LogoIcon /></div>
       </nav>
     );
   }
@@ -68,9 +71,7 @@ export function Navbar() {
             <Link href="/" className="flex items-center gap-2 shrink-0 group">
               <LogoIcon />
               <div className="flex flex-col">
-                <h1 className="text-[12px] md:text-[14px] font-headline font-black text-white leading-none uppercase tracking-tighter">
-                  SS SMART HAAT
-                </h1>
+                <h1 className="text-[12px] md:text-[14px] font-headline font-black text-white leading-none uppercase tracking-tighter">SS SMART HAAT</h1>
                 <span className="text-[6px] text-white/90 font-bold uppercase tracking-[0.2em]">PREMIUM</span>
               </div>
             </Link>
@@ -98,21 +99,14 @@ export function Navbar() {
                   <LayoutGrid className="h-3 w-3 md:h-3.5 md:w-3.5" /> <span className="hidden sm:inline">{language === 'EN' ? "SHOP" : "দোকান"}</span>
                 </Link>
                 
-                <button 
-                  onClick={toggleLanguage}
-                  className="flex items-center gap-1 hover:text-black transition-colors font-black uppercase tracking-widest"
-                >
+                <button onClick={toggleLanguage} className="flex items-center gap-1 hover:text-black transition-colors font-black uppercase tracking-widest">
                   <Languages className="h-3 w-3 md:h-3.5 md:w-3.5" /> {language}
                 </button>
 
-                <button 
-                  onClick={() => setIsLocationModalOpen(true)}
-                  className="hidden md:flex items-center gap-1 hover:text-black transition-colors"
-                >
+                <button onClick={() => setIsLocationModalOpen(true)} className="hidden md:flex items-center gap-1 hover:text-black transition-colors">
                   <MapPin className="h-3.5 w-3.5" /> {language === 'EN' ? "LOCATION" : "লোকেশন"}
                 </button>
 
-                {/* Dropdown for Admin and Search (Mobile) */}
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button variant="ghost" size="icon" className="relative h-9 w-9 text-white hover:bg-black/10 rounded-none border border-white/20 flex items-center justify-center group">
@@ -124,13 +118,11 @@ export function Navbar() {
                       <Search className="h-4 w-4 mr-2 text-[#01a3a4]" />
                       <span className="text-[10px] font-black uppercase text-black">{language === 'EN' ? "SEARCH" : "খুঁজুন"}</span>
                     </DropdownMenuItem>
-                    
                     <DropdownMenuItem className="p-3 cursor-pointer md:hidden" onClick={() => setIsLocationModalOpen(true)}>
                       <MapPin className="h-4 w-4 mr-2 text-[#01a3a4]" />
                       <span className="text-[10px] font-black uppercase text-black">{language === 'EN' ? "LOCATION" : "লোকেশন"}</span>
                     </DropdownMenuItem>
-
-                    <DropdownMenuItem className="p-3 cursor-pointer group" onClick={() => setIsAdminModalOpen(true)}>
+                    <DropdownMenuItem className="p-3 cursor-pointer group" onClick={openAdminModal}>
                       <span className="text-[10px] font-black uppercase text-black group-hover:text-[#01a3a4] transition-colors">ADMIN PANEL</span>
                     </DropdownMenuItem>
                   </DropdownMenuContent>
@@ -139,9 +131,7 @@ export function Navbar() {
 
               <Button variant="ghost" size="icon" className="relative h-9 w-9 rounded-none hover:bg-black/10 text-white group border border-white/20">
                 <ShoppingBag className="h-5 w-5 transition-transform group-hover:scale-110" />
-                <span className="absolute -top-1 -right-1 w-4 h-4 bg-black text-white text-[8px] font-black rounded-none flex items-center justify-center border border-[#01a3a4]">
-                  0
-                </span>
+                <span className="absolute -top-1 -right-1 w-4 h-4 bg-black text-white text-[8px] font-black rounded-none flex items-center justify-center border border-[#01a3a4]">0</span>
               </Button>
             </div>
           </div>
@@ -157,29 +147,14 @@ export function Navbar() {
                 className="w-full bg-black/10 border-white/20 h-10 pl-10 pr-10 focus-visible:ring-black focus-visible:bg-black/20 transition-all rounded-none text-[10px] text-white uppercase placeholder:text-white/70 font-bold"
               />
               <Search className="absolute left-3.5 top-[20px] -translate-y-1/2 h-4 w-4 text-white" />
-              <button 
-                onClick={() => {
-                  setShowSearchInput(false);
-                  setSearchQuery('');
-                }}
-                className="absolute right-3 top-[20px] -translate-y-1/2 text-white/50 hover:text-white"
-              >
-                <X className="h-4 w-4" />
-              </button>
+              <button onClick={() => { setShowSearchInput(false); setSearchQuery(''); }} className="absolute right-3 top-[20px] -translate-y-1/2 text-white/50 hover:text-white"><X className="h-4 w-4" /></button>
             </div>
           )}
         </div>
       </nav>
 
-      <AdminLoginModal 
-        isOpen={isAdminModalOpen} 
-        onClose={() => setIsAdminModalOpen(false)} 
-      />
-
-      <LocationModal 
-        isOpen={isLocationModalOpen}
-        onClose={() => setIsLocationModalOpen(false)}
-      />
+      <AdminLoginModal isOpen={isAdminModalOpen} onClose={() => setIsAdminModalOpen(false)} />
+      <LocationModal isOpen={isLocationModalOpen} onClose={() => setIsLocationModalOpen(false)} />
     </>
   );
 }
