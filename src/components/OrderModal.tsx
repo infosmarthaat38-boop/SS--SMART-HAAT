@@ -99,9 +99,14 @@ export const OrderModal = memo(({ product, isOpen, onClose }: OrderModalProps) =
   };
 
   const handleWhatsAppChat = () => {
-    // Priority: CHAT LIVE number from settings, then general phone, then default
-    const chatNumber = settings?.whatsappUrl || settings?.phone || '01700000000';
-    const cleanPhone = chatNumber.replace(/[^0-9]/g, "");
+    const rawNumber = settings?.whatsappUrl || settings?.phone || '01700000000';
+    let cleanPhone = rawNumber.replace(/[^0-9]/g, "");
+    
+    // Auto-add Bangladesh country code if missing
+    if (cleanPhone.startsWith('0') && cleanPhone.length === 11) {
+      cleanPhone = '88' + cleanPhone;
+    }
+    
     const message = `Hello SS SMART HAAT, I want to inquire about: ${product.name} (Price: ৳${product.price})`;
     window.open(`https://wa.me/${cleanPhone}?text=${encodeURIComponent(message)}`, '_blank');
   };

@@ -127,7 +127,7 @@ export default function AdminOthers() {
                 {/* NEW CHAT LIVE OPTION */}
                 <div className="space-y-2 p-4 bg-green-600/5 border border-green-600/20">
                   <label className="text-[10px] font-black text-green-500 uppercase flex items-center gap-2">
-                    <MessageSquare className="h-3.5 w-3.5" /> CHAT LIVE (WHATSAPP NUMBER)
+                    <MessageSquare className="h-3.5 w-3.5" /> CHAT LIVE (WHATSAPP - NO COUNTRY CODE)
                   </label>
                   <Input 
                     required
@@ -136,7 +136,7 @@ export default function AdminOthers() {
                     placeholder="E.G. 017XXXXXXXX"
                     className="bg-black border-green-600/30 rounded-none h-12 text-sm font-black text-white focus:ring-green-500"
                   />
-                  <p className="text-[8px] text-white/40 uppercase font-bold">THIS NUMBER WILL BE USED FOR ALL DIRECT CUSTOMER CHATS.</p>
+                  <p className="text-[8px] text-white/40 uppercase font-bold">ENTER WITHOUT +88. SYSTEM WILL AUTOMATICALLY ADD COUNTRY CODE.</p>
                 </div>
 
                 <div className="space-y-2">
