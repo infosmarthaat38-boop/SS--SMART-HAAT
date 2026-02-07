@@ -10,7 +10,7 @@ import { AdminLoginModal } from '@/components/AdminLoginModal';
 import { LocationModal } from '@/components/LocationModal';
 import { useRouter } from 'next/navigation';
 import { useFirestore, useCollection, useMemoFirebase } from '@/firebase';
-import { collection, query, where } from 'firebase/firestore';
+import { collection, query, where, limit } from 'firebase/firestore';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -32,25 +32,27 @@ export function Navbar() {
   const [showSearchInput, setShowSearchInput] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [isMounted, setIsMounted] = useState(false);
-  const [todayDate, setTodayDate] = useState('');
   const router = useRouter();
   const db = useFirestore();
 
   useEffect(() => {
     setIsMounted(true);
-    setTodayDate(new Date().toISOString().split('T')[0]);
     const storedLang = localStorage.getItem('app_lang') as 'EN' | 'BN';
     if (storedLang) setLanguage(storedLang);
   }, []);
 
-  const todayOrdersQuery = useMemoFirebase(() => {
-    if (!db || !todayDate) return null;
-    // Query for orders created today to show notification count
-    return query(collection(db, 'orders'), where('createdAt', '>=', todayDate));
-  }, [db, todayDate]);
+  // Optimized notification query: Only fetch PENDING orders
+  const pendingOrdersQuery = useMemoFirebase(() => {
+    if (!db) return null;
+    return query(
+      collection(db, 'orders'), 
+      where('status', '==', 'PENDING'),
+      limit(20)
+    );
+  }, [db]);
   
-  const { data: todayOrders } = useCollection(todayOrdersQuery);
-  const orderCount = useMemo(() => todayOrders?.length || 0, [todayOrders]);
+  const { data: pendingOrders } = useCollection(pendingOrdersQuery);
+  const pendingCount = useMemo(() => pendingOrders?.length || 0, [pendingOrders]);
 
   const toggleLanguage = () => {
     const newLang = language === 'EN' ? 'BN' : 'EN';
@@ -77,7 +79,7 @@ export function Navbar() {
 
   return (
     <>
-      <nav className="w-full bg-[#01a3a4] shadow-lg border-b border-black/10 py-2">
+      <nav className="w-full bg-[#01a3a4] shadow-lg border-b border-black/10 py-2 gpu-accelerated">
         <div className="container mx-auto px-4">
           <div className="flex items-center justify-between gap-2 h-12">
             
@@ -138,7 +140,7 @@ export function Navbar() {
                       <MoreVertical className="h-5 w-5" />
                     </Button>
                   </DropdownMenuTrigger>
-                  <DropdownMenuContent className="bg-white border-none rounded-none shadow-2xl p-2 min-w-[160px] z-[100]">
+                  <DropdownMenuContent className="bg-white border-none rounded-none shadow-2xl p-2 min-w-[180px] z-[100]">
                     
                     <DropdownMenuItem className="p-3 cursor-pointer md:hidden" onClick={() => setShowSearchInput(!showSearchInput)}>
                       <Search className="h-4 w-4 mr-2 text-[#01a3a4]" />
@@ -150,13 +152,13 @@ export function Navbar() {
                       <span className="text-[10px] font-black uppercase text-black">{language === 'EN' ? "LOCATION" : "লোকেশন"}</span>
                     </DropdownMenuItem>
 
-                    <DropdownMenuItem className="p-3 cursor-pointer flex justify-between items-center" onClick={() => setIsAdminModalOpen(true)}>
+                    <DropdownMenuItem className="p-3 cursor-pointer flex justify-between items-center group" onClick={() => setIsAdminModalOpen(true)}>
                       <div className="flex items-center">
-                        <span className="text-[10px] font-black uppercase text-black">ADMIN PANEL</span>
+                        <span className="text-[10px] font-black uppercase text-black group-hover:text-[#01a3a4] transition-colors">ADMIN PANEL</span>
                       </div>
-                      {orderCount > 0 && (
-                        <Badge className="bg-red-600 text-white text-[8px] font-black rounded-none border-none animate-pulse">
-                          {orderCount} NEW
+                      {pendingCount > 0 && (
+                        <Badge className="bg-red-600 text-white text-[8px] font-black rounded-none border-none animate-pulse px-2">
+                          {pendingCount} NEW
                         </Badge>
                       )}
                     </DropdownMenuItem>

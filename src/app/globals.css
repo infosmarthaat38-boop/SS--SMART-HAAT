@@ -71,37 +71,21 @@
   background: #01a3a4;
 }
 
-@keyframes alert-shake {
-  0% { transform: translateX(0); }
-  25% { transform: translateX(5px); }
-  50% { transform: translateX(-5px); }
-  75% { transform: translateX(5px); }
-  100% { transform: translateX(0); }
-}
-
-@keyframes spin-slow {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
-}
-
 @keyframes marquee {
   0% { transform: translateX(100%); }
   100% { transform: translateX(-100%); }
 }
 
-/* GPU ACCELERATION FOR MOBILE SMOOTHNESS */
-.animate-alert-shake {
-  animation: alert-shake 0.5s ease-in-out infinite;
-  will-change: transform;
+@keyframes fade-in-up {
+  0% { opacity: 0; transform: translateY(10px); }
+  100% { opacity: 1; transform: translateY(0); }
 }
 
-.animate-spin-slow {
-  animation: spin-slow 8s linear infinite;
-  will-change: transform;
-}
-
-.animate-fade-in-up {
-  animation: fade-in-up 0.8s ease-out forwards;
+/* GPU ACCELERATION FOR ULTRA SMOOTHNESS */
+.gpu-accelerated {
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  perspective: 1000px;
   will-change: transform, opacity;
 }
 
@@ -110,23 +94,11 @@
   will-change: transform;
 }
 
-/* PERFORMANCE OPTIMIZATIONS */
-.animate-pulse {
-  will-change: opacity;
+.animate-fade-in-up {
+  animation: fade-in-up 0.5s ease-out forwards;
 }
 
-.animate-bounce {
-  will-change: transform;
-}
-
-.gpu-accelerated {
-  transform: translateZ(0);
-  backface-visibility: hidden;
-  perspective: 1000px;
-  will-change: transform, opacity;
-}
-
-/* SAVES MEMORY ON LONG PAGES */
+/* SAVES MEMORY ON LONG PAGES - INSTANT LOADING */
 section, main {
   content-visibility: auto;
   contain-intrinsic-size: 1px 500px;
