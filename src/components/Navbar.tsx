@@ -69,7 +69,7 @@ export function Navbar() {
 
   if (!isMounted) {
     return (
-      <nav className="w-full bg-[#01a3a4] py-2 h-16 shadow-lg">
+      <nav className="w-full bg-[#01a3a4] py-2 h-[64px] shadow-lg">
         <div className="container mx-auto px-4 flex items-center">
           <LogoIcon />
         </div>
@@ -79,9 +79,9 @@ export function Navbar() {
 
   return (
     <>
-      <nav className="w-full bg-[#01a3a4] shadow-lg border-b border-black/10 py-2 gpu-accelerated">
+      <nav className="w-full bg-[#01a3a4] shadow-lg border-b border-black/10 h-[64px] flex items-center gpu-accelerated">
         <div className="container mx-auto px-4">
-          <div className="flex items-center justify-between gap-2 h-12">
+          <div className="flex items-center justify-between gap-2">
             
             {/* LEFT: BRANDING */}
             <Link href="/" className="flex items-center gap-2 shrink-0 group">
@@ -133,11 +133,14 @@ export function Navbar() {
                   <MapPin className="h-3.5 w-3.5" /> {language === 'EN' ? "LOCATION" : "লোকেশন"}
                 </button>
 
-                {/* 3-DOT MENU */}
+                {/* 3-DOT MENU WITH ALERT DOT */}
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" size="icon" className="h-9 w-9 text-white hover:bg-black/10 rounded-none border border-white/20 flex items-center justify-center">
+                    <Button variant="ghost" size="icon" className="relative h-9 w-9 text-white hover:bg-black/10 rounded-none border border-white/20 flex items-center justify-center">
                       <MoreVertical className="h-5 w-5" />
+                      {pendingCount > 0 && (
+                        <span className="absolute top-0 right-0 h-2 w-2 bg-red-600 rounded-full border border-white animate-pulse" />
+                      )}
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent className="bg-white border-none rounded-none shadow-2xl p-2 min-w-[180px] z-[100]">

@@ -208,7 +208,7 @@ export default function Home() {
       <div className="fixed top-0 left-0 right-0 z-[100] shadow-2xl bg-black">
         <Navbar />
         {settings?.liveStatus && (
-          <div className="bg-black border-b border-[#01a3a4]/20 py-0.5 px-4 overflow-hidden whitespace-nowrap">
+          <div className="bg-black border-b border-[#01a3a4]/20 h-[28px] md:h-[32px] flex items-center overflow-hidden whitespace-nowrap">
             <div className="container mx-auto flex items-center gap-6 animate-marquee">
               <div className="flex items-center gap-3 text-[11px] md:text-[14px] font-black text-[#01a3a4] uppercase tracking-widest shrink-0">
                 <Radio className="h-3.5 w-3.5 animate-pulse text-[#01a3a4]" /> LIVE STATUS:
@@ -225,11 +225,11 @@ export default function Home() {
         )}
       </div>
 
-      {/* Dynamic Spacer based on live status presence - Optimized Height */}
-      <div className={settings?.liveStatus ? "h-[92px] md:h-[104px]" : "h-[64px] md:h-[72px]"} />
+      {/* Dynamic Spacer - EXACT HEIGHT TO PREVENT GAP */}
+      <div className={settings?.liveStatus ? "h-[92px] md:h-[96px]" : "h-[64px]"} />
 
       <main className="flex-grow container mx-auto">
-        <section className="grid grid-cols-12 gap-0 h-[160px] md:h-[320px] gpu-accelerated">
+        <section className="grid grid-cols-12 gap-0 h-[160px] md:h-[320px] gpu-accelerated bg-black">
           <div className="col-span-3 h-full"><FlashOfferCard /></div>
           <div className="col-span-6 h-full relative overflow-hidden bg-black">
             {combinedSliderItems.length > 0 ? (
