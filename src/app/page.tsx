@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useRef, useMemo, useState, useEffect, memo } from 'react';
@@ -118,7 +119,7 @@ const FlashOfferCard = memo(() => {
             priority={true}
           />
           <div className="absolute top-1 left-1 bg-[#01a3a4] px-1 md:px-3 py-0.5 text-[5px] md:text-[8px] font-black text-white uppercase tracking-widest z-10 shadow-lg">FLASH</div>
-          <div className="absolute bottom-0 w-full pt-4 pb-1 text-center px-1">
+          <div className="absolute bottom-0 w-full pb-1 text-center px-1">
              <p className="text-white font-black text-[6px] md:text-[10px] uppercase tracking-widest mb-0.5 truncate drop-shadow-2xl">{activeItem.name || activeItem.title}</p>
              {activeItem.price && (
                <div className="flex flex-col items-center">
@@ -238,7 +239,7 @@ export default function Home() {
           <div className="flex items-center justify-between mb-8 md:mb-12">
             <div className="flex items-center gap-3">
               <div className="h-6 md:h-8 w-1.5 md:w-2 bg-[#01a3a4]" />
-              <h2 className="text-lg md:text-3xl font-black text-white uppercase tracking-tighter">TOP SELLING PRODUCTS</h2>
+              <h2 className="text-lg md:text-3xl font-black text-white uppercase tracking-tighter">MORE PRODUCTS</h2>
             </div>
             <Link href="/shop" className="text-[8px] md:text-[10px] font-black text-[#01a3a4] uppercase tracking-[0.3em] hover:text-white transition-colors flex items-center gap-2">
               VIEW ALL ARCHIVE <ArrowRight className="h-3 w-3" />
@@ -259,7 +260,7 @@ export default function Home() {
           <div className="mt-12 md:mt-20 flex justify-center">
             <Link href="/shop" className="w-full md:w-auto">
               <button className="w-full md:w-[400px] bg-white/5 border border-white/10 hover:border-[#01a3a4] text-white px-10 h-14 md:h-20 font-black uppercase tracking-[0.4em] text-[10px] md:text-[12px] flex items-center justify-center gap-6 transition-all hover:bg-[#01a3a4] hover:text-black active:scale-95 shadow-2xl group">
-                EXPLORE ALL PRODUCTS <ArrowRight className="h-5 w-5 group-hover:translate-x-2 transition-transform" />
+                MORE PRODUCTS <ArrowRight className="h-5 w-5 group-hover:translate-x-2 transition-transform" />
               </button>
             </Link>
           </div>
