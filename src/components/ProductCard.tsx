@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { memo, useState } from 'react';
@@ -71,7 +70,6 @@ export const ProductCard = memo(({ product, index = 0 }: ProductCardProps) => {
             </span>
           </div>
 
-          {/* mt-auto ensures all buttons align at the bottom of cards in a grid row */}
           <Button 
             disabled={isOutOfStock}
             onClick={(e) => { e.preventDefault(); setIsOrderOpen(true); }}
