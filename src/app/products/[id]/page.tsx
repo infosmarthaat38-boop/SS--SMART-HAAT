@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useState } from 'react';
@@ -172,7 +171,7 @@ export default function ProductDetails() {
             <div className="flex items-center justify-between mb-12">
               <div className="flex items-center gap-4">
                 <div className="h-8 w-1.5 bg-[#01a3a4]" />
-                <h2 className="text-3xl font-black uppercase text-white tracking-tighter">DISCOVER MORE</h2>
+                <h2 className="text-3xl font-black uppercase text-white tracking-tighter">MORE PRODUCTS</h2>
               </div>
               <Button onClick={() => router.push('/shop')} variant="ghost" className="text-[10px] font-black uppercase tracking-[0.3em] text-[#01a3a4] hover:bg-[#01a3a4]/10">
                 EXPLORE ALL ARCHIVE

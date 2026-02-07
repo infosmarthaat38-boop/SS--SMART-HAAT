@@ -118,7 +118,7 @@ const FlashOfferCard = memo(() => {
             priority={true}
           />
           <div className="absolute top-1 left-1 bg-[#01a3a4] px-1 md:px-3 py-0.5 text-[5px] md:text-[8px] font-black text-white uppercase tracking-widest z-10 shadow-lg">FLASH</div>
-          <div className="absolute bottom-0 w-full bg-gradient-to-t from-black/80 via-black/20 to-transparent pt-4 pb-1 text-center px-1">
+          <div className="absolute bottom-0 w-full pt-4 pb-1 text-center px-1">
              <p className="text-white font-black text-[6px] md:text-[10px] uppercase tracking-widest mb-0.5 truncate drop-shadow-2xl">{activeItem.name || activeItem.title}</p>
              {activeItem.price && (
                <div className="flex flex-col items-center">
