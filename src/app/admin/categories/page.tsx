@@ -148,7 +148,14 @@ export default function AdminCategories() {
       </main>
 
       <AlertDialog open={isAlertOpen} onOpenChange={setIsAlertOpen}>
-        <AlertDialogContent className="bg-black border-orange-600/30 rounded-none p-8 max-w-md">
+        <AlertDialogContent className="bg-black border-orange-600/30 rounded-none p-8 max-w-md relative">
+          <button 
+            onClick={() => setIsAlertOpen(false)}
+            className="absolute right-4 top-4 text-white/40 hover:text-white transition-colors"
+          >
+            <X className="h-5 w-5" />
+          </button>
+
           <AlertDialogHeader className="space-y-4">
             <div className="flex items-center gap-3">
               <div className="h-10 w-10 bg-red-600/10 flex items-center justify-center border border-red-600/20"><AlertTriangle className="h-6 w-6 text-red-600" /></div>

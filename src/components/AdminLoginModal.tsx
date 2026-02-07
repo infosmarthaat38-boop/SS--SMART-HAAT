@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Lock, User, Loader2, ShieldAlert, Eye, EyeOff } from 'lucide-react';
+import { Lock, User, Loader2, ShieldAlert, Eye, EyeOff, X } from 'lucide-react';
 import { useFirestore, useDoc, useMemoFirebase } from '@/firebase';
 import { doc, increment } from 'firebase/firestore';
 import { useRouter } from 'next/navigation';
@@ -120,12 +120,18 @@ export function AdminLoginModal({ isOpen, onClose }: AdminLoginModalProps) {
           position: 'fixed'
         }}
       >
+        <button 
+          onClick={onClose}
+          className="absolute right-3 top-3 z-[100] text-white/40 hover:text-white transition-colors"
+        >
+          <X className="h-4 w-4" />
+        </button>
+
         <DialogHeader className="space-y-4 text-center">
           <div className="w-12 h-12 bg-[#01a3a4]/10 border border-[#01a3a4]/20 rounded-full flex items-center justify-center mx-auto">
             <Lock className="h-6 w-6 text-[#01a3a4]" />
           </div>
           <div className="space-y-2 flex flex-col items-center">
-            {/* DRAGGABLE HANDLE - HARD FIXED ALIGNMENT */}
             <div 
               onMouseDown={handleMouseDown}
               className="bg-[#01a3a4] w-full h-10 shadow-xl border border-white/10 flex items-center justify-center cursor-grab active:cursor-grabbing"

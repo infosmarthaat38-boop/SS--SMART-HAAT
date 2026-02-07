@@ -22,7 +22,8 @@ import {
   Calendar,
   Ruler,
   Hash,
-  Bell
+  Bell,
+  X
 } from 'lucide-react';
 import {
   Dialog,
@@ -431,7 +432,14 @@ export default function AdminOrders() {
       </main>
 
       <Dialog open={isConfirmOpen} onOpenChange={setIsConfirmOpen}>
-        <DialogContent className="bg-black border-[#01a3a4]/30 rounded-none max-w-md p-8">
+        <DialogContent className="bg-black border-[#01a3a4]/30 rounded-none max-w-md p-8 relative">
+          <button 
+            onClick={() => setIsConfirmOpen(false)}
+            className="absolute right-4 top-4 text-white/40 hover:text-white"
+          >
+            <X className="h-5 w-5" />
+          </button>
+
           <DialogHeader className="space-y-4">
             <div className="flex items-center gap-3">
               <div className="h-10 w-10 bg-[#01a3a4]/10 flex items-center justify-center border border-[#01a3a4]/20">
@@ -488,7 +496,14 @@ export default function AdminOrders() {
       </Dialog>
 
       <AlertDialog open={isAlertOpen} onOpenChange={setIsAlertOpen}>
-        <AlertDialogContent className="bg-black border-[#01a3a4]/30 rounded-none p-8 max-w-md">
+        <AlertDialogContent className="bg-black border-[#01a3a4]/30 rounded-none p-8 max-w-md relative">
+          <button 
+            onClick={() => setIsAlertOpen(false)}
+            className="absolute right-4 top-4 text-white/40 hover:text-white"
+          >
+            <X className="h-5 w-5" />
+          </button>
+
           <AlertDialogHeader className="space-y-4">
             <div className="flex items-center gap-3">
               <div className="h-10 w-10 bg-red-600/10 flex items-center justify-center border border-red-600/20">
