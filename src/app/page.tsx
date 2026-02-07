@@ -200,20 +200,21 @@ export default function Home() {
   }
 
   const broadcastColor = settings?.statusColor || '#ffffff';
+  const liveLabel = settings?.liveStatusLabel || 'LIVE STATUS:';
 
   return (
     <div className="min-h-screen flex flex-col bg-background selection:bg-primary/30 relative">
       <div className="fixed top-0 left-0 right-0 z-[120] shadow-2xl bg-black">
         <Navbar />
         {settings?.liveStatus && (
-          <div className="bg-black border-b border-[#01a3a4]/20 h-[24px] md:h-[28px] flex items-center overflow-hidden whitespace-nowrap py-0">
-            <div className="container mx-auto flex items-center gap-6 animate-marquee">
+          <div className="bg-black border-b border-[#01a3a4]/20 h-[24px] md:h-[28px] flex items-center overflow-hidden whitespace-nowrap py-0 relative w-full">
+            <div className="flex items-center gap-6 animate-marquee w-full px-4">
               <div className="flex items-center gap-3 text-[10px] md:text-[13px] font-black text-[#01a3a4] uppercase tracking-widest shrink-0">
-                <Radio className="h-3 w-3 animate-pulse text-[#01a3a4]" /> LIVE STATUS:
+                <Radio className="h-3 w-3 animate-pulse text-[#01a3a4]" /> {liveLabel}
               </div>
               <p 
                 style={{ color: broadcastColor }}
-                className="text-[10px] md:text-[14px] font-black uppercase tracking-[0.2em] flex items-center gap-6"
+                className="text-[10px] md:text-[14px] font-black uppercase tracking-[0.2em] flex items-center gap-6 shrink-0"
               >
                 {settings.liveStatus} <span className="text-[#01a3a4]/40">||</span> 
                 <MapPin className="h-3 w-3 text-[#01a3a4]" /> {settings.liveLocation || 'BANANI, DHAKA'}
@@ -226,7 +227,7 @@ export default function Home() {
       <div className={settings?.liveStatus ? "h-[88px] md:h-[92px]" : "h-[64px]"} />
 
       <main className="flex-grow container mx-auto">
-        <section className="grid grid-cols-12 gap-0 h-[160px] md:h-[320px] gpu-accelerated bg-black">
+        <section className="grid grid-cols-12 gap-0 h-[160px] md:h-[320px] gpu-accelerated bg-black overflow-hidden">
           <div className="col-span-3 h-full"><FlashOfferCard /></div>
           <div className="col-span-6 h-full relative overflow-hidden bg-black border-none">
             {combinedSliderItems.length > 0 ? (

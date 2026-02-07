@@ -22,7 +22,9 @@ import {
   ExternalLink,
   Palette,
   Type,
-  Terminal
+  Terminal,
+  Github,
+  Globe
 } from 'lucide-react';
 import Link from 'next/link';
 import { useFirestore, useDoc, useMemoFirebase } from '@/firebase';
@@ -46,6 +48,7 @@ export default function AdminSettings() {
 
   const [statusData, setStatusData] = useState({
     liveLocation: '',
+    liveStatusLabel: '',
     liveStatus: '',
     statusColor: '#ffffff',
     verificationPassword: ''
@@ -63,6 +66,7 @@ export default function AdminSettings() {
       setStatusData(prev => ({
         ...prev,
         liveLocation: settings.liveLocation || 'BANANI, DHAKA',
+        liveStatusLabel: settings.liveStatusLabel || 'LIVE STATUS:',
         liveStatus: settings.liveStatus || 'OPEN & READY TO SHIP',
         statusColor: settings.statusColor || '#ffffff'
       }));
@@ -73,7 +77,6 @@ export default function AdminSettings() {
     e.preventDefault();
     if (!settingsRef) return;
     
-    // CASE SENSITIVE SAVE - NO ENFORCED UPPERCASE
     setDocumentNonBlocking(settingsRef, {
       adminUsername: adminData.adminUsername, 
       adminPassword: adminData.adminPassword
@@ -100,6 +103,7 @@ export default function AdminSettings() {
 
     setDocumentNonBlocking(settingsRef, {
       liveLocation: statusData.liveLocation,
+      liveStatusLabel: statusData.liveStatusLabel,
       liveStatus: statusData.liveStatus,
       statusColor: statusData.statusColor
     }, { merge: true });
@@ -198,32 +202,41 @@ export default function AdminSettings() {
             <Card className="bg-card border-white/5 rounded-none shadow-2xl overflow-hidden">
               <CardHeader className="bg-white/[0.02] border-b border-white/5 p-6">
                 <CardTitle className="text-xs font-black uppercase tracking-[0.3em] text-[#01a3a4] flex items-center gap-2">
-                  <MapPin className="h-4 w-4" /> LIVE STATUS BROADCAST
+                  <Zap className="h-4 w-4" /> LIVE BROADCAST CONTROL
                 </CardTitle>
               </CardHeader>
               <CardContent className="p-8">
                 <form onSubmit={handleSaveStatus} className="space-y-6">
                   <div className="space-y-4">
                     <div className="space-y-2">
+                      <label className="text-[9px] font-black text-muted-foreground uppercase flex items-center gap-2"><Type className="h-3 w-3 text-[#01a3a4]" /> LIVE LABEL (E.G. LIVE STATUS:)</label>
+                      <Input 
+                        value={statusData.liveStatusLabel}
+                        onChange={(e) => setStatusData({...statusData, liveStatusLabel: e.target.value})}
+                        className="bg-black border-white/10 rounded-none h-12 text-xs text-white focus:border-[#01a3a4]"
+                        placeholder="LIVE STATUS:"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-[9px] font-black text-muted-foreground uppercase flex items-center gap-2"><Globe className="h-3 w-3 text-[#01a3a4]" /> BROADCAST MESSAGE</label>
+                      <Input 
+                        value={statusData.liveStatus}
+                        onChange={(e) => setStatusData({...statusData, liveStatus: e.target.value})}
+                        className="bg-black border-white/10 rounded-none h-12 text-xs text-white focus:border-[#01a3a4]"
+                        placeholder="OPEN & READY TO SHIP"
+                      />
+                    </div>
+                    <div className="space-y-2">
                       <label className="text-[9px] font-black text-muted-foreground uppercase flex items-center gap-2"><MapPin className="h-3 w-3 text-[#01a3a4]" /> CURRENT HUB</label>
                       <Input 
                         value={statusData.liveLocation}
                         onChange={(e) => setStatusData({...statusData, liveLocation: e.target.value})}
                         className="bg-black border-white/10 rounded-none h-12 text-xs text-white focus:border-[#01a3a4]"
-                        placeholder="E.G. BANANI, DHAKA"
+                        placeholder="BANANI, DHAKA"
                       />
                     </div>
                     <div className="space-y-2">
-                      <label className="text-[9px] font-black text-muted-foreground uppercase flex items-center gap-2"><Type className="h-3 w-3 text-[#01a3a4]" /> BROADCAST MESSAGE</label>
-                      <Input 
-                        value={statusData.liveStatus}
-                        onChange={(e) => setStatusData({...statusData, liveStatus: e.target.value})}
-                        className="bg-black border-white/10 rounded-none h-12 text-xs text-white focus:border-[#01a3a4]"
-                        placeholder="E.G. OPEN & READY TO SHIP"
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <label className="text-[9px] font-black text-muted-foreground uppercase flex items-center gap-2"><Palette className="h-3 w-3 text-[#01a3a4]" /> TEXT COLOR (PALETTE & CODE)</label>
+                      <label className="text-[9px] font-black text-muted-foreground uppercase flex items-center gap-2"><Palette className="h-3 w-3 text-[#01a3a4]" /> TEXT COLOR</label>
                       <div className="flex gap-3">
                         <Input 
                           type="color"
@@ -241,22 +254,13 @@ export default function AdminSettings() {
                     </div>
                     <div className="space-y-2 border-t border-white/5 pt-4">
                       <label className="text-[9px] font-black text-orange-500 uppercase flex items-center gap-2"><Lock className="h-3 w-3" /> VERIFY PASSWORD TO PUSH</label>
-                      <div className="relative">
-                        <Input 
-                          type={showVerifyPassword ? "text" : "password"}
-                          value={statusData.verificationPassword}
-                          onChange={(e) => setStatusData({...statusData, verificationPassword: e.target.value})}
-                          className="bg-black border-orange-500/20 rounded-none h-12 text-xs text-white pr-10 focus:border-orange-500"
-                          placeholder="••••"
-                        />
-                        <button 
-                          type="button"
-                          onClick={() => setShowVerifyPassword(!showVerifyPassword)}
-                          className="absolute right-3 top-1/2 -translate-y-1/2 text-orange-500/40 hover:text-orange-500 transition-colors"
-                        >
-                          {showVerifyPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                        </button>
-                      </div>
+                      <Input 
+                        type={showVerifyPassword ? "text" : "password"}
+                        value={statusData.verificationPassword}
+                        onChange={(e) => setStatusData({...statusData, verificationPassword: e.target.value})}
+                        className="bg-black border-orange-500/20 rounded-none h-12 text-xs text-white focus:border-orange-500"
+                        placeholder="••••"
+                      />
                     </div>
                   </div>
                   <Button type="submit" className="w-full bg-orange-600 hover:bg-orange-700 text-white h-12 font-black uppercase tracking-widest rounded-none text-[9px] shadow-xl transition-all">
@@ -271,40 +275,55 @@ export default function AdminSettings() {
             <Card className="bg-card border-white/5 rounded-none shadow-2xl overflow-hidden">
               <CardHeader className="bg-white/[0.02] border-b border-white/5 p-6">
                 <CardTitle className="text-xs font-black uppercase tracking-[0.3em] text-[#01a3a4] flex items-center gap-2">
-                  <Smartphone className="h-4 w-4" /> STORE MANAGEMENT GUIDE
+                  <Terminal className="h-4 w-4" /> পাবলিশ ও ডেপ্লয়মেন্ট গাইড (GitHub & Vercel)
                 </CardTitle>
               </CardHeader>
               <CardContent className="p-8 space-y-8">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                   <div className="space-y-4">
                     <div className="flex items-center gap-2 text-[#01a3a4]">
-                      <Zap className="h-5 w-5" />
-                      <h3 className="text-xl font-black text-white uppercase tracking-tighter">স্পিড অপ্টিমাইজেশন</h3>
+                      <Github className="h-5 w-5" />
+                      <h3 className="text-xl font-black text-white uppercase tracking-tighter">ধাপ ১: গিটহাব (GitHub)</h3>
                     </div>
                     <p className="text-[10px] font-black text-white/40 uppercase tracking-widest leading-relaxed">
-                      আপনার সাইট এখন আগের চেয়ে অনেক দ্রুত লোড হবে। অপ্রয়োজনীয় প্রিভিউ এবং স্ক্রিপ্ট সরিয়ে ফেলা হয়েছে।
+                      আপনার প্রোজেক্টটি প্রথমে GitHub-এ আপলোড বা 'Commit' করুন। এর ফলে আপনার কোডগুলো ক্লাউডে সেভ থাকবে।
                     </p>
                   </div>
                   <div className="space-y-4">
                     <div className="flex items-center gap-2 text-[#01a3a4]">
-                      <Terminal className="h-5 w-5" />
-                      <h3 className="text-xl font-black text-white uppercase tracking-tighter">রিয়েল-টাইম নোটিফিকেশন</h3>
+                      <Globe className="h-5 w-5" />
+                      <h3 className="text-xl font-black text-white uppercase tracking-tighter">ধাপ ২: ভারসেল (Vercel)</h3>
                     </div>
                     <p className="text-[10px] font-black text-white/40 uppercase tracking-widest leading-relaxed">
-                      নতুন কোনো অর্ডার আসলে এখন আপনি সাথে সাথে ন্যাপবারের ৩-ডট মেনুর ভেতর নোটিফিকেশন দেখতে পাবেন।
+                      Vercel ড্যাশবোর্ডে গিয়ে 'Import Project' ক্লিক করুন এবং আপনার GitHub রিপোজিটরি সিলেক্ট করুন।
                     </p>
                   </div>
                 </div>
 
-                <div className="p-6 bg-[#01a3a4]/5 border border-[#01a3a4]/20 space-y-4">
-                  <p className="text-[11px] font-black text-white uppercase leading-relaxed italic">
-                    "WE HAVE REMOVED THE HEAVY IFRAME PREVIEW TO ENSURE THE SYSTEM REMAINS LIGHTWEIGHT AND FAST. YOU CAN ALWAYS CHECK THE LIVE SITE IN A NEW TAB."
-                  </p>
-                  <Button asChild variant="outline" className="w-full border-white/10 text-white hover:bg-white hover:text-black h-12 font-black uppercase tracking-widest text-[9px] rounded-none">
-                    <Link href="/" target="_blank" className="flex items-center justify-center gap-2">
-                      ওপেন লাইভ সাইট <ExternalLink className="h-3 w-3" />
-                    </Link>
-                  </Button>
+                <div className="space-y-4">
+                  <div className="flex items-start gap-3 p-4 bg-[#01a3a4]/5 border border-[#01a3a4]/20">
+                    <div className="h-6 w-6 rounded-full bg-[#01a3a4] text-white flex items-center justify-center text-[10px] font-black shrink-0">৩</div>
+                    <div>
+                      <p className="text-[11px] font-black text-white uppercase mb-1">এনভায়রনমেন্ট ভেরিয়েবল (Environment Variables)</p>
+                      <p className="text-[9px] text-white/40 uppercase leading-relaxed">ডেপ্লয় করার সময় .env ফাইলের ভ্যালুগুলো (যেমন: NEXT_PUBLIC_FIREBASE_...) Vercel-এর 'Environment Variables' সেকশনে অবশ্যই কপি করে দিবেন।</p>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-3 p-4 bg-orange-600/5 border border-orange-600/20">
+                    <div className="h-6 w-6 rounded-full bg-orange-600 text-white flex items-center justify-center text-[10px] font-black shrink-0">৪</div>
+                    <div>
+                      <p className="text-[11px] font-black text-white uppercase mb-1">ফাইনাল পাবলিশ (Auto-Deploy)</p>
+                      <p className="text-[9px] text-white/40 uppercase leading-relaxed">একবার কানেক্ট হয়ে গেলে, ভবিষ্যতে আপনি GitHub-এ কোড পুশ করলেই আপনার ওয়েবসাইট অটোমেটিক আপডেট হয়ে যাবে।</p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="p-6 bg-white/[0.02] border border-white/5 space-y-4">
+                  <p className="text-[10px] font-black text-[#01a3a4] uppercase tracking-widest">প্রো টিপস:</p>
+                  <ul className="space-y-2 list-disc list-inside text-[9px] text-white/60 uppercase">
+                    <li>সর্বদা 'Main' ব্রাঞ্চে কোড পুশ করার চেষ্টা করুন।</li>
+                    <li>বিল্ড এরর হলে Vercel Logs চেক করুন।</li>
+                    <li>ডোমেইন কানেক্ট করতে Vercel-এর 'Settings > Domains' ব্যবহার করুন।</li>
+                  </ul>
                 </div>
               </CardContent>
             </Card>
@@ -312,27 +331,19 @@ export default function AdminSettings() {
             <Card className="bg-card border-white/5 rounded-none shadow-2xl overflow-hidden">
               <CardHeader className="bg-white/[0.02] border-b border-white/5 p-6">
                 <CardTitle className="text-xs font-black uppercase tracking-[0.3em] text-[#01a3a4] flex items-center gap-2">
-                  <Terminal className="h-4 w-4" /> ডেপ্লয়মেন্ট গাইড (স্টেপ-বাই-স্টেপ)
+                  <Smartphone className="h-4 w-4" /> মোবাইল ও স্পিড অপ্টিমাইজেশন
                 </CardTitle>
               </CardHeader>
               <CardContent className="p-8 space-y-6">
-                <div className="space-y-4">
-                  <div className="flex items-start gap-3 p-3 bg-white/[0.02] border border-white/5">
-                    <div className="h-6 w-6 rounded-full bg-[#01a3a4] text-white flex items-center justify-center text-[10px] font-black shrink-0">১</div>
-                    <p className="text-[10px] font-black text-white uppercase leading-relaxed">গিটহাবে (GitHub) আপনার সব পরিবর্তন সেভ বা 'Commit' করুন।</p>
-                  </div>
-                  <div className="flex items-start gap-3 p-3 bg-white/[0.02] border border-white/5">
-                    <div className="h-6 w-6 rounded-full bg-[#01a3a4] text-white flex items-center justify-center text-[10px] font-black shrink-0">২</div>
-                    <p className="text-[10px] font-black text-white uppercase leading-relaxed">'Main' ব্রাঞ্চে কোড পুশ (Push) করুন।</p>
-                  </div>
-                  <div className="flex items-start gap-3 p-3 bg-white/[0.02] border border-white/5">
-                    <div className="h-6 w-6 rounded-full bg-[#01a3a4] text-white flex items-center justify-center text-[10px] font-black shrink-0">৩</div>
-                    <p className="text-[10px] font-black text-white uppercase leading-relaxed">Vercel বা Firebase ড্যাশবোর্ড চেক করুন।</p>
-                  </div>
-                  <div className="flex items-start gap-3 p-3 bg-[#01a3a4]/10 border border-[#01a3a4]/20">
-                    <div className="h-6 w-6 rounded-full bg-[#01a3a4] text-white flex items-center justify-center text-[10px] font-black shrink-0">৪</div>
-                    <p className="text-[10px] font-black text-[#01a3a4] uppercase leading-relaxed">বিল্ড শেষ হলে আপনার সাইট অটোমেটিক আপডেট হয়ে যাবে।</p>
-                  </div>
+                <div className="p-6 bg-[#01a3a4]/5 border border-[#01a3a4]/20 space-y-4">
+                  <p className="text-[11px] font-black text-white uppercase leading-relaxed italic">
+                    "আমরা আপনার সাইটের মোবাইল লাইভ বার এবং স্লাইডার জিরো গ্যাপ ফিক্স করেছি। এখন মোবাইল স্ক্রিনেও সবকিছু নিখুঁতভাবে চলবে।"
+                  </p>
+                  <Button asChild variant="outline" className="w-full border-white/10 text-white hover:bg-white hover:text-black h-12 font-black uppercase tracking-widest text-[9px] rounded-none">
+                    <Link href="/" target="_blank" className="flex items-center justify-center gap-2">
+                      ওপেন লাইভ সাইট <ExternalLink className="h-3 w-3" />
+                    </Link>
+                  </Button>
                 </div>
               </CardContent>
             </Card>
