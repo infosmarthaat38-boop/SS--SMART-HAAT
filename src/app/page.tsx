@@ -146,7 +146,7 @@ export default function Home() {
   
   const productsRef = useMemoFirebase(() => {
     if (!db) return null;
-    return query(collection(db, 'products'), orderBy('createdAt', 'desc'), limit(12));
+    return query(collection(db, 'products'), orderBy('createdAt', 'desc'), limit(16));
   }, [db]);
 
   const sliderProductQuery = useMemoFirebase(() => {
@@ -206,8 +206,8 @@ export default function Home() {
     <div className="min-h-screen flex flex-col bg-background selection:bg-primary/30 relative">
       <MainHeader />
 
-      <main className="flex-grow container mx-auto">
-        <section className="grid grid-cols-12 gap-0 h-[160px] md:h-[320px] gpu-accelerated bg-black overflow-hidden">
+      <main className="flex-grow container mx-auto px-0 md:px-0">
+        <section className="grid grid-cols-12 gap-0 h-[160px] md:h-[420px] lg:h-[500px] gpu-accelerated bg-black overflow-hidden">
           <div className="col-span-3 h-full"><FlashOfferCard /></div>
           <div className="col-span-6 h-full relative overflow-hidden bg-black border-none">
             {combinedSliderItems.length > 0 ? (
@@ -224,28 +224,28 @@ export default function Home() {
           </div>
           <div className="col-span-3 h-full bg-[#01a3a4] flex flex-col items-center justify-center p-1.5 md:p-6 space-y-2 md:space-y-4 gpu-accelerated">
             <h3 className="text-white font-black text-[7px] md:text-lg uppercase tracking-widest italic text-center drop-shadow-xl">DOWNLOAD APP</h3>
-            <div className="bg-white p-0.5 md:p-1.5 w-14 h-14 md:w-32 md:h-32 flex items-center justify-center border md:border-2 border-white/20 shadow-2xl">
-              <Image src={qrCodeUrl} alt="QR Code" width={150} height={150} className="w-full h-full" loading="lazy" />
+            <div className="bg-white p-0.5 md:p-1.5 w-14 h-14 md:w-40 md:h-40 flex items-center justify-center border md:border-2 border-white/20 shadow-2xl">
+              <Image src={qrCodeUrl} alt="QR Code" width={200} height={200} className="w-full h-full" loading="lazy" />
             </div>
-            <div className="flex flex-col gap-1 md:gap-2 w-full max-w-[240px]">
-              <button className="w-full bg-white text-black h-5 md:h-9 px-2 md:px-4 flex items-center justify-center gap-1 md:gap-3 font-black text-[5px] md:text-[9px] uppercase shadow-lg hover:bg-black hover:text-white transition-all active:scale-95"><Apple className="h-2 w-2 md:h-3.5 md:w-3.5" /> APP STORE</button>
-              <button className="w-full bg-white text-black h-5 md:h-9 px-2 md:px-4 flex items-center justify-center gap-1 md:gap-3 font-black text-[5px] md:text-[9px] uppercase shadow-lg hover:bg-black hover:text-white transition-all active:scale-95"><Play className="h-2 w-2 md:h-3.5 md:w-3.5" /> PLAY STORE</button>
+            <div className="flex flex-col gap-1 md:gap-2 w-full max-w-[280px]">
+              <button className="w-full bg-white text-black h-5 md:h-12 px-2 md:px-4 flex items-center justify-center gap-1 md:gap-3 font-black text-[5px] md:text-[10px] uppercase shadow-lg hover:bg-black hover:text-white transition-all active:scale-95"><Apple className="h-2 w-2 md:h-5 md:w-5" /> APP STORE</button>
+              <button className="w-full bg-white text-black h-5 md:h-12 px-2 md:px-4 flex items-center justify-center gap-1 md:gap-3 font-black text-[5px] md:text-[10px] uppercase shadow-lg hover:bg-black hover:text-white transition-all active:scale-95"><Play className="h-2 w-2 md:h-5 md:w-5" /> PLAY STORE</button>
             </div>
           </div>
         </section>
 
-        <section className="py-8 md:py-10 px-4 md:px-10 gpu-accelerated">
-          <div className="flex items-center justify-between mb-6">
-            <div className="flex items-center gap-2">
-              <div className="h-5 w-1 bg-[#01a3a4]" />
-              <h2 className="text-md md:text-xl font-black text-white uppercase tracking-tighter">TOP SELLING PRODUCTS</h2>
+        <section className="py-8 md:py-16 px-4 md:px-12 gpu-accelerated">
+          <div className="flex items-center justify-between mb-8 md:mb-12">
+            <div className="flex items-center gap-3">
+              <div className="h-6 md:h-8 w-1.5 md:w-2 bg-[#01a3a4]" />
+              <h2 className="text-lg md:text-3xl font-black text-white uppercase tracking-tighter">TOP SELLING PRODUCTS</h2>
             </div>
-            <Link href="/shop" className="text-[7px] md:text-[9px] font-black text-[#01a3a4] uppercase tracking-[0.3em] hover:text-white transition-colors flex items-center gap-2">
-              VIEW ALL <ArrowRight className="h-2 w-2" />
+            <Link href="/shop" className="text-[8px] md:text-[10px] font-black text-[#01a3a4] uppercase tracking-[0.3em] hover:text-white transition-colors flex items-center gap-2">
+              VIEW ALL ARCHIVE <ArrowRight className="h-3 w-3" />
             </Link>
           </div>
           
-          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-3 md:gap-4 min-h-[400px]">
+          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-3 md:gap-6 min-h-[400px]">
             {isProductsLoading ? (
               <div className="col-span-full flex flex-col items-center justify-center py-20 gap-4">
                 <Loader2 className="h-8 w-8 text-[#01a3a4] animate-spin" />
@@ -256,10 +256,10 @@ export default function Home() {
             ))}
           </div>
 
-          <div className="mt-10 md:mt-12 flex justify-center px-4">
+          <div className="mt-12 md:mt-20 flex justify-center">
             <Link href="/shop" className="w-full md:w-auto">
-              <button className="w-full bg-white/5 border border-white/10 hover:border-[#01a3a4] text-white px-10 h-12 md:h-14 font-black uppercase tracking-widest text-[9px] md:text-[11px] flex items-center justify-center gap-4 transition-all hover:bg-[#01a3a4] hover:text-black active:scale-95 shadow-2xl">
-                MORE PRODUCT
+              <button className="w-full md:w-[400px] bg-white/5 border border-white/10 hover:border-[#01a3a4] text-white px-10 h-14 md:h-20 font-black uppercase tracking-[0.4em] text-[10px] md:text-[12px] flex items-center justify-center gap-6 transition-all hover:bg-[#01a3a4] hover:text-black active:scale-95 shadow-2xl group">
+                EXPLORE ALL PRODUCTS <ArrowRight className="h-5 w-5 group-hover:translate-x-2 transition-transform" />
               </button>
             </Link>
           </div>
