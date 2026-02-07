@@ -1,7 +1,7 @@
 
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { 
   Dialog, 
   DialogContent, 
@@ -30,6 +30,11 @@ export function AdminLoginModal({ isOpen, onClose }: AdminLoginModalProps) {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
   
+  // Draggable State
+  const [offset, setOffset] = useState({ x: 0, y: 0 });
+  const [isDragging, setIsDragging] = useState(false);
+  const dragStartRef = useRef({ x: 0, y: 0 });
+
   const db = useFirestore();
   const settingsRef = useMemoFirebase(() => {
     if (!db) return null;
@@ -43,8 +48,42 @@ export function AdminLoginModal({ isOpen, onClose }: AdminLoginModalProps) {
       setPassword('');
       setError('');
       setShowPassword(false);
+      setOffset({ x: 0, y: 0 }); // Reset position when opened
     }
   }, [isOpen]);
+
+  // Handle Dragging
+  const handleMouseDown = (e: React.MouseEvent) => {
+    setIsDragging(true);
+    dragStartRef.current = {
+      x: e.clientX - offset.x,
+      y: e.clientY - offset.y
+    };
+  };
+
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      if (!isDragging) return;
+      setOffset({
+        x: e.clientX - dragStartRef.current.x,
+        y: e.clientY - dragStartRef.current.y
+      });
+    };
+
+    const handleMouseUp = () => {
+      setIsDragging(false);
+    };
+
+    if (isDragging) {
+      window.addEventListener('mousemove', handleMouseMove);
+      window.addEventListener('mouseup', handleMouseUp);
+    }
+
+    return () => {
+      window.removeEventListener('mousemove', handleMouseMove);
+      window.removeEventListener('mouseup', handleMouseUp);
+    };
+  }, [isDragging]);
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
@@ -54,7 +93,6 @@ export function AdminLoginModal({ isOpen, onClose }: AdminLoginModalProps) {
     const validUser = settings?.adminUsername || 'ADMIN';
     const validPass = settings?.adminPassword || '4321';
 
-    // Strict Case Sensitivity Check - No Uppercase Enforcement
     setTimeout(() => {
       if (username === validUser && password === validPass) {
         const today = new Date().toISOString().split('T')[0];
@@ -78,20 +116,30 @@ export function AdminLoginModal({ isOpen, onClose }: AdminLoginModalProps) {
 
   return (
     <Dialog open={isOpen} onOpenChange={(val) => !val && onClose()}>
-      <DialogContent className="max-w-[320px] md:max-w-sm bg-black border border-[#01a3a4]/30 rounded-none p-6 shadow-2xl gpu-accelerated outline-none overflow-hidden">
+      <DialogContent 
+        className="max-w-[320px] bg-black border border-[#01a3a4]/30 rounded-none p-6 shadow-2xl gpu-accelerated outline-none overflow-hidden transition-none"
+        style={{ 
+          transform: `translate(calc(-50% + ${offset.x}px), calc(-50% + ${offset.y}px))`,
+          top: '50%',
+          left: '50%'
+        }}
+      >
         <DialogHeader className="space-y-4 text-center w-full">
           <div className="w-12 h-12 bg-[#01a3a4]/10 border border-[#01a3a4]/20 rounded-full flex items-center justify-center mx-auto">
             <Lock className="h-6 w-6 text-[#01a3a4]" />
           </div>
           <div className="space-y-2 flex flex-col items-center w-full">
-            {/* SOLID CONTAINER FOR HEADER - HARD CENTER FIX */}
-            <div className="bg-[#01a3a4] w-full py-3 shadow-xl border border-white/10 flex items-center justify-center">
-              <DialogTitle className="text-sm md:text-lg font-black text-white uppercase tracking-tighter leading-none m-0 p-0 text-center">
+            {/* DRAGGABLE HANDLE */}
+            <div 
+              onMouseDown={handleMouseDown}
+              className="bg-[#01a3a4] w-full py-3 shadow-xl border border-white/10 flex items-center justify-center cursor-grab active:cursor-grabbing select-none"
+            >
+              <DialogTitle className="text-sm font-black text-white uppercase tracking-tighter leading-none m-0 p-0 text-center">
                 ADMIN TERMINAL
               </DialogTitle>
             </div>
             <DialogDescription className="text-[8px] text-muted-foreground uppercase font-black tracking-[0.2em] w-full text-center">
-              RESTRICTED ACCESS AREA
+              DRAG HEADER TO MOVE • RESTRICTED ACCESS
             </DialogDescription>
           </div>
         </DialogHeader>
