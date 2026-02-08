@@ -40,11 +40,11 @@ function ShopContent() {
   };
 
   return (
-    <main className="flex-grow container mx-auto px-4 md:px-10 pt-1 md:pt-2 pb-12">
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+    <main className="flex-grow container mx-auto px-4 md:px-10 pt-0 pb-12">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
         <div className="flex items-center gap-3">
-          <div className="h-6 w-1.5 bg-[#01a3a4]" />
-          <h1 className="text-xl md:text-2xl font-black text-white uppercase tracking-tighter">
+          <div className="h-5 w-1.5 bg-[#01a3a4]" />
+          <h1 className="text-lg md:text-xl font-black text-white uppercase tracking-tighter">
             {categoryParam ? `${categoryParam} COLLECTION` : 'PREMIUM PRODUCTS'}
           </h1>
         </div>
