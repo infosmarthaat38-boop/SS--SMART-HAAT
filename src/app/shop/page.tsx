@@ -40,12 +40,12 @@ function ShopContent() {
   };
 
   return (
-    <main className="flex-grow container mx-auto px-4 md:px-10 pt-4 md:pt-6 pb-12">
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-8">
-        <div className="flex items-center gap-4">
-          <div className="h-8 w-2 bg-[#01a3a4]" />
-          <h1 className="text-2xl md:text-3xl font-black text-white uppercase tracking-tighter">
-            {categoryParam ? `${categoryParam} COLLECTION` : 'PREMIUM ARCHIVE'}
+    <main className="flex-grow container mx-auto px-4 md:px-10 pt-1 md:pt-2 pb-12">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+        <div className="flex items-center gap-3">
+          <div className="h-6 w-1.5 bg-[#01a3a4]" />
+          <h1 className="text-xl md:text-2xl font-black text-white uppercase tracking-tighter">
+            {categoryParam ? `${categoryParam} COLLECTION` : 'PREMIUM PRODUCTS'}
           </h1>
         </div>
         
