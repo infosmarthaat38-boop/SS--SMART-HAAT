@@ -24,7 +24,7 @@ import {
   Hash,
   Bell,
   X,
-  QrCode
+  ImageIcon
 } from 'lucide-react';
 import {
   Dialog,
@@ -119,18 +119,6 @@ export default function AdminOrders() {
     );
   };
 
-  // Helper to fetch QR code as base64 for PDF
-  const fetchQRBase64 = async (data: string): Promise<string> => {
-    const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(data)}`;
-    const response = await fetch(qrUrl);
-    const blob = await response.blob();
-    return new Promise((resolve) => {
-      const reader = new FileReader();
-      reader.onloadend = () => resolve(reader.result as string);
-      reader.readAsDataURL(blob);
-    });
-  };
-
   const generateInvoice = async (order: any) => {
     setIsGeneratingPdf(true);
     const doc = new jsPDF();
@@ -195,18 +183,15 @@ export default function AdminOrders() {
     const splitAddress = doc.splitTextToSize(order.customerAddress.toUpperCase(), 85);
     doc.text(splitAddress, 45, 95);
 
-    // ADD SCAN CODE INSTEAD OF PRODUCT IMAGE
-    const productUrl = `${window.location.origin}/products/${order.productId}`;
-    try {
-      const qrBase64 = await fetchQRBase64(productUrl);
-      doc.setDrawColor(240, 240, 240);
-      doc.rect(145, 65, 45, 45); 
-      doc.addImage(qrBase64, 'PNG', 146, 66, 43, 43);
-      doc.setFontSize(7);
-      doc.setTextColor(150, 150, 150);
-      doc.text("PRODUCT SCAN CODE", 167.5, 113, { align: 'center' });
-    } catch (err) {
-      console.error("PDF QR Error:", err);
+    // RESTORE PRODUCT IMAGE
+    if (order.productImageUrl) {
+      try {
+        doc.setDrawColor(240, 240, 240);
+        doc.rect(145, 65, 45, 45); 
+        doc.addImage(order.productImageUrl, 'JPEG', 146, 66, 43, 43);
+      } catch (err) {
+        console.error("PDF Image Error:", err);
+      }
     }
 
     const itemDesc = order.selectedSize ? `${order.productName.toUpperCase()} (SIZE: ${order.selectedSize})` : order.productName.toUpperCase();
@@ -296,7 +281,6 @@ export default function AdminOrders() {
       <MainHeader />
       
       <main className="flex-grow container mx-auto px-4 py-12">
-        {/* NEW ORDER RED SIGNAL BANNER */}
         {pendingOrders && pendingOrders.length > 0 && (
           <div className="mb-8 p-4 bg-red-600/10 border border-red-600/30 flex items-center justify-between animate-pulse">
             <div className="flex items-center gap-3">
