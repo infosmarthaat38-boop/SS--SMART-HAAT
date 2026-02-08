@@ -254,8 +254,8 @@ export default function Home() {
           if (catProducts.length === 0) return null;
 
           return (
-            <section key={cat.id} className="py-8 md:py-16 px-4 md:px-12 gpu-accelerated border-b border-white/5">
-              <div className="flex items-center justify-between mb-8 md:mb-12">
+            <section key={cat.id} className="py-4 md:py-8 px-4 md:px-12 gpu-accelerated border-b border-white/5">
+              <div className="flex items-center justify-between mb-4 md:mb-6">
                 <div className="flex items-center gap-3">
                   <div className="h-6 md:h-8 w-1.5 md:w-2 bg-[#01a3a4]" />
                   <h2 className="text-lg md:text-3xl font-black text-white uppercase tracking-tighter">{cat.name} COLLECTION</h2>
@@ -274,7 +274,7 @@ export default function Home() {
           );
         })}
 
-        <div className="mt-12 md:mt-20 flex justify-center pb-20">
+        <div className="mt-8 md:mt-12 flex justify-center pb-20">
           <Link href="/shop" className="w-full md:w-auto">
             <button className="w-full md:w-[400px] bg-white/5 border border-white/10 hover:border-[#01a3a4] text-white px-10 h-14 md:h-20 font-black uppercase tracking-[0.4em] text-[10px] md:text-[12px] flex items-center justify-center gap-6 transition-all hover:bg-[#01a3a4] hover:text-black active:scale-95 shadow-2xl group">
               MORE PRODUCT <ArrowRight className="h-5 w-5 group-hover:translate-x-2 transition-transform" />
