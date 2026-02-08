@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useState, useEffect } from 'react';
@@ -14,7 +15,7 @@ const WhatsAppIcon = ({ className }: { className?: string }) => (
 
 export function Footer() {
   const db = useFirestore();
-  const settingsRef = useMemoFirebase(() => doc(db, 'settings', 'site-config'), [db]);
+  const settingsRef = useMemoFirebase(() => doc(db!, 'settings', 'site-config'), [db]);
   const { data: settings } = useDoc(settingsRef);
 
   const contact = {
@@ -42,7 +43,7 @@ export function Footer() {
                 <span className="text-black font-black text-2xl tracking-tighter">SS</span>
               </div>
               <div>
-                <h3 className="text-2xl font-black font-headline text-white tracking-tighter uppercase">SS SMART HAAT</h3>
+                <h3 className="text-2xl font-black font-headline text-white tracking-tighter uppercase">SS SMART HAAT MARKET PLACE</h3>
                 <p className="text-[8px] font-black text-[#01a3a4] tracking-[0.4em] uppercase leading-none mt-1">Premium Marketplace</p>
               </div>
             </div>
@@ -127,7 +128,7 @@ export function Footer() {
         
         <div className="flex flex-col md:flex-row justify-between items-center gap-6">
           <p className="text-[9px] uppercase tracking-[0.3em] text-white/70 font-black">
-            © 2024 <span className="text-[#01a3a4]">SS SMART HAAT</span>. ELEVATING DHAKA'S LIFESTYLE.
+            © 2024 <span className="text-[#01a3a4]">SS SMART HAAT MARKET PLACE</span>. ELEVATING DHAKA'S LIFESTYLE.
           </p>
           <div className="flex gap-8 text-[9px] uppercase tracking-widest text-white/70 font-black">
             <Link href="#" className="hover:text-white transition-colors">PAYMENT METHODS</Link>

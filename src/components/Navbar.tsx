@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useState, useEffect } from 'react';
@@ -50,7 +51,6 @@ export function Navbar() {
   };
 
   const openAdminModal = () => {
-    // Add small delay to prevent focus clash with dropdown
     setTimeout(() => setIsAdminModalOpen(true), 150);
   };
 
@@ -71,7 +71,7 @@ export function Navbar() {
             <Link href="/" className="flex items-center gap-2 shrink-0 group">
               <LogoIcon />
               <div className="flex flex-col">
-                <h1 className="text-[12px] md:text-[14px] font-headline font-black text-white leading-none uppercase tracking-tighter">SS SMART HAAT</h1>
+                <h1 className="text-[12px] md:text-[14px] font-headline font-black text-white leading-none uppercase tracking-tighter">SS SMART HAAT MARKET PLACE</h1>
                 <span className="text-[6px] text-white/90 font-bold uppercase tracking-[0.2em]">PREMIUM</span>
               </div>
             </Link>

@@ -15,7 +15,6 @@ const inter = Inter({
   variable: '--font-inter',
 });
 
-// FULL RESPONSIVE VIEWPORT
 export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
@@ -24,7 +23,7 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  title: 'SS SMART HAAT | Premium Marketplace',
+  title: 'SS SMART HAAT MARKET PLACE | Premium Marketplace',
   description: 'Uniquely curated fashion and essentials for the modern elite.',
 };
 
