@@ -144,9 +144,14 @@ export default function Home() {
   const db = useFirestore();
   const [isMounted, setIsMounted] = useState(false);
   
+  const categoriesRef = useMemoFirebase(() => {
+    if (!db) return null;
+    return collection(db, 'categories');
+  }, [db]);
+
   const productsRef = useMemoFirebase(() => {
     if (!db) return null;
-    return query(collection(db, 'products'), orderBy('createdAt', 'desc'), limit(16));
+    return collection(db, 'products');
   }, [db]);
 
   const sliderProductQuery = useMemoFirebase(() => {
@@ -164,7 +169,8 @@ export default function Home() {
     return doc(db, 'settings', 'site-config');
   }, [db]);
   
-  const { data: products, isLoading: isProductsLoading } = useCollection(productsRef);
+  const { data: categories, isLoading: isCategoriesLoading } = useCollection(categoriesRef);
+  const { data: allProducts, isLoading: isProductsLoading } = useCollection(productsRef);
   const { data: sliderProducts } = useCollection(sliderProductQuery);
   const { data: sliderBanners } = useCollection(sliderBannerQuery);
   const { data: settings } = useDoc(settingsRef);
@@ -234,36 +240,43 @@ export default function Home() {
           </div>
         </section>
 
-        <section className="py-8 md:py-16 px-4 md:px-12 gpu-accelerated">
-          <div className="flex items-center justify-between mb-8 md:mb-12">
-            <div className="flex items-center gap-3">
-              <div className="h-6 md:h-8 w-1.5 md:w-2 bg-[#01a3a4]" />
-              <h2 className="text-lg md:text-3xl font-black text-white uppercase tracking-tighter">MORE PRODUCTS</h2>
-            </div>
-            <Link href="/shop" className="text-[8px] md:text-[10px] font-black text-[#01a3a4] uppercase tracking-[0.3em] hover:text-white transition-colors flex items-center gap-2">
-              VIEW ALL ARCHIVE <ArrowRight className="h-3 w-3" />
-            </Link>
+        {isCategoriesLoading || isProductsLoading ? (
+          <div className="flex flex-col items-center justify-center py-40 gap-4">
+            <Loader2 className="h-12 w-12 text-[#01a3a4] animate-spin" />
+            <p className="text-[10px] font-black uppercase text-[#01a3a4] tracking-widest">Initialising Archive...</p>
           </div>
-          
-          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-3 md:gap-6 min-h-[400px]">
-            {isProductsLoading ? (
-              <div className="col-span-full flex flex-col items-center justify-center py-20 gap-4">
-                <Loader2 className="h-8 w-8 text-[#01a3a4] animate-spin" />
-                <p className="text-[9px] font-black text-[#01a3a4] uppercase tracking-widest">Syncing Products...</p>
-              </div>
-            ) : products?.map((p, i) => (
-              <ProductCard key={p.id} product={p} index={i} />
-            ))}
-          </div>
+        ) : categories?.map((cat) => {
+          const catProducts = allProducts?.filter(p => p.category === cat.name).slice(0, 16) || [];
+          if (catProducts.length === 0) return null;
 
-          <div className="mt-12 md:mt-20 flex justify-center">
-            <Link href="/shop" className="w-full md:w-auto">
-              <button className="w-full md:w-[400px] bg-white/5 border border-white/10 hover:border-[#01a3a4] text-white px-10 h-14 md:h-20 font-black uppercase tracking-[0.4em] text-[10px] md:text-[12px] flex items-center justify-center gap-6 transition-all hover:bg-[#01a3a4] hover:text-black active:scale-95 shadow-2xl group">
-                MORE PRODUCTS <ArrowRight className="h-5 w-5 group-hover:translate-x-2 transition-transform" />
-              </button>
-            </Link>
-          </div>
-        </section>
+          return (
+            <section key={cat.id} className="py-8 md:py-16 px-4 md:px-12 gpu-accelerated border-b border-white/5">
+              <div className="flex items-center justify-between mb-8 md:mb-12">
+                <div className="flex items-center gap-3">
+                  <div className="h-6 md:h-8 w-1.5 md:w-2 bg-[#01a3a4]" />
+                  <h2 className="text-lg md:text-3xl font-black text-white uppercase tracking-tighter">{cat.name} COLLECTION</h2>
+                </div>
+                <Link href={`/shop?category=${cat.name}`} className="text-[8px] md:text-[10px] font-black text-[#01a3a4] uppercase tracking-[0.3em] hover:text-white transition-colors flex items-center gap-2">
+                  VIEW {cat.name} ARCHIVE <ArrowRight className="h-3 w-3" />
+                </Link>
+              </div>
+              
+              <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-3 md:gap-6">
+                {catProducts.map((p, i) => (
+                  <ProductCard key={p.id} product={p} index={i} />
+                ))}
+              </div>
+            </section>
+          );
+        })}
+
+        <div className="mt-12 md:mt-20 flex justify-center pb-20">
+          <Link href="/shop" className="w-full md:w-auto">
+            <button className="w-full md:w-[400px] bg-white/5 border border-white/10 hover:border-[#01a3a4] text-white px-10 h-14 md:h-20 font-black uppercase tracking-[0.4em] text-[10px] md:text-[12px] flex items-center justify-center gap-6 transition-all hover:bg-[#01a3a4] hover:text-black active:scale-95 shadow-2xl group">
+              EXPLORE ALL PRODUCTS <ArrowRight className="h-5 w-5 group-hover:translate-x-2 transition-transform" />
+            </button>
+          </Link>
+        </div>
 
         <CategoriesGrid />
       </main>

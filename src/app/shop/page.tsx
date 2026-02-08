@@ -13,7 +13,7 @@ import { Loader2, Plus, SearchX, Filter } from 'lucide-react';
 function ShopContent() {
   const db = useFirestore();
   const searchParams = useSearchParams();
-  const [fetchLimit, setFetchLimit] = useState(24);
+  const [fetchLimit, setFetchLimit] = useState(48);
   
   const search = searchParams.get('search')?.toUpperCase() || '';
   const categoryParam = searchParams.get('category')?.toUpperCase() || '';
@@ -25,13 +25,38 @@ function ShopContent() {
   
   const { data: rawProducts, isLoading } = useCollection(productsRef);
 
-  const filteredProducts = useMemo(() => {
+  const displayedProducts = useMemo(() => {
     if (!rawProducts) return [];
-    return rawProducts.filter(p => {
-      const matchSearch = !search || p.name.toUpperCase().includes(search) || p.description?.toUpperCase().includes(search);
-      const matchCategory = !categoryParam || p.category === categoryParam;
-      return matchSearch && matchCategory;
-    });
+    
+    // Sort logic: If search exists, prioritize related products at the front
+    if (search) {
+      const matches = rawProducts.filter(p => 
+        p.name.toUpperCase().includes(search) || 
+        p.description?.toUpperCase().includes(search)
+      );
+      const others = rawProducts.filter(p => 
+        !p.name.toUpperCase().includes(search) && 
+        !p.description?.toUpperCase().includes(search)
+      );
+      
+      // If category is selected, prioritize category matches first
+      if (categoryParam) {
+        const catMatches = matches.filter(p => p.category === categoryParam);
+        const catOthers = matches.filter(p => p.category !== categoryParam);
+        return [...catMatches, ...catOthers, ...others];
+      }
+      
+      return [...matches, ...others];
+    }
+
+    // Default sorting when no search but category exists
+    if (categoryParam) {
+      const catMatches = rawProducts.filter(p => p.category === categoryParam);
+      const others = rawProducts.filter(p => p.category !== categoryParam);
+      return [...catMatches, ...others];
+    }
+
+    return rawProducts;
   }, [rawProducts, search, categoryParam]);
 
   const handleLoadMore = () => {
@@ -44,7 +69,7 @@ function ShopContent() {
         <div className="flex items-center gap-3">
           <div className="h-5 w-1.5 bg-[#01a3a4]" />
           <h1 className="text-lg md:text-xl font-black text-white uppercase tracking-tighter">
-            {categoryParam ? `${categoryParam} COLLECTION` : 'PREMIUM PRODUCTS'}
+            {search ? `SEARCH RESULTS FOR: "${search}"` : categoryParam ? `${categoryParam} COLLECTION` : 'PREMIUM PRODUCTS'}
           </h1>
         </div>
         
@@ -58,7 +83,7 @@ function ShopContent() {
               onClick={() => window.location.href = '/shop'}
               className="ml-2 text-[10px] font-black text-[#01a3a4] hover:text-white transition-colors"
             >
-              [CLEAR]
+              [CLEAR FILTERS]
             </button>
           </div>
         )}
@@ -71,9 +96,9 @@ function ShopContent() {
         </div>
       ) : (
         <>
-          {filteredProducts.length > 0 ? (
+          {displayedProducts.length > 0 ? (
             <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-4 md:gap-6">
-              {filteredProducts.map((p, i) => <ProductCard key={p.id} product={p} index={i} />)}
+              {displayedProducts.map((p, i) => <ProductCard key={p.id} product={p} index={i} />)}
             </div>
           ) : (
             <div className="text-center py-40 border border-dashed border-white/5 bg-white/[0.01] space-y-6">

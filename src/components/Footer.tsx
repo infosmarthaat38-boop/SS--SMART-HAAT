@@ -14,7 +14,7 @@ const WhatsAppIcon = ({ className }: { className?: string }) => (
 
 export function Footer() {
   const db = useFirestore();
-  const settingsRef = useMemoFirebase(() => doc(db!, 'settings', 'site-config'), [db]);
+  const settingsRef = useMemoFirebase(() => db ? doc(db, 'settings', 'site-config') : null, [db]);
   const { data: settings } = useDoc(settingsRef);
 
   const contact = {
