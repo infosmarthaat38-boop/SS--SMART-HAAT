@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useRef, useMemo, useState, useEffect, memo } from 'react';
@@ -24,8 +23,8 @@ const SlideItem = memo(({ item, priority }: { item: any, priority: boolean }) =>
       <CarouselItem className="h-full">
         <div className="relative h-full w-full bg-black overflow-hidden gpu-accelerated">
           <Image
-            src={item.imageUrl}
-            alt={item.name}
+            src={item.imageUrl || 'https://picsum.photos/seed/placeholder/800/400'}
+            alt={item.name || 'Banner'}
             fill
             sizes="100vw"
             className="object-cover"
@@ -40,7 +39,7 @@ const SlideItem = memo(({ item, priority }: { item: any, priority: boolean }) =>
               <div className="flex items-center gap-1 md:gap-4">
                 <div className="flex items-baseline text-[12px] md:text-xl font-black text-[#01a3a4] tracking-tighter drop-shadow-2xl">
                   <span className="text-[8px] md:text-[12px] font-normal mr-0.5 translate-y-[-2px] text-white/90">৳</span>
-                  {item.price.toLocaleString()}
+                  {(item.price || 0).toLocaleString()}
                 </div>
               </div>
               <button onClick={() => setIsOrderOpen(true)} className="bg-[#01a3a4] text-white h-6 md:h-10 px-4 md:px-8 font-black rounded-none text-[8px] md:text-[11px] hover:bg-white hover:text-black transition-all uppercase tracking-widest flex items-center gap-2 shadow-2xl w-fit mt-2 active:scale-95">
@@ -58,7 +57,7 @@ const SlideItem = memo(({ item, priority }: { item: any, priority: boolean }) =>
     <CarouselItem className="h-full">
       <div className="relative h-full w-full bg-black gpu-accelerated">
         <Image 
-          src={item.imageUrl} 
+          src={item.imageUrl || 'https://picsum.photos/seed/banner/800/400'} 
           alt={item.title || "Banner"} 
           fill 
           sizes="100vw" 
@@ -113,7 +112,7 @@ const FlashOfferCard = memo(() => {
       {activeItem ? (
         <div className="h-full w-full relative">
           <Image 
-            src={activeItem.imageUrl} 
+            src={activeItem.imageUrl || 'https://picsum.photos/seed/flash/400/400'} 
             alt="Flash Offer" 
             fill 
             sizes="(max-width: 768px) 33vw, 25vw" 
@@ -126,7 +125,7 @@ const FlashOfferCard = memo(() => {
              <p className="text-white font-black text-[6px] md:text-[10px] uppercase tracking-widest mb-0.5 truncate drop-shadow-2xl">{activeItem.name || activeItem.title}</p>
              {activeItem.price && (
                <div className="flex flex-col items-center">
-                 <span className="text-[#01a3a4] font-black text-[8px] md:text-sm drop-shadow-2xl">৳{activeItem.price.toLocaleString()}</span>
+                 <span className="text-[#01a3a4] font-black text-[8px] md:text-sm drop-shadow-2xl">৳{(activeItem.price || 0).toLocaleString()}</span>
                </div>
              )}
              <button onClick={() => setIsOrderOpen(true)} className="bg-[#01a3a4] text-white px-2 md:px-4 py-0.5 md:h-8 font-black text-[5px] md:text-[8px] uppercase tracking-widest transition-all mt-0.5 active:scale-95 shadow-xl">অর্ডার করুন</button>

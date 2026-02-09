@@ -19,13 +19,16 @@ export const ProductCard = memo(({ product, index = 0 }: ProductCardProps) => {
   // Increase speed by prioritizing images for top items
   const isPriority = index < 10;
 
+  const price = product.price || 0;
+  const originalPrice = product.originalPrice || price;
+
   return (
     <>
       <Card className="group bg-black border-none rounded-none flex flex-col h-full overflow-hidden gpu-accelerated">
         <Link href={`/products/${product.id}`} className="relative aspect-square overflow-hidden bg-black block">
           <Image
-            src={product.imageUrl}
-            alt={product.name}
+            src={product.imageUrl || 'https://picsum.photos/seed/placeholder/400/400'}
+            alt={product.name || 'Product'}
             fill
             sizes="(max-width: 768px) 50vw, 15vw"
             priority={isPriority}
@@ -40,25 +43,25 @@ export const ProductCard = memo(({ product, index = 0 }: ProductCardProps) => {
         </Link>
         
         <CardContent className="p-3 md:p-4 flex flex-col flex-grow bg-black space-y-3">
-          <h3 className="font-black text-[11px] md:text-[13px] text-white uppercase truncate font-headline tracking-tight">{product.name}</h3>
+          <h3 className="font-black text-[11px] md:text-[13px] text-white uppercase truncate font-headline tracking-tight">{product.name || 'Premium Item'}</h3>
           
           <div className="space-y-1 min-h-[48px] flex flex-col justify-center">
             <div className="flex items-center justify-between gap-2">
               <div className="flex items-baseline text-[#01a3a4]">
                 <span className="text-[11px] font-normal mr-1 translate-y-[-4px] text-white/50">৳</span>
                 <span className="font-black text-[18px] md:text-[22px] tracking-tighter leading-none">
-                  {product.price.toLocaleString()}
+                  {price.toLocaleString()}
                 </span>
               </div>
-              {product.originalPrice > product.price && (
+              {originalPrice > price && (
                 <span className="text-[8px] md:text-[9px] font-black text-[#01a3a4] border border-[#01a3a4] px-1.5 py-0.5 shrink-0">
-                  -{Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)}%
+                  -{Math.round(((originalPrice - price) / originalPrice) * 100)}%
                 </span>
               )}
             </div>
-            {product.originalPrice > product.price && (
+            {originalPrice > price && (
               <p className="text-[9px] md:text-[10px] text-white/40 line-through font-bold">
-                ৳{product.originalPrice.toLocaleString()}
+                ৳{originalPrice.toLocaleString()}
               </p>
             )}
           </div>

@@ -31,11 +31,11 @@ function ShopContent() {
     // Sort logic: If search exists, prioritize related products at the front
     if (search) {
       const matches = rawProducts.filter(p => 
-        p.name.toUpperCase().includes(search) || 
+        p.name?.toUpperCase().includes(search) || 
         p.description?.toUpperCase().includes(search)
       );
       const others = rawProducts.filter(p => 
-        !p.name.toUpperCase().includes(search) && 
+        !p.name?.toUpperCase().includes(search) && 
         !p.description?.toUpperCase().includes(search)
       );
       
