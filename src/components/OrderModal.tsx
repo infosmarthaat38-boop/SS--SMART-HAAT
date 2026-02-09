@@ -74,7 +74,7 @@ export const OrderModal = memo(({ product, isOpen, onClose }: OrderModalProps) =
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!formData.name || !formData.phone || !formData.address || !db) return;
+    if (!formData.name || !formData.phone || !formData.address || !db || !product) return;
 
     const orderData = {
       customerName: formData.name.toUpperCase(),
@@ -82,10 +82,10 @@ export const OrderModal = memo(({ product, isOpen, onClose }: OrderModalProps) =
       customerAddress: formData.address.toUpperCase(),
       selectedSize: formData.selectedSize || 'N/A',
       quantity: formData.quantity,
-      productId: product.id,
-      productName: product.name,
-      productPrice: product.price,
-      productImageUrl: product.imageUrl,
+      productId: product.id || 'N/A',
+      productName: product.name || product.title || 'UNKNOWN PRODUCT',
+      productPrice: product.price || 0,
+      productImageUrl: product.imageUrl || '',
       status: 'PENDING',
       createdAt: new Date().toISOString()
     };
@@ -95,6 +95,7 @@ export const OrderModal = memo(({ product, isOpen, onClose }: OrderModalProps) =
   };
 
   const handleWhatsAppChat = () => {
+    if (!product) return;
     const rawNumber = settings?.whatsappUrl || settings?.phone || '01700000000';
     let cleanPhone = rawNumber.replace(/[^0-9]/g, "");
     
@@ -102,9 +103,13 @@ export const OrderModal = memo(({ product, isOpen, onClose }: OrderModalProps) =
       cleanPhone = '88' + cleanPhone;
     }
     
-    const message = `Hello SS SMART HAAT, I want to inquire about: ${product.name} (Price: ৳${product.price})`;
+    const pName = product.name || product.title || 'Product';
+    const pPrice = product.price || 0;
+    const message = `Hello SS SMART HAAT, I want to inquire about: ${pName} (Price: ৳${pPrice})`;
     window.open(`https://wa.me/${cleanPhone}?text=${encodeURIComponent(message)}`, '_blank');
   };
+
+  if (!product) return null;
 
   return (
     <Dialog open={isOpen} onOpenChange={(val) => !val && onClose()}>
@@ -127,16 +132,16 @@ export const OrderModal = memo(({ product, isOpen, onClose }: OrderModalProps) =
                 <div className="md:w-[250px] bg-gray-50 border-r border-gray-100 p-4 flex flex-col shrink-0">
                   <div className="relative w-full aspect-square border-2 border-white mb-3 bg-white shadow-md overflow-hidden">
                     <Image 
-                      src={product.imageUrl} 
-                      alt={product.name} 
+                      src={product.imageUrl || 'https://picsum.photos/seed/placeholder/400/400'} 
+                      alt={product.name || product.title || 'Product'} 
                       fill 
                       className="object-cover" 
                       priority 
                     />
                   </div>
                   <div className="space-y-2">
-                    <h3 className="text-[11px] font-black text-black uppercase tracking-tighter leading-tight line-clamp-2">{product.name}</h3>
-                    <p className="text-[#01a3a4] font-black text-base">৳{product.price.toLocaleString()}</p>
+                    <h3 className="text-[11px] font-black text-black uppercase tracking-tighter leading-tight line-clamp-2">{product.name || product.title}</h3>
+                    <p className="text-[#01a3a4] font-black text-base">৳{(product.price || 0).toLocaleString()}</p>
                     <div className="p-2 bg-white border border-gray-100 space-y-1">
                        <p className="text-[8px] font-black text-black uppercase flex items-center gap-1">
                          <Truck className="h-2.5 w-2.5 text-[#01a3a4]" /> DELIVERY INFO
