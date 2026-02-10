@@ -50,18 +50,18 @@ export const ProductCard = memo(({ product, index = 0 }: ProductCardProps) => {
               <div className="flex items-baseline text-[#01a3a4]">
                 <span className="text-[11px] font-normal mr-1 translate-y-[-4px] text-white/50">৳</span>
                 <span className="font-black text-[18px] md:text-[22px] tracking-tighter leading-none">
-                  {price.toLocaleString()}
+                  {(price || 0).toLocaleString()}
                 </span>
               </div>
               {originalPrice > price && (
                 <span className="text-[8px] md:text-[9px] font-black text-[#01a3a4] border border-[#01a3a4] px-1.5 py-0.5 shrink-0">
-                  -{Math.round(((originalPrice - price) / originalPrice) * 100)}%
+                  -{Math.round(((originalPrice - price) / (originalPrice || 1)) * 100)}%
                 </span>
               )}
             </div>
             {originalPrice > price && (
               <p className="text-[9px] md:text-[10px] text-white/40 line-through font-bold">
-                ৳{originalPrice.toLocaleString()}
+                ৳{(originalPrice || 0).toLocaleString()}
               </p>
             )}
           </div>

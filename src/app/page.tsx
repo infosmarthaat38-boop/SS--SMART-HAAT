@@ -18,13 +18,13 @@ import { OrderModal } from '@/components/OrderModal';
 const SlideItem = memo(({ item, priority }: { item: any, priority: boolean }) => {
   const [isOrderOpen, setIsOrderOpen] = useState(false);
 
-  if (item.price !== undefined) {
+  if (item.price !== undefined || item.name !== undefined) {
     return (
       <CarouselItem className="h-full">
         <div className="relative h-full w-full bg-black overflow-hidden gpu-accelerated">
           <Image
             src={item.imageUrl || 'https://picsum.photos/seed/placeholder/800/400'}
-            alt={item.name || 'Banner'}
+            alt={item.name || item.title || 'Banner'}
             fill
             sizes="100vw"
             className="object-cover"
@@ -33,7 +33,7 @@ const SlideItem = memo(({ item, priority }: { item: any, priority: boolean }) =>
           />
           <div className="absolute inset-0 bg-black/10 flex flex-col justify-center px-4 md:px-12 space-y-1 md:space-y-2">
             <h2 className="text-[14px] md:text-2xl font-headline font-black text-white uppercase tracking-tight max-w-[400px] leading-tight drop-shadow-2xl">
-              {item.name}
+              {item.name || item.title}
             </h2>
             <div className="flex flex-col space-y-0.5">
               <div className="flex items-center gap-1 md:gap-4">
@@ -123,7 +123,7 @@ const FlashOfferCard = memo(() => {
           <div className="absolute top-1 left-1 bg-[#01a3a4] px-1 md:px-3 py-0.5 text-[5px] md:text-[8px] font-black text-white uppercase tracking-widest z-10">FLASH</div>
           <div className="absolute bottom-0 w-full pb-1 text-center px-1">
              <p className="text-white font-black text-[6px] md:text-[10px] uppercase tracking-widest mb-0.5 truncate drop-shadow-2xl">{activeItem.name || activeItem.title}</p>
-             {activeItem.price && (
+             {activeItem.price !== undefined && (
                <div className="flex flex-col items-center">
                  <span className="text-[#01a3a4] font-black text-[8px] md:text-sm drop-shadow-2xl">৳{(activeItem.price || 0).toLocaleString()}</span>
                </div>
