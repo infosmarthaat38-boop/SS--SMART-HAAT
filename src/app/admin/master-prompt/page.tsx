@@ -5,7 +5,7 @@ import { MainHeader } from '@/components/MainHeader';
 import { Footer } from '@/components/Footer';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { ArrowLeft, Copy, CheckCircle2, FileCode, ShieldAlert } from 'lucide-react';
+import { ArrowLeft, Copy, CheckCircle2, FileCode, ShieldAlert, Zap } from 'lucide-react';
 import Link from 'next/link';
 import { useToast } from '@/hooks/use-toast';
 
@@ -13,55 +13,55 @@ export default function MasterPromptPage() {
   const { toast } = useToast();
   const [copied, setCopied] = useState(false);
 
-  const MASTER_PROMPT = `# SS SMART HAAT - Master AI Prompt
+  const MASTER_PROMPT = `# BEST HAAT - Master AI Prompt
 
 **Role:** Expert Full-stack Developer & UI/UX Designer.
-**Project Name:** SS SMART HAAT (Subtitle: PREMIUM MARKET PLACE).
-**Core Concept:** A high-end, luxury e-commerce marketplace for the Bangladesh market.
+**Project Name:** BEST HAAT (Subtitle: PREMIUM MARKET PLACE).
+**Core Concept:** A high-end, luxury e-commerce marketplace for the Bangladesh market, optimized for extreme speed and premium feel.
 
 ### 1. Visual Identity & Design Language
 - **Theme:** Ultra-luxury Dark Theme. Background: Pure Black (#000000), Accent Color: Teal/Cyan (#01a3a4).
-- **Typography:** Elegant Serif (Playfair Display) for headlines, Clean Sans-serif (Inter) for body. All text must be UPPERCASE for a premium feel.
-- **Layout:** 100% Full-screen width. Zero border-radius (Sharp square edges only).
-- **Branding:** Logo must show "SS SMART HAAT" in large bold letters, with "PREMIUM MARKET PLACE" in very small letters underneath.
+- **Typography:** Elegant Serif (Playfair Display) for headlines, Clean Sans-serif (Inter) for body. ALL TEXT must be UPPERCASE for a premium feel.
+- **Layout:** 100% Full-screen width. Zero border-radius (Sharp square edges only for every element).
+- **Branding:** Logo: "BEST HAAT" in large bold letters, with "PREMIUM MARKET PLACE" in very small letters underneath.
 
-### 2. Homepage Structure (Slim & Fast)
-- **Fixed Header Section:** The entire header (Navbar + Live Status Bar) must be fixed at the top of the screen (sticky/fixed).
-- **Header Grid:** A three-column grid (Flash Offer, Main Slider, QR/App Bar) with a fixed height: 350px (Desktop) / 300px (Tablet) / 140px (Mobile).
-- **Category-wise Grid:** Products must be grouped by category. Each category section displays exactly **16 products in 2 rows** (8 per row).
-- **Bottom CTA:** A large, wide button labeled **"MORE PRODUCT"** linking to the full archive.
-- **Header Spacing:** Minimal gap (Zero padding) between the live status bar and content.
+### 2. Homepage Structure (Slim & High-Impact)
+- **Fixed Sticky Header:** The entire header (Navbar + scrolling Live Status Bar) MUST be fixed at the top of the screen (z-index: 120).
+- **Top Fold Grid:** A three-column grid (Flash Offer, Main Slider, QR/App Bar). Fixed height: 350px (Desktop) / 140px (Mobile).
+- **Category-wise Display:** Group products by category. Each section displays exactly **16 products in 2 rows** (8 per row on desktop).
+- **Section Spacing:** Minimal vertical gaps (py-4 md:py-8) and tight header-to-grid spacing.
+- **Main CTA:** A large, wide button labeled **"MORE PRODUCT"** linking to the shop page.
 
 ### 3. Shop Page Intelligence
-- **Zero Gap Layout:** The product grid must start immediately under the header/live-bar without any black space (Padding-top: 0).
-- **Smart Search:** Implementation of "Relevance First" logic. If searching, show matching items at the top, then show all other products below them.
-- **Load More:** A large "LOAD MORE ARCHIVE" button for pagination.
+- **Zero-Gap Layout:** The product grid starts immediately under the sticky header/live-bar with 0px padding-top.
+- **Smart Search Logic:** Implement "Relevance First". If a user searches, prioritize matching items at the top, then display the rest of the archive.
+- **Infinite Feel:** A large "LOAD MORE ARCHIVE" button for pagination.
 
-### 4. Navigation & Modals
-- **Navbar:** Fixed top navigation with HOME, SHOP, and a specialized **"CATEGORY"** button.
-- **Category Modal:** Clicking "CATEGORY" opens a full-screen grid of all categories with images.
-- **Mobile Search:** A toggleable search input for mobile devices.
+### 4. Navigation & Specialized Modals
+- **Navbar:** Must have HOME, SHOP, and a unique **"CATEGORY"** button.
+- **Category Modal:** Clicking "CATEGORY" opens a full-screen/large modal with a grid of all categories including images.
+- **Language Toggle:** Include an EN/BN toggle in the navbar.
 
-### 5. Ordering & Localization (Bangla Features)
-- **Checkout Modal:** Secure popup order form (Name, Phone, Address, Size selection).
-- **Delivery Labels:** Must use specific Bangla labels: **"ঢাকার ভিতরে"** and **"ঢাকার বাইরে"**.
-- **Thank You Message:** Post-order popup text: **"THANK YOU - আমাদের এক জন প্রতিনিধি যত দ্রুত সম্ভব আপনার সাথে যোগাযোগ করবে"**.
-- **WhatsApp Link:** Integration to chat with admin regarding a specific product.
+### 5. Ordering & Localization (Bangla Precision)
+- **Checkout Modal:** Fast order form (Name, Phone, Address, Size selection, Quantity).
+- **Delivery Labels:** Use exact Bangla text: **"ঢাকার ভিতরে"** and **"ঢাকার বাইরে"**.
+- **Thank You State:** Post-order success text: **"THANK YOU - আমাদের এক জন প্রতিনিধি যত দ্রুত সম্ভব আপনার সাথে যোগাযোগ করবে"**.
+- **Admin Chat:** Direct WhatsApp integration for every specific product.
 
-### 6. Admin Panel & Business Tools (Command Center)
-- **Dashboard:** Revenue charts, visitor stats, and real-time "New Order" notifications.
-- **Invoice Generator:** Professional PDF invoice (using jsPDF). Must include branding, customer details, product image, and BDT currency.
-- **Management:** Full inventory control with built-in client-side image compression (optimizing for 8-12KB) for ultra-fast loading.
-- **Hub & Live Control:** Admin tool to update scrolling broadcast message, colors, and "Primary Hub Location" globally.
-- **System Preservation:** A dedicated copy-to-clipboard section for this master prompt.
+### 6. Admin Panel (The Command Center)
+- **Dashboard:** Revenue bar charts, visitor counts, and real-time "New Order" notifications.
+- **Invoice System:** Professional PDF generator. Must include site branding, customer details, product image, and auto-calculated BDT totals.
+- **Inventory Management:** Full control for Products and Categories.
+- **Client-side Image Compression:** Uploads optimized to 8-12KB for ultra-fast site loading.
+- **Live Broadcast Control:** Admin tool to update marquee text, color, and "Primary Hub Location" globally.
 
-### 7. Technical Specifications & Safety
-- **Performance:** Ultra-fast page loads using 'next/image' with 'priority' loading for top-fold elements and GPU-acceleration.
-- **Null-Safety:** Comprehensive null-checking (e.g., '(price || 0).toLocaleString()') to prevent "Application Errors".
-- **Tech Stack:** Next.js 15 (App Router), Firebase Firestore, Firebase Auth, Tailwind CSS, ShadCN UI, Lucide Icons.
+### 7. Technical Specifications
+- **Stack:** Next.js 15 (App Router), Firebase Firestore, Firebase Auth, Tailwind CSS, ShadCN UI.
+- **Performance:** GPU-accelerated transitions, high-priority image loading for top-fold items.
+- **Safety:** Strict null-checking (e.g., '(price || 0).toLocaleString()') to prevent crashes.
 
 ---
-*Preserved for SS SMART HAAT - Premium Market Place.*`;
+*Preserved for BEST HAAT - Premium Market Place.*`;
 
   const handleCopy = () => {
     navigator.clipboard.writeText(MASTER_PROMPT);
@@ -109,13 +109,12 @@ export default function MasterPromptPage() {
               </div>
               
               <div className="mt-8 p-6 bg-[#01a3a4]/5 border border-[#01a3a4]/20 flex items-start gap-4">
-                <ShieldAlert className="h-6 w-6 text-[#01a3a4] shrink-0" />
+                <Zap className="h-6 w-6 text-[#01a3a4] shrink-0 animate-pulse" />
                 <div className="space-y-2">
-                  <p className="text-[11px] font-black text-white uppercase tracking-widest">WHY IS THIS IMPORTANT?</p>
+                  <p className="text-[11px] font-black text-white uppercase tracking-widest">SYSTEM BLUEPRINT READY</p>
                   <p className="text-[10px] text-white/60 uppercase leading-relaxed font-bold">
-                    THIS PROMPT CONTAINS EVERY CUSTOM FEATURE AND DESIGN RULE REQUESTED FOR SS SMART HAAT. 
-                    IF YOU EVER NEED TO REBUILD OR EXTEND THIS SITE IN ANOTHER AI ENVIRONMENT, 
-                    PASTE THIS ENTIRE TEXT TO GET THE EXACT SAME RESULT.
+                    THIS IS THE COMPLETE ARCHITECTURAL DEFINITION OF "BEST HAAT". 
+                    USE THIS PROMPT IN ANY ADVANCED AI ENVIRONMENT TO REPLICATE THIS EXACT PROJECT WITH ALL ITS CUSTOM RULES.
                   </p>
                 </div>
               </div>
