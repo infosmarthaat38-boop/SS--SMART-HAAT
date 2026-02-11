@@ -27,7 +27,7 @@ export default function MasterPromptPage() {
 
 ### 2. Homepage Structure (Slim & High-Impact)
 - **Fixed Sticky Header:** The entire header (Navbar + scrolling Live Status Bar) MUST be fixed at the top of the screen (z-index: 120).
-- **Top Fold Grid:** A three-column grid (Flash Offer, Main Slider, QR/App Bar). Fixed height: 350px (Desktop) / 140px (Mobile).
+- **Top Fold Grid:** A three-column grid (Flash Offer, Main Slider, QR/App Bar). Fixed height: 450px (Desktop) / 350px (Tablet) / 180px (Mobile).
 - **Category-wise Display:** Group products by category. Each section displays exactly **16 products in 2 rows** (8 per row on desktop).
 - **Section Spacing:** Minimal vertical gaps (py-4 md:py-8) and tight header-to-grid spacing.
 - **Main CTA:** A large, wide button labeled **"MORE PRODUCT"** linking to the shop page.

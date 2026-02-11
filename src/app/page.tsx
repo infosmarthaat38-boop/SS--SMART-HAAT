@@ -216,7 +216,7 @@ export default function Home() {
       <MainHeader />
 
       <main className="flex-grow container mx-auto px-0 md:px-0">
-        <section className="grid grid-cols-12 gap-0 h-[140px] md:h-[300px] lg:h-[350px] gpu-accelerated bg-black overflow-hidden">
+        <section className="grid grid-cols-12 gap-0 h-[180px] md:h-[350px] lg:h-[450px] gpu-accelerated bg-black overflow-hidden">
           <div className="col-span-3 h-full"><FlashOfferCard /></div>
           <div className="col-span-6 h-full relative overflow-hidden bg-black border-none">
             {combinedSliderItems.length > 0 ? (
@@ -233,7 +233,7 @@ export default function Home() {
           </div>
           <div className="col-span-3 h-full bg-[#01a3a4] flex flex-col items-center justify-center p-1.5 md:p-4 space-y-1.5 md:space-y-3 gpu-accelerated">
             <h3 className="text-white font-black text-[7px] md:text-sm lg:text-base uppercase tracking-widest italic text-center drop-shadow-xl">DOWNLOAD APP</h3>
-            <div className="bg-white p-0.5 md:p-1 w-14 h-14 md:w-32 md:h-32 flex items-center justify-center border md:border-2 border-white/20 shadow-2xl">
+            <div className="bg-white p-0.5 md:p-1 w-14 h-14 md:w-32 md:h-32 lg:w-40 lg:h-40 flex items-center justify-center border md:border-2 border-white/20 shadow-2xl">
               <Image src={qrCodeUrl} alt="QR Code" width={150} height={150} className="w-full h-full" loading="lazy" />
             </div>
             <div className="flex flex-col gap-1 md:gap-1.5 w-full max-w-[220px]">
