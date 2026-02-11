@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useMemo, useEffect, useState } from 'react';
@@ -81,8 +82,8 @@ export default function AdminPanel() {
 
   const salesStats = useMemo(() => {
     if (!orders || !today) return { totalRevenue: 0, todaySales: 0 };
-    const todayOrders = orders.filter(o => o.createdAt.startsWith(today));
-    const revenue = orders.reduce((acc, curr) => acc + (curr.productPrice * (curr.quantity || 1)), 0);
+    const todayOrders = orders.filter(o => o.createdAt && o.createdAt.startsWith(today));
+    const revenue = orders.reduce((acc, curr) => acc + ((curr.productPrice || 0) * (curr.quantity || 1)), 0);
     return {
       totalRevenue: revenue,
       todaySales: todayOrders.length
@@ -102,14 +103,14 @@ export default function AdminPanel() {
   useEffect(() => {
     if (pendingOrders && pendingOrders.length > 0) {
       const latestOrder = pendingOrders[0];
-      const orderTime = new Date(latestOrder.createdAt).getTime();
+      const orderTime = latestOrder.createdAt ? new Date(latestOrder.createdAt).getTime() : 0;
       const now = new Date().getTime();
       
       if (now - orderTime < 10000) { 
         toast({
           variant: "destructive",
           title: "🚨 NEW ORDER",
-          description: `${latestOrder.customerName} ordered ${latestOrder.productName}.`,
+          description: `${latestOrder.customerName || 'GUEST'} ordered ${latestOrder.productName || 'PRODUCT'}.`,
         });
       }
     }
@@ -284,7 +285,7 @@ export default function AdminPanel() {
                         <Badge className="bg-red-600 text-white text-[7px] font-black rounded-none border-none animate-pulse">NEW ORDER</Badge>
                       </div>
                       <p className="text-[8px] font-black text-[#01a3a4] uppercase truncate">{order.productName}</p>
-                      <span className="text-[7px] font-mono text-white/30 uppercase">{new Date(order.createdAt).toLocaleTimeString()}</span>
+                      <span className="text-[7px] font-mono text-white/30 uppercase">{order.createdAt ? new Date(order.createdAt).toLocaleTimeString() : 'RECENT'}</span>
                     </div>
                   ))}
                   {(!pendingOrders || pendingOrders.length === 0) && (

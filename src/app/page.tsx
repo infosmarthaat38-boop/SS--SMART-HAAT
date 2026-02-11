@@ -84,7 +84,7 @@ const FlashOfferCard = memo(() => {
     const products = flashProducts || [];
     const banners = flashBanners || [];
     return [...banners, ...products].sort((a, b) => 
-      new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime()
+      new Date(b.createdAt || '2024-01-01').getTime() - new Date(a.createdAt || '2024-01-01').getTime()
     );
   }, [flashProducts, flashBanners]);
 
@@ -174,7 +174,7 @@ export default function Home() {
     const products = sliderProducts || [];
     const banners = sliderBanners || [];
     return [...banners, ...products].sort((a, b) => 
-      new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime()
+      new Date(b.createdAt || '2024-01-01').getTime() - new Date(a.createdAt || '2024-01-01').getTime()
     );
   }, [sliderProducts, sliderBanners]);
 
