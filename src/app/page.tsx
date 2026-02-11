@@ -89,10 +89,15 @@ const FlashOfferCard = memo(() => {
   }, [flashProducts, flashBanners]);
 
   useEffect(() => {
-    if (combinedItems.length <= 1) return;
-    const interval = setInterval(() => setCurrentIndex((prev) => (prev + 1) % combinedItems.length), 6000);
+    if (combinedItems.length <= 1) {
+      setCurrentIndex(0);
+      return;
+    }
+    const interval = setInterval(() => {
+      setCurrentIndex((prev) => (prev + 1) % combinedItems.length);
+    }, 6000);
     return () => clearInterval(interval);
-  }, [combinedItems]);
+  }, [combinedItems.length]);
   
   const activeItem = combinedItems[currentIndex];
 
@@ -107,7 +112,7 @@ const FlashOfferCard = memo(() => {
   return (
     <div className="h-full bg-black overflow-hidden relative group w-full gpu-accelerated">
       {activeItem ? (
-        <div className="h-full w-full relative">
+        <div className="h-full w-full relative" key={activeItem.id}>
           <Image 
             src={activeItem.imageUrl || 'https://picsum.photos/seed/flash/400/400'} 
             alt="Flash Offer" 
@@ -168,7 +173,6 @@ export default function Home() {
   const combinedSliderItems = useMemo(() => {
     const products = sliderProducts || [];
     const banners = sliderBanners || [];
-    // Sort client-side to avoid Firestore Index requirements
     return [...banners, ...products].sort((a, b) => 
       new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime()
     );
@@ -192,6 +196,10 @@ export default function Home() {
     }
   }, [db]);
 
+  const carouselKey = useMemo(() => {
+    return combinedSliderItems.map(item => item.id).join('-');
+  }, [combinedSliderItems]);
+
   if (!isMounted) return <div className="min-h-screen bg-black" />;
 
   return (
@@ -205,7 +213,7 @@ export default function Home() {
           <div className="col-span-6 h-full relative overflow-hidden bg-black">
             {combinedSliderItems.length > 0 ? (
               <Carousel 
-                key={combinedSliderItems.length} 
+                key={carouselKey} 
                 className="w-full h-full" 
                 opts={{ loop: true }} 
                 plugins={[autoplay.current]}
