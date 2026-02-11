@@ -9,14 +9,11 @@ import { Radio, MapPin } from 'lucide-react';
 
 /**
  * MainHeader - Combines Navbar and Live Status Bar with a fixed position.
- * Shows both Live Status Message and Hub Location separately.
+ * Updated branding to BEST HAAT.
  */
 export function MainHeader() {
   const db = useFirestore();
-  const settingsRef = useMemoFirebase(() => {
-    if (!db) return null;
-    return doc(db, 'settings', 'site-config');
-  }, [db]);
+  const settingsRef = useMemoFirebase(() => db ? doc(db, 'settings', 'site-config') : null, [db]);
   const { data: settings } = useDoc(settingsRef);
 
   const broadcastColor = settings?.statusColor || '#ffffff';

@@ -12,14 +12,12 @@ import { CategoriesGrid } from '@/components/CategoriesGrid';
 import { Carousel, CarouselContent, CarouselItem } from "@/components/ui/carousel";
 import Autoplay from "embla-carousel-autoplay";
 import { useFirestore, useCollection, useMemoFirebase, useDoc } from '@/firebase';
-import { collection, query, where, limit, orderBy, doc, increment } from 'firebase/firestore';
+import { collection, query, where, limit, doc, increment } from 'firebase/firestore';
 import { setDocumentNonBlocking } from '@/firebase/non-blocking-updates';
 import { OrderModal } from '@/components/OrderModal';
 
 const SlideItem = memo(({ item, priority }: { item: any, priority: boolean }) => {
   const [isOrderOpen, setIsOrderOpen] = useState(false);
-
-  // Determine if it's a product or a banner
   const isProduct = item.price !== undefined;
 
   return (
@@ -71,12 +69,12 @@ const FlashOfferCard = memo(() => {
   
   const flashProductQuery = useMemoFirebase(() => {
     if (!db) return null;
-    return query(collection(db, 'products'), where('showInFlashOffer', '==', true), limit(5));
+    return query(collection(db, 'products'), where('showInFlashOffer', '==', true), limit(10));
   }, [db]);
 
   const flashBannerQuery = useMemoFirebase(() => {
     if (!db) return null;
-    return query(collection(db, 'featured_banners'), where('type', '==', 'FLASH'), limit(5));
+    return query(collection(db, 'featured_banners'), where('type', '==', 'FLASH'), limit(10));
   }, [db]);
   
   const { data: flashProducts } = useCollection(flashProductQuery);
@@ -85,7 +83,9 @@ const FlashOfferCard = memo(() => {
   const combinedItems = useMemo(() => {
     const products = flashProducts || [];
     const banners = flashBanners || [];
-    return [...banners, ...products];
+    return [...banners, ...products].sort((a, b) => 
+      new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime()
+    );
   }, [flashProducts, flashBanners]);
 
   useEffect(() => {
@@ -95,6 +95,14 @@ const FlashOfferCard = memo(() => {
   }, [combinedItems]);
   
   const activeItem = combinedItems[currentIndex];
+
+  if (!flashProducts && !flashBanners) {
+    return (
+      <div className="h-full flex items-center justify-center bg-black/50">
+        <Loader2 className="h-4 w-4 text-[#01a3a4] animate-spin" />
+      </div>
+    );
+  }
 
   return (
     <div className="h-full bg-black overflow-hidden relative group w-full gpu-accelerated">
@@ -122,8 +130,8 @@ const FlashOfferCard = memo(() => {
           </div>
         </div>
       ) : (
-        <div className="h-full flex flex-col items-center justify-center gap-2">
-          <Loader2 className="h-4 w-4 text-[#01a3a4] animate-spin" />
+        <div className="h-full flex flex-col items-center justify-center gap-2 border border-white/5">
+          <ShoppingCart className="h-4 w-4 text-white/10" />
         </div>
       )}
     </div>
@@ -136,31 +144,20 @@ export default function Home() {
   const db = useFirestore();
   const [isMounted, setIsMounted] = useState(false);
   
-  const categoriesRef = useMemoFirebase(() => {
-    if (!db) return null;
-    return collection(db, 'categories');
-  }, [db]);
-
-  const productsRef = useMemoFirebase(() => {
-    if (!db) return null;
-    return collection(db, 'products');
-  }, [db]);
+  const categoriesRef = useMemoFirebase(() => db ? collection(db, 'categories') : null, [db]);
+  const productsRef = useMemoFirebase(() => db ? collection(db, 'products') : null, [db]);
 
   const sliderProductQuery = useMemoFirebase(() => {
     if (!db) return null;
-    // Added orderBy to ensure newest items appear first
-    return query(collection(db, 'products'), where('showInSlider', '==', true), orderBy('createdAt', 'desc'), limit(10));
+    return query(collection(db, 'products'), where('showInSlider', '==', true), limit(15));
   }, [db]);
 
   const sliderBannerQuery = useMemoFirebase(() => {
     if (!db) return null;
-    return query(collection(db, 'featured_banners'), where('type', '==', 'SLIDER'), orderBy('createdAt', 'desc'), limit(10));
+    return query(collection(db, 'featured_banners'), where('type', '==', 'SLIDER'), limit(15));
   }, [db]);
 
-  const settingsRef = useMemoFirebase(() => {
-    if (!db) return null;
-    return doc(db, 'settings', 'site-config');
-  }, [db]);
+  const settingsRef = useMemoFirebase(() => db ? doc(db, 'settings', 'site-config') : null, [db]);
   
   const { data: categories, isLoading: isCategoriesLoading } = useCollection(categoriesRef);
   const { data: allProducts, isLoading: isProductsLoading } = useCollection(productsRef);
@@ -171,14 +168,16 @@ export default function Home() {
   const combinedSliderItems = useMemo(() => {
     const products = sliderProducts || [];
     const banners = sliderBanners || [];
-    return [...banners, ...products];
+    // Sort client-side to avoid Firestore Index requirements
+    return [...banners, ...products].sort((a, b) => 
+      new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime()
+    );
   }, [sliderProducts, sliderBanners]);
 
-  // Stable Autoplay configuration
   const autoplay = useRef(Autoplay({ delay: 5000, stopOnInteraction: false }));
 
   const qrCodeUrl = useMemo(() => {
-    const link = settings?.qrCodeLink || 'https://sssmarthaat.com';
+    const link = settings?.qrCodeLink || 'https://best-haat.com';
     return `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(link)}`;
   }, [settings?.qrCodeLink]);
 
@@ -188,33 +187,25 @@ export default function Home() {
       try {
         const dateStr = new Date().toISOString().split('T')[0];
         const statsRef = doc(db, 'visitorStats', dateStr);
-        setDocumentNonBlocking(statsRef, { 
-          count: increment(1), 
-          date: dateStr 
-        }, { merge: true });
-      } catch (err) {
-        console.warn("Stats error handled.");
-      }
+        setDocumentNonBlocking(statsRef, { count: increment(1), date: dateStr }, { merge: true });
+      } catch (err) {}
     }
   }, [db]);
 
-  if (!isMounted) {
-    return <div className="min-h-screen bg-black" />;
-  }
+  if (!isMounted) return <div className="min-h-screen bg-black" />;
 
   return (
     <div className="min-h-screen flex flex-col bg-background selection:bg-primary/30 relative">
       <MainHeader />
 
-      <main className="flex-grow container mx-auto px-0 md:px-0">
-        {/* TOP FOLD GRID: FLASH | SLIDER | QR */}
+      <main className="flex-grow container mx-auto">
         <section className="grid grid-cols-12 gap-0 h-[180px] md:h-[350px] lg:h-[450px] gpu-accelerated bg-black overflow-hidden border-b border-white/5">
           <div className="col-span-3 h-full"><FlashOfferCard /></div>
           
           <div className="col-span-6 h-full relative overflow-hidden bg-black">
             {combinedSliderItems.length > 0 ? (
               <Carousel 
-                key={combinedSliderItems.length} // Forces re-init when data count changes
+                key={combinedSliderItems.length} 
                 className="w-full h-full" 
                 opts={{ loop: true }} 
                 plugins={[autoplay.current]}
@@ -222,13 +213,17 @@ export default function Home() {
                 <CarouselContent className="h-full">
                   {combinedSliderItems.map((item, index) => (
                     <SlideItem 
-                      key={item.id} // Stable key using unique ID
+                      key={item.id || index} 
                       item={item} 
                       priority={index < 2} 
                     />
                   ))}
                 </CarouselContent>
               </Carousel>
+            ) : (sliderProducts || sliderBanners) ? (
+              <div className="h-full flex flex-col items-center justify-center gap-2 border-x border-white/5">
+                <p className="text-[10px] font-black text-white/20 uppercase tracking-widest">No Featured Content</p>
+              </div>
             ) : (
               <div className="h-full flex flex-col items-center justify-center gap-2">
                 <Loader2 className="h-6 w-6 text-[#01a3a4] animate-spin" />
@@ -248,7 +243,6 @@ export default function Home() {
           </div>
         </section>
 
-        {/* CATEGORY WISE PRODUCT LISTS */}
         {isCategoriesLoading || isProductsLoading ? (
           <div className="flex flex-col items-center justify-center py-40 gap-4">
             <Loader2 className="h-12 w-12 text-[#01a3a4] animate-spin" />
@@ -279,7 +273,6 @@ export default function Home() {
           );
         })}
 
-        {/* MAIN CTA */}
         <div className="mt-8 md:mt-12 flex justify-center pb-20 px-4">
           <Link href="/shop" className="w-full md:w-auto">
             <button className="w-full md:w-[500px] bg-white/5 border border-white/10 hover:border-[#01a3a4] text-white px-10 h-16 md:h-24 font-black uppercase tracking-[0.5em] text-[11px] md:text-[14px] flex items-center justify-center gap-8 transition-all hover:bg-[#01a3a4] hover:text-black active:scale-95 shadow-2xl group">
@@ -288,7 +281,6 @@ export default function Home() {
           </Link>
         </div>
 
-        {/* CATEGORY GRID AT BOTTOM */}
         <CategoriesGrid />
       </main>
       <Footer />
