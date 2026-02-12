@@ -256,7 +256,7 @@ export default function Home() {
                   loop
                   playsInline
                   muted={localMuted}
-                  className="w-full h-full object-contain z-0"
+                  className="w-full h-full object-fill z-0"
                 />
                 <div className="absolute top-2 right-2 bg-primary/20 backdrop-blur-sm border border-white/10 px-2 py-0.5 text-[6px] md:text-[8px] text-white font-black uppercase tracking-widest animate-pulse">LIVE</div>
                 

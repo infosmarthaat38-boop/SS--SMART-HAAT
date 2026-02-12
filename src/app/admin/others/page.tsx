@@ -246,7 +246,7 @@ export default function AdminOthers() {
                       <video 
                         key={formData.appBarVideoUrl}
                         src={formData.appBarVideoUrl} 
-                        className="w-full h-full object-contain bg-black opacity-60"
+                        className="w-full h-full object-fill bg-black opacity-60"
                         autoPlay 
                         loop
                         playsInline
