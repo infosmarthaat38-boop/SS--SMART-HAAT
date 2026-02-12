@@ -55,7 +55,7 @@ export const ProductCard = memo(({ product, index = 0 }: ProductCardProps) => {
           )}
         </Link>
         
-        <CardContent className="p-3 md:p-4 flex flex-col flex-grow bg-black space-y-4">
+        <CardContent className="p-3 md:p-4 flex flex-col flex-grow bg-black space-y-3">
           <div className="space-y-1">
             <h3 className="font-black text-[10px] md:text-[11px] text-white/80 uppercase truncate tracking-[0.15em] transition-colors group-hover:text-white">{product.name || 'Premium Item'}</h3>
             <div className="flex items-center gap-2">
@@ -66,27 +66,33 @@ export const ProductCard = memo(({ product, index = 0 }: ProductCardProps) => {
             </div>
           </div>
           
-          <div className="space-y-1 mt-auto">
-            <div className="flex items-baseline gap-1 text-white">
-              <span className="text-[10px] font-normal text-[#01a3a4]">৳</span>
-              <span className="font-black text-[18px] md:text-[20px] tracking-tighter leading-none">
-                {(price || 0).toLocaleString()}
-              </span>
+          {/* Bottom aligned section for price and button */}
+          <div className="mt-auto space-y-3">
+            {/* Standardized Price Section Height to ensure button alignment */}
+            <div className="min-h-[38px] flex flex-col justify-end">
+              <div className="flex items-baseline gap-1 text-white">
+                <span className="text-[10px] font-normal text-[#01a3a4]">৳</span>
+                <span className="font-black text-[18px] md:text-[20px] tracking-tighter leading-none">
+                  {(price || 0).toLocaleString()}
+                </span>
+              </div>
+              {originalPrice > price ? (
+                <p className="text-[10px] text-white/20 line-through font-bold tracking-tight">
+                  ৳{(originalPrice || 0).toLocaleString()}
+                </p>
+              ) : (
+                <div className="h-[14px]" aria-hidden="true" /> /* Empty spacer to maintain vertical rhythm */
+              )}
             </div>
-            {originalPrice > price && (
-              <p className="text-[10px] text-white/20 line-through font-bold tracking-tight">
-                ৳{(originalPrice || 0).toLocaleString()}
-              </p>
-            )}
-          </div>
 
-          <Button 
-            disabled={isOutOfStock}
-            onClick={(e) => { e.preventDefault(); setIsOrderOpen(true); }}
-            className={`w-full mt-2 ${isOutOfStock ? 'bg-white/5 text-white/10 border border-white/5' : 'bg-[#01a3a4] hover:bg-white hover:text-black'} text-white font-black text-[9px] h-10 rounded-none uppercase flex items-center justify-center gap-2 transition-all duration-500 active:scale-95 border-none shadow-lg tracking-[0.2em]`}
-          >
-            {isOutOfStock ? 'SOLD OUT' : 'অর্ডার করুন'}
-          </Button>
+            <Button 
+              disabled={isOutOfStock}
+              onClick={(e) => { e.preventDefault(); setIsOrderOpen(true); }}
+              className={`w-full ${isOutOfStock ? 'bg-white/5 text-white/10 border border-white/5' : 'bg-[#01a3a4] hover:bg-white hover:text-black'} text-white font-black text-[9px] h-10 rounded-none uppercase flex items-center justify-center gap-2 transition-all duration-500 active:scale-95 border-none shadow-lg tracking-[0.2em]`}
+            >
+              {isOutOfStock ? 'SOLD OUT' : 'অর্ডার করুন'}
+            </Button>
+          </div>
         </CardContent>
       </Card>
       <OrderModal product={product} isOpen={isOrderOpen} onClose={() => setIsOrderOpen(false)} />
