@@ -40,7 +40,7 @@ export const ProductCard = memo(({ product, index = 0 }: ProductCardProps) => {
           <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-all duration-500" />
 
           {originalPrice > price && (
-            <div className="absolute top-2 left-2 bg-black/80 backdrop-blur-md border border-[#01a3a4]/30 px-2 py-0.5 z-10">
+            <div className="absolute bottom-2 right-2 bg-black/80 backdrop-blur-md border border-[#01a3a4]/30 px-2 py-0.5 z-10">
               <span className="text-[8px] font-black text-[#01a3a4] tracking-widest uppercase">
                 -{Math.round(((originalPrice - price) / (originalPrice || 1)) * 100)}%
               </span>
