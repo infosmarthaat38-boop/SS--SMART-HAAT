@@ -14,7 +14,9 @@ import {
   Undo2, 
   Monitor, 
   Smartphone,
-  CheckCircle2
+  CheckCircle2,
+  Sparkles,
+  Layers
 } from 'lucide-react';
 import Link from 'next/link';
 import { useFirestore, useDoc, useMemoFirebase } from '@/firebase';
@@ -61,6 +63,10 @@ export default function AdminTheme() {
       themeBackgroundColor: '#000000',
       themeButtonColor: '#01a3a4'
     });
+    toast({
+      title: "PRESET LOADED",
+      description: "SYSTEM DEFAULTS HAVE BEEN APPLIED TO THE BOARD.",
+    });
   };
 
   if (isLoading || !db) {
@@ -70,7 +76,7 @@ export default function AdminTheme() {
   return (
     <div className="min-h-screen flex flex-col bg-background selection:bg-primary/30">
       <MainHeader />
-      <main className="flex-grow container mx-auto px-4 py-12 max-w-6xl">
+      <main className="flex-grow container mx-auto px-4 py-12 max-w-7xl">
         <div className="flex items-center gap-4 mb-12">
           <Link href="/admin">
             <Button variant="ghost" className="rounded-none hover:bg-white/5 text-white p-2 h-12 w-12 border border-white/10">
@@ -83,7 +89,8 @@ export default function AdminTheme() {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
+          {/* CONTROL PANEL */}
           <div className="lg:col-span-5 space-y-8">
             <Card className="bg-card border-white/5 rounded-none shadow-2xl overflow-hidden">
               <CardHeader className="bg-white/[0.02] border-b border-white/5 p-6">
@@ -96,131 +103,200 @@ export default function AdminTheme() {
                   
                   <div className="space-y-6">
                     {/* PRIMARY COLOR */}
-                    <div className="space-y-3 p-4 bg-white/5 border border-white/10">
+                    <div className="space-y-3 p-5 bg-white/5 border border-white/10 group hover:border-primary/30 transition-all">
                       <label className="text-[10px] font-black text-white/60 uppercase tracking-widest flex justify-between">
                         <span>Theme Primary Color</span>
-                        <span className="text-primary">{colors.themePrimaryColor}</span>
+                        <span className="text-primary font-mono">{colors.themePrimaryColor}</span>
                       </label>
                       <div className="flex gap-4">
-                        <input 
-                          type="color" 
-                          value={colors.themePrimaryColor} 
-                          onChange={(e) => setColors({...colors, themePrimaryColor: e.target.value})}
-                          className="w-12 h-12 p-1 bg-black border border-white/20 cursor-pointer"
-                        />
+                        <div 
+                          className="w-14 h-14 border border-white/20 relative cursor-pointer overflow-hidden"
+                          style={{ backgroundColor: colors.themePrimaryColor }}
+                        >
+                          <input 
+                            type="color" 
+                            value={colors.themePrimaryColor} 
+                            onChange={(e) => setColors({...colors, themePrimaryColor: e.target.value})}
+                            className="absolute inset-0 opacity-0 cursor-pointer scale-[3]"
+                          />
+                        </div>
                         <input 
                           type="text" 
                           value={colors.themePrimaryColor} 
                           onChange={(e) => setColors({...colors, themePrimaryColor: e.target.value.toUpperCase()})}
-                          className="flex-grow bg-black border border-white/10 h-12 px-4 text-xs font-mono text-white uppercase outline-none focus:border-primary"
+                          className="flex-grow bg-black border border-white/10 h-14 px-4 text-sm font-mono text-white uppercase outline-none focus:border-primary transition-all"
                         />
                       </div>
-                      <p className="text-[8px] text-white/30 uppercase">Controls links, icons, and primary accents.</p>
+                      <p className="text-[8px] text-white/30 uppercase font-black">Controls: Links, Active Icons, Accents, and System Highlights.</p>
                     </div>
 
                     {/* BACKGROUND COLOR */}
-                    <div className="space-y-3 p-4 bg-white/5 border border-white/10">
+                    <div className="space-y-3 p-5 bg-white/5 border border-white/10 group hover:border-primary/30 transition-all">
                       <label className="text-[10px] font-black text-white/60 uppercase tracking-widest flex justify-between">
                         <span>Template Background</span>
-                        <span className="text-primary">{colors.themeBackgroundColor}</span>
+                        <span className="text-primary font-mono">{colors.themeBackgroundColor}</span>
                       </label>
                       <div className="flex gap-4">
-                        <input 
-                          type="color" 
-                          value={colors.themeBackgroundColor} 
-                          onChange={(e) => setColors({...colors, themeBackgroundColor: e.target.value})}
-                          className="w-12 h-12 p-1 bg-black border border-white/20 cursor-pointer"
-                        />
+                        <div 
+                          className="w-14 h-14 border border-white/20 relative cursor-pointer overflow-hidden"
+                          style={{ backgroundColor: colors.themeBackgroundColor }}
+                        >
+                          <input 
+                            type="color" 
+                            value={colors.themeBackgroundColor} 
+                            onChange={(e) => setColors({...colors, themeBackgroundColor: e.target.value})}
+                            className="absolute inset-0 opacity-0 cursor-pointer scale-[3]"
+                          />
+                        </div>
                         <input 
                           type="text" 
                           value={colors.themeBackgroundColor} 
                           onChange={(e) => setColors({...colors, themeBackgroundColor: e.target.value.toUpperCase()})}
-                          className="flex-grow bg-black border border-white/10 h-12 px-4 text-xs font-mono text-white uppercase outline-none focus:border-primary"
+                          className="flex-grow bg-black border border-white/10 h-14 px-4 text-sm font-mono text-white uppercase outline-none focus:border-primary transition-all"
                         />
                       </div>
-                      <p className="text-[8px] text-white/30 uppercase">Controls the overall site background color.</p>
+                      <p className="text-[8px] text-white/30 uppercase font-black">Controls: Global background and Card base colors.</p>
                     </div>
 
                     {/* BUTTON COLOR */}
-                    <div className="space-y-3 p-4 bg-white/5 border border-white/10">
+                    <div className="space-y-3 p-5 bg-white/5 border border-white/10 group hover:border-primary/30 transition-all">
                       <label className="text-[10px] font-black text-white/60 uppercase tracking-widest flex justify-between">
                         <span>Action Button Color</span>
-                        <span className="text-primary">{colors.themeButtonColor}</span>
+                        <span className="text-primary font-mono">{colors.themeButtonColor}</span>
                       </label>
                       <div className="flex gap-4">
-                        <input 
-                          type="color" 
-                          value={colors.themeButtonColor} 
-                          onChange={(e) => setColors({...colors, themeButtonColor: e.target.value})}
-                          className="w-12 h-12 p-1 bg-black border border-white/20 cursor-pointer"
-                        />
+                        <div 
+                          className="w-14 h-14 border border-white/20 relative cursor-pointer overflow-hidden"
+                          style={{ backgroundColor: colors.themeButtonColor }}
+                        >
+                          <input 
+                            type="color" 
+                            value={colors.themeButtonColor} 
+                            onChange={(e) => setColors({...colors, themeButtonColor: e.target.value})}
+                            className="absolute inset-0 opacity-0 cursor-pointer scale-[3]"
+                          />
+                        </div>
                         <input 
                           type="text" 
                           value={colors.themeButtonColor} 
                           onChange={(e) => setColors({...colors, themeButtonColor: e.target.value.toUpperCase()})}
-                          className="flex-grow bg-black border border-white/10 h-12 px-4 text-xs font-mono text-white uppercase outline-none focus:border-primary"
+                          className="flex-grow bg-black border border-white/10 h-14 px-4 text-sm font-mono text-white uppercase outline-none focus:border-primary transition-all"
                         />
                       </div>
-                      <p className="text-[8px] text-white/30 uppercase">Specific color for "ORDER NOW" buttons.</p>
+                      <p className="text-[8px] text-white/30 uppercase font-black">Controls: "অর্ডার করুন" (ORDER NOW) button color.</p>
                     </div>
                   </div>
 
-                  <div className="flex flex-col gap-3">
-                    <Button type="submit" className="w-full bg-primary hover:bg-white hover:text-black text-white h-16 font-black uppercase rounded-none text-xs tracking-widest shadow-2xl transition-all">
+                  <div className="flex flex-col gap-4 pt-4">
+                    <Button type="submit" className="w-full bg-primary hover:bg-white hover:text-black text-white h-16 font-black uppercase rounded-none text-xs tracking-[0.2em] shadow-2xl transition-all">
                       <Save className="mr-2 h-5 w-5" /> SYNC THEME SETTINGS
                     </Button>
-                    <Button type="button" onClick={resetToDefault} variant="outline" className="w-full border-white/10 text-white/40 hover:text-white h-12 font-black uppercase rounded-none text-[9px] tracking-[0.2em]">
-                      <Undo2 className="mr-2 h-3 w-3" /> RESET TO SYSTEM DEFAULTS
-                    </Button>
+                    <button 
+                      type="button" 
+                      onClick={resetToDefault} 
+                      className="w-full text-white/20 hover:text-primary transition-colors py-2 font-black uppercase text-[9px] tracking-[0.3em] flex items-center justify-center gap-2"
+                    >
+                      <Undo2 className="h-3 w-3" /> RESET TO SYSTEM DEFAULTS
+                    </button>
                   </div>
                 </form>
               </CardContent>
             </Card>
           </div>
 
+          {/* LIVE SIMULATOR & PREVIEW PLATE */}
           <div className="lg:col-span-7 space-y-8">
             <Card className="bg-card border-white/5 rounded-none shadow-2xl overflow-hidden h-full">
               <CardHeader className="bg-white/[0.02] border-b border-white/5 p-6">
                 <CardTitle className="text-xs font-black uppercase tracking-[0.3em] text-primary flex items-center gap-2">
-                  <Monitor className="h-4 w-4" /> LIVE PREVIEW SIMULATOR
+                  <Monitor className="h-4 w-4" /> LIVE INTERACTIVE SIMULATOR
                 </CardTitle>
               </CardHeader>
-              <CardContent className="p-10 flex flex-col items-center justify-center bg-[#050505] min-h-[600px]">
-                {/* PREVIEW FRAME */}
+              <CardContent className="p-10 flex flex-col items-center justify-center bg-[#050505] min-h-[700px] relative">
+                
+                {/* DECORATIVE ELEMENTS */}
+                <div className="absolute top-10 right-10 flex flex-col gap-2">
+                  <div className="w-20 h-1 bg-primary opacity-20" />
+                  <div className="w-12 h-1 bg-primary opacity-10" />
+                </div>
+
+                {/* PHONE FRAME SIMULATOR */}
                 <div 
-                  className="w-full max-w-[300px] aspect-[9/19] border-[8px] border-[#1a1a1a] rounded-[40px] relative overflow-hidden flex flex-col shadow-2xl ring-1 ring-white/10 transition-colors duration-500"
+                  className="w-full max-w-[320px] aspect-[9/19] border-[12px] border-[#1a1a1a] rounded-[45px] relative overflow-hidden flex flex-col shadow-[0_0_100px_rgba(0,0,0,0.8)] ring-1 ring-white/10 transition-colors duration-700"
                   style={{ backgroundColor: colors.themeBackgroundColor }}
                 >
                   {/* NOTCH */}
-                  <div className="absolute top-0 left-1/2 -translate-x-1/2 w-24 h-5 bg-[#1a1a1a] rounded-b-xl z-20" />
+                  <div className="absolute top-0 left-1/2 -translate-x-1/2 w-28 h-6 bg-[#1a1a1a] rounded-b-2xl z-30 flex items-center justify-center">
+                    <div className="w-10 h-1 bg-white/5 rounded-full" />
+                  </div>
                   
-                  {/* CONTENT PREVIEW */}
-                  <div className="p-4 space-y-6 mt-8">
-                    <div className="h-2 w-20 bg-white/10 rounded-full" />
-                    <div className="aspect-square w-full border border-white/10 relative">
-                       <div className="absolute inset-0 bg-white/5 flex items-center justify-center text-[10px] text-white/20 font-black">IMAGE AREA</div>
-                       <div 
-                        className="absolute bottom-2 right-2 px-2 py-1 text-[8px] font-black text-white"
+                  {/* SIMULATED CONTENT */}
+                  <div className="flex-grow flex flex-col">
+                    {/* Header */}
+                    <div className="h-14 bg-black border-b border-white/5 flex items-center px-6 gap-3 mt-4">
+                      <div className="w-6 h-6 border border-white/20 flex items-center justify-center">
+                        <span style={{ color: colors.themePrimaryColor }} className="text-[10px] font-black">SS</span>
+                      </div>
+                      <div className="flex-grow h-2 bg-white/5 rounded-full" />
+                      <div className="w-4 h-4 bg-white/10 rounded-full" />
+                    </div>
+
+                    {/* Banner */}
+                    <div className="h-32 bg-white/5 m-4 border border-white/5 flex items-center justify-center relative overflow-hidden">
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+                      <div className="absolute bottom-2 left-2 space-y-1">
+                        <div className="h-1.5 w-16 bg-white/20" />
+                        <div className="h-3 w-24" style={{ backgroundColor: colors.themePrimaryColor }} />
+                      </div>
+                    </div>
+
+                    {/* Product Card Simulation */}
+                    <div className="p-4 space-y-4">
+                      <div className="aspect-square w-full border border-white/10 relative group bg-black/40">
+                         <div className="absolute inset-0 flex items-center justify-center">
+                            <Layers className="h-10 w-10 text-white/5" />
+                         </div>
+                         <div 
+                          className="absolute bottom-2 right-2 px-3 py-1 text-[9px] font-black text-white shadow-xl"
+                          style={{ backgroundColor: colors.themeButtonColor }}
+                         >
+                          -50%
+                         </div>
+                      </div>
+                      
+                      <div className="space-y-3">
+                        <div className="h-2.5 w-3/4 bg-white/10" />
+                        <div className="flex items-center justify-between">
+                          <div className="text-lg font-black" style={{ color: colors.themePrimaryColor }}>৳ 2,450</div>
+                          <div className="h-1.5 w-10 bg-white/5" />
+                        </div>
+                      </div>
+
+                      <button 
+                        className="w-full h-12 flex items-center justify-center text-[10px] font-black text-white uppercase tracking-[0.3em] shadow-2xl transition-all active:scale-95"
                         style={{ backgroundColor: colors.themeButtonColor }}
-                       >
-                        -50%
-                       </div>
-                    </div>
-                    <div className="space-y-2">
-                      <div className="h-3 w-3/4 bg-white/20" />
-                      <div className="h-4 w-1/2" style={{ backgroundColor: colors.themePrimaryColor }} />
-                    </div>
-                    <div 
-                      className="h-10 w-full flex items-center justify-center text-[9px] font-black text-white uppercase tracking-widest"
-                      style={{ backgroundColor: colors.themeButtonColor }}
-                    >
-                      অর্ডার করুন
+                      >
+                        অর্ডার করুন
+                      </button>
                     </div>
                   </div>
 
-                  <div className="absolute bottom-4 left-1/2 -translate-x-1/2 w-20 h-1 bg-white/20 rounded-full" />
+                  {/* BOTTOM HOME BAR */}
+                  <div className="h-6 bg-transparent flex items-center justify-center shrink-0">
+                    <div className="w-24 h-1 bg-white/20 rounded-full" />
+                  </div>
                 </div>
-                <p className="mt-6 text-[9px] font-black text-white/30 uppercase tracking-[0.4em]">REAL-TIME VISUALIZATION</p>
+
+                <div className="mt-10 flex flex-col items-center gap-4">
+                  <div className="flex gap-2">
+                    <div className="w-3 h-3 rounded-full" style={{ backgroundColor: colors.themePrimaryColor }} />
+                    <div className="w-3 h-3 rounded-full" style={{ backgroundColor: colors.themeBackgroundColor }} />
+                    <div className="w-3 h-3 rounded-full" style={{ backgroundColor: colors.themeButtonColor }} />
+                  </div>
+                  <p className="text-[10px] font-black text-white/30 uppercase tracking-[0.5em] flex items-center gap-2">
+                    <Sparkles className="h-3 w-3" /> REAL-TIME VISUALIZATION
+                  </p>
+                </div>
               </CardContent>
             </Card>
           </div>
