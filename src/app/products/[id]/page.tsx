@@ -86,14 +86,14 @@ export default function ProductDetails() {
           </Button>
           
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start mb-24">
-            <div className="relative aspect-square rounded-none overflow-hidden border border-white/5 shadow-2xl group bg-black">
+            <div className="relative aspect-square rounded-none overflow-hidden border border-white/5 shadow-2xl group bg-black flex items-center justify-center">
               <Image 
                 src={product.imageUrl} 
                 alt={product.name} 
                 fill 
                 sizes="(max-width: 1024px) 100vw, 50vw" 
                 priority={true}
-                className="object-cover transition-transform duration-[2000ms] group-hover:scale-105" 
+                className="object-contain transition-transform duration-[2000ms] group-hover:scale-105" 
               />
               {isOutOfStock && (
                 <div className="absolute inset-0 bg-black/70 backdrop-blur-md flex items-center justify-center z-10">

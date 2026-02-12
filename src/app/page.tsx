@@ -22,25 +22,25 @@ const SlideItem = memo(({ item, priority }: { item: any, priority: boolean }) =>
 
   return (
     <CarouselItem className="h-full">
-      <div className="relative h-full w-full bg-black overflow-hidden gpu-accelerated">
+      <div className="relative h-full w-full bg-black overflow-hidden gpu-accelerated flex items-center justify-center">
         <Image
           src={item.imageUrl || 'https://picsum.photos/seed/placeholder/800/450'}
           alt={item.name || item.title || 'Banner'}
           fill
           sizes="100vw"
-          className="object-cover"
+          className="object-contain"
           priority={priority}
           loading={priority ? "eager" : "lazy"}
         />
-        <div className="absolute inset-0 bg-black/20 flex flex-col justify-center px-4 md:px-12 space-y-1 md:space-y-3">
-          <h2 className="text-[18px] md:text-5xl font-headline font-black text-white uppercase tracking-tight max-w-[700px] leading-tight drop-shadow-[0_4px_8px_rgba(0,0,0,0.9)]">
+        <div className="absolute inset-0 bg-black/10 flex flex-col justify-center px-4 md:px-12 space-y-1 md:space-y-3 pointer-events-none">
+          <h2 className="text-[18px] md:text-5xl font-headline font-black text-white uppercase tracking-tight max-w-[700px] leading-tight drop-shadow-[0_4px_12px_rgba(0,0,0,1)]">
             {item.name || item.title}
           </h2>
           
           {isProduct && (
-            <div className="flex flex-col space-y-2">
+            <div className="flex flex-col space-y-2 pointer-events-auto">
               <div className="flex items-center gap-1 md:gap-4">
-                <div className="flex items-baseline text-[16px] md:text-4xl font-black text-[#01a3a4] tracking-tighter drop-shadow-[0_4px_8px_rgba(0,0,0,0.9)]">
+                <div className="flex items-baseline text-[16px] md:text-4xl font-black text-[#01a3a4] tracking-tighter drop-shadow-[0_4px_12px_rgba(0,0,0,1)]">
                   <span className="text-[12px] md:text-[20px] font-normal mr-1 translate-y-[-4px] text-white">৳</span>
                   {(item.price || 0).toLocaleString()}
                 </div>
@@ -111,27 +111,27 @@ const FlashOfferCard = memo(() => {
   }
 
   return (
-    <div className="h-full bg-black overflow-hidden relative group w-full gpu-accelerated border-r border-white/5">
+    <div className="h-full bg-black overflow-hidden relative group w-full gpu-accelerated border-r border-white/5 flex items-center justify-center">
       {activeItem ? (
-        <div className="h-full w-full relative" key={activeItem.id}>
+        <div className="h-full w-full relative flex items-center justify-center" key={activeItem.id}>
           <Image 
             src={activeItem.imageUrl || 'https://picsum.photos/seed/flash/400/400'} 
             alt="Flash Offer" 
             fill 
             sizes="(max-width: 768px) 33vw, 25vw" 
-            className="object-cover" 
+            className="object-contain" 
             priority={true}
             loading="eager"
           />
           <div className="absolute top-4 left-4 bg-red-600 px-4 md:px-6 py-1.5 text-[8px] md:text-[12px] font-black text-white uppercase tracking-widest z-10 shadow-2xl">FLASH OFFER</div>
           <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent pointer-events-none" />
           <div className="absolute bottom-0 w-full pb-6 md:pb-12 text-center px-4 z-10">
-             <p className="text-white font-black text-[10px] md:text-[16px] uppercase tracking-widest mb-2 truncate drop-shadow-[0_4px_8px_rgba(0,0,0,0.9)]">
+             <p className="text-white font-black text-[10px] md:text-[16px] uppercase tracking-widest mb-2 truncate drop-shadow-[0_4px_12px_rgba(0,0,0,1)]">
                {activeItem.name || activeItem.title}
              </p>
              {activeItem.price !== undefined && (
                <div className="flex flex-col items-center mb-4">
-                 <span className="text-[#01a3a4] font-black text-[14px] md:text-3xl drop-shadow-[0_4px_8px_rgba(0,0,0,0.9)]">
+                 <span className="text-[#01a3a4] font-black text-[14px] md:text-3xl drop-shadow-[0_4px_12px_rgba(0,0,0,1)]">
                    ৳{(activeItem.price || 0).toLocaleString()}
                  </span>
                </div>
