@@ -22,6 +22,7 @@ export function ThemeHandler() {
     // Helper to convert hex to HSL space-separated string for ShadCN
     const hexToHsl = (hex: string) => {
       let r = 0, g = 0, b = 0;
+      if (!hex) return '0 0% 100%';
       if (hex.length === 4) {
         r = parseInt(hex[1] + hex[1], 16);
         g = parseInt(hex[2] + hex[2], 16);
@@ -58,9 +59,15 @@ export function ThemeHandler() {
     if (settings.themeBackgroundColor) {
       const hsl = hexToHsl(settings.themeBackgroundColor);
       root.style.setProperty('--background', hsl);
-      // Also adjust card/popover to be slightly lighter or darker than background
       root.style.setProperty('--card', hsl);
       root.style.setProperty('--popover', hsl);
+    }
+
+    if (settings.themeTextColor) {
+      const hsl = hexToHsl(settings.themeTextColor);
+      root.style.setProperty('--foreground', hsl);
+      root.style.setProperty('--card-foreground', hsl);
+      root.style.setProperty('--popover-foreground', hsl);
     }
 
     if (settings.themeButtonColor) {

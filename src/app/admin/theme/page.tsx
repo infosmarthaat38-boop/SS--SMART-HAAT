@@ -13,7 +13,7 @@ import {
   Loader2, 
   Undo2, 
   Monitor, 
-  Smartphone,
+  Type,
   CheckCircle2,
   Sparkles,
   Layers
@@ -33,7 +33,8 @@ export default function AdminTheme() {
   const [colors, setColors] = useState({
     themePrimaryColor: '#01a3a4',
     themeBackgroundColor: '#000000',
-    themeButtonColor: '#01a3a4'
+    themeButtonColor: '#01a3a4',
+    themeTextColor: '#FFFFFF'
   });
 
   useEffect(() => {
@@ -41,7 +42,8 @@ export default function AdminTheme() {
       setColors({
         themePrimaryColor: settings.themePrimaryColor || '#01a3a4',
         themeBackgroundColor: settings.themeBackgroundColor || '#000000',
-        themeButtonColor: settings.themeButtonColor || '#01a3a4'
+        themeButtonColor: settings.themeButtonColor || '#01a3a4',
+        themeTextColor: settings.themeTextColor || '#FFFFFF'
       });
     }
   }, [settings]);
@@ -61,7 +63,8 @@ export default function AdminTheme() {
     setColors({
       themePrimaryColor: '#01a3a4',
       themeBackgroundColor: '#000000',
-      themeButtonColor: '#01a3a4'
+      themeButtonColor: '#01a3a4',
+      themeTextColor: '#FFFFFF'
     });
     toast({
       title: "PRESET LOADED",
@@ -80,11 +83,11 @@ export default function AdminTheme() {
         <div className="flex items-center gap-4 mb-12">
           <Link href="/admin">
             <Button variant="ghost" className="rounded-none hover:bg-white/5 text-white p-2 h-12 w-12 border border-white/10">
-              <ArrowLeft className="h-6 w-6 text-primary" />
+              <ArrowLeft className="h-6 w-6 text-white" />
             </Button>
           </Link>
           <div className="space-y-1">
-            <p className="text-[10px] font-black text-primary uppercase tracking-[0.3em]">Visual Identity</p>
+            <p className="text-[10px] font-black text-white uppercase tracking-[0.3em]">Visual Identity</p>
             <h1 className="text-4xl font-black uppercase tracking-tighter text-white">THEME CONTROL</h1>
           </div>
         </div>
@@ -94,7 +97,7 @@ export default function AdminTheme() {
           <div className="lg:col-span-5 space-y-8">
             <Card className="bg-card border-white/5 rounded-none shadow-2xl overflow-hidden">
               <CardHeader className="bg-white/[0.02] border-b border-white/5 p-6">
-                <CardTitle className="text-xs font-black uppercase tracking-[0.3em] text-primary flex items-center gap-2">
+                <CardTitle className="text-xs font-black uppercase tracking-[0.3em] text-white flex items-center gap-2">
                   <Palette className="h-4 w-4" /> MASTER COLOR BOARD
                 </CardTitle>
               </CardHeader>
@@ -127,7 +130,6 @@ export default function AdminTheme() {
                           className="flex-grow bg-black border border-white/10 h-14 px-4 text-sm font-mono text-white uppercase outline-none focus:border-primary transition-all"
                         />
                       </div>
-                      <p className="text-[8px] text-white/30 uppercase font-black">Controls: Links, Active Icons, Accents, and System Highlights.</p>
                     </div>
 
                     {/* BACKGROUND COLOR */}
@@ -155,7 +157,33 @@ export default function AdminTheme() {
                           className="flex-grow bg-black border border-white/10 h-14 px-4 text-sm font-mono text-white uppercase outline-none focus:border-primary transition-all"
                         />
                       </div>
-                      <p className="text-[8px] text-white/30 uppercase font-black">Controls: Global background and Card base colors.</p>
+                    </div>
+
+                    {/* TEXT COLOR */}
+                    <div className="space-y-3 p-5 bg-white/5 border border-white/10 group hover:border-primary/30 transition-all">
+                      <label className="text-[10px] font-black text-white/60 uppercase tracking-widest flex justify-between">
+                        <span>Global Text Color</span>
+                        <span className="text-primary font-mono">{colors.themeTextColor}</span>
+                      </label>
+                      <div className="flex gap-4">
+                        <div 
+                          className="w-14 h-14 border border-white/20 relative cursor-pointer overflow-hidden"
+                          style={{ backgroundColor: colors.themeTextColor }}
+                        >
+                          <input 
+                            type="color" 
+                            value={colors.themeTextColor} 
+                            onChange={(e) => setColors({...colors, themeTextColor: e.target.value})}
+                            className="absolute inset-0 opacity-0 cursor-pointer scale-[3]"
+                          />
+                        </div>
+                        <input 
+                          type="text" 
+                          value={colors.themeTextColor} 
+                          onChange={(e) => setColors({...colors, themeTextColor: e.target.value.toUpperCase()})}
+                          className="flex-grow bg-black border border-white/10 h-14 px-4 text-sm font-mono text-white uppercase outline-none focus:border-primary transition-all"
+                        />
+                      </div>
                     </div>
 
                     {/* BUTTON COLOR */}
@@ -183,7 +211,6 @@ export default function AdminTheme() {
                           className="flex-grow bg-black border border-white/10 h-14 px-4 text-sm font-mono text-white uppercase outline-none focus:border-primary transition-all"
                         />
                       </div>
-                      <p className="text-[8px] text-white/30 uppercase font-black">Controls: "অর্ডার করুন" (ORDER NOW) button color.</p>
                     </div>
                   </div>
 
@@ -204,86 +231,58 @@ export default function AdminTheme() {
             </Card>
           </div>
 
-          {/* LIVE SIMULATOR & PREVIEW PLATE */}
+          {/* LIVE SIMULATOR */}
           <div className="lg:col-span-7 space-y-8">
             <Card className="bg-card border-white/5 rounded-none shadow-2xl overflow-hidden h-full">
               <CardHeader className="bg-white/[0.02] border-b border-white/5 p-6">
-                <CardTitle className="text-xs font-black uppercase tracking-[0.3em] text-primary flex items-center gap-2">
+                <CardTitle className="text-xs font-black uppercase tracking-[0.3em] text-white flex items-center gap-2">
                   <Monitor className="h-4 w-4" /> LIVE INTERACTIVE SIMULATOR
                 </CardTitle>
               </CardHeader>
               <CardContent className="p-10 flex flex-col items-center justify-center bg-[#050505] min-h-[700px] relative">
                 
-                {/* DECORATIVE ELEMENTS */}
-                <div className="absolute top-10 right-10 flex flex-col gap-2">
-                  <div className="w-20 h-1 bg-primary opacity-20" />
-                  <div className="w-12 h-1 bg-primary opacity-10" />
-                </div>
-
-                {/* PHONE FRAME SIMULATOR */}
                 <div 
                   className="w-full max-w-[320px] aspect-[9/19] border-[12px] border-[#1a1a1a] rounded-[45px] relative overflow-hidden flex flex-col shadow-[0_0_100px_rgba(0,0,0,0.8)] ring-1 ring-white/10 transition-colors duration-700"
                   style={{ backgroundColor: colors.themeBackgroundColor }}
                 >
-                  {/* NOTCH */}
-                  <div className="absolute top-0 left-1/2 -translate-x-1/2 w-28 h-6 bg-[#1a1a1a] rounded-b-2xl z-30 flex items-center justify-center">
-                    <div className="w-10 h-1 bg-white/5 rounded-full" />
-                  </div>
+                  <div className="absolute top-0 left-1/2 -translate-x-1/2 w-28 h-6 bg-[#1a1a1a] rounded-b-2xl z-30" />
                   
-                  {/* SIMULATED CONTENT */}
-                  <div className="flex-grow flex flex-col">
-                    {/* Header */}
-                    <div className="h-14 bg-black border-b border-white/5 flex items-center px-6 gap-3 mt-4">
+                  <div className="flex-grow flex flex-col pt-8">
+                    <div className="h-14 bg-black/40 border-b border-white/5 flex items-center px-6 gap-3">
                       <div className="w-6 h-6 border border-white/20 flex items-center justify-center">
                         <span style={{ color: colors.themePrimaryColor }} className="text-[10px] font-black">SS</span>
                       </div>
                       <div className="flex-grow h-2 bg-white/5 rounded-full" />
-                      <div className="w-4 h-4 bg-white/10 rounded-full" />
                     </div>
 
-                    {/* Banner */}
-                    <div className="h-32 bg-white/5 m-4 border border-white/5 flex items-center justify-center relative overflow-hidden">
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-                      <div className="absolute bottom-2 left-2 space-y-1">
-                        <div className="h-1.5 w-16 bg-white/20" />
-                        <div className="h-3 w-24" style={{ backgroundColor: colors.themePrimaryColor }} />
+                    <div className="p-6 space-y-6">
+                      <div className="space-y-2">
+                        <div style={{ color: colors.themeTextColor }} className="text-2xl font-black uppercase leading-tight">PREMIUM PRODUCT</div>
+                        <div style={{ color: colors.themeTextColor }} className="text-[10px] opacity-60 uppercase font-bold">This is a simulation of your text color setting.</div>
                       </div>
-                    </div>
 
-                    {/* Product Card Simulation */}
-                    <div className="p-4 space-y-4">
-                      <div className="aspect-square w-full border border-white/10 relative group bg-black/40">
-                         <div className="absolute inset-0 flex items-center justify-center">
-                            <Layers className="h-10 w-10 text-white/5" />
-                         </div>
+                      <div className="aspect-square w-full border border-white/10 relative bg-black/40 flex items-center justify-center">
+                         <Layers className="h-10 w-10 text-white/5" />
                          <div 
-                          className="absolute bottom-2 right-2 px-3 py-1 text-[9px] font-black text-white shadow-xl"
+                          className="absolute bottom-2 right-2 px-3 py-1 text-[9px] font-black text-white"
                           style={{ backgroundColor: colors.themeButtonColor }}
                          >
                           -50%
                          </div>
                       </div>
                       
-                      <div className="space-y-3">
-                        <div className="h-2.5 w-3/4 bg-white/10" />
-                        <div className="flex items-center justify-between">
-                          <div className="text-lg font-black" style={{ color: colors.themePrimaryColor }}>৳ 2,450</div>
-                          <div className="h-1.5 w-10 bg-white/5" />
-                        </div>
+                      <div className="flex items-center justify-between">
+                        <div className="text-2xl font-black" style={{ color: colors.themePrimaryColor }}>৳ 2,450</div>
+                        <div className="text-[12px] line-through font-bold" style={{ color: colors.themeTextColor }}>৳ 4,900</div>
                       </div>
 
                       <button 
-                        className="w-full h-12 flex items-center justify-center text-[10px] font-black text-white uppercase tracking-[0.3em] shadow-2xl transition-all active:scale-95"
+                        className="w-full h-14 flex items-center justify-center text-[10px] font-black text-white uppercase tracking-[0.3em] shadow-2xl transition-all"
                         style={{ backgroundColor: colors.themeButtonColor }}
                       >
                         অর্ডার করুন
                       </button>
                     </div>
-                  </div>
-
-                  {/* BOTTOM HOME BAR */}
-                  <div className="h-6 bg-transparent flex items-center justify-center shrink-0">
-                    <div className="w-24 h-1 bg-white/20 rounded-full" />
                   </div>
                 </div>
 
@@ -291,6 +290,7 @@ export default function AdminTheme() {
                   <div className="flex gap-2">
                     <div className="w-3 h-3 rounded-full" style={{ backgroundColor: colors.themePrimaryColor }} />
                     <div className="w-3 h-3 rounded-full" style={{ backgroundColor: colors.themeBackgroundColor }} />
+                    <div className="w-3 h-3 rounded-full" style={{ backgroundColor: colors.themeTextColor }} />
                     <div className="w-3 h-3 rounded-full" style={{ backgroundColor: colors.themeButtonColor }} />
                   </div>
                   <p className="text-[10px] font-black text-white/30 uppercase tracking-[0.5em] flex items-center gap-2">

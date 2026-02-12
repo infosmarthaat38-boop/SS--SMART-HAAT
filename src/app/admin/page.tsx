@@ -117,7 +117,7 @@ export default function AdminPanel() {
   }, [pendingOrders, toast]);
 
   const stats = [
-    { title: "TOTAL REVENUE", value: `৳${salesStats.totalRevenue.toLocaleString()}`, change: "LIFE TIME", icon: TrendingUp, color: "text-primary", href: "/admin/orders" },
+    { title: "TOTAL REVENUE", value: `৳${salesStats.totalRevenue.toLocaleString()}`, change: "LIFE TIME", icon: TrendingUp, color: "text-white", href: "/admin/orders" },
     { title: "DAILY SALES", value: salesStats.todaySales, change: "TODAY", icon: ShoppingBag, color: "text-orange-500", href: "/admin/orders", isHighlight: true },
     { title: "VISITORS", value: dailyVisitors?.count || 0, change: "TODAY", icon: Users, color: "text-purple-500", href: "/admin/others" },
     { title: "PRODUCTS", value: products?.length || 0, change: "TOTAL", icon: Package, color: "text-green-500", href: "/admin/products" }
@@ -146,14 +146,14 @@ export default function AdminPanel() {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
           {stats.map((stat, i) => (
             <Link key={i} href={stat.href}>
-              <Card className={`bg-card border-white/5 rounded-none p-4 md:p-6 hover:border-primary/30 transition-all cursor-pointer group h-full ${stat.isHighlight && stat.value > 0 ? 'border-red-600/30 bg-red-600/[0.02]' : ''}`}>
+              <Card className={`bg-card border-white/5 rounded-none p-4 md:p-6 hover:border-white/30 transition-all cursor-pointer group h-full ${stat.isHighlight && stat.value > 0 ? 'border-red-600/30 bg-red-600/[0.02]' : ''}`}>
                 <div className="flex justify-between items-start mb-4">
                   <p className={`text-[8px] md:text-[10px] font-black uppercase tracking-[0.2em] ${stat.isHighlight && stat.value > 0 ? 'text-red-600' : 'text-white/60'}`}>{stat.title}</p>
                   <stat.icon className={`h-3 w-3 md:h-4 md:w-4 ${stat.isHighlight && stat.value > 0 ? 'text-red-600 animate-bounce' : stat.color} opacity-70 group-hover:scale-110 transition-transform`} />
                 </div>
                 <div className="flex items-baseline gap-2">
                   <h3 className="text-xl md:text-2xl font-black text-white tracking-tighter">{stat.value}</h3>
-                  <span className={`text-[7px] md:text-[9px] font-black uppercase ${stat.isHighlight && stat.value > 0 ? 'text-red-600' : 'text-primary'}`}>
+                  <span className={`text-[7px] md:text-[9px] font-black uppercase ${stat.isHighlight && stat.value > 0 ? 'text-red-600' : 'text-white'}`}>
                     {stat.change}
                   </span>
                 </div>
@@ -166,18 +166,18 @@ export default function AdminPanel() {
           <div className="lg:col-span-4 space-y-6">
             <Card className="bg-card border-white/5 rounded-none shadow-2xl">
               <CardHeader className="py-4 px-6 border-b border-white/5 bg-white/[0.02]">
-                <CardTitle className="text-[10px] font-black uppercase tracking-[0.3em] text-primary">COMMAND CENTER</CardTitle>
+                <CardTitle className="text-[10px] font-black uppercase tracking-[0.3em] text-white">COMMAND CENTER</CardTitle>
               </CardHeader>
               <CardContent className="p-2">
                 <div className="grid grid-cols-1 gap-1">
                   {quickLinks.map((link, i) => (
                     <Link key={i} href={link.href}>
-                      <div className={`flex items-center justify-between p-4 hover:bg-primary/5 transition-all group border-b border-white/[0.02] last:border-0 ${link.isHighlight ? 'bg-primary/5' : ''}`}>
+                      <div className={`flex items-center justify-between p-4 hover:bg-white/5 transition-all group border-b border-white/[0.02] last:border-0 ${link.isHighlight ? 'bg-white/5' : ''}`}>
                         <div className="flex items-center gap-4">
-                          <link.icon className={`h-4 w-4 ${link.isHighlight ? 'text-primary' : 'text-primary/50'} group-hover:opacity-100`} />
-                          <span className={`text-[10px] font-black uppercase tracking-widest group-hover:text-primary ${link.isHighlight ? 'text-primary' : 'text-white'}`}>{link.title}</span>
+                          <link.icon className={`h-4 w-4 ${link.isHighlight ? 'text-white' : 'text-white/50'} group-hover:opacity-100`} />
+                          <span className={`text-[10px] font-black uppercase tracking-widest group-hover:text-white ${link.isHighlight ? 'text-white' : 'text-white'}`}>{link.title}</span>
                         </div>
-                        <ChevronRight className="h-3 w-3 text-white/20 group-hover:translate-x-1 transition-all group-hover:text-primary" />
+                        <ChevronRight className="h-3 w-3 text-white/20 group-hover:translate-x-1 transition-all group-hover:text-white" />
                       </div>
                     </Link>
                   ))}
@@ -187,7 +187,7 @@ export default function AdminPanel() {
 
             <Card className="bg-card border-white/5 rounded-none shadow-2xl overflow-hidden">
               <CardHeader className="py-4 px-6 border-b border-white/5 bg-white/[0.02]">
-                <CardTitle className="text-[10px] font-black uppercase tracking-[0.3em] text-primary">CATEGORY BREAKDOWN</CardTitle>
+                <CardTitle className="text-[10px] font-black uppercase tracking-[0.3em] text-white">CATEGORY BREAKDOWN</CardTitle>
               </CardHeader>
               <CardContent className="p-6">
                 <div className="h-[200px] w-full flex items-center justify-center">
@@ -225,7 +225,7 @@ export default function AdminPanel() {
             <Card className="bg-card border-white/5 rounded-none shadow-2xl">
               <CardHeader className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-white/5 p-6 gap-4 bg-white/[0.01]">
                 <div className="space-y-1">
-                  <p className="text-[8px] font-black text-primary uppercase tracking-widest">Business Intelligence</p>
+                  <p className="text-[8px] font-black text-white uppercase tracking-widest">Business Intelligence</p>
                   <CardTitle className="text-2xl font-black uppercase tracking-tighter text-white">REVENUE ARCHIVE</CardTitle>
                 </div>
                 <Badge variant="outline" className="rounded-none border-white/10 text-[8px] h-6 px-3 w-fit font-black text-white/40">DATABASE: LIVE SYNCED</Badge>
@@ -266,8 +266,8 @@ export default function AdminPanel() {
               <Card className="bg-card border-white/5 rounded-none overflow-hidden shadow-2xl">
                 <CardHeader className="py-4 px-6 border-b border-white/5 bg-white/[0.02]">
                   <div className="flex items-center justify-between">
-                    <CardTitle className="text-[10px] font-black uppercase tracking-[0.3em] text-primary">AI STRATEGIST</CardTitle>
-                    <Sparkles className="h-3 w-3 text-primary animate-pulse" />
+                    <CardTitle className="text-[10px] font-black uppercase tracking-[0.3em] text-white">AI STRATEGIST</CardTitle>
+                    <Sparkles className="h-3 w-3 text-white animate-pulse" />
                   </div>
                 </CardHeader>
                 <StyleAssistant />
@@ -275,7 +275,7 @@ export default function AdminPanel() {
 
               <Card className="bg-card border-white/5 rounded-none overflow-hidden shadow-2xl">
                 <CardHeader className="py-4 px-6 border-b border-white/5 bg-white/[0.02]">
-                  <CardTitle className="text-[10px] font-black uppercase tracking-[0.3em] text-primary">LIVE ACTIVITY</CardTitle>
+                  <CardTitle className="text-[10px] font-black uppercase tracking-[0.3em] text-white">LIVE ACTIVITY</CardTitle>
                 </CardHeader>
                 <CardContent className="p-4 space-y-4">
                   {pendingOrders?.slice(0, 5).map((order, i) => (

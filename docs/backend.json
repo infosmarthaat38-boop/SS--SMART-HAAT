@@ -79,7 +79,8 @@
         "statusColor": { "type": "string" },
         "themePrimaryColor": { "type": "string", "description": "Hex code for theme accent." },
         "themeBackgroundColor": { "type": "string", "description": "Hex code for site background." },
-        "themeButtonColor": { "type": "string", "description": "Hex code for action buttons." }
+        "themeButtonColor": { "type": "string", "description": "Hex code for action buttons." },
+        "themeTextColor": { "type": "string", "description": "Hex code for global text color." }
       }
     }
   },
