@@ -93,7 +93,7 @@ export default function ProductDetails() {
                 fill 
                 sizes="(max-width: 1024px) 100vw, 50vw" 
                 priority={true}
-                className="object-contain transition-transform duration-[2000ms] group-hover:scale-105" 
+                className="object-cover transition-transform duration-[2000ms] group-hover:scale-105" 
               />
               {isOutOfStock && (
                 <div className="absolute inset-0 bg-black/70 backdrop-blur-md flex items-center justify-center z-10">

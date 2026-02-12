@@ -33,43 +33,43 @@ export const ProductCard = memo(({ product, index = 0 }: ProductCardProps) => {
             fill
             sizes="(max-width: 768px) 50vw, 15vw"
             priority={isPriority}
-            className="object-contain transition-transform duration-700 group-hover:scale-105"
+            className="object-cover transition-transform duration-700 group-hover:scale-110"
             loading={isPriority ? "eager" : "lazy"}
           />
           {isOutOfStock && (
-            <div className="absolute inset-0 bg-black/60 flex items-center justify-center z-10">
-              <span className="text-white text-[8px] font-black border border-white/20 px-2 py-1 uppercase tracking-widest bg-black/40 backdrop-blur-sm">SOLD OUT</span>
+            <div className="absolute inset-0 bg-black/70 flex items-center justify-center z-10">
+              <span className="text-white text-[9px] font-black border-2 border-white/30 px-3 py-1.5 uppercase tracking-widest bg-black/40 backdrop-blur-sm">SOLD OUT</span>
             </div>
           )}
         </Link>
         
-        <CardContent className="p-3 md:p-4 flex flex-col flex-grow bg-black space-y-3">
-          <h3 className="font-black text-[11px] md:text-[13px] text-white uppercase truncate font-headline tracking-tight">{product.name || 'Premium Item'}</h3>
+        <CardContent className="p-4 md:p-5 flex flex-col flex-grow bg-black space-y-4">
+          <h3 className="font-black text-[12px] md:text-[14px] text-white uppercase truncate font-headline tracking-tight">{product.name || 'Premium Item'}</h3>
           
-          <div className="space-y-1 min-h-[48px] flex flex-col justify-center">
+          <div className="space-y-1 min-h-[52px] flex flex-col justify-center">
             <div className="flex items-center justify-between gap-2">
               <div className="flex items-baseline text-[#01a3a4]">
-                <span className="text-[11px] font-normal mr-1 translate-y-[-4px] text-white/50">৳</span>
-                <span className="font-black text-[18px] md:text-[22px] tracking-tighter leading-none">
+                <span className="text-[12px] font-normal mr-1 translate-y-[-4px] text-white/50">৳</span>
+                <span className="font-black text-[20px] md:text-[24px] tracking-tighter leading-none">
                   {(price || 0).toLocaleString()}
                 </span>
               </div>
               {originalPrice > price && (
-                <span className="text-[8px] md:text-[9px] font-black text-[#01a3a4] border border-[#01a3a4] px-1.5 py-0.5 shrink-0">
+                <span className="text-[9px] md:text-[10px] font-black text-[#01a3a4] border border-[#01a3a4] px-2 py-0.5 shrink-0">
                   -{Math.round(((originalPrice - price) / (originalPrice || 1)) * 100)}%
                 </span>
               )}
             </div>
             {originalPrice > price && (
-              <p className="text-[9px] md:text-[10px] text-white/40 line-through font-bold">
+              <p className="text-[10px] md:text-[12px] text-white/40 line-through font-bold">
                 ৳{(originalPrice || 0).toLocaleString()}
               </p>
             )}
           </div>
 
-          <div className="flex items-center gap-1.5 py-0.5">
-            <div className={`h-1.5 w-1.5 rounded-full animate-pulse ${isOutOfStock ? 'bg-red-600' : 'bg-green-600'}`} />
-            <span className={`text-[7px] md:text-[8px] font-black uppercase tracking-[0.2em] ${isOutOfStock ? 'text-red-600' : 'text-green-600'}`}>
+          <div className="flex items-center gap-2 py-0.5">
+            <div className={`h-2 w-2 rounded-full animate-pulse ${isOutOfStock ? 'bg-red-600' : 'bg-green-600'}`} />
+            <span className={`text-[8px] md:text-[10px] font-black uppercase tracking-[0.2em] ${isOutOfStock ? 'text-red-600' : 'text-green-600'}`}>
               {isOutOfStock ? 'OUT OF STOCK' : 'IN STOCK'}
             </span>
           </div>
@@ -77,9 +77,9 @@ export const ProductCard = memo(({ product, index = 0 }: ProductCardProps) => {
           <Button 
             disabled={isOutOfStock}
             onClick={(e) => { e.preventDefault(); setIsOrderOpen(true); }}
-            className={`w-full mt-auto ${isOutOfStock ? 'bg-white/5 opacity-50' : 'bg-[#01a3a4] hover:bg-white hover:text-black'} text-white font-black text-[10px] md:text-[11px] h-9 md:h-10 rounded-none uppercase flex items-center justify-center gap-2 transition-all active:scale-95 shadow-lg shadow-black/20`}
+            className={`w-full mt-auto ${isOutOfStock ? 'bg-white/5 opacity-50' : 'bg-[#01a3a4] hover:bg-white hover:text-black'} text-white font-black text-[11px] md:text-[12px] h-10 md:h-12 rounded-none uppercase flex items-center justify-center gap-3 transition-all active:scale-95 shadow-xl border-none`}
           >
-            <ShoppingBag className="h-3.5 w-3.5" /> অর্ডার করুন
+            <ShoppingBag className="h-4 w-4" /> অর্ডার করুন
           </Button>
         </CardContent>
       </Card>
