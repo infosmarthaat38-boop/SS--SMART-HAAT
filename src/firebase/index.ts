@@ -5,10 +5,14 @@ import { initializeApp, getApps, getApp, FirebaseApp } from 'firebase/app';
 import { getAuth } from 'firebase/auth';
 import { getFirestore, initializeFirestore, persistentLocalCache, persistentMultipleTabManager } from 'firebase/firestore'
 
+// Cache initialized SDKs to prevent re-initialization errors
+const sdkCache = new Map<string, any>();
+
 // IMPORTANT: DO NOT MODIFY THIS FUNCTION
 export function initializeFirebase() {
+  let firebaseApp: FirebaseApp;
+  
   if (!getApps().length) {
-    let firebaseApp;
     try {
       firebaseApp = initializeApp();
     } catch (e) {
@@ -17,11 +21,18 @@ export function initializeFirebase() {
       }
       firebaseApp = initializeApp(firebaseConfig);
     }
-
-    return getSdks(firebaseApp);
+  } else {
+    firebaseApp = getApp();
   }
 
-  return getSdks(getApp());
+  const appName = firebaseApp.name;
+  if (sdkCache.has(appName)) {
+    return sdkCache.get(appName);
+  }
+
+  const sdks = getSdks(firebaseApp);
+  sdkCache.set(appName, sdks);
+  return sdks;
 }
 
 export function getSdks(firebaseApp: FirebaseApp) {
@@ -36,6 +47,7 @@ export function getSdks(firebaseApp: FirebaseApp) {
       })
     });
   } catch (e) {
+    // If initializeFirestore was already called, use getFirestore instead
     firestore = getFirestore(firebaseApp);
   }
 
