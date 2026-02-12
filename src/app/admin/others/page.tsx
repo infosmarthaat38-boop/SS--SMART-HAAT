@@ -126,12 +126,22 @@ export default function AdminOthers() {
   };
 
   const handleConfirmVideoDelete = () => {
-    setFormData(prev => ({ ...prev, appBarVideoUrl: '' }));
+    if (!settingsRef) return;
+    
+    // Clear locally
+    setFormData(prev => ({ ...prev, appBarVideoUrl: '', showVideoInAppBar: false }));
+    
+    // Clear in Firestore immediately
+    setDocumentNonBlocking(settingsRef, { 
+      appBarVideoUrl: '', 
+      showVideoInAppBar: false 
+    }, { merge: true });
+
     setIsVideoDeleteAlertOpen(false);
     toast({
       variant: "destructive",
       title: "VIDEO REMOVED",
-      description: "THE VIDEO HAS BEEN DELETED FROM THE QUEUE.",
+      description: "THE VIDEO HAS BEEN DELETED PERMANENTLY FROM SYSTEM.",
     });
   };
 
@@ -383,10 +393,10 @@ export default function AdminOthers() {
           <AlertDialogHeader className="space-y-4">
             <div className="flex items-center gap-3">
               <div className="h-10 w-10 bg-red-600/10 flex items-center justify-center border border-red-600/20"><AlertTriangle className="h-6 w-6 text-red-600" /></div>
-              <AlertDialogTitle className="text-2xl font-black text-white uppercase tracking-tighter">DELETE THIS VIDEO?</AlertDialogTitle>
+              <AlertDialogTitle className="text-2xl font-black text-white uppercase tracking-tighter">DELETE PERMANENTLY?</AlertDialogTitle>
             </div>
             <AlertDialogDescription className="text-[10px] text-muted-foreground uppercase font-black tracking-widest leading-relaxed">
-              THIS ACTION WILL REMOVE THE VIDEO FROM YOUR MEDIA QUEUE. IT WILL NO LONGER BE VISIBLE ON THE HOME PAGE.
+              THIS ACTION WILL ERASE THE VIDEO FROM DATABASE. IT WILL STOP SHOWING ON HOME PAGE IMMEDIATELY.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter className="mt-8 gap-2 sm:gap-0">

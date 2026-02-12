@@ -43,6 +43,7 @@
     overflow-y: auto !important;
     display: block !important;
     scroll-behavior: smooth;
+    image-rendering: -webkit-optimize-contrast;
   }
   h1, h2, h3, h4, h5, h6 {
     @apply font-headline tracking-tighter uppercase;
@@ -55,6 +56,12 @@
   backface-visibility: hidden;
   perspective: 1000px;
   will-change: transform, opacity;
+}
+
+/* Performance: Intelligent content-visibility for off-screen segments */
+section {
+  content-visibility: auto;
+  contain-intrinsic-size: 1px 500px;
 }
 
 .container {
