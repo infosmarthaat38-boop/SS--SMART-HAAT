@@ -16,6 +16,7 @@ import { collection, query, where, limit, doc, increment } from 'firebase/firest
 import { setDocumentNonBlocking } from '@/firebase/non-blocking-updates';
 import { OrderModal } from '@/components/OrderModal';
 
+// Performance: Memoized Slide Item with priority loading
 const SlideItem = memo(({ item, priority }: { item: any, priority: boolean }) => {
   const [isOrderOpen, setIsOrderOpen] = useState(false);
   const isProduct = item.price !== undefined;
@@ -64,6 +65,7 @@ const SlideItem = memo(({ item, priority }: { item: any, priority: boolean }) =>
 
 SlideItem.displayName = 'SlideItem';
 
+// Performance: Memoized Flash Offer Card
 const FlashOfferCard = memo(() => {
   const [isOrderOpen, setIsOrderOpen] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -85,10 +87,9 @@ const FlashOfferCard = memo(() => {
   const combinedItems = useMemo(() => {
     const products = flashProducts || [];
     const banners = flashBanners || [];
-    const items = [...banners, ...products].sort((a, b) => 
+    return [...banners, ...products].sort((a, b) => 
       new Date(b.createdAt || '2024-01-01').getTime() - new Date(a.createdAt || '2024-01-01').getTime()
     );
-    return items;
   }, [flashProducts, flashBanners]);
 
   useEffect(() => {
@@ -278,7 +279,6 @@ export default function Home() {
                 />
                 <div className="absolute top-2 right-2 bg-primary/20 backdrop-blur-sm border border-white/10 px-2 py-0.5 text-[6px] md:text-[8px] text-white font-black uppercase tracking-widest animate-pulse">LIVE</div>
                 
-                {/* USER CONTROL SOUND BUTTON */}
                 <button 
                   onClick={(e) => { e.stopPropagation(); setLocalMuted(!localMuted); }}
                   className="absolute bottom-2 right-2 bg-black/40 backdrop-blur-md border border-white/10 p-1.5 md:p-2 text-white hover:bg-primary transition-all z-10 rounded-none shadow-xl"

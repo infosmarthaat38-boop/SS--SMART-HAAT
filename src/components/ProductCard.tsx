@@ -15,11 +15,13 @@ interface ProductCardProps {
 
 /**
  * ProductCard - Highly visual, square-edged luxury card.
- * All text colors now respect global theme settings.
+ * Performance: Memoized to prevent unnecessary re-renders.
  */
 export const ProductCard = memo(({ product, index = 0 }: ProductCardProps) => {
   const [isOrderOpen, setIsOrderOpen] = useState(false);
   const isOutOfStock = (product.stockQuantity || 0) <= 0;
+  
+  // Load priority for the first 10 products visible on screen
   const isPriority = index < 10;
 
   const price = product.price || 0;

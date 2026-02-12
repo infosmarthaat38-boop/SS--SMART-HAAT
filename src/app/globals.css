@@ -48,6 +48,7 @@
   }
 }
 
+/* Hard-core Performance: GPU Acceleration for Smooth UI */
 .gpu-accelerated {
   transform: translateZ(0);
   backface-visibility: hidden;
