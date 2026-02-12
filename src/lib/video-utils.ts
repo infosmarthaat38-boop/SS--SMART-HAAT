@@ -8,7 +8,6 @@ export async function optimizeVideo(file: File): Promise<string> {
   return new Promise((resolve, reject) => {
     const video = document.createElement('video');
     video.preload = 'auto';
-    video.muted = true;
     video.playsInline = true;
     
     const url = URL.createObjectURL(file);
@@ -45,7 +44,9 @@ export async function optimizeVideo(file: File): Promise<string> {
         reader.readAsDataURL(blob);
       };
 
-      // Play and record quickly
+      // Play and record quickly. We use muted here JUST for the background compression process
+      // to ensure autoplay doesn't block the "recording" step. The final file will have audio.
+      video.muted = true;
       video.play().then(() => {
         mediaRecorder.start();
         

@@ -264,7 +264,6 @@ export default function Home() {
                   key={settings.appBarVideoUrl}
                   src={settings.appBarVideoUrl}
                   autoPlay
-                  muted
                   loop
                   playsInline
                   className="w-full h-full object-cover z-0"

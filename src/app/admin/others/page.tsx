@@ -197,7 +197,6 @@ export default function AdminOthers() {
                         src={formData.appBarVideoUrl} 
                         className="w-full h-full object-cover opacity-60"
                         autoPlay 
-                        muted 
                         loop
                         playsInline
                       />
