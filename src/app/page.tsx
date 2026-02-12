@@ -184,7 +184,6 @@ export default function Home() {
   // Synchronize muted state with settings on load
   useEffect(() => {
     if (settings) {
-      // "bahire sound hobe" -> If enabled in admin, we set localMuted to false (so sound plays)
       setLocalMuted(!settings.videoSoundEnabled);
     }
   }, [settings?.videoSoundEnabled]);
@@ -256,8 +255,8 @@ export default function Home() {
                   autoPlay
                   loop
                   playsInline
-                  muted={localMuted} // "bahire sound hobe" -> Controlled by localMuted
-                  className="w-full h-full object-cover z-0"
+                  muted={localMuted}
+                  className="w-full h-full object-contain z-0"
                 />
                 <div className="absolute top-2 right-2 bg-primary/20 backdrop-blur-sm border border-white/10 px-2 py-0.5 text-[6px] md:text-[8px] text-white font-black uppercase tracking-widest animate-pulse">LIVE</div>
                 
