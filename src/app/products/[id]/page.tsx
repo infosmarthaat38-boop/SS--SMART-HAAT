@@ -63,7 +63,7 @@ export default function ProductDetails() {
           <div className="text-center space-y-6 max-w-md p-8 border border-white/5 bg-white/[0.02]">
             <Package className="h-16 w-16 text-[#01a3a4]/30 mx-auto" />
             <h1 className="text-3xl font-black text-white uppercase tracking-tighter">PRODUCT NOT DISCOVERED</h1>
-            <p className="text-[10px] text-white/60 uppercase tracking-widest leading-relaxed">
+            <p className="text-[10px] text-white uppercase tracking-widest leading-relaxed">
               THE ITEM YOU ARE SEARCHING FOR IS NOT REGISTERED IN OUR CURRENT ARCHIVE.
             </p>
             <Button className="rounded-none bg-[#01a3a4] uppercase w-full h-14 font-black" onClick={() => router.push('/')}>RETURN TO SHOP</Button>
@@ -117,12 +117,12 @@ export default function ProductDetails() {
                 <div className="flex flex-col space-y-1">
                   <div className="flex items-center gap-6">
                     <div className="text-4xl md:text-5xl font-black text-[#01a3a4] uppercase tracking-tighter flex items-baseline">
-                      <span className="text-[14px] font-normal mr-2 translate-y-[-12px] text-white/50">৳</span>
+                      <span className="text-[14px] font-normal mr-2 translate-y-[-12px] text-white">৳</span>
                       {product.price.toLocaleString()}
                     </div>
                   </div>
                   {product.originalPrice > product.price && (
-                    <p className="text-[18px] md:text-[22px] text-white/40 line-through font-bold flex items-baseline">
+                    <p className="text-[18px] md:text-[22px] text-white line-through font-bold flex items-baseline">
                       <span className="text-[0.4em] font-normal mr-1 translate-y-[-1px]">৳</span>{product.originalPrice.toLocaleString()}
                     </p>
                   )}
@@ -146,7 +146,7 @@ export default function ProductDetails() {
                 </div>
               )}
               
-              <div className="text-white/70 uppercase leading-relaxed text-sm tracking-wide border-l-2 border-[#01a3a4] pl-6 italic bg-[#01a3a4]/5 p-6 font-medium">
+              <div className="text-white uppercase leading-relaxed text-sm tracking-wide border-l-2 border-[#01a3a4] pl-6 italic bg-[#01a3a4]/5 p-6 font-medium">
                 {product.description}
               </div>
               

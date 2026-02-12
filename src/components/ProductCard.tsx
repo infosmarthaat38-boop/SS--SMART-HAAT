@@ -46,10 +46,10 @@ export const ProductCard = memo(({ product, index = 0 }: ProductCardProps) => {
         
         <CardContent className="p-3 md:p-4 flex flex-col flex-grow bg-black space-y-3">
           <div className="space-y-1">
-            <h3 className="font-black text-[10px] md:text-[11px] text-white/80 uppercase truncate tracking-[0.15em] transition-colors group-hover:text-white">{product.name || 'Premium Item'}</h3>
+            <h3 className="font-black text-[10px] md:text-[11px] text-white uppercase truncate tracking-[0.15em] transition-colors group-hover:text-white">{product.name || 'Premium Item'}</h3>
             <div className="flex items-center gap-2">
               <div className={`h-1 w-1 rounded-none ${isOutOfStock ? 'bg-red-600' : 'bg-primary'} animate-pulse`} />
-              <span className={`text-[7px] font-black uppercase tracking-[0.2em] ${isOutOfStock ? 'text-red-600' : 'text-primary/60'}`}>
+              <span className={`text-[7px] font-black uppercase tracking-[0.2em] ${isOutOfStock ? 'text-red-600' : 'text-primary'}`}>
                 {isOutOfStock ? 'SOLD OUT' : 'READY TO SHIP'}
               </span>
             </div>
@@ -67,7 +67,7 @@ export const ProductCard = memo(({ product, index = 0 }: ProductCardProps) => {
               <div className="flex items-center justify-between mt-1 h-[18px]">
                 {originalPrice > price ? (
                   <>
-                    <p className="text-[10px] text-white/20 line-through font-bold tracking-tight">
+                    <p className="text-[10px] text-white line-through font-bold tracking-tight">
                       ৳{(originalPrice || 0).toLocaleString()}
                     </p>
                     <div className="bg-primary/10 border border-primary/30 px-1.5 py-0.5">
@@ -76,7 +76,7 @@ export const ProductCard = memo(({ product, index = 0 }: ProductCardProps) => {
                       </span>
                     </div>
                   </>
-                ) : null}
+                ) : <div className="h-[18px]" />}
               </div>
             </div>
 

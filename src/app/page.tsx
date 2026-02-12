@@ -248,7 +248,7 @@ export default function Home() {
               </Carousel>
             ) : (sliderProducts || sliderBanners) ? (
               <div className="h-full flex flex-col items-center justify-center gap-2 border-x border-white/5">
-                <p className="text-[10px] font-black text-white/20 uppercase tracking-widest">No Featured Content</p>
+                <p className="text-[10px] font-black text-white uppercase tracking-widest">No Featured Content</p>
               </div>
             ) : (
               <div className="h-full flex flex-col items-center justify-center gap-2">
