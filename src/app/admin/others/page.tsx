@@ -102,23 +102,34 @@ export default function AdminOthers() {
 
     setIsProcessingVideo(true);
     toast({
-      title: "SUPER-FAST OPTIMIZATION",
-      description: "SYSTEM IS CONVERTING VIDEO FOR 100% SPEED...",
+      title: "OPTIMIZING VIDEO",
+      description: "PREPARING FOR SUPER-FAST LOAD...",
     });
 
     try {
       const optimizedBase64 = await optimizeVideo(file);
-      setFormData(prev => ({ ...prev, appBarVideoUrl: optimizedBase64 }));
+      
+      // Update local state
+      setFormData(prev => ({ ...prev, appBarVideoUrl: optimizedBase64, showVideoInAppBar: true }));
+      
+      // AUTO-SAVE directly to Firestore to ensure persistence
+      if (settingsRef) {
+        setDocumentNonBlocking(settingsRef, { 
+          appBarVideoUrl: optimizedBase64,
+          showVideoInAppBar: true 
+        }, { merge: true });
+      }
+
       toast({
-        title: "VIDEO READY",
-        description: "VIDEO IS NOW COMPRESSED AND READY FOR LIVE DISPLAY.",
+        title: "VIDEO SAVED",
+        description: "VIDEO IS NOW PERMANENTLY STORED AND LIVE.",
       });
-    } catch (err) {
+    } catch (err: any) {
       console.error(err);
       toast({
         variant: "destructive",
         title: "PROCESS FAILED",
-        description: "COULD NOT OPTIMIZE THIS VIDEO FORMAT.",
+        description: err.message === 'VIDEO_TOO_LARGE' ? "VIDEO EXCEEDS 1MB LIMIT." : "COULD NOT PROCESS VIDEO.",
       });
     } finally {
       setIsProcessingVideo(false);
@@ -141,7 +152,7 @@ export default function AdminOthers() {
     toast({
       variant: "destructive",
       title: "VIDEO REMOVED",
-      description: "THE VIDEO HAS BEEN DELETED PERMANENTLY FROM SYSTEM.",
+      description: "THE VIDEO HAS BEEN DELETED PERMANENTLY.",
     });
   };
 
@@ -156,8 +167,8 @@ export default function AdminOthers() {
     }, { merge: true });
     
     toast({
-      title: "CONFIGURATION SYNCED",
-      description: "SITE DETAILS AND MEDIA SETTINGS HAVE BEEN UPDATED.",
+      title: "SETTINGS SYNCED",
+      description: "ALL CONFIGURATIONS ARE NOW LIVE.",
     });
   };
 
@@ -236,13 +247,13 @@ export default function AdminOthers() {
 
                 <div className="space-y-4 pt-4">
                   <label className="text-[10px] font-black text-muted-foreground uppercase flex items-center gap-2">
-                    <Upload className="h-3 w-3" /> DIRECT VIDEO UPLOAD (100% FAST)
+                    <Upload className="h-3 w-3" /> DIRECT VIDEO UPLOAD (AUTO-SAVE)
                   </label>
                   
                   {formData.appBarVideoUrl ? (
                     <div className="relative aspect-[9/16] w-full max-w-[250px] mx-auto bg-black border border-white/10 overflow-hidden group shadow-2xl">
                       <video 
-                        key={formData.appBarVideoUrl + formData.videoSoundEnabled}
+                        key={formData.appBarVideoUrl}
                         src={formData.appBarVideoUrl} 
                         className="w-full h-full object-cover opacity-60"
                         autoPlay 

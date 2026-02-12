@@ -2,7 +2,7 @@
 /**
  * Utility to optimize and compress video files client-side.
  * Extremely optimized for Firestore 1MB document limit.
- * Target size: < 700KB (Base64 overhead safe)
+ * Target size: < 500KB to be absolutely safe with Base64 overhead.
  */
 export async function optimizeVideo(file: File): Promise<string> {
   return new Promise((resolve, reject) => {
@@ -14,19 +14,30 @@ export async function optimizeVideo(file: File): Promise<string> {
     video.src = url;
 
     video.onloadedmetadata = () => {
-      if (!(video as any).captureStream) {
-        console.warn('captureStream not supported, using original file.');
+      // Check if captureStream is available (most modern browsers)
+      if (!(video as any).captureStream && !(video as any).mozCaptureStream) {
+        console.warn('captureStream not supported, falling back to safe conversion.');
         const reader = new FileReader();
-        reader.onload = (e) => resolve(e.target?.result as string);
+        reader.onload = (e) => {
+          const result = e.target?.result as string;
+          // If original is too big, we can't save it. 
+          if (result.length > 1000000) {
+            reject(new Error('VIDEO_TOO_LARGE'));
+          } else {
+            resolve(result);
+          }
+        };
         reader.readAsDataURL(file);
         return;
       }
 
-      const stream = (video as any).captureStream();
-      // Target 250kbps for GUARANTEED small size under 1MB even with Base64 overhead
+      const stream = (video as any).captureStream ? (video as any).captureStream() : (video as any).mozCaptureStream();
+      
+      // Target VERY low bitrate for guaranteed saving (150kbps)
+      // 150kbps * 6s = 900kbits = ~112KB (Highly safe for Firestore)
       const mediaRecorder = new MediaRecorder(stream, {
         mimeType: 'video/webm;codecs=vp8',
-        videoBitsPerSecond: 250000 
+        videoBitsPerSecond: 150000 
       });
 
       const chunks: Blob[] = [];
@@ -44,14 +55,11 @@ export async function optimizeVideo(file: File): Promise<string> {
         reader.readAsDataURL(blob);
       };
 
-      // Play and record quickly. We use muted here JUST for the background compression process
-      // to ensure autoplay doesn't block the "recording" step. The final file will have audio.
       video.muted = true;
       video.play().then(() => {
         mediaRecorder.start();
         
-        // Stop recording after 6 seconds to ensure it fits in Firestore (1MB limit)
-        // 250kbps * 6s = 1.5Mbits = 187KB (Very safe)
+        // Limit duration to 6 seconds for performance and size safety
         const maxDuration = Math.min(video.duration, 6);
         setTimeout(() => {
           if (mediaRecorder.state !== 'inactive') {

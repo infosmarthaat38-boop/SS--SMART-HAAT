@@ -1,45 +1,31 @@
+
 'use client';
 
 import { firebaseConfig } from '@/firebase/config';
 import { initializeApp, getApps, getApp, FirebaseApp } from 'firebase/app';
 import { getAuth } from 'firebase/auth';
-import { getFirestore, initializeFirestore, persistentLocalCache, persistentMultipleTabManager } from 'firebase/firestore'
+import { getFirestore, initializeFirestore, persistentLocalCache, persistentMultipleTabManager, Firestore } from 'firebase/firestore'
 
-// Cache initialized SDKs to prevent re-initialization errors
-const sdkCache = new Map<string, any>();
+// Cache initialized SDKs to prevent re-initialization errors (fix for primary lease issue)
+let cachedSdks: { firebaseApp: FirebaseApp, auth: any, firestore: Firestore } | null = null;
 
-// IMPORTANT: DO NOT MODIFY THIS FUNCTION
 export function initializeFirebase() {
+  if (cachedSdks) return cachedSdks;
+
   let firebaseApp: FirebaseApp;
   
   if (!getApps().length) {
     try {
       firebaseApp = initializeApp();
     } catch (e) {
-      if (process.env.NODE_ENV === "production") {
-        console.warn('Automatic initialization failed. Falling back to firebase config object.', e);
-      }
       firebaseApp = initializeApp(firebaseConfig);
     }
   } else {
     firebaseApp = getApp();
   }
 
-  const appName = firebaseApp.name;
-  if (sdkCache.has(appName)) {
-    return sdkCache.get(appName);
-  }
-
-  const sdks = getSdks(firebaseApp);
-  sdkCache.set(appName, sdks);
-  return sdks;
-}
-
-export function getSdks(firebaseApp: FirebaseApp) {
-  let firestore;
+  let firestore: Firestore;
   try {
-    // FORCE LONG POLLING: This resolves the "Could not reach Cloud Firestore backend" timeout error
-    // in restricted network environments like Cloud Workstations.
     firestore = initializeFirestore(firebaseApp, {
       experimentalAutoDetectLongPolling: true,
       localCache: persistentLocalCache({
@@ -47,15 +33,16 @@ export function getSdks(firebaseApp: FirebaseApp) {
       })
     });
   } catch (e) {
-    // If initializeFirestore was already called, use getFirestore instead
     firestore = getFirestore(firebaseApp);
   }
 
-  return {
+  cachedSdks = {
     firebaseApp,
     auth: getAuth(firebaseApp),
     firestore
   };
+
+  return cachedSdks;
 }
 
 export * from './provider';

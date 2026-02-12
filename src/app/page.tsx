@@ -179,6 +179,7 @@ export default function Home() {
   const { data: sliderBanners } = useCollection(sliderBannerQuery);
   const { data: settings } = useDoc(settingsRef);
 
+  // Synchronize muted state with settings on load
   useEffect(() => {
     if (settings) {
       setLocalMuted(!settings.videoSoundEnabled);
@@ -247,7 +248,7 @@ export default function Home() {
             {settings?.showVideoInAppBar && settings?.appBarVideoUrl ? (
               <div className="absolute inset-0 w-full h-full bg-black">
                 <video 
-                  key={settings.appBarVideoUrl}
+                  key={settings.appBarVideoUrl} // Key on URL ensures refresh if video changes
                   src={settings.appBarVideoUrl}
                   autoPlay
                   loop
@@ -270,7 +271,14 @@ export default function Home() {
                   PREMIUM HAAT
                 </h3>
                 <div className="bg-white p-0.5 md:p-4 w-10 h-10 md:w-40 md:h-40 flex items-center justify-center border-1 md:border-4 border-white/30 shadow-2xl">
-                  <Image src={`https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(settings?.qrCodeLink || 'https://sssmarthaat.com')}`} alt="QR" width={200} height={200} className="w-full h-full" priority />
+                  <Image 
+                    src={`https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(settings?.qrCodeLink || 'https://sssmarthaat.com')}`} 
+                    alt="QR" 
+                    width={200} 
+                    height={200} 
+                    className="w-full h-full" 
+                    priority 
+                  />
                 </div>
                 <div className="flex flex-col gap-0.5 md:gap-3 w-full">
                   <button className="w-full bg-white text-black h-5 md:h-12 flex items-center justify-center gap-1 md:gap-4 font-black text-[5px] md:text-[12px] uppercase shadow-lg">
