@@ -39,14 +39,6 @@ export const ProductCard = memo(({ product, index = 0 }: ProductCardProps) => {
           {/* Subtle Overlay on Hover */}
           <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-all duration-500" />
 
-          {originalPrice > price && (
-            <div className="absolute bottom-2 right-2 bg-black/80 backdrop-blur-md border border-[#01a3a4]/30 px-2 py-0.5 z-10">
-              <span className="text-[8px] font-black text-[#01a3a4] tracking-widest uppercase">
-                -{Math.round(((originalPrice - price) / (originalPrice || 1)) * 100)}%
-              </span>
-            </div>
-          )}
-
           {isOutOfStock && (
             <div className="absolute inset-0 bg-black/80 flex items-center justify-center z-10">
               <span className="text-white text-[9px] font-black border-2 border-white/20 px-4 py-2 uppercase tracking-[0.3em] bg-black/40 backdrop-blur-md">ARCHIVE ONLY</span>
@@ -67,7 +59,6 @@ export const ProductCard = memo(({ product, index = 0 }: ProductCardProps) => {
           
           {/* Bottom aligned section for price and button */}
           <div className="mt-auto space-y-3">
-            {/* Standardized Price Section Height to ensure button alignment */}
             <div className="min-h-[38px] flex flex-col justify-end">
               <div className="flex items-baseline gap-1 text-white">
                 <span className="text-[10px] font-normal text-[#01a3a4]">৳</span>
@@ -76,9 +67,17 @@ export const ProductCard = memo(({ product, index = 0 }: ProductCardProps) => {
                 </span>
               </div>
               {originalPrice > price ? (
-                <p className="text-[10px] text-white/20 line-through font-bold tracking-tight">
-                  ৳{(originalPrice || 0).toLocaleString()}
-                </p>
+                <div className="flex items-center justify-between mt-1">
+                  <p className="text-[10px] text-white/20 line-through font-bold tracking-tight">
+                    ৳{(originalPrice || 0).toLocaleString()}
+                  </p>
+                  {/* Discount Badge - Now at the bottom right of price area */}
+                  <div className="bg-[#01a3a4]/10 border border-[#01a3a4]/30 px-1.5 py-0.5">
+                    <span className="text-[8px] font-black text-[#01a3a4] tracking-widest uppercase">
+                      -{Math.round(((originalPrice - price) / (originalPrice || 1)) * 100)}%
+                    </span>
+                  </div>
+                </div>
               ) : (
                 <div className="h-[14px]" aria-hidden="true" />
               )}
