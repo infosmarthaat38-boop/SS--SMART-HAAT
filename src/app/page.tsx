@@ -4,7 +4,7 @@
 import React, { useRef, useMemo, useState, useEffect, memo } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { ShoppingCart, Loader2, Apple, Play, ArrowRight } from 'lucide-react';
+import { ShoppingCart, Loader2, Apple, Play, ArrowRight, Volume2, VolumeX } from 'lucide-react';
 import { MainHeader } from '@/components/MainHeader';
 import { Footer } from '@/components/Footer';
 import { ProductCard } from '@/components/ProductCard';
@@ -163,6 +163,7 @@ FlashOfferCard.displayName = 'FlashOfferCard';
 export default function Home() {
   const db = useFirestore();
   const [isMounted, setIsMounted] = useState(false);
+  const [localMuted, setLocalMuted] = useState(true);
   
   const categoriesRef = useMemoFirebase(() => db ? collection(db, 'categories') : null, [db]);
   const productsRef = useMemoFirebase(() => db ? collection(db, 'products') : null, [db]);
@@ -184,6 +185,12 @@ export default function Home() {
   const { data: sliderProducts } = useCollection(sliderProductQuery);
   const { data: sliderBanners } = useCollection(sliderBannerQuery);
   const { data: settings } = useDoc(settingsRef);
+
+  useEffect(() => {
+    if (settings) {
+      setLocalMuted(!settings.videoSoundEnabled);
+    }
+  }, [settings?.videoSoundEnabled]);
 
   const combinedSliderItems = useMemo(() => {
     const products = sliderProducts || [];
@@ -261,15 +268,23 @@ export default function Home() {
             {settings?.showVideoInAppBar && settings?.appBarVideoUrl ? (
               <div className="absolute inset-0 w-full h-full bg-black">
                 <video 
-                  key={settings.appBarVideoUrl + settings.videoSoundEnabled}
+                  key={settings.appBarVideoUrl}
                   src={settings.appBarVideoUrl}
                   autoPlay
                   loop
                   playsInline
-                  muted={!settings.videoSoundEnabled}
+                  muted={localMuted}
                   className="w-full h-full object-cover z-0"
                 />
                 <div className="absolute top-2 right-2 bg-primary/20 backdrop-blur-sm border border-white/10 px-2 py-0.5 text-[6px] md:text-[8px] text-white font-black uppercase tracking-widest animate-pulse">LIVE</div>
+                
+                {/* USER CONTROL SOUND BUTTON */}
+                <button 
+                  onClick={(e) => { e.stopPropagation(); setLocalMuted(!localMuted); }}
+                  className="absolute bottom-2 right-2 bg-black/40 backdrop-blur-md border border-white/10 p-1.5 md:p-2 text-white hover:bg-primary transition-all z-10 rounded-none shadow-xl"
+                >
+                  {localMuted ? <VolumeX className="h-3 w-3 md:h-4 md:w-4" /> : <Volume2 className="h-3 w-3 md:h-4 md:w-4" />}
+                </button>
               </div>
             ) : (
               <>
