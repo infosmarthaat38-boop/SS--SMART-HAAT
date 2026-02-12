@@ -207,7 +207,8 @@ export default function Home() {
       <MainHeader />
 
       <main className="flex-grow container mx-auto">
-        <section className="grid grid-cols-12 gap-0 h-[180px] md:h-[350px] lg:h-[450px] gpu-accelerated bg-black overflow-hidden border-b border-white/5">
+        {/* ENHANCED PREMIUM HEIGHT SECTION */}
+        <section className="grid grid-cols-12 gap-0 h-[250px] md:h-[400px] lg:h-[550px] gpu-accelerated bg-black overflow-hidden border-b border-white/5">
           <div className="col-span-3 h-full"><FlashOfferCard /></div>
           
           <div className="col-span-6 h-full relative overflow-hidden bg-black">
