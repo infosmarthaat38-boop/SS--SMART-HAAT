@@ -115,8 +115,8 @@ export default function AdminOthers() {
 
     setDocumentNonBlocking(settingsRef, {
       ...formData,
-      deliveryChargeInside: parseFloat(formData.deliveryChargeInside),
-      deliveryChargeOutside: parseFloat(formData.deliveryChargeOutside)
+      deliveryChargeInside: parseFloat(formData.deliveryChargeInside || '0'),
+      deliveryChargeOutside: parseFloat(formData.deliveryChargeOutside || '0')
     }, { merge: true });
     
     toast({

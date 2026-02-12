@@ -1,19 +1,11 @@
 
 /**
  * Utility to optimize and compress video files client-side.
- * Uses MediaRecorder to re-encode video at a lower bitrate for 100% fast loading.
+ * Extremely optimized for Firestore 1MB document limit.
+ * Target size: < 700KB (Base64 overhead safe)
  */
 export async function optimizeVideo(file: File): Promise<string> {
   return new Promise((resolve, reject) => {
-    // If the file is already small (under 1MB), just read it as is for speed
-    if (file.size < 1.0 * 1024 * 1024) {
-      const reader = new FileReader();
-      reader.onload = (e) => resolve(e.target?.result as string);
-      reader.onerror = reject;
-      reader.readAsDataURL(file);
-      return;
-    }
-
     const video = document.createElement('video');
     video.preload = 'auto';
     video.muted = true;
@@ -32,10 +24,10 @@ export async function optimizeVideo(file: File): Promise<string> {
       }
 
       const stream = (video as any).captureStream();
-      // Target 500kbps for EXTREME fast loading speed (Approx 500KB for 10 seconds)
+      // Target 250kbps for GUARANTEED small size under 1MB even with Base64 overhead
       const mediaRecorder = new MediaRecorder(stream, {
         mimeType: 'video/webm;codecs=vp8',
-        videoBitsPerSecond: 500000 
+        videoBitsPerSecond: 250000 
       });
 
       const chunks: Blob[] = [];
@@ -57,8 +49,9 @@ export async function optimizeVideo(file: File): Promise<string> {
       video.play().then(() => {
         mediaRecorder.start();
         
-        // Stop recording after max 8 seconds to ensure speed and small footprint
-        const maxDuration = Math.min(video.duration, 8);
+        // Stop recording after 6 seconds to ensure it fits in Firestore (1MB limit)
+        // 250kbps * 6s = 1.5Mbits = 187KB (Very safe)
+        const maxDuration = Math.min(video.duration, 6);
         setTimeout(() => {
           if (mediaRecorder.state !== 'inactive') {
             mediaRecorder.stop();
