@@ -6,8 +6,8 @@ import { MainHeader } from '@/components/MainHeader';
 import { Footer } from '@/components/Footer';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Switch } from "@/components/ui/switch";
 import { 
   ArrowLeft, 
   Save, 
@@ -16,15 +16,14 @@ import {
   MapPin, 
   Facebook, 
   Instagram, 
-  MessageCircle, 
   Youtube, 
-  Sparkles, 
   Loader2,
   Share2,
   Contact2,
   Truck,
-  QrCode,
-  MessageSquare
+  MessageSquare,
+  Video,
+  Settings2
 } from 'lucide-react';
 import Link from 'next/link';
 import { useFirestore, useDoc, useMemoFirebase } from '@/firebase';
@@ -47,10 +46,12 @@ export default function AdminOthers() {
     instagramUrl: '',
     twitterUrl: '',
     youtubeUrl: '',
-    whatsappUrl: '', // This is our "CHAT LIVE" number
+    whatsappUrl: '',
     qrCodeLink: '',
     deliveryChargeInside: '',
-    deliveryChargeOutside: ''
+    deliveryChargeOutside: '',
+    showVideoInAppBar: false,
+    appBarVideoUrl: ''
   });
 
   useEffect(() => {
@@ -67,7 +68,9 @@ export default function AdminOthers() {
         whatsappUrl: settings.whatsappUrl || '',
         qrCodeLink: settings.qrCodeLink || 'https://sssmarthaat.com',
         deliveryChargeInside: settings.deliveryChargeInside?.toString() || '60',
-        deliveryChargeOutside: settings.deliveryChargeOutside?.toString() || '120'
+        deliveryChargeOutside: settings.deliveryChargeOutside?.toString() || '120',
+        showVideoInAppBar: settings.showVideoInAppBar || false,
+        appBarVideoUrl: settings.appBarVideoUrl || 'https://player.vimeo.com/external/434045526.sd.mp4?s=c27dbed0176b0953c3863b748d6bbdbd7cc2f59e&profile_id=164&oauth2_token_id=57447761'
       });
     }
   }, [settings]);
@@ -104,13 +107,13 @@ export default function AdminOthers() {
       <main className="flex-grow container mx-auto px-4 py-12 max-w-6xl">
         <div className="flex items-center gap-4 mb-12">
           <Link href="/admin">
-            <Button variant="ghost" className="rounded-none hover:bg-white/5 text-white p-2 h-12 w-12 border border-white/10">
-              <ArrowLeft className="h-6 w-6 text-[#01a3a4]" />
+            <Button variant="ghost" className="rounded-none hover:bg-white/5 text-foreground p-2 h-12 w-12 border border-white/10">
+              <ArrowLeft className="h-6 w-6" />
             </Button>
           </Link>
           <div className="space-y-1">
-            <p className="text-[10px] font-black text-[#01a3a4] uppercase tracking-[0.3em]">Global Configuration</p>
-            <h1 className="text-4xl font-black uppercase tracking-tighter text-white">OTHERS MANAGEMENT</h1>
+            <p className="text-[10px] font-black text-foreground opacity-60 uppercase tracking-[0.3em]">Global Configuration</p>
+            <h1 className="text-4xl font-black uppercase tracking-tighter text-foreground">OTHERS MANAGEMENT</h1>
           </div>
         </div>
 
@@ -119,51 +122,29 @@ export default function AdminOthers() {
           <div className="space-y-8">
             <Card className="bg-card border-white/5 rounded-none shadow-2xl">
               <CardHeader className="bg-white/[0.02] border-b border-white/5 p-6">
-                <CardTitle className="text-xs font-black uppercase tracking-[0.3em] text-[#01a3a4] flex items-center gap-2">
-                  <Contact2 className="h-4 w-4" /> CONTACT & IDENTITY
+                <CardTitle className="text-xs font-black uppercase tracking-[0.3em] text-foreground flex items-center gap-2">
+                  <Video className="h-4 w-4" /> TOP FOLD MEDIA CONTROL
                 </CardTitle>
               </CardHeader>
               <CardContent className="p-8 space-y-6">
-                {/* NEW CHAT LIVE OPTION */}
-                <div className="space-y-2 p-4 bg-green-600/5 border border-green-600/20">
-                  <label className="text-[10px] font-black text-green-500 uppercase flex items-center gap-2">
-                    <MessageSquare className="h-3.5 w-3.5" /> CHAT LIVE (WHATSAPP - NO COUNTRY CODE)
-                  </label>
-                  <Input 
-                    required
-                    value={formData.whatsappUrl}
-                    onChange={(e) => setFormData({...formData, whatsappUrl: e.target.value})}
-                    placeholder="E.G. 017XXXXXXXX"
-                    className="bg-black border-green-600/30 rounded-none h-12 text-sm font-black text-white focus:ring-green-500"
+                <div className="flex items-center justify-between p-4 bg-primary/5 border border-primary/20">
+                  <div className="space-y-1">
+                    <label className="text-[10px] font-black text-foreground uppercase">DISPLAY VIDEO INSTEAD OF QR</label>
+                    <p className="text-[8px] text-foreground/40 uppercase font-bold">SWITCH BETWEEN APP DOWNLOAD AND VIDEO DISPLAY.</p>
+                  </div>
+                  <Switch 
+                    checked={formData.showVideoInAppBar} 
+                    onCheckedChange={(val) => setFormData({...formData, showVideoInAppBar: val})} 
                   />
-                  <p className="text-[8px] text-white/40 uppercase font-bold">ENTER WITHOUT +88. SYSTEM WILL AUTOMATICALLY ADD COUNTRY CODE.</p>
                 </div>
 
                 <div className="space-y-2">
-                  <label className="text-[10px] font-black text-muted-foreground uppercase flex items-center gap-2"><Mail className="h-3 w-3" /> EMAIL ADDRESS</label>
+                  <label className="text-[10px] font-black text-muted-foreground uppercase flex items-center gap-2"><Video className="h-3 w-3" /> VIDEO URL (MP4)</label>
                   <Input 
-                    value={formData.email}
-                    onChange={(e) => setFormData({...formData, email: e.target.value.toUpperCase()})}
-                    placeholder="INFO@EXAMPLE.COM"
-                    className="bg-black border-white/10 rounded-none h-12 text-xs font-black text-white"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <label className="text-[10px] font-black text-muted-foreground uppercase flex items-center gap-2"><Phone className="h-3 w-3" /> PHONE NUMBER</label>
-                  <Input 
-                    value={formData.phone}
-                    onChange={(e) => setFormData({...formData, phone: e.target.value})}
-                    placeholder="+880 1XXX XXXXXX"
-                    className="bg-black border-white/10 rounded-none h-12 text-xs font-black text-white"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <label className="text-[10px] font-black text-muted-foreground uppercase flex items-center gap-2"><MapPin className="h-3 w-3" /> CORPORATE ADDRESS</label>
-                  <Input 
-                    value={formData.address}
-                    onChange={(e) => setFormData({...formData, address: e.target.value.toUpperCase()})}
-                    placeholder="BANANI, DHAKA"
-                    className="bg-black border-white/10 rounded-none h-12 text-xs font-black text-white"
+                    value={formData.appBarVideoUrl}
+                    onChange={(e) => setFormData({...formData, appBarVideoUrl: e.target.value})}
+                    placeholder="ENTER VIDEO URL..."
+                    className="bg-black border-white/10 rounded-none h-12 text-[10px] font-bold text-foreground"
                   />
                 </div>
               </CardContent>
@@ -171,7 +152,48 @@ export default function AdminOthers() {
 
             <Card className="bg-card border-white/5 rounded-none shadow-2xl">
               <CardHeader className="bg-white/[0.02] border-b border-white/5 p-6">
-                <CardTitle className="text-xs font-black uppercase tracking-[0.3em] text-[#01a3a4] flex items-center gap-2">
+                <CardTitle className="text-xs font-black uppercase tracking-[0.3em] text-foreground flex items-center gap-2">
+                  <Contact2 className="h-4 w-4" /> CONTACT & IDENTITY
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="p-8 space-y-6">
+                <div className="space-y-2 p-4 bg-green-600/5 border border-green-600/20">
+                  <label className="text-[10px] font-black text-green-500 uppercase flex items-center gap-2">
+                    <MessageSquare className="h-3.5 w-3.5" /> CHAT LIVE (WHATSAPP)
+                  </label>
+                  <Input 
+                    required
+                    value={formData.whatsappUrl}
+                    onChange={(e) => setFormData({...formData, whatsappUrl: e.target.value})}
+                    placeholder="E.G. 017XXXXXXXX"
+                    className="bg-black border-green-600/30 rounded-none h-12 text-sm font-black text-foreground"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <label className="text-[10px] font-black text-muted-foreground uppercase flex items-center gap-2"><Mail className="h-3 w-3" /> EMAIL ADDRESS</label>
+                  <Input 
+                    value={formData.email}
+                    onChange={(e) => setFormData({...formData, email: e.target.value.toUpperCase()})}
+                    className="bg-black border-white/10 rounded-none h-12 text-xs font-black text-foreground"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-[10px] font-black text-muted-foreground uppercase flex items-center gap-2"><Phone className="h-3 w-3" /> PHONE NUMBER</label>
+                  <Input 
+                    value={formData.phone}
+                    onChange={(e) => setFormData({...formData, phone: e.target.value})}
+                    className="bg-black border-white/10 rounded-none h-12 text-xs font-black text-foreground"
+                  />
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+
+          <div className="space-y-8">
+            <Card className="bg-card border-white/5 rounded-none shadow-2xl">
+              <CardHeader className="bg-white/[0.02] border-b border-white/5 p-6">
+                <CardTitle className="text-xs font-black uppercase tracking-[0.3em] text-foreground flex items-center gap-2">
                   <Truck className="h-4 w-4" /> DELIVERY CHARGES (BDT)
                 </CardTitle>
               </CardHeader>
@@ -183,8 +205,7 @@ export default function AdminOthers() {
                       type="number"
                       value={formData.deliveryChargeInside}
                       onChange={(e) => setFormData({...formData, deliveryChargeInside: e.target.value})}
-                      placeholder="60"
-                      className="bg-black border-white/10 rounded-none h-12 text-xs font-black text-white"
+                      className="bg-black border-white/10 rounded-none h-12 text-xs font-black text-foreground"
                     />
                   </div>
                   <div className="space-y-2">
@@ -193,19 +214,16 @@ export default function AdminOthers() {
                       type="number"
                       value={formData.deliveryChargeOutside}
                       onChange={(e) => setFormData({...formData, deliveryChargeOutside: e.target.value})}
-                      placeholder="120"
-                      className="bg-black border-white/10 rounded-none h-12 text-xs font-black text-white"
+                      className="bg-black border-white/10 rounded-none h-12 text-xs font-black text-foreground"
                     />
                   </div>
                 </div>
               </CardContent>
             </Card>
-          </div>
 
-          <div className="space-y-8">
             <Card className="bg-card border-white/5 rounded-none shadow-2xl">
               <CardHeader className="bg-white/[0.02] border-b border-white/5 p-6">
-                <CardTitle className="text-xs font-black uppercase tracking-[0.3em] text-[#01a3a4] flex items-center gap-2">
+                <CardTitle className="text-xs font-black uppercase tracking-[0.3em] text-foreground flex items-center gap-2">
                   <Share2 className="h-4 w-4" /> SOCIAL MEDIA CHANNELS
                 </CardTitle>
               </CardHeader>
@@ -213,21 +231,17 @@ export default function AdminOthers() {
                 <div className="grid grid-cols-1 gap-6">
                   <div className="space-y-2">
                     <label className="text-[9px] font-black text-muted-foreground uppercase flex items-center gap-2"><Facebook className="h-3 w-3 text-blue-500" /> FACEBOOK URL</label>
-                    <Input value={formData.facebookUrl} onChange={(e) => setFormData({...formData, facebookUrl: e.target.value})} className="bg-black border-white/10 h-11 text-[10px] font-bold" />
+                    <Input value={formData.facebookUrl} onChange={(e) => setFormData({...formData, facebookUrl: e.target.value})} className="bg-black border-white/10 h-11 text-[10px] font-bold text-foreground" />
                   </div>
                   <div className="space-y-2">
                     <label className="text-[9px] font-black text-muted-foreground uppercase flex items-center gap-2"><Instagram className="h-3 w-3 text-pink-500" /> INSTAGRAM URL</label>
-                    <Input value={formData.instagramUrl} onChange={(e) => setFormData({...formData, instagramUrl: e.target.value})} className="bg-black border-white/10 h-11 text-[10px] font-bold" />
-                  </div>
-                  <div className="space-y-2">
-                    <label className="text-[9px] font-black text-muted-foreground uppercase flex items-center gap-2"><Youtube className="h-3 w-3 text-red-500" /> YOUTUBE URL</label>
-                    <Input value={formData.youtubeUrl} onChange={(e) => setFormData({...formData, youtubeUrl: e.target.value})} className="bg-black border-white/10 h-11 text-[10px] font-bold" />
+                    <Input value={formData.instagramUrl} onChange={(e) => setFormData({...formData, instagramUrl: e.target.value})} className="bg-black border-white/10 h-11 text-[10px] font-bold text-foreground" />
                   </div>
                 </div>
               </CardContent>
             </Card>
 
-            <Button type="submit" className="w-full bg-[#01a3a4] hover:bg-white hover:text-black text-white h-20 font-black uppercase tracking-[0.3em] rounded-none shadow-2xl text-xs border-none">
+            <Button type="submit" className="w-full bg-primary hover:bg-white hover:text-black text-primary-foreground h-20 font-black uppercase tracking-[0.3em] rounded-none shadow-2xl text-xs border-none transition-all">
               <Save className="mr-3 h-5 w-5" /> SYNC ALL SITE SETTINGS
             </Button>
           </div>

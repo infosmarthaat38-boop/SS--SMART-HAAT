@@ -257,23 +257,36 @@ export default function Home() {
             )}
           </div>
 
-          <div className="col-span-3 h-full bg-primary flex flex-col items-center justify-center p-1 md:p-6 space-y-1 md:space-y-6 gpu-accelerated shadow-[inset_0_0_100px_rgba(0,0,0,0.1)]">
-            <h3 className="text-white font-black text-[6px] md:text-xl lg:text-2xl uppercase tracking-[0.2em] md:tracking-[0.3em] italic text-center drop-shadow-xl font-headline">
-              DOWNLOAD APP
-            </h3>
-            
-            <div className="bg-white p-0.5 md:p-4 w-10 h-10 md:w-40 md:h-40 lg:w-56 lg:h-56 flex items-center justify-center border-1 md:border-4 border-white/30 shadow-2xl transition-transform hover:scale-105 duration-500">
-              <Image src={qrCodeUrl} alt="QR Code" width={250} height={250} className="w-full h-full" loading="lazy" />
-            </div>
-            
-            <div className="flex flex-col gap-0.5 md:gap-3 w-full max-w-[280px]">
-              <button className="w-full bg-white text-black h-5 md:h-12 px-1 md:px-8 flex items-center justify-center gap-1 md:gap-4 font-black text-[5px] md:text-[12px] uppercase shadow-lg hover:bg-black hover:text-white transition-all active:scale-95 border-none group">
-                <Apple className="h-2 w-2 md:h-6 md:w-6 transition-transform group-hover:scale-110" /> APP STORE
-              </button>
-              <button className="w-full bg-white text-black h-5 md:h-12 px-1 md:px-8 flex items-center justify-center gap-1 md:gap-4 font-black text-[5px] md:text-[12px] uppercase shadow-lg hover:bg-black hover:text-white transition-all active:scale-95 border-none group">
-                <Play className="h-2 w-2 md:h-6 md:w-6 transition-transform group-hover:scale-110" /> PLAY STORE
-              </button>
-            </div>
+          <div className="col-span-3 h-full bg-primary relative overflow-hidden flex flex-col items-center justify-center p-1 md:p-6 space-y-1 md:space-y-6 gpu-accelerated shadow-[inset_0_0_100px_rgba(0,0,0,0.1)]">
+            {settings?.showVideoInAppBar ? (
+              <video 
+                src={settings.appBarVideoUrl || 'https://player.vimeo.com/external/434045526.sd.mp4?s=c27dbed0176b0953c3863b748d6bbdbd7cc2f59e&profile_id=164&oauth2_token_id=57447761'}
+                autoPlay
+                muted
+                loop
+                playsInline
+                className="absolute inset-0 w-full h-full object-cover z-0"
+              />
+            ) : (
+              <>
+                <h3 className="text-white font-black text-[6px] md:text-xl lg:text-2xl uppercase tracking-[0.2em] md:tracking-[0.3em] italic text-center drop-shadow-xl font-headline relative z-10">
+                  DOWNLOAD APP
+                </h3>
+                
+                <div className="bg-white p-0.5 md:p-4 w-10 h-10 md:w-40 md:h-40 lg:w-56 lg:h-56 flex items-center justify-center border-1 md:border-4 border-white/30 shadow-2xl transition-transform hover:scale-105 duration-500 relative z-10">
+                  <Image src={qrCodeUrl} alt="QR Code" width={250} height={250} className="w-full h-full" loading="lazy" />
+                </div>
+                
+                <div className="flex flex-col gap-0.5 md:gap-3 w-full max-w-[280px] relative z-10">
+                  <button className="w-full bg-white text-black h-5 md:h-12 px-1 md:px-8 flex items-center justify-center gap-1 md:gap-4 font-black text-[5px] md:text-[12px] uppercase shadow-lg hover:bg-black hover:text-white transition-all active:scale-95 border-none group">
+                    <Apple className="h-2 w-2 md:h-6 md:w-6 transition-transform group-hover:scale-110" /> APP STORE
+                  </button>
+                  <button className="w-full bg-white text-black h-5 md:h-12 px-1 md:px-8 flex items-center justify-center gap-1 md:gap-4 font-black text-[5px] md:text-[12px] uppercase shadow-lg hover:bg-black hover:text-white transition-all active:scale-95 border-none group">
+                    <Play className="h-2 w-2 md:h-6 md:w-6 transition-transform group-hover:scale-110" /> PLAY STORE
+                  </button>
+                </div>
+              </>
+            )}
           </div>
         </section>
 

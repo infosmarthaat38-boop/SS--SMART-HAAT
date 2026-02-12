@@ -77,10 +77,12 @@
         "liveStatusLabel": { "type": "string" },
         "liveStatus": { "type": "string" },
         "statusColor": { "type": "string" },
-        "themePrimaryColor": { "type": "string", "description": "Hex code for theme accent." },
-        "themeBackgroundColor": { "type": "string", "description": "Hex code for site background." },
-        "themeButtonColor": { "type": "string", "description": "Hex code for action buttons." },
-        "themeTextColor": { "type": "string", "description": "Hex code for global text color." }
+        "themePrimaryColor": { "type": "string" },
+        "themeBackgroundColor": { "type": "string" },
+        "themeButtonColor": { "type": "string" },
+        "themeTextColor": { "type": "string" },
+        "showVideoInAppBar": { "type": "boolean" },
+        "appBarVideoUrl": { "type": "string", "format": "uri" }
       }
     }
   },
