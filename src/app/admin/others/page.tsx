@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useState, useEffect, useRef } from 'react';
@@ -250,7 +249,7 @@ export default function AdminOthers() {
                         autoPlay 
                         loop
                         playsInline
-                        muted
+                        muted // IMPORTANT: ALWAYS MUTED IN ADMIN PANEL AS REQUESTED
                       />
                       <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-black/40">
                         <Button 
