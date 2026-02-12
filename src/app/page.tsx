@@ -286,11 +286,11 @@ export default function Home() {
             <section key={cat.id} className="py-6 md:py-12 px-4 md:px-12 gpu-accelerated border-b border-white/5">
               <div className="flex items-center justify-between mb-6 md:mb-10">
                 <div className="flex items-center gap-4">
-                  <div className="h-8 md:h-12 w-2 md:w-3 bg-[#01a3a4]" />
-                  <h2 className="text-xl md:text-4xl font-black text-white uppercase tracking-tighter">{cat.name} COLLECTION</h2>
+                  <div className="h-6 md:h-8 w-1.5 md:w-2 bg-[#01a3a4]" />
+                  <h2 className="text-sm md:text-lg font-black text-white uppercase tracking-[0.3em]">{cat.name} COLLECTION</h2>
                 </div>
-                <Link href={`/shop?category=${cat.name}`} className="text-[9px] md:text-[12px] font-black text-[#01a3a4] uppercase tracking-[0.3em] hover:text-white transition-colors flex items-center gap-2">
-                  VIEW {cat.name} ARCHIVE <ArrowRight className="h-4 w-4" />
+                <Link href={`/shop?category=${cat.name}`} className="text-[8px] md:text-[10px] font-black text-[#01a3a4] uppercase tracking-[0.3em] hover:text-white transition-colors flex items-center gap-2">
+                  VIEW ARCHIVE <ArrowRight className="h-3 w-3" />
                 </Link>
               </div>
               
