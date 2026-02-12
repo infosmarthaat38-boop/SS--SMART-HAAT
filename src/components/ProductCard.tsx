@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { memo, useState } from 'react';
@@ -32,7 +33,7 @@ export const ProductCard = memo(({ product, index = 0 }: ProductCardProps) => {
             fill
             sizes="(max-width: 768px) 50vw, 15vw"
             priority={isPriority}
-            className="object-cover transition-transform duration-700 group-hover:scale-105"
+            className="object-contain transition-transform duration-700 group-hover:scale-105"
             loading={isPriority ? "eager" : "lazy"}
           />
           {isOutOfStock && (

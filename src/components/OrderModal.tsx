@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useState, useEffect, memo } from 'react';
@@ -132,7 +133,7 @@ export const OrderModal = memo(({ product, isOpen, onClose }: OrderModalProps) =
                       src={product.imageUrl || 'https://picsum.photos/seed/placeholder/400/400'} 
                       alt={product.name || product.title || 'Product'} 
                       fill 
-                      className="object-cover" 
+                      className="object-contain" 
                       priority 
                     />
                   </div>

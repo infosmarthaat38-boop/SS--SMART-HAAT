@@ -28,12 +28,12 @@ const SlideItem = memo(({ item, priority }: { item: any, priority: boolean }) =>
           alt={item.name || item.title || 'Banner'}
           fill
           sizes="100vw"
-          className="object-cover"
+          className="object-contain"
           priority={priority}
           loading={priority ? "eager" : "lazy"}
         />
-        <div className="absolute inset-0 bg-black/10 flex flex-col justify-center px-4 md:px-12 space-y-1 md:space-y-3">
-          <h2 className="text-[16px] md:text-4xl font-headline font-black text-white uppercase tracking-tight max-w-[600px] leading-tight drop-shadow-[0_4px_4px_rgba(0,0,0,0.5)]">
+        <div className="absolute inset-0 bg-black/5 flex flex-col justify-center px-4 md:px-12 space-y-1 md:space-y-3">
+          <h2 className="text-[16px] md:text-4xl font-headline font-black text-white uppercase tracking-tight max-w-[600px] leading-tight drop-shadow-[0_4px_4px_rgba(0,0,0,0.8)]">
             {item.name || item.title}
           </h2>
           
@@ -118,16 +118,16 @@ const FlashOfferCard = memo(() => {
             alt="Flash Offer" 
             fill 
             sizes="(max-width: 768px) 33vw, 25vw" 
-            className="object-cover" 
+            className="object-contain" 
             priority={true}
             loading="eager"
           />
           <div className="absolute top-2 left-2 bg-red-600 px-2 md:px-4 py-1 text-[6px] md:text-[10px] font-black text-white uppercase tracking-widest z-10 shadow-lg">FLASH</div>
-          <div className="absolute bottom-0 w-full pb-2 md:pb-4 text-center px-2 bg-gradient-to-t from-black/80 to-transparent">
-             <p className="text-white font-black text-[7px] md:text-[12px] uppercase tracking-widest mb-1 truncate drop-shadow-2xl">{activeItem.name || activeItem.title}</p>
+          <div className="absolute bottom-0 w-full pb-2 md:pb-4 text-center px-2 bg-gradient-to-t from-black/90 to-transparent">
+             <p className="text-white font-black text-[7px] md:text-[12px] uppercase tracking-widest mb-1 truncate drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">{activeItem.name || activeItem.title}</p>
              {activeItem.price !== undefined && (
                <div className="flex flex-col items-center mb-1">
-                 <span className="text-[#01a3a4] font-black text-[10px] md:text-lg drop-shadow-2xl">৳{(activeItem.price || 0).toLocaleString()}</span>
+                 <span className="text-[#01a3a4] font-black text-[10px] md:text-lg drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">৳{(activeItem.price || 0).toLocaleString()}</span>
                </div>
              )}
              <button onClick={() => setIsOrderOpen(true)} className="bg-[#01a3a4] text-white px-3 md:px-6 py-1 md:h-10 font-black text-[6px] md:text-[10px] uppercase tracking-widest transition-all active:scale-95 shadow-2xl border-none">অর্ডার করুন</button>
@@ -181,7 +181,7 @@ export default function Home() {
   const autoplay = useRef(Autoplay({ delay: 5000, stopOnInteraction: false }));
 
   const qrCodeUrl = useMemo(() => {
-    const link = settings?.qrCodeLink || 'https://best-haat.com';
+    const link = settings?.qrCodeLink || 'https://sssmarthaat.com';
     return `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(link)}`;
   }, [settings?.qrCodeLink]);
 
