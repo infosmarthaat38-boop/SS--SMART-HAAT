@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useState, useEffect } from 'react';
@@ -182,10 +183,10 @@ export default function AdminLocation() {
                   </div>
                   <div className="bg-black border-b border-[#01a3a4]/20 h-10 flex items-center overflow-hidden whitespace-nowrap relative w-full shrink-0">
                     <div className="flex items-center gap-4 w-full px-2">
-                      <div className="flex items-center gap-2 text-[8px] font-black text-[#01a3a4] uppercase shrink-0">
-                        <Radio className="h-3 w-3 animate-pulse" /> {formData.liveStatusLabel || 'LIVE STATUS:'}
+                      <div className="flex items-center gap-2 text-[10px] font-black text-[#01a3a4] uppercase shrink-0 drop-shadow-sm">
+                        <Radio className="h-3.5 w-3.5 animate-pulse" /> {formData.liveStatusLabel || 'LIVE STATUS:'}
                       </div>
-                      <p style={{ color: formData.statusColor }} className="text-[8px] font-black uppercase flex items-center gap-2 shrink-0">
+                      <p style={{ color: formData.statusColor }} className="text-[11px] font-black uppercase flex items-center gap-2 shrink-0 drop-shadow-md">
                         {formData.liveStatus || 'BROADCASTING...'} <span className="text-[#01a3a4]/40">||</span> <MapPin className="h-3 w-3 text-[#01a3a4]" /> {formData.liveLocation || 'BANANI, DHAKA'}
                       </p>
                     </div>
