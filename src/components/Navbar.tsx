@@ -65,41 +65,46 @@ export function Navbar() {
     <>
       <nav className="w-full bg-[#01a3a4] shadow-lg border-b border-black/10 h-[64px] flex items-center relative z-[110]">
         <div className="container mx-auto px-4">
-          <div className="flex items-center justify-between gap-2">
+          <div className="flex items-center justify-between gap-4">
             
+            {/* LEFT: LOGO */}
             <Link href="/" className="flex items-center gap-2 shrink-0 group">
               <LogoIcon />
-              <div className="flex flex-col">
+              <div className="hidden sm:flex flex-col">
                 <h1 className="text-[12px] md:text-[14px] font-headline font-black text-white leading-none uppercase tracking-tighter">SS SMART HAAT</h1>
                 <span className="text-[6px] text-white/90 font-bold uppercase tracking-[0.2em]">PREMIUM MARKET PLACE</span>
               </div>
             </Link>
 
-            <div className="flex items-center gap-2 md:gap-4 shrink-0 flex-grow justify-end">
+            {/* CENTER: SEARCH BAR (Desktop) */}
+            <div className="hidden md:flex items-center relative flex-grow max-w-[600px] px-4">
+              <div className="relative w-full">
+                <Input 
+                  type="search" 
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  onKeyDown={handleSearch}
+                  placeholder="SEARCH PRODUCTS..." 
+                  className="bg-black/10 border-white/20 h-9 w-full transition-all rounded-none text-[9px] text-white uppercase placeholder:text-white/70"
+                />
+                <Search className="absolute right-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-white/50" />
+              </div>
+            </div>
+
+            {/* RIGHT: NAVIGATION LINKS */}
+            <div className="flex items-center gap-2 md:gap-4 shrink-0">
               <div className="flex items-center gap-2 md:gap-4 text-[9px] md:text-[10px] font-black uppercase tracking-widest text-white">
                 
-                <div className="hidden md:flex items-center relative flex-grow max-w-[700px]">
-                  <Input 
-                    type="search" 
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    onKeyDown={handleSearch}
-                    placeholder="SEARCH PRODUCTS..." 
-                    className="bg-black/10 border-white/20 h-9 w-[300px] lg:w-[500px] transition-all rounded-none text-[9px] text-white uppercase placeholder:text-white/70"
-                  />
-                  <Search className="absolute right-3 h-3.5 w-3.5 text-white/50" />
-                </div>
-
                 <Link href="/" className="hover:text-black transition-colors flex items-center gap-1">
-                  <Home className="h-3 w-3 md:h-3.5 md:w-3.5" /> <span className="hidden sm:inline">{language === 'EN' ? "HOME" : "হোম"}</span>
+                  <Home className="h-3 w-3 md:h-3.5 md:w-3.5" /> <span className="hidden lg:inline">{language === 'EN' ? "HOME" : "হোম"}</span>
                 </Link>
 
                 <Link href="/shop" className="hover:text-black transition-colors flex items-center gap-1">
-                  <ShoppingBag className="h-3 w-3 md:h-3.5 md:w-3.5" /> <span className="hidden sm:inline">{language === 'EN' ? "SHOP" : "শপ"}</span>
+                  <ShoppingBag className="h-3 w-3 md:h-3.5 md:w-3.5" /> <span className="hidden lg:inline">{language === 'EN' ? "SHOP" : "শপ"}</span>
                 </Link>
 
                 <button onClick={() => setIsCategoryModalOpen(true)} className="hover:text-black transition-colors flex items-center gap-1 font-black uppercase tracking-widest">
-                  <LayoutGrid className="h-3 w-3 md:h-3.5 md:w-3.5" /> <span className="hidden sm:inline">{language === 'EN' ? "CATEGORY" : "ক্যাটাগরি"}</span>
+                  <LayoutGrid className="h-3 w-3 md:h-3.5 md:w-3.5" /> <span className="hidden lg:inline">{language === 'EN' ? "CATEGORY" : "ক্যাটাগরি"}</span>
                 </button>
                 
                 <button onClick={toggleLanguage} className="flex items-center gap-1 hover:text-black transition-colors font-black uppercase tracking-widest">
@@ -136,6 +141,7 @@ export function Navbar() {
             </div>
           </div>
 
+          {/* MOBILE SEARCH BAR (Toggleable) */}
           {showSearchInput && (
             <div className="mt-2 pb-2 relative animate-in slide-in-from-top-2 duration-300 md:hidden">
               <Input 
