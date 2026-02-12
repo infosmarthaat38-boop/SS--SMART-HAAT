@@ -28,7 +28,7 @@ const SlideItem = memo(({ item, priority }: { item: any, priority: boolean }) =>
           alt={item.name || item.title || 'Banner'}
           fill
           sizes="100vw"
-          className="object-contain"
+          className="object-fill"
           priority={priority}
           loading={priority ? "eager" : "lazy"}
         />
@@ -119,12 +119,12 @@ const FlashOfferCard = memo(() => {
             alt="Flash Offer" 
             fill 
             sizes="(max-width: 768px) 33vw, 25vw" 
-            className="object-contain" 
+            className="object-fill" 
             priority={true}
             loading="eager"
           />
           <div className="absolute top-4 left-4 bg-red-600 px-4 md:px-6 py-1.5 text-[8px] md:text-[12px] font-black text-white uppercase tracking-widest z-10 shadow-2xl">FLASH OFFER</div>
-          <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent pointer-events-none" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent pointer-events-none" />
           <div className="absolute bottom-0 w-full pb-6 md:pb-12 text-center px-4 z-10">
              <p className="text-white font-black text-[10px] md:text-[16px] uppercase tracking-widest mb-2 truncate drop-shadow-[0_4px_12px_rgba(0,0,0,1)]">
                {activeItem.name || activeItem.title}
@@ -218,15 +218,12 @@ export default function Home() {
       <MainHeader />
 
       <main className="flex-grow container mx-auto">
-        {/* PRECISE SCREENSHOT REPLICATION GRID - INCREASED PREMIUM HEIGHT */}
         <section className="grid grid-cols-12 gap-0 h-[250px] md:h-[400px] lg:h-[550px] gpu-accelerated bg-black overflow-hidden border-b border-white/10">
           
-          {/* COLUMN 1: FLASH OFFER (3/12) */}
           <div className="col-span-3 h-full overflow-hidden">
             <FlashOfferCard />
           </div>
           
-          {/* COLUMN 2: MAIN SLIDER (6/12) */}
           <div className="col-span-6 h-full relative overflow-hidden bg-black">
             {combinedSliderItems.length > 0 ? (
               <Carousel 
@@ -256,7 +253,6 @@ export default function Home() {
             )}
           </div>
 
-          {/* COLUMN 3: QR APP BAR (3/12) - TEAL BACKGROUND */}
           <div className="col-span-3 h-full bg-[#01a3a4] flex flex-col items-center justify-center p-3 md:p-6 space-y-4 md:space-y-8 gpu-accelerated shadow-[inset_0_0_100px_rgba(0,0,0,0.1)]">
             <h3 className="text-white font-black text-[9px] md:text-xl lg:text-2xl uppercase tracking-[0.3em] italic text-center drop-shadow-xl font-headline">
               DOWNLOAD APP
