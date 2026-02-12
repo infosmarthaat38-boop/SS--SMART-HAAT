@@ -33,21 +33,21 @@ const SlideItem = memo(({ item, priority }: { item: any, priority: boolean }) =>
           loading={priority ? "eager" : "lazy"}
         />
         <div className="absolute inset-0 bg-black/10 flex flex-col justify-center px-4 md:px-12 space-y-1 md:space-y-3 pointer-events-none">
-          <h2 className="text-[18px] md:text-5xl font-headline font-black text-white uppercase tracking-tight max-w-[700px] leading-tight drop-shadow-[0_4px_12px_rgba(0,0,0,1)]">
+          <h2 className="text-[14px] md:text-5xl font-headline font-black text-white uppercase tracking-tight max-w-[700px] leading-tight drop-shadow-[0_4px_12px_rgba(0,0,0,1)]">
             {item.name || item.title}
           </h2>
           
           {isProduct && (
-            <div className="flex flex-col space-y-2 pointer-events-auto">
-              <div className="flex items-baseline text-[16px] md:text-4xl font-black text-[#01a3a4] tracking-tighter drop-shadow-[0_4px_12px_rgba(0,0,0,1)]">
-                <span className="text-[12px] md:text-[20px] font-normal mr-1 translate-y-[-4px] text-white">৳</span>
+            <div className="flex flex-col space-y-1 md:space-y-2 pointer-events-auto">
+              <div className="flex items-baseline text-[12px] md:text-4xl font-black text-[#01a3a4] tracking-tighter drop-shadow-[0_4px_12px_rgba(0,0,0,1)]">
+                <span className="text-[10px] md:text-[20px] font-normal mr-1 translate-y-[-2px] md:translate-y-[-4px] text-white">৳</span>
                 {(item.price || 0).toLocaleString()}
               </div>
               <button 
                 onClick={() => setIsOrderOpen(true)} 
-                className="bg-[#01a3a4] text-white h-10 md:h-14 px-8 md:px-12 font-black rounded-none text-[10px] md:text-[14px] hover:bg-white hover:text-black transition-all uppercase tracking-[0.3em] flex items-center gap-3 shadow-2xl w-fit mt-4 active:scale-95 border-none"
+                className="bg-[#01a3a4] text-white h-7 md:h-14 px-4 md:px-12 font-black rounded-none text-[8px] md:text-[14px] hover:bg-white hover:text-black transition-all uppercase tracking-[0.2em] md:tracking-[0.3em] flex items-center gap-2 md:gap-3 shadow-2xl w-fit mt-1 md:mt-4 active:scale-95 border-none"
               >
-                <ShoppingCart className="h-4 w-4 md:h-6 md:w-6" /> অর্ডার করুন
+                <ShoppingCart className="h-3 w-3 md:h-6 md:w-6" /> অর্ডার করুন
               </button>
             </div>
           )}
@@ -121,22 +121,22 @@ const FlashOfferCard = memo(() => {
             priority={true}
             loading="eager"
           />
-          <div className="absolute top-4 left-4 bg-red-600 px-4 md:px-6 py-1.5 text-[8px] md:text-[10px] font-black text-white uppercase tracking-widest z-10 shadow-2xl">FLASH OFFER</div>
+          <div className="absolute top-2 md:top-4 left-2 md:left-4 bg-red-600 px-2 md:px-6 py-1 md:py-1.5 text-[6px] md:text-[10px] font-black text-white uppercase tracking-widest z-10 shadow-2xl">FLASH OFFER</div>
           <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent pointer-events-none" />
-          <div className="absolute bottom-0 w-full pb-6 md:pb-12 text-center px-4 z-10">
-             <p className="text-white font-black text-[10px] md:text-[14px] uppercase tracking-widest mb-2 truncate drop-shadow-[0_4px_12px_rgba(0,0,0,1)]">
+          <div className="absolute bottom-0 w-full pb-2 md:pb-12 text-center px-2 z-10">
+             <p className="text-white font-black text-[8px] md:text-[14px] uppercase tracking-widest mb-1 md:mb-2 truncate drop-shadow-[0_4px_12px_rgba(0,0,0,1)]">
                {activeItem.name || activeItem.title}
              </p>
              {activeItem.price !== undefined && (
-               <div className="flex flex-col items-center mb-4">
-                 <span className="text-[#01a3a4] font-black text-[14px] md:text-2xl drop-shadow-[0_4px_12px_rgba(0,0,0,1)]">
+               <div className="flex flex-col items-center mb-1 md:mb-4">
+                 <span className="text-[#01a3a4] font-black text-[10px] md:text-2xl drop-shadow-[0_4px_12px_rgba(0,0,0,1)]">
                    ৳{(activeItem.price || 0).toLocaleString()}
                  </span>
                </div>
              )}
              <button 
                onClick={() => setIsOrderOpen(true)} 
-               className="bg-[#01a3a4] text-white px-6 md:px-10 py-2 md:h-12 font-black text-[8px] md:text-[11px] uppercase tracking-widest transition-all hover:bg-white hover:text-black active:scale-95 shadow-2xl border-none"
+               className="bg-[#01a3a4] text-white px-3 md:px-10 py-1 md:py-3 h-6 md:h-12 font-black text-[6px] md:text-[11px] uppercase tracking-widest transition-all hover:bg-white hover:text-black active:scale-95 shadow-2xl border-none"
              >
                অর্ডার করুন
              </button>
@@ -216,7 +216,7 @@ export default function Home() {
       <MainHeader />
 
       <main className="flex-grow container mx-auto">
-        <section className="grid grid-cols-12 gap-0 h-[180px] md:h-[300px] lg:h-[450px] gpu-accelerated bg-black overflow-hidden border-b border-white/10">
+        <section className="grid grid-cols-12 gap-0 h-[130px] md:h-[300px] lg:h-[450px] gpu-accelerated bg-black overflow-hidden border-b border-white/10">
           
           <div className="col-span-3 h-full overflow-hidden">
             <FlashOfferCard />
@@ -251,21 +251,21 @@ export default function Home() {
             )}
           </div>
 
-          <div className="col-span-3 h-full bg-[#01a3a4] flex flex-col items-center justify-center p-2 md:p-6 space-y-2 md:space-y-6 gpu-accelerated shadow-[inset_0_0_100px_rgba(0,0,0,0.1)]">
-            <h3 className="text-white font-black text-[8px] md:text-xl lg:text-2xl uppercase tracking-[0.3em] italic text-center drop-shadow-xl font-headline">
+          <div className="col-span-3 h-full bg-[#01a3a4] flex flex-col items-center justify-center p-1 md:p-6 space-y-1 md:space-y-6 gpu-accelerated shadow-[inset_0_0_100px_rgba(0,0,0,0.1)]">
+            <h3 className="text-white font-black text-[6px] md:text-xl lg:text-2xl uppercase tracking-[0.2em] md:tracking-[0.3em] italic text-center drop-shadow-xl font-headline">
               DOWNLOAD APP
             </h3>
             
-            <div className="bg-white p-1 md:p-4 w-16 h-16 md:w-40 md:h-40 lg:w-56 lg:h-56 flex items-center justify-center border-2 md:border-4 border-white/30 shadow-2xl transition-transform hover:scale-105 duration-500">
+            <div className="bg-white p-0.5 md:p-4 w-10 h-10 md:w-40 md:h-40 lg:w-56 lg:h-56 flex items-center justify-center border-1 md:border-4 border-white/30 shadow-2xl transition-transform hover:scale-105 duration-500">
               <Image src={qrCodeUrl} alt="QR Code" width={250} height={250} className="w-full h-full" loading="lazy" />
             </div>
             
-            <div className="flex flex-col gap-1 md:gap-3 w-full max-w-[280px]">
-              <button className="w-full bg-white text-black h-7 md:h-12 px-2 md:px-8 flex items-center justify-center gap-1 md:gap-4 font-black text-[7px] md:text-[12px] uppercase shadow-lg hover:bg-black hover:text-white transition-all active:scale-95 border-none group">
-                <Apple className="h-3 w-3 md:h-6 md:w-6 transition-transform group-hover:scale-110" /> APP STORE
+            <div className="flex flex-col gap-0.5 md:gap-3 w-full max-w-[280px]">
+              <button className="w-full bg-white text-black h-5 md:h-12 px-1 md:px-8 flex items-center justify-center gap-1 md:gap-4 font-black text-[5px] md:text-[12px] uppercase shadow-lg hover:bg-black hover:text-white transition-all active:scale-95 border-none group">
+                <Apple className="h-2 w-2 md:h-6 md:w-6 transition-transform group-hover:scale-110" /> APP STORE
               </button>
-              <button className="w-full bg-white text-black h-7 md:h-12 px-2 md:px-8 flex items-center justify-center gap-1 md:gap-4 font-black text-[7px] md:text-[12px] uppercase shadow-lg hover:bg-black hover:text-white transition-all active:scale-95 border-none group">
-                <Play className="h-3 w-3 md:h-6 md:w-6 transition-transform group-hover:scale-110" /> PLAY STORE
+              <button className="w-full bg-white text-black h-5 md:h-12 px-1 md:px-8 flex items-center justify-center gap-1 md:gap-4 font-black text-[5px] md:text-[12px] uppercase shadow-lg hover:bg-black hover:text-white transition-all active:scale-95 border-none group">
+                <Play className="h-2 w-2 md:h-6 md:w-6 transition-transform group-hover:scale-110" /> PLAY STORE
               </button>
             </div>
           </div>
