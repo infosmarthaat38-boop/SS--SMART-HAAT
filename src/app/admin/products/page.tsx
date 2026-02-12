@@ -20,7 +20,8 @@ import {
   DollarSign,
   AlertTriangle,
   Sparkles,
-  RefreshCw
+  RefreshCw,
+  X
 } from 'lucide-react';
 import { Checkbox } from "@/components/ui/checkbox";
 import Link from 'next/link';
@@ -84,10 +85,9 @@ export default function AdminProducts() {
     if (file) {
       setIsProcessingImage(true);
       try {
-        const compressed = await compressImage(file, 800, 1066); // Higher res for analysis and better preview
+        const compressed = await compressImage(file, 800, 1066); 
         setImagePreview(compressed);
         
-        // Auto-AI Analysis
         if (!editingId) {
           setIsAiAnalyzing(true);
           toast({ title: "AI INITIATED", description: "ANALYZING PRODUCT VISUALS..." });
@@ -289,7 +289,6 @@ export default function AdminProducts() {
                   <SelectTrigger className="bg-black border-white/10 h-12 uppercase font-black text-[10px]"><SelectValue placeholder="SELECT CATEGORY" /></SelectTrigger>
                   <SelectContent className="bg-card border-white/10">
                     {categories?.map((c) => <SelectItem key={c.id} value={c.name} className="uppercase font-black text-[10px]">{c.name}</SelectItem>)}
-                    {/* Fallback if category is not in list (AI suggested) */}
                     {category && !categories?.find(c => c.name === category) && (
                       <SelectItem value={category} className="uppercase font-black text-[10px] border-l-2 border-[#01a3a4]">{category}</SelectItem>
                     )}
@@ -356,7 +355,9 @@ export default function AdminProducts() {
               </div>
 
               <div className="flex gap-4">
-                {editingId && <Button onClick={resetForm} type="button" variant="outline" className="flex-1 border-white/10 text-white font-black h-14 rounded-none uppercase text-[10px]">CANCEL</Button>}
+                <Button onClick={resetForm} type="button" variant="outline" className="flex-1 border-white/10 text-white font-black h-14 rounded-none uppercase text-[10px]">
+                  <X className="mr-2 h-4 w-4" /> CANCEL
+                </Button>
                 <Button onClick={handleSaveProduct} className="flex-[2] bg-[#01a3a4] hover:bg-white hover:text-black text-white font-black h-14 rounded-none uppercase tracking-widest text-[10px] shadow-2xl">
                   {editingId ? 'UPDATE RECORD' : 'SAVE TO SYSTEM'}
                 </Button>

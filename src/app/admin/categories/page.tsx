@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useState, useRef } from 'react';
@@ -73,8 +72,13 @@ export default function AdminCategories() {
       title: "CATEGORY ADDED",
       description: "NEW CATEGORY HAS BEEN SUCCESSFULLY CREATED.",
     });
+    resetForm();
+  };
+
+  const resetForm = () => {
     setName('');
     setImagePreview(null);
+    if (fileInputRef.current) fileInputRef.current.value = '';
   };
 
   const confirmDelete = (id: string) => {
@@ -126,7 +130,14 @@ export default function AdminCategories() {
                   )}
                   <input type="file" ref={fileInputRef} onChange={handleFileChange} accept="image/*" className="hidden" />
                 </div>
-                <Button type="submit" disabled={!name || !imagePreview || isProcessingImage} className="w-full bg-orange-600 hover:bg-orange-700 text-white font-black rounded-none uppercase text-[10px] h-14 shadow-xl">SAVE CATEGORY</Button>
+                <div className="flex gap-3">
+                  <Button type="button" onClick={resetForm} variant="outline" className="flex-1 border-white/10 text-white font-black rounded-none uppercase text-[10px] h-14">
+                    CANCEL
+                  </Button>
+                  <Button type="submit" disabled={!name || !imagePreview || isProcessingImage} className="flex-[2] bg-orange-600 hover:bg-orange-700 text-white font-black rounded-none uppercase text-[10px] h-14 shadow-xl">
+                    SAVE CATEGORY
+                  </Button>
+                </div>
               </form>
             </CardContent>
           </Card>

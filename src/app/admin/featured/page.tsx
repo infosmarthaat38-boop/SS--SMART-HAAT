@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useState, useRef } from 'react';
@@ -48,7 +47,10 @@ export default function FeaturedManager() {
   const [isAlertOpen, setIsAlertOpen] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const bannersRef = useMemoFirebase(() => query(collection(db, 'featured_banners'), orderBy('createdAt', 'desc'), limit(30)), [db]);
+  const bannersRef = useMemoFirebase(() => {
+    if (!db) return null;
+    return query(collection(db, 'featured_banners'), orderBy('createdAt', 'desc'), limit(30));
+  }, [db]);
   const { data: banners, isLoading } = useCollection(bannersRef);
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -70,7 +72,7 @@ export default function FeaturedManager() {
     e.preventDefault();
     if (!imagePreview) return;
 
-    addDocumentNonBlocking(collection(db, 'featured_banners'), {
+    addDocumentNonBlocking(collection(db!, 'featured_banners'), {
       type,
       title: title.toUpperCase() || 'UNTITLED BANNER',
       imageUrl: imagePreview,
@@ -163,9 +165,14 @@ export default function FeaturedManager() {
                   </div>
                 </div>
 
-                <Button type="submit" disabled={!imagePreview || isProcessingImage} className="w-full bg-[#01a3a4] hover:bg-white hover:text-black text-white font-black rounded-none uppercase text-[10px] h-14 shadow-2xl">
-                  <Plus className="mr-2 h-4 w-4" /> ADD TO DISPLAY
-                </Button>
+                <div className="flex gap-3">
+                  <Button type="button" onClick={resetForm} variant="outline" className="flex-1 border-white/10 text-white font-black rounded-none uppercase text-[10px] h-14">
+                    CANCEL
+                  </Button>
+                  <Button type="submit" disabled={!imagePreview || isProcessingImage} className="flex-[2] bg-[#01a3a4] hover:bg-white hover:text-black text-white font-black rounded-none uppercase text-[10px] h-14 shadow-2xl">
+                    ADD TO DISPLAY
+                  </Button>
+                </div>
               </form>
             </CardContent>
           </Card>
