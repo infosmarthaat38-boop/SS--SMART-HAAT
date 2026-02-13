@@ -34,8 +34,6 @@ const SlideItem = memo(({ item, priority }: { item: any, priority: boolean }) =>
           decoding="async"
         />
         
-        <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent pointer-events-none" />
-        
         <div className="absolute bottom-2 md:bottom-6 left-2 md:left-6 z-10 flex flex-col items-start max-w-[90%] pointer-events-none">
           <h2 className="text-[7px] md:text-[14px] font-headline font-black text-white uppercase tracking-wider mb-0.5 md:mb-1 drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)] truncate w-full">
             {item.name || item.title}
@@ -113,7 +111,6 @@ const AnimatedFlashBar = memo(() => {
           priority 
         />
       </div>
-      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent pointer-events-none" />
       <div className="absolute top-2 right-2 bg-primary/20 backdrop-blur-sm border border-white/10 px-2 py-0.5 text-[6px] md:text-[8px] text-white font-black uppercase tracking-widest flex items-center gap-1">
         <Sparkles className="h-2 w-2 animate-pulse" /> FLASH LIVE
       </div>
@@ -173,7 +170,6 @@ const FlashOfferCard = memo(() => {
     <div className="h-full bg-black overflow-hidden relative group w-full gpu-accelerated border-r border-white/5 flex items-center justify-center">
       {activeItem ? (
         <div className="h-full w-full relative flex items-center justify-center" key={activeItem.id}>
-          {/* Added Zoom Animation class below */}
           <div className="h-full w-full absolute inset-0 animate-ken-burns">
             <Image 
               src={activeItem.imageUrl || 'https://picsum.photos/seed/flash/400/400'} 
@@ -187,7 +183,6 @@ const FlashOfferCard = memo(() => {
             />
           </div>
           <div className="absolute top-2 md:top-4 left-2 md:left-4 bg-red-600 px-2 md:px-6 py-1 md:py-1.5 text-[6px] md:text-[10px] font-black text-white uppercase tracking-widest z-10 shadow-2xl">FLASH OFFER</div>
-          <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent pointer-events-none" />
           
           <div className="absolute bottom-2 md:bottom-6 left-2 md:left-6 z-10 flex flex-col items-start max-w-[90%]">
              <p className="text-white font-black text-[7px] md:text-[12px] uppercase tracking-wider mb-0.5 md:mb-1 drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)] truncate w-full">
@@ -371,9 +366,9 @@ export default function Home() {
           <Link href="/shop" className="w-full md:w-auto">
             <button 
               style={{ backgroundColor: 'rgba(255,255,255,0.05)' }}
-              className="w-full md:w-[600px] border border-white/10 hover:border-primary text-white px-12 h-20 md:h-28 font-black uppercase tracking-[0.6em] text-[12px] md:text-[16px] flex items-center justify-center gap-10 transition-all hover:bg-primary hover:text-black active:scale-95 shadow-2xl group"
+              className="w-full md:w-[400px] border border-white/10 hover:border-primary text-white px-8 h-16 md:h-20 font-black uppercase tracking-[0.4em] text-[10px] md:text-[12px] flex items-center justify-center gap-6 transition-all hover:bg-primary hover:text-black active:scale-95 shadow-2xl group"
             >
-              MORE PRODUCT <ArrowRight className="h-8 w-8 group-hover:translate-x-4 transition-transform" />
+              MORE PRODUCT <ArrowRight className="h-5 w-5 group-hover:translate-x-2 transition-transform" />
             </button>
           </Link>
         </div>

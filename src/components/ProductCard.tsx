@@ -41,8 +41,6 @@ export const ProductCard = memo(({ product, index = 0 }: ProductCardProps) => {
             decoding="async"
           />
           
-          <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-all duration-500" />
-
           {isOutOfStock && (
             <div className="absolute inset-0 bg-black/80 flex items-center justify-center z-10">
               <span className="text-white text-[9px] font-black border-2 border-white/20 px-4 py-2 uppercase tracking-[0.3em] bg-black/40 backdrop-blur-md">ARCHIVE ONLY</span>
@@ -58,7 +56,7 @@ export const ProductCard = memo(({ product, index = 0 }: ProductCardProps) => {
             <div className="flex items-center gap-2">
               <div className={`h-1 w-1 rounded-none ${isOutOfStock ? 'bg-red-600' : 'bg-primary'} animate-pulse`} />
               <span className={`text-[7px] font-black uppercase tracking-[0.2em] ${isOutOfStock ? 'text-red-600' : 'text-foreground opacity-80'}`}>
-                {isOutOfStock ? 'SOLD OUT' : 'READY TO SHIP'}
+                {isOutOfStock ? 'OUT OF STOCK' : 'IN STOCK'}
               </span>
             </div>
           </div>

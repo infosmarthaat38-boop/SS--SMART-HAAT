@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useState } from 'react';
@@ -154,7 +153,7 @@ export default function ProductDetails() {
                 <div className="flex items-center gap-4">
                   <div className={`h-3 w-3 rounded-none animate-pulse ${isOutOfStock ? 'bg-red-600' : 'bg-green-600'}`} />
                   <span className={`text-[11px] font-black uppercase tracking-[0.3em] ${isOutOfStock ? 'text-red-600' : 'text-green-600'}`}>
-                    {isOutOfStock ? 'OUT OF STOCK' : `IN STOCK - READY TO SHIP`}
+                    {isOutOfStock ? 'OUT OF STOCK' : `IN STOCK`}
                   </span>
                 </div>
 
