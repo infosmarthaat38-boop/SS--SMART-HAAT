@@ -165,8 +165,8 @@ export const OrderModal = memo(({ product, isOpen, onClose }: OrderModalProps) =
                 </div>
               )}
 
-              <div className="flex-grow flex flex-col h-full bg-white relative">
-                <div className={cn("p-4 pb-2 shrink-0", isMobile && "pt-10")}>
+              <div className="flex-grow flex flex-col h-full bg-white relative overflow-hidden">
+                <div className={cn("p-4 pb-2 shrink-0 bg-white z-10", isMobile && "pt-10")}>
                   <div className="space-y-0.5">
                     <DialogTitle className="text-xl font-black text-black uppercase tracking-tighter font-headline">ORDER NOW</DialogTitle>
                     <p className="text-[8px] font-black text-gray-400 uppercase tracking-[0.3em]">PREMIUM SECURE CHECKOUT</p>
@@ -186,8 +186,8 @@ export const OrderModal = memo(({ product, isOpen, onClose }: OrderModalProps) =
                   )}
                 </div>
 
-                <div className="flex-grow overflow-y-auto px-4 pt-1 pb-6 no-scrollbar">
-                  <form onSubmit={handleSubmit} className="space-y-3.5 pb-64">
+                <div className="flex-grow overflow-y-auto px-4 pt-1 no-scrollbar">
+                  <form onSubmit={handleSubmit} className={cn("space-y-3.5", isMobile ? "pb-[400px]" : "pb-10")}>
                     <div className="grid grid-cols-2 gap-3">
                       <div className="space-y-1">
                         <label className="text-[8px] font-black text-gray-400 uppercase tracking-widest flex items-center gap-1.5">
