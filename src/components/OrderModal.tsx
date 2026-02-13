@@ -186,9 +186,9 @@ export const OrderModal = memo(({ product, isOpen, onClose }: OrderModalProps) =
                   )}
                 </div>
 
-                {/* FORM SCROLL AREA */}
-                <div className="flex-grow overflow-y-auto p-6 pt-2 no-scrollbar">
-                  <form onSubmit={handleSubmit} className="space-y-5 pb-32">
+                {/* FORM SCROLL AREA - IMPROVED FOR MOBILE */}
+                <div className="flex-grow overflow-y-auto px-6 pt-2 pb-10 no-scrollbar">
+                  <form onSubmit={handleSubmit} className="space-y-5 pb-48 md:pb-10">
                     <div className="grid grid-cols-2 gap-4">
                       <div className="space-y-1.5">
                         <label className="text-[9px] font-black text-gray-400 uppercase tracking-widest flex items-center gap-2"><Ruler className="h-3 w-3 text-primary" /> SIZE</label>
@@ -219,7 +219,6 @@ export const OrderModal = memo(({ product, isOpen, onClose }: OrderModalProps) =
                       </div>
                     </div>
 
-                    {/* STICKY-LIKE BUTTONS AT THE END OF FORM */}
                     <div className="flex flex-col gap-3 pt-4">
                       <Button 
                         type="submit" 
