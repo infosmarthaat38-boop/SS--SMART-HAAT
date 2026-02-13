@@ -3,7 +3,7 @@
 import React, { useRef, useMemo, useState, useEffect, memo } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { ShoppingCart, Loader2, Apple, Play, ArrowRight, Volume2, VolumeX } from 'lucide-react';
+import { ShoppingCart, Loader2, Apple, Play, ArrowRight, Sparkles } from 'lucide-react';
 import { MainHeader } from '@/components/MainHeader';
 import { Footer } from '@/components/Footer';
 import { ProductCard } from '@/components/ProductCard';
@@ -65,7 +65,71 @@ const SlideItem = memo(({ item, priority }: { item: any, priority: boolean }) =>
 
 SlideItem.displayName = 'SlideItem';
 
-// Performance: Memoized Flash Offer Card
+// Performance: Memoized Animated Flash Bar Component
+const AnimatedFlashBar = memo(() => {
+  const db = useFirestore();
+  const [currentIndex, setCurrentIndex] = useState(0);
+  
+  const flashProductQuery = useMemoFirebase(() => {
+    if (!db) return null;
+    return query(collection(db, 'products'), where('showInFlashOffer', '==', true), limit(10));
+  }, [db]);
+
+  const flashBannerQuery = useMemoFirebase(() => {
+    if (!db) return null;
+    return query(collection(db, 'featured_banners'), where('type', '==', 'FLASH'), limit(10));
+  }, [db]);
+  
+  const { data: flashProducts } = useCollection(flashProductQuery);
+  const { data: flashBanners } = useCollection(flashBannerQuery);
+
+  const combinedItems = useMemo(() => {
+    const products = flashProducts || [];
+    const banners = flashBanners || [];
+    return [...banners, ...products].sort((a, b) => 
+      new Date(b.createdAt || '2024-01-01').getTime() - new Date(a.createdAt || '2024-01-01').getTime()
+    );
+  }, [flashProducts, flashBanners]);
+
+  useEffect(() => {
+    if (combinedItems.length <= 1) return;
+    const interval = setInterval(() => {
+      setCurrentIndex((prev) => (prev + 1) % combinedItems.length);
+    }, 8000);
+    return () => clearInterval(interval);
+  }, [combinedItems.length]);
+
+  if (combinedItems.length === 0) return null;
+  const activeItem = combinedItems[currentIndex];
+
+  return (
+    <div className="h-full w-full relative overflow-hidden bg-black group cursor-pointer">
+      <div key={activeItem.id} className="h-full w-full absolute inset-0 animate-ken-burns">
+        <Image 
+          src={activeItem.imageUrl} 
+          alt="Flash" 
+          fill 
+          className="object-fill"
+          priority 
+        />
+      </div>
+      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent pointer-events-none" />
+      <div className="absolute top-2 right-2 bg-primary/20 backdrop-blur-sm border border-white/10 px-2 py-0.5 text-[6px] md:text-[8px] text-white font-black uppercase tracking-widest flex items-center gap-1">
+        <Sparkles className="h-2 w-2 animate-pulse" /> FLASH LIVE
+      </div>
+      <div className="absolute bottom-4 left-4 right-4 z-10 space-y-1">
+        <p className="text-[10px] md:text-xs font-black text-white uppercase tracking-widest truncate drop-shadow-lg">
+          {activeItem.name || activeItem.title}
+        </p>
+        <div className="h-0.5 w-8 bg-primary rounded-full" />
+      </div>
+    </div>
+  );
+});
+
+AnimatedFlashBar.displayName = 'AnimatedFlashBar';
+
+// Performance: Memoized Flash Offer Card (Left Column)
 const FlashOfferCard = memo(() => {
   const [isOrderOpen, setIsOrderOpen] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -157,7 +221,6 @@ FlashOfferCard.displayName = 'FlashOfferCard';
 export default function Home() {
   const db = useFirestore();
   const [isMounted, setIsMounted] = useState(false);
-  const [localMuted, setLocalMuted] = useState(true);
   
   const categoriesRef = useMemoFirebase(() => db ? collection(db, 'categories') : null, [db]);
   const productsRef = useMemoFirebase(() => db ? collection(db, 'products') : null, [db]);
@@ -179,13 +242,6 @@ export default function Home() {
   const { data: sliderProducts } = useCollection(sliderProductQuery);
   const { data: sliderBanners } = useCollection(sliderBannerQuery);
   const { data: settings } = useDoc(settingsRef);
-
-  // Synchronize muted state with settings on load
-  useEffect(() => {
-    if (settings) {
-      setLocalMuted(!settings.videoSoundEnabled);
-    }
-  }, [settings?.videoSoundEnabled]);
 
   const combinedSliderItems = useMemo(() => {
     const products = sliderProducts || [];
@@ -246,25 +302,9 @@ export default function Home() {
           </div>
 
           <div className="col-span-3 h-full bg-primary relative overflow-hidden flex flex-col items-center justify-center p-1 md:p-6 space-y-1 md:space-y-6 gpu-accelerated shadow-[inset_0_0_100px_rgba(0,0,0,0.1)]">
-            {settings?.showVideoInAppBar && settings?.appBarVideoUrl ? (
-              <div className="absolute inset-0 w-full h-full bg-black">
-                <video 
-                  key={settings.appBarVideoUrl} 
-                  src={settings.appBarVideoUrl}
-                  autoPlay
-                  loop
-                  playsInline
-                  muted={localMuted}
-                  className="w-full h-full object-fill z-0"
-                />
-                <div className="absolute top-2 right-2 bg-primary/20 backdrop-blur-sm border border-white/10 px-2 py-0.5 text-[6px] md:text-[8px] text-white font-black uppercase tracking-widest animate-pulse">LIVE</div>
-                
-                <button 
-                  onClick={(e) => { e.stopPropagation(); setLocalMuted(!localMuted); }}
-                  className="absolute bottom-2 right-2 bg-black/40 backdrop-blur-md border border-white/10 p-1.5 md:p-2 text-white hover:bg-primary transition-all z-10 rounded-none shadow-xl"
-                >
-                  {localMuted ? <VolumeX className="h-3 w-3 md:h-4 md:w-4" /> : <Volume2 className="h-3 w-3 md:h-4 md:w-4" />}
-                </button>
+            {settings?.showVideoInAppBar ? (
+              <div className="absolute inset-0 w-full h-full">
+                <AnimatedFlashBar />
               </div>
             ) : (
               <div className="flex flex-col items-center justify-center space-y-2 md:space-y-6 relative z-10">

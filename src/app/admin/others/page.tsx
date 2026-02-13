@@ -19,41 +19,23 @@ import {
   Contact2,
   Truck,
   MessageSquare,
-  Video,
-  Upload,
-  X,
   Zap,
   QrCode,
-  Volume2,
-  VolumeX,
-  AlertTriangle
+  Sparkles,
+  LayoutDashboard,
+  X
 } from 'lucide-react';
 import Link from 'next/link';
 import { useFirestore, useDoc, useMemoFirebase } from '@/firebase';
 import { doc } from 'firebase/firestore';
 import { setDocumentNonBlocking } from '@/firebase/non-blocking-updates';
 import { useToast } from '@/hooks/use-toast';
-import { optimizeVideo } from '@/lib/video-utils';
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
 
 export default function AdminOthers() {
   const db = useFirestore();
   const { toast } = useToast();
   const settingsRef = useMemoFirebase(() => db ? doc(db, 'settings', 'site-config') : null, [db]);
   const { data: settings, isLoading } = useDoc(settingsRef);
-
-  const fileInputRef = useRef<HTMLInputElement>(null);
-  const [isProcessingVideo, setIsProcessingVideo] = useState(false);
-  const [isVideoDeleteAlertOpen, setIsVideoDeleteAlertOpen] = useState(false);
 
   const [formData, setFormData] = useState({
     email: '',
@@ -68,9 +50,7 @@ export default function AdminOthers() {
     qrCodeLink: '',
     deliveryChargeInside: '',
     deliveryChargeOutside: '',
-    showVideoInAppBar: false,
-    appBarVideoUrl: '',
-    videoSoundEnabled: false
+    showVideoInAppBar: false, // Repurposed for Flash Bar
   });
 
   useEffect(() => {
@@ -89,64 +69,9 @@ export default function AdminOthers() {
         deliveryChargeInside: settings.deliveryChargeInside?.toString() || '60',
         deliveryChargeOutside: settings.deliveryChargeOutside?.toString() || '120',
         showVideoInAppBar: settings.showVideoInAppBar || false,
-        appBarVideoUrl: settings.appBarVideoUrl || '',
-        videoSoundEnabled: settings.videoSoundEnabled || false
       });
     }
   }, [settings]);
-
-  const handleVideoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
-    setIsProcessingVideo(true);
-    toast({
-      title: "OPTIMIZING VIDEO",
-      description: "PREPARING FOR SUPER-FAST LOAD...",
-    });
-
-    try {
-      const optimizedBase64 = await optimizeVideo(file);
-      
-      setFormData(prev => ({ ...prev, appBarVideoUrl: optimizedBase64, showVideoInAppBar: true }));
-      
-      if (settingsRef) {
-        setDocumentNonBlocking(settingsRef, { 
-          appBarVideoUrl: optimizedBase64,
-          showVideoInAppBar: true 
-        }, { merge: true });
-      }
-
-      toast({
-        title: "VIDEO SAVED",
-        description: "VIDEO IS NOW PERMANENTLY STORED AND LIVE.",
-      });
-    } catch (err: any) {
-      console.error(err);
-      toast({
-        variant: "destructive",
-        title: "PROCESS FAILED",
-        description: err.message === 'VIDEO_TOO_LARGE' ? "VIDEO EXCEEDS 1MB LIMIT." : "COULD NOT PROCESS VIDEO.",
-      });
-    } finally {
-      setIsProcessingVideo(false);
-    }
-  };
-
-  const handleConfirmVideoDelete = () => {
-    if (!settingsRef) return;
-    setFormData(prev => ({ ...prev, appBarVideoUrl: '', showVideoInAppBar: false }));
-    setDocumentNonBlocking(settingsRef, { 
-      appBarVideoUrl: '', 
-      showVideoInAppBar: false 
-    }, { merge: true });
-    setIsVideoDeleteAlertOpen(false);
-    toast({
-      variant: "destructive",
-      title: "VIDEO REMOVED",
-      description: "THE VIDEO HAS BEEN DELETED PERMANENTLY.",
-    });
-  };
 
   const handleSave = (e: React.FormEvent) => {
     e.preventDefault();
@@ -208,84 +133,34 @@ export default function AdminOthers() {
                     />
                     <div className="space-y-1">
                       <label htmlFor="video-toggle" className="text-[11px] font-black text-foreground uppercase flex items-center gap-2 cursor-pointer">
-                        <QrCode className="h-4 w-4 text-[#01a3a4]" /> টিক দিন: ভিডিও চলবে (OFF রাখলে QR শো করবে)
+                        <LayoutDashboard className="h-4 w-4 text-[#01a3a4]" /> টিক দিন: ফ্ল্যাশ বার চলবে (OFF রাখলে QR শো করবে)
                       </label>
                       <p className="text-[8px] text-foreground/40 uppercase font-bold tracking-widest">
-                        {formData.showVideoInAppBar ? "VIDEO MODE ACTIVE" : "QR CODE MODE ACTIVE"}
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="flex items-center gap-4 pt-2">
-                    <Checkbox 
-                      id="sound-toggle"
-                      checked={formData.videoSoundEnabled} 
-                      onCheckedChange={(val) => setFormData({...formData, videoSoundEnabled: !!val})} 
-                      className="h-6 w-6 border-white/20 data-[state=checked]:bg-green-600 data-[state=checked]:border-green-600"
-                    />
-                    <div className="space-y-1">
-                      <label htmlFor="sound-toggle" className="text-[11px] font-black text-foreground uppercase flex items-center gap-2 cursor-pointer">
-                        {formData.videoSoundEnabled ? <Volume2 className="h-4 w-4 text-green-500" /> : <VolumeX className="h-4 w-4 text-white/40" />} 
-                        ভিডিও সাউন্ড সচল করুন (টিক দিলে শব্দ হবে)
-                      </label>
-                      <p className="text-[8px] text-foreground/40 uppercase font-bold tracking-widest">
-                        {formData.videoSoundEnabled ? "AUDIO ENABLED" : "AUDIO MUTED"}
+                        {formData.showVideoInAppBar ? "ANIMATED FLASH BAR ACTIVE" : "QR CODE MODE ACTIVE"}
                       </p>
                     </div>
                   </div>
                 </div>
 
-                <div className="space-y-4 pt-4">
+                <div className="p-6 bg-[#01a3a4]/5 border border-[#01a3a4]/20 space-y-3">
+                  <div className="flex items-center gap-3">
+                    <Sparkles className="h-5 w-5 text-[#01a3a4] animate-pulse" />
+                    <p className="text-[10px] font-black text-white uppercase tracking-widest">NEW: PERFORMANCE UPDATE</p>
+                  </div>
+                  <p className="text-[9px] text-white/60 uppercase leading-relaxed font-bold">
+                    সরাসরি ভিডিওর পরিবর্তে এখন ফ্ল্যাশ অফারের ইমেজগুলো এনিমেশনের মাধ্যমে সচল থাকবে। এতে আপনার ওয়েবসাইট অনেক বেশি ফাস্ট থাকবে এবং ভিডিও লোডিংয়ের কোনো ঝামেলা হবে না।
+                  </p>
+                </div>
+
+                <div className="space-y-2">
                   <label className="text-[10px] font-black text-muted-foreground uppercase flex items-center gap-2">
-                    <Upload className="h-3 w-3" /> DIRECT VIDEO UPLOAD (AUTO-SAVE)
+                    <QrCode className="h-3 w-3" /> QR CODE REDIRECT LINK
                   </label>
-                  
-                  {formData.appBarVideoUrl ? (
-                    <div className="relative aspect-[9/16] w-full max-w-[250px] mx-auto bg-black border border-white/10 overflow-hidden group shadow-2xl">
-                      <video 
-                        key={formData.appBarVideoUrl}
-                        src={formData.appBarVideoUrl} 
-                        className="w-full h-full object-fill bg-black opacity-60"
-                        autoPlay 
-                        loop
-                        playsInline
-                        muted // IMPORTANT: ALWAYS MUTED IN ADMIN PANEL AS REQUESTED
-                      />
-                      <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-black/40">
-                        <Button 
-                          type="button" 
-                          variant="destructive" 
-                          className="rounded-none h-10 px-6 font-black uppercase text-[10px]"
-                          onClick={() => setIsVideoDeleteAlertOpen(true)}
-                        >
-                          <X className="mr-2 h-4 w-4" /> REMOVE VIDEO
-                        </Button>
-                      </div>
-                    </div>
-                  ) : (
-                    <div 
-                      onClick={() => !isProcessingVideo && fileInputRef.current?.click()}
-                      className={`border-2 border-dashed border-white/10 p-10 text-center cursor-pointer hover:border-primary/50 transition-all bg-black/30 flex flex-col items-center justify-center min-h-[300px] w-full max-w-[250px] mx-auto aspect-[9/16] ${isProcessingVideo ? 'opacity-50 cursor-wait' : ''}`}
-                    >
-                      {isProcessingVideo ? (
-                        <div className="flex flex-col items-center gap-3">
-                          <Loader2 className="h-10 w-10 text-primary animate-spin" />
-                          <p className="text-[10px] font-black text-primary uppercase tracking-[0.2em] animate-pulse">REDUCING SIZE...</p>
-                        </div>
-                      ) : (
-                        <div className="space-y-3">
-                          <Video className="h-8 w-8 mx-auto text-primary/40" />
-                          <p className="text-[10px] font-black text-white/40 uppercase tracking-widest">SELECT MOBILE VIDEO</p>
-                        </div>
-                      )}
-                    </div>
-                  )}
-                  <input 
-                    type="file" 
-                    ref={fileInputRef} 
-                    onChange={handleVideoUpload} 
-                    accept="video/*" 
-                    className="hidden" 
+                  <Input 
+                    value={formData.qrCodeLink}
+                    onChange={(e) => setFormData({...formData, qrCodeLink: e.target.value})}
+                    placeholder="https://sssmarthaat.com"
+                    className="bg-black border-white/10 rounded-none h-12 text-xs font-black text-foreground"
                   />
                 </div>
               </CardContent>
@@ -383,7 +258,7 @@ export default function AdminOthers() {
             </Card>
 
             <div className="flex gap-4">
-              <Button type="button" variant="outline" className="flex-1 border-white/10 text-foreground h-20 font-black uppercase rounded-none text-[10px]">CANCEL</Button>
+              <Button type="button" onClick={() => window.location.reload()} variant="outline" className="flex-1 border-white/10 text-foreground h-20 font-black uppercase rounded-none text-[10px]">CANCEL</Button>
               <Button type="submit" className="flex-[2] bg-primary hover:bg-white hover:text-black text-primary-foreground h-20 font-black uppercase tracking-[0.3em] rounded-none shadow-2xl text-xs border-none transition-all">
                 <Save className="mr-3 h-5 w-5" /> SYNC ALL SITE SETTINGS
               </Button>
@@ -391,24 +266,6 @@ export default function AdminOthers() {
           </div>
         </form>
       </main>
-
-      <AlertDialog open={isVideoDeleteAlertOpen} onOpenChange={setIsVideoDeleteAlertOpen}>
-        <AlertDialogContent className="bg-black border-red-600/30 rounded-none p-8 max-w-md fixed left-[50%] top-[50%] translate-x-[-50%] translate-y-[-50%]">
-          <AlertDialogHeader className="space-y-4">
-            <div className="flex items-center gap-3">
-              <div className="h-10 w-10 bg-red-600/10 flex items-center justify-center border border-red-600/20"><AlertTriangle className="h-6 w-6 text-red-600" /></div>
-              <AlertDialogTitle className="text-2xl font-black text-white uppercase tracking-tighter">DELETE PERMANENTLY?</AlertDialogTitle>
-            </div>
-            <AlertDialogDescription className="text-[10px] text-muted-foreground uppercase font-black tracking-widest leading-relaxed">
-              THIS ACTION WILL ERASE THE VIDEO FROM DATABASE. IT WILL STOP SHOWING ON HOME PAGE IMMEDIATELY.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter className="mt-8 gap-2 sm:gap-0">
-            <AlertDialogCancel className="flex-1 rounded-none border-white/10 text-white font-black uppercase text-[10px] h-12 hover:bg-white/5">CANCEL</AlertDialogCancel>
-            <AlertDialogAction onClick={handleConfirmVideoDelete} className="flex-1 bg-red-600 hover:bg-red-700 text-white font-black uppercase text-[10px] rounded-none h-12 shadow-xl shadow-red-600/10">CONFIRM DELETE</AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
       
       <Footer />
     </div>

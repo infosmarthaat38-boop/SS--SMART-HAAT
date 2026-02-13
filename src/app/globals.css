@@ -90,6 +90,12 @@ section, .product-section {
   100% { opacity: 1; transform: translateY(0); }
 }
 
+@keyframes ken-burns {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.2); }
+  100% { transform: scale(1); }
+}
+
 .animate-marquee {
   animation: marquee 25s linear infinite;
   will-change: transform;
@@ -97,6 +103,11 @@ section, .product-section {
 
 .animate-fade-in-up {
   animation: fade-in-up 0.5s ease-out forwards;
+}
+
+.animate-ken-burns {
+  animation: ken-burns 10s ease-in-out infinite;
+  will-change: transform;
 }
 
 .no-scrollbar::-webkit-scrollbar {
