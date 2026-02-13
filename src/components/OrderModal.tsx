@@ -91,13 +91,18 @@ export const OrderModal = memo(({ product, isOpen, onClose }: OrderModalProps) =
       status: 'PENDING'
     };
 
-    const result = await createOrderAndNotify(orderData);
-    if (result.success) {
-      setStep('SUCCESS');
-    } else {
-      alert("FAILED TO PLACE ORDER. PLEASE TRY AGAIN.");
+    try {
+      const result = await createOrderAndNotify(orderData);
+      if (result.success) {
+        setStep('SUCCESS');
+      } else {
+        alert("FAILED TO PLACE ORDER. PLEASE TRY AGAIN.");
+      }
+    } catch (err) {
+      alert("SYSTEM ERROR. PLEASE TRY AGAIN.");
+    } finally {
+      setIsSubmitting(false);
     }
-    setIsSubmitting(false);
   };
 
   const handleWhatsAppChat = () => {
@@ -122,7 +127,7 @@ export const OrderModal = memo(({ product, isOpen, onClose }: OrderModalProps) =
       <DialogContent className={cn(
         "p-0 bg-white border-none rounded-none overflow-hidden gap-0 shadow-2xl fixed z-[150] outline-none",
         "left-[50%] top-[50%] translate-x-[-50%] translate-y-[-50%]",
-        step === 'SUCCESS' ? "max-w-[400px] w-[90vw]" : isMobile ? "w-full h-full" : "max-w-[700px] w-[95vw]"
+        step === 'SUCCESS' ? "max-w-[400px] w-[90vw]" : isMobile ? "w-full h-[100dvh]" : "max-w-[700px] w-[95vw] max-h-[90vh]"
       )}>
         {!isSubmitting && (
           <button 
@@ -133,11 +138,11 @@ export const OrderModal = memo(({ product, isOpen, onClose }: OrderModalProps) =
           </button>
         )}
 
-        <div className="flex flex-col h-full max-h-[90vh] no-scrollbar">
+        <div className="flex flex-col h-full overflow-hidden">
           {step === 'FORM' ? (
             <div className="flex flex-col md:flex-row h-full">
               {!isMobile && (
-                <div className="md:w-[250px] bg-gray-50 border-r border-gray-100 p-4 flex flex-col shrink-0">
+                <div className="md:w-[250px] bg-gray-50 border-r border-gray-100 p-4 flex flex-col shrink-0 overflow-y-auto no-scrollbar">
                   <div className="relative w-full aspect-square border-2 border-white mb-3 bg-white shadow-md overflow-hidden">
                     <Image 
                       src={product.imageUrl || 'https://picsum.photos/seed/placeholder/400/400'} 
@@ -161,75 +166,79 @@ export const OrderModal = memo(({ product, isOpen, onClose }: OrderModalProps) =
                 </div>
               )}
 
-              <div className="flex-grow p-5 md:p-6 space-y-4 bg-white overflow-y-auto no-scrollbar">
-                <div className="space-y-1">
-                  <DialogTitle className="text-lg font-black text-black uppercase tracking-tighter font-headline">ORDER NOW</DialogTitle>
-                  <p className="text-[7px] font-black text-gray-400 uppercase tracking-[0.3em]">PREMIUM SECURE CHECKOUT</p>
-                </div>
-
-                {isMobile && (
-                  <div className="p-2.5 bg-gray-50 border border-gray-100 flex items-center justify-between rounded-sm">
-                    <div className="flex items-center gap-1.5">
-                      <Truck className="h-3 w-3 text-primary" />
-                      <span className="text-[8px] font-black uppercase text-black">DELIVERY:</span>
-                    </div>
-                    <div className="flex gap-3">
-                      <p className="text-[8px] font-bold text-gray-600">ঢাকা: ৳{settings?.deliveryChargeInside || '60'}</p>
-                      <p className="text-[8px] font-bold text-gray-600">বাইরে: ৳{settings?.deliveryChargeOutside || '120'}</p>
-                    </div>
+              <div className="flex-grow flex flex-col h-full bg-white">
+                <div className="p-5 md:p-6 pb-2 shrink-0">
+                  <div className="space-y-1">
+                    <DialogTitle className="text-lg font-black text-black uppercase tracking-tighter font-headline">ORDER NOW</DialogTitle>
+                    <p className="text-[7px] font-black text-gray-400 uppercase tracking-[0.3em]">PREMIUM SECURE CHECKOUT</p>
                   </div>
-                )}
 
-                <form onSubmit={handleSubmit} className="space-y-3">
-                  <div className="grid grid-cols-2 gap-3">
-                    <div className="space-y-1">
-                      <label className="text-[8px] font-black text-gray-400 uppercase tracking-widest flex items-center gap-1.5"><Ruler className="h-2.5 w-2.5 text-primary" /> SIZE</label>
-                      <div className="flex flex-wrap gap-1">
-                        {product?.sizes?.length > 0 ? product.sizes.map((size: string) => (
-                          <button key={size} type="button" disabled={isSubmitting} onClick={() => setFormData({...formData, selectedSize: size})} className={cn("px-2 py-1 border text-[8px] font-black uppercase transition-all", formData.selectedSize === size ? 'bg-primary border-primary text-white' : 'bg-gray-50 border-gray-100 text-gray-400')}>{size}</button>
-                        )) : <span className="text-[8px] font-black text-gray-400 uppercase italic">Standard</span>}
+                  {isMobile && (
+                    <div className="mt-3 p-2.5 bg-gray-50 border border-gray-100 flex items-center justify-between rounded-sm">
+                      <div className="flex items-center gap-1.5">
+                        <Truck className="h-3 w-3 text-primary" />
+                        <span className="text-[8px] font-black uppercase text-black">DELIVERY:</span>
+                      </div>
+                      <div className="flex gap-3">
+                        <p className="text-[8px] font-bold text-gray-600">ঢাকা: ৳{settings?.deliveryChargeInside || '60'}</p>
+                        <p className="text-[8px] font-bold text-gray-600">বাইরে: ৳{settings?.deliveryChargeOutside || '120'}</p>
                       </div>
                     </div>
-                    <div className="space-y-1">
-                      <label className="text-[8px] font-black text-gray-400 uppercase tracking-widest flex items-center gap-1.5"><Hash className="h-2.5 w-2.5 text-primary" /> QTY</label>
-                      <input type="number" min="1" required disabled={isSubmitting} value={formData.quantity} onChange={(e) => setFormData({...formData, quantity: parseInt(e.target.value) || 1})} className="w-full bg-gray-50 border border-gray-100 h-8 px-2 text-[10px] font-black focus:outline-none focus:border-primary text-black" />
-                    </div>
-                  </div>
+                  )}
+                </div>
 
-                  <div className="space-y-3">
-                    <div className="space-y-1">
-                      <label className="text-[8px] font-black text-gray-400 uppercase tracking-widest flex items-center gap-1.5"><User className="h-2.5 w-2.5 text-primary" /> NAME</label>
-                      <input required disabled={isSubmitting} value={formData.name} onChange={(e) => setFormData({...formData, name: e.target.value})} placeholder="ENTER YOUR NAME" className="w-full bg-gray-50 border border-gray-100 h-8 px-3 text-[10px] font-black uppercase focus:outline-none focus:border-primary text-black" />
+                <div className="flex-grow overflow-y-auto p-5 md:p-6 pt-0 no-scrollbar pb-24 md:pb-6">
+                  <form onSubmit={handleSubmit} className="space-y-4">
+                    <div className="grid grid-cols-2 gap-3">
+                      <div className="space-y-1">
+                        <label className="text-[8px] font-black text-gray-400 uppercase tracking-widest flex items-center gap-1.5"><Ruler className="h-2.5 w-2.5 text-primary" /> SIZE</label>
+                        <div className="flex flex-wrap gap-1">
+                          {product?.sizes?.length > 0 ? product.sizes.map((size: string) => (
+                            <button key={size} type="button" disabled={isSubmitting} onClick={() => setFormData({...formData, selectedSize: size})} className={cn("px-2 py-1 border text-[8px] font-black uppercase transition-all", formData.selectedSize === size ? 'bg-primary border-primary text-white' : 'bg-gray-50 border-gray-100 text-gray-400')}>{size}</button>
+                          )) : <span className="text-[8px] font-black text-gray-400 uppercase italic">Standard</span>}
+                        </div>
+                      </div>
+                      <div className="space-y-1">
+                        <label className="text-[8px] font-black text-gray-400 uppercase tracking-widest flex items-center gap-1.5"><Hash className="h-2.5 w-2.5 text-primary" /> QTY</label>
+                        <input type="number" min="1" required disabled={isSubmitting} value={formData.quantity} onChange={(e) => setFormData({...formData, quantity: parseInt(e.target.value) || 1})} className="w-full bg-gray-50 border border-gray-100 h-8 px-2 text-[10px] font-black focus:outline-none focus:border-primary text-black" />
+                      </div>
                     </div>
-                    <div className="space-y-1">
-                      <label className="text-[8px] font-black text-gray-400 uppercase tracking-widest flex items-center gap-1.5"><Phone className="h-2.5 w-2.5 text-primary" /> PHONE</label>
-                      <input required disabled={isSubmitting} type="tel" value={formData.phone} onChange={(e) => setFormData({...formData, phone: e.target.value})} placeholder="01XXXXXXXXX" className="w-full bg-gray-50 border border-gray-100 h-8 px-3 text-[10px] font-black focus:outline-none focus:border-primary text-black" />
-                    </div>
-                    <div className="space-y-1">
-                      <label className="text-[8px] font-black text-gray-400 uppercase tracking-widest flex items-center gap-1.5"><MapPin className="h-2.5 w-2.5 text-primary" /> ADDRESS</label>
-                      <textarea required disabled={isSubmitting} value={formData.address} onChange={(e) => setFormData({...formData, address: e.target.value})} placeholder="HOUSE, ROAD, AREA, CITY" className="w-full bg-gray-50 border border-gray-100 p-2 text-[10px] font-black uppercase min-h-[45px] focus:outline-none focus:border-primary text-black shadow-sm no-scrollbar" />
-                    </div>
-                  </div>
 
-                  <div className="flex flex-col gap-2 pt-1">
-                    <Button 
-                      type="submit" 
-                      disabled={isSubmitting}
-                      style={{ backgroundColor: 'var(--button-bg)' }}
-                      className="w-full hover:bg-black text-white h-10 font-black uppercase tracking-widest rounded-none shadow-lg text-[11px] border-none"
-                    >
-                      {isSubmitting ? <Loader2 className="h-4 w-4 animate-spin" /> : 'অর্ডার নিশ্চিত করুন'}
-                    </Button>
-                    <button 
-                      type="button"
-                      disabled={isSubmitting}
-                      onClick={handleWhatsAppChat}
-                      className="w-full flex items-center justify-center gap-2 h-8 bg-white border border-green-500 text-green-600 font-black text-[9px] uppercase tracking-widest hover:bg-green-50 transition-all"
-                    >
-                      <MessageCircle className="h-3 w-3" /> CHAT WITH ADMIN
-                    </button>
-                  </div>
-                </form>
+                    <div className="space-y-3">
+                      <div className="space-y-1">
+                        <label className="text-[8px] font-black text-gray-400 uppercase tracking-widest flex items-center gap-1.5"><User className="h-2.5 w-2.5 text-primary" /> NAME</label>
+                        <input required disabled={isSubmitting} value={formData.name} onChange={(e) => setFormData({...formData, name: e.target.value})} placeholder="ENTER YOUR NAME" className="w-full bg-gray-50 border border-gray-100 h-8 px-3 text-[10px] font-black uppercase focus:outline-none focus:border-primary text-black" />
+                      </div>
+                      <div className="space-y-1">
+                        <label className="text-[8px] font-black text-gray-400 uppercase tracking-widest flex items-center gap-1.5"><Phone className="h-2.5 w-2.5 text-primary" /> PHONE</label>
+                        <input required disabled={isSubmitting} type="tel" value={formData.phone} onChange={(e) => setFormData({...formData, phone: e.target.value})} placeholder="01XXXXXXXXX" className="w-full bg-gray-50 border border-gray-100 h-8 px-3 text-[10px] font-black focus:outline-none focus:border-primary text-black" />
+                      </div>
+                      <div className="space-y-1">
+                        <label className="text-[8px] font-black text-gray-400 uppercase tracking-widest flex items-center gap-1.5"><MapPin className="h-2.5 w-2.5 text-primary" /> ADDRESS</label>
+                        <textarea required disabled={isSubmitting} value={formData.address} onChange={(e) => setFormData({...formData, address: e.target.value})} placeholder="HOUSE, ROAD, AREA, CITY" className="w-full bg-gray-50 border border-gray-100 p-2 text-[10px] font-black uppercase min-h-[60px] focus:outline-none focus:border-primary text-black shadow-sm no-scrollbar" />
+                      </div>
+                    </div>
+
+                    <div className="flex flex-col gap-2 pt-2">
+                      <Button 
+                        type="submit" 
+                        disabled={isSubmitting}
+                        style={{ backgroundColor: 'var(--button-bg)' }}
+                        className="w-full hover:bg-black text-white h-12 font-black uppercase tracking-widest rounded-none shadow-lg text-[11px] border-none"
+                      >
+                        {isSubmitting ? <Loader2 className="h-4 w-4 animate-spin" /> : 'অর্ডার নিশ্চিত করুন'}
+                      </Button>
+                      <button 
+                        type="button"
+                        disabled={isSubmitting}
+                        onClick={handleWhatsAppChat}
+                        className="w-full flex items-center justify-center gap-2 h-10 bg-white border border-green-500 text-green-600 font-black text-[9px] uppercase tracking-widest hover:bg-green-50 transition-all"
+                      >
+                        <MessageCircle className="h-3 w-3" /> CHAT WITH ADMIN
+                      </button>
+                    </div>
+                  </form>
+                </div>
               </div>
             </div>
           ) : (
