@@ -207,7 +207,7 @@ const FlashOfferCard = memo(() => {
           </div>
         </div>
       ) : (
-        <div className="h-full flex flex-col items-center justify-center gap-2 border border-white/10 w-full">
+        <div className="h-full flex flex-col items-center justify-center gap-2 w-full">
           <ShoppingCart className="h-6 w-6 text-white/10" />
         </div>
       )}
@@ -272,12 +272,12 @@ export default function Home() {
 
       <main className="flex-grow container mx-auto bg-black">
         <section className="px-2 md:px-12 pt-0.5 pb-2 md:pt-1 md:pb-4">
-          <div className="grid grid-cols-12 gap-0.5 md:gap-1 h-[180px] md:h-[300px] gpu-accelerated bg-black overflow-hidden">
-            <div className="col-span-3 h-full overflow-hidden border border-white/5">
+          <div className="grid grid-cols-12 gap-0 h-[180px] md:h-[300px] gpu-accelerated bg-black overflow-hidden">
+            <div className="col-span-3 h-full overflow-hidden">
               <FlashOfferCard />
             </div>
             
-            <div className="col-span-6 h-full relative overflow-hidden bg-black border border-white/5">
+            <div className="col-span-6 h-full relative overflow-hidden bg-black">
               {combinedSliderItems.length > 0 ? (
                 <Carousel className="w-full h-full" opts={{ loop: true }} plugins={[autoplay.current]}>
                   <CarouselContent className="h-full ml-0">
@@ -293,7 +293,7 @@ export default function Home() {
               )}
             </div>
 
-            <div className="col-span-3 h-full bg-[#01a3a4] relative overflow-hidden flex flex-col items-center justify-center p-1 md:p-4 space-y-1 md:space-y-4 gpu-accelerated shadow-[inset_0_0_100px_rgba(0,0,0,0.2)] border border-white/5">
+            <div className="col-span-3 h-full bg-[#01a3a4] relative overflow-hidden flex flex-col items-center justify-center p-1 md:p-4 space-y-1 md:space-y-4 gpu-accelerated shadow-[inset_0_0_100px_rgba(0,0,0,0.2)]">
               {settings?.showVideoInAppBar ? (
                 <div className="absolute inset-0 w-full h-full"><AnimatedFlashBar /></div>
               ) : (
