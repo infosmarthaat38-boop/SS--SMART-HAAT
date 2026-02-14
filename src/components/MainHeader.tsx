@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { memo } from 'react';
@@ -18,7 +17,7 @@ export const MainHeader = memo(() => {
 
   return (
     <>
-      <div className="fixed top-0 left-0 right-0 z-[120] shadow-2xl bg-[#01a3a4] backdrop-blur-md gpu-accelerated border-b border-black/5">
+      <div className="fixed top-0 left-0 right-0 z-[120] shadow-2xl bg-[#01a3a4] backdrop-blur-md gpu-accelerated">
         <Navbar />
         {settings?.liveStatus && (
           <div className="bg-black h-[22px] md:h-[26px] flex items-center overflow-hidden whitespace-nowrap py-0 relative w-full">

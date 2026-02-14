@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useState, useEffect } from 'react';
@@ -64,7 +63,7 @@ export function Navbar() {
 
   return (
     <>
-      <nav className="w-full bg-[#01a3a4] shadow-2xl border-b border-black/5 min-h-[56px] py-1.5 flex items-center relative z-[110]">
+      <nav className="w-full bg-[#01a3a4] shadow-2xl min-h-[56px] py-1.5 flex items-center relative z-[110]">
         <div className="w-full px-2 md:px-12">
           <div className="flex items-center justify-between gap-4">
             
@@ -72,7 +71,7 @@ export function Navbar() {
             <Link href="/" className="flex items-center gap-2 shrink-0 group">
               <LogoIcon />
               <div className="flex flex-col">
-                <h1 className="text-[10px] sm:text-[12px] md:text-[13px] font-headline font-black text-black leading-none uppercase tracking-tighter">SS SMART HAAT</h1>
+                <h1 className="text-[10px] sm:text-[12px] md:text-[13px] font-headline font-black text-white leading-none uppercase tracking-tighter">SS SMART HAAT</h1>
                 <span className="text-[5px] sm:text-[6px] text-white font-bold uppercase tracking-[0.2em]">PREMIUM MARKET PLACE</span>
               </div>
             </Link>
@@ -86,37 +85,37 @@ export function Navbar() {
                   onChange={(e) => setSearchQuery(e.target.value)}
                   onKeyDown={handleSearch}
                   placeholder="SEARCH PRODUCTS..." 
-                  className="bg-white/20 border-black/10 h-9 w-full transition-all rounded-none text-[10px] text-black font-black uppercase placeholder:text-black/40 focus:ring-1 focus:ring-black pr-10"
+                  className="bg-white/20 border-white/10 h-9 w-full transition-all rounded-none text-[10px] text-white font-black uppercase placeholder:text-white/60 focus:ring-1 focus:ring-white pr-10"
                 />
-                <div className="absolute right-0 top-0 h-9 w-9 flex items-center justify-center border-l border-black/10">
-                  <Search className="h-3.5 w-3.5 text-black stroke-[3px]" />
+                <div className="absolute right-0 top-0 h-9 w-9 flex items-center justify-center border-l border-white/10">
+                  <Search className="h-3.5 w-3.5 text-white stroke-[3px]" />
                 </div>
               </div>
             </div>
 
             {/* RIGHT: NAVIGATION LINKS */}
             <div className="flex items-center gap-2 md:gap-4 shrink-0">
-              <div className="flex items-center gap-2 md:gap-4 text-[9px] font-black uppercase tracking-widest text-black">
+              <div className="flex items-center gap-2 md:gap-4 text-[9px] font-black uppercase tracking-widest text-white">
                 
-                <Link href="/" className="hover:text-white transition-colors flex items-center gap-1">
+                <Link href="/" className="hover:opacity-70 transition-opacity flex items-center gap-1">
                   <Home className="h-3 w-3" /> <span className="hidden lg:inline">{language === 'EN' ? "HOME" : "হোম"}</span>
                 </Link>
 
-                <Link href="/shop" className="hover:text-white transition-colors flex items-center gap-1">
+                <Link href="/shop" className="hover:opacity-70 transition-opacity flex items-center gap-1">
                   <ShoppingBag className="h-3 w-3" /> <span className="hidden lg:inline">{language === 'EN' ? "SHOP" : "শপ"}</span>
                 </Link>
 
-                <button onClick={() => setIsCategoryModalOpen(true)} className="hover:text-white transition-colors flex items-center gap-1 font-black uppercase tracking-widest">
+                <button onClick={() => setIsCategoryModalOpen(true)} className="hover:opacity-70 transition-opacity flex items-center gap-1 font-black uppercase tracking-widest">
                   <LayoutGrid className="h-3 w-3" /> <span className="hidden lg:inline">{language === 'EN' ? "CATEGORY" : "ক্যাটাগরি"}</span>
                 </button>
                 
-                <button onClick={toggleLanguage} className="flex items-center gap-1 hover:text-white transition-colors font-black uppercase tracking-widest">
+                <button onClick={toggleLanguage} className="flex items-center gap-1 hover:opacity-70 transition-opacity font-black uppercase tracking-widest">
                   <Languages className="h-3 w-3" /> {language}
                 </button>
 
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" size="icon" className="relative h-8 w-8 text-black hover:bg-white/10 rounded-none border border-black/10 flex items-center justify-center group">
+                    <Button variant="ghost" size="icon" className="relative h-8 w-8 text-white hover:bg-white/10 rounded-none border border-white/10 flex items-center justify-center group">
                       <MoreVertical className="h-4 w-4 transition-transform group-hover:scale-110" />
                     </Button>
                   </DropdownMenuTrigger>
@@ -137,7 +136,7 @@ export function Navbar() {
               </div>
 
               <Link href="/shop">
-                <Button variant="ghost" size="icon" className="relative h-8 w-8 rounded-none hover:bg-white/10 text-black group border border-black/10">
+                <Button variant="ghost" size="icon" className="relative h-8 w-8 rounded-none hover:bg-white/10 text-white group border border-white/10">
                   <ShoppingBag className="h-4 w-4 transition-transform group-hover:scale-110" />
                 </Button>
               </Link>
@@ -153,10 +152,10 @@ export function Navbar() {
                 onChange={(e) => setSearchQuery(e.target.value)}
                 onKeyDown={handleSearch}
                 placeholder={language === 'EN' ? "SEARCH PRODUCTS..." : "পণ্য খুঁজুন..."} 
-                className="w-full bg-white/20 border-black/10 h-10 pl-10 pr-10 rounded-none text-[10px] text-black font-black uppercase placeholder:text-black/40"
+                className="w-full bg-white/20 border-white/10 h-10 pl-10 pr-10 rounded-none text-[10px] text-white font-black uppercase placeholder:text-white/60"
               />
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-black stroke-[3px]" />
-              <button onClick={() => { setShowSearchInput(false); setSearchQuery(''); }} className="absolute right-3 top-1/2 -translate-y-1/2 text-black/40 hover:text-black transition-colors"><X className="h-4 w-4" /></button>
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-white stroke-[3px]" />
+              <button onClick={() => { setShowSearchInput(false); setSearchQuery(''); }} className="absolute right-3 top-1/2 -translate-y-1/2 text-white/60 hover:text-white transition-colors"><X className="h-4 w-4" /></button>
             </div>
           )}
         </div>
