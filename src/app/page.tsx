@@ -271,7 +271,7 @@ export default function Home() {
       <MainHeader />
 
       <main className="flex-grow container mx-auto bg-black">
-        {/* TOP GRID: Now standard aligned with product cards */}
+        {/* TOP GRID: Perfectly aligned with Navbar and product cards */}
         <section className="px-2 md:px-12 py-2 md:py-4">
           <div className="grid grid-cols-12 gap-1 md:gap-2 h-[130px] md:h-[300px] gpu-accelerated bg-black overflow-hidden">
             <div className="col-span-3 h-full overflow-hidden border border-white/5">
@@ -343,9 +343,9 @@ export default function Home() {
           );
         })}
 
-        <div className="mt-8 md:mt-12 flex justify-center pb-16 px-4 bg-black">
+        <div className="mt-8 md:mt-12 flex justify-center pb-16 px-2 md:px-12 bg-black">
           <Link href="/shop" className="w-full md:w-auto">
-            <button className="w-full md:w-[200px] border border-white/20 bg-white/[0.05] hover:border-primary text-white px-6 h-10 md:h-11 font-black uppercase tracking-[0.4em] text-[8px] md:text-[9px] flex items-center justify-center gap-2 md:gap-3 transition-all hover:bg-primary hover:text-white active:scale-95 shadow-lg group">
+            <button className="w-full md:w-[220px] border border-white/20 bg-white/[0.05] hover:border-primary text-white px-6 h-10 md:h-12 font-black uppercase tracking-[0.4em] text-[8px] md:text-[9px] flex items-center justify-center gap-2 md:gap-3 transition-all hover:bg-primary hover:text-white active:scale-95 shadow-lg group">
               MORE PRODUCT <ArrowRight className="h-3 w-3 md:h-3.5 md:w-3.5 group-hover:translate-x-2 transition-transform" />
             </button>
           </Link>
