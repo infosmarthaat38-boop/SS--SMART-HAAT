@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useMemo, useEffect, useState } from 'react';
@@ -17,7 +16,6 @@ import {
   Users,
   Zap,
   Loader2,
-  MapPin,
   Radio,
   Palette
 } from 'lucide-react';
@@ -35,7 +33,6 @@ import { Bar, BarChart, CartesianGrid, XAxis, YAxis, Pie, PieChart, Cell } from 
 import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
 
-// Updated: More stylish and vibrant palette
 const CHART_COLORS = ['#ff9f43', '#0abde3', '#ee5253', '#00d2d3', '#5f27cd', '#ff9ff3'];
 
 export default function AdminPanel() {
@@ -91,7 +88,6 @@ export default function AdminPanel() {
     };
   }, [orders, today]);
 
-  // Stylish dummy data for chart visualization
   const dailyChartData = useMemo(() => [
     { day: "SAT", sales: 42000 },
     { day: "SUN", sales: 38000 },
@@ -144,7 +140,7 @@ export default function AdminPanel() {
     <div className="min-h-screen flex flex-col bg-background selection:bg-primary/30">
       <MainHeader />
       
-      <main className="flex-grow container mx-auto px-4 py-8">
+      <main className="flex-grow container mx-auto px-2 md:px-12 py-8">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
           {stats.map((stat, i) => (
             <Link key={i} href={stat.href}>
@@ -255,7 +251,6 @@ export default function AdminPanel() {
                           cursor={{ fill: 'rgba(255,255,255,0.03)' }}
                           content={<ChartTooltipContent className="bg-black border-white/10 rounded-none p-4 font-black uppercase" hideLabel />}
                         />
-                        {/* Updated: Vibrant Orange for Revenue */}
                         <Bar dataKey="sales" fill="#ff9f43" radius={[2, 2, 0, 0]} barSize={60} />
                       </BarChart>
                     </ChartContainer>

@@ -14,9 +14,7 @@ import {
   X, 
   Zap, 
   Loader2,
-  AlertTriangle,
-  LayoutDashboard,
-  CheckCircle2
+  AlertTriangle
 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -116,7 +114,7 @@ export default function FeaturedManager() {
     <div className="min-h-screen flex flex-col bg-background">
       <MainHeader />
       
-      <main className="flex-grow container mx-auto px-4 py-12">
+      <main className="flex-grow container mx-auto px-2 md:px-12 py-12">
         <div className="flex items-center gap-4 mb-12">
           <Button asChild variant="ghost" className="rounded-none hover:bg-white/5 text-white p-2 h-12 w-12 border border-white/10">
             <Link href="/admin"><ArrowLeft className="h-6 w-6" /></Link>

@@ -105,7 +105,7 @@ export default function AdminCategories() {
     <div className="min-h-screen flex flex-col bg-background">
       <MainHeader />
       
-      <main className="flex-grow container mx-auto px-4 py-12">
+      <main className="flex-grow container mx-auto px-2 md:px-12 py-12">
         <div className="flex items-center gap-4 mb-8">
           <Button asChild variant="ghost" className="rounded-none hover:bg-white/5 text-white p-2 border border-white/10 h-12 w-12"><Link href="/admin"><ArrowLeft className="h-5 w-5" /></Link></Button>
           <h1 className="text-3xl font-black uppercase tracking-tighter text-white">MANAGE CATEGORIES</h1>

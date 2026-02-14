@@ -1,8 +1,7 @@
-
 "use client";
 
 import React, { useState, useEffect, useRef } from 'react';
-import { Navbar } from '@/components/Navbar';
+import { MainHeader } from '@/components/MainHeader';
 import { Footer } from '@/components/Footer';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -27,7 +26,7 @@ export default function AdminMessages() {
   const [replyText, setReplyText] = useState('');
   const chatScrollContainerRef = useRef<HTMLDivElement>(null);
 
-  const allMessagesQuery = useMemoFirebase(() => collection(db, 'messages'), [db]);
+  const allMessagesQuery = useMemoFirebase(() => collection(db!, 'messages'), [db]);
   const { data: rawAllMessages, isLoading } = useCollection(allMessagesQuery);
 
   const uniqueChats = React.useMemo(() => {
@@ -49,7 +48,7 @@ export default function AdminMessages() {
   const chatQuery = useMemoFirebase(() => {
     if (!selectedOrderId) return null;
     return query(
-      collection(db, 'messages'),
+      collection(db!, 'messages'),
       where('orderId', '==', selectedOrderId)
     );
   }, [db, selectedOrderId]);
@@ -63,7 +62,6 @@ export default function AdminMessages() {
     );
   }, [rawActiveChat]);
 
-  // Stable scrolling for admin as well
   useEffect(() => {
     if (chatScrollContainerRef.current) {
       chatScrollContainerRef.current.scrollTop = chatScrollContainerRef.current.scrollHeight;
@@ -74,7 +72,7 @@ export default function AdminMessages() {
     e.preventDefault();
     if (!replyText.trim() || !selectedOrderId) return;
 
-    addDocumentNonBlocking(collection(db, 'messages'), {
+    addDocumentNonBlocking(collection(db!, 'messages'), {
       orderId: selectedOrderId,
       text: replyText.toUpperCase(),
       sender: 'ADMIN',
@@ -88,9 +86,9 @@ export default function AdminMessages() {
 
   return (
     <div className="min-h-screen flex flex-col bg-background selection:bg-[#01a3a4]/30">
-      <Navbar />
+      <MainHeader />
       
-      <main className="flex-grow container mx-auto px-4 py-8">
+      <main className="flex-grow container mx-auto px-2 md:px-12 py-8">
         <div className="flex items-center gap-4 mb-8">
           <Button asChild variant="ghost" className="rounded-none hover:bg-white/5 text-white p-2 h-10 w-10 border border-white/10">
             <Link href="/admin"><ArrowLeft className="h-5 w-5" /></Link>

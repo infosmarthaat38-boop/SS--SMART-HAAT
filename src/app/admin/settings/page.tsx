@@ -63,7 +63,7 @@ export default function AdminSettings() {
   return (
     <div className="min-h-screen flex flex-col bg-background selection:bg-[#01a3a4]/30">
       <MainHeader />
-      <main className="flex-grow container mx-auto px-4 py-12 max-w-6xl">
+      <main className="flex-grow container mx-auto px-2 md:px-12 py-12">
         <div className="flex items-center gap-4 mb-12">
           <Link href="/admin"><Button variant="ghost" className="rounded-none hover:bg-white/5 text-white p-2 h-12 w-12 border border-white/10"><ArrowLeft className="h-6 w-6 text-[#01a3a4]" /></Button></Link>
           <div className="space-y-1">

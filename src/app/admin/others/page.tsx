@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { MainHeader } from '@/components/MainHeader';
 import { Footer } from '@/components/Footer';
 import { Button } from '@/components/ui/button';
@@ -12,8 +12,6 @@ import {
   Save, 
   Mail, 
   Phone, 
-  Facebook, 
-  Instagram, 
   Loader2,
   Share2,
   Contact2,
@@ -23,7 +21,8 @@ import {
   QrCode,
   Sparkles,
   LayoutDashboard,
-  X
+  Facebook,
+  Instagram
 } from 'lucide-react';
 import Link from 'next/link';
 import { useFirestore, useDoc, useMemoFirebase } from '@/firebase';
@@ -101,7 +100,7 @@ export default function AdminOthers() {
     <div className="min-h-screen flex flex-col bg-background selection:bg-[#01a3a4]/30">
       <MainHeader />
       
-      <main className="flex-grow container mx-auto px-4 py-12 max-w-6xl">
+      <main className="flex-grow container mx-auto px-2 md:px-12 py-12">
         <div className="flex items-center gap-4 mb-12">
           <Link href="/admin">
             <Button variant="ghost" className="rounded-none hover:bg-white/5 text-foreground p-2 h-12 w-12 border border-white/10">

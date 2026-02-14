@@ -278,7 +278,7 @@ export default function AdminOrders() {
     <div className="min-h-screen flex flex-col bg-background">
       <MainHeader />
       
-      <main className="flex-grow container mx-auto px-4 py-12">
+      <main className="flex-grow container mx-auto px-2 md:px-12 py-12">
         {pendingOrders && pendingOrders.length > 0 && (
           <div className="mb-8 p-4 bg-red-600/10 border border-red-600/30 flex items-center justify-between animate-pulse">
             <div className="flex items-center gap-3">

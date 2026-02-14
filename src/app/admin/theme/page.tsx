@@ -12,8 +12,6 @@ import {
   Loader2, 
   Undo2, 
   Monitor, 
-  Type,
-  CheckCircle2,
   Sparkles,
   Layers
 } from 'lucide-react';
@@ -78,7 +76,7 @@ export default function AdminTheme() {
   return (
     <div className="min-h-screen flex flex-col bg-background selection:bg-primary/30">
       <MainHeader />
-      <main className="flex-grow container mx-auto px-4 py-12 max-w-7xl">
+      <main className="flex-grow container mx-auto px-2 md:px-12 py-12">
         <div className="flex items-center gap-4 mb-12">
           <Link href="/admin">
             <Button variant="ghost" className="rounded-none hover:bg-black/5 text-foreground p-2 h-12 w-12 border border-black/10">

@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useState } from 'react';
@@ -6,7 +5,7 @@ import { MainHeader } from '@/components/MainHeader';
 import { Footer } from '@/components/Footer';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { ArrowLeft, Copy, CheckCircle2, FileCode, ShieldAlert, Zap } from 'lucide-react';
+import { ArrowLeft, Copy, CheckCircle2, FileCode, Zap } from 'lucide-react';
 import Link from 'next/link';
 import { useToast } from '@/hooks/use-toast';
 
@@ -77,7 +76,7 @@ export default function MasterPromptPage() {
   return (
     <div className="min-h-screen flex flex-col bg-background selection:bg-[#01a3a4]/30">
       <MainHeader />
-      <main className="flex-grow container mx-auto px-4 py-12 max-w-5xl">
+      <main className="flex-grow container mx-auto px-2 md:px-12 py-12">
         <div className="flex items-center gap-4 mb-12">
           <Link href="/admin">
             <Button variant="ghost" className="rounded-none hover:bg-white/5 text-white p-2 h-12 w-12 border border-white/10">

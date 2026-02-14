@@ -126,10 +126,6 @@ export default function AdminProducts() {
     setNewSize('');
   };
 
-  const removeSizeRow = (index: number) => {
-    setSizeList(prev => prev.filter((_, i) => i !== index));
-  };
-
   const updateSizeQty = (index: number, val: string) => {
     const newList = [...sizeList];
     newList[index].qty = parseInt(val) || 0;
@@ -210,7 +206,7 @@ export default function AdminProducts() {
   return (
     <div className="min-h-screen bg-background selection:bg-[#01a3a4]/30">
       <MainHeader />
-      <main className="container mx-auto px-4 py-10 max-w-7xl">
+      <main className="container mx-auto px-2 md:px-12 py-10">
         <div className="flex items-center gap-4 mb-12">
           <Button asChild variant="ghost" className="border border-white/10 h-12 w-12 rounded-none hover:bg-white/5">
             <Link href="/admin"><ArrowLeft className="h-6 w-6 text-[#01a3a4]" /></Link>
