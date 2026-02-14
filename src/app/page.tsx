@@ -272,9 +272,9 @@ export default function Home() {
       <MainHeader />
 
       <main className="flex-grow container mx-auto bg-black">
-        {/* TOP GRID: Moved up and smaller gaps */}
+        {/* TOP GRID: Fixed height for mobile to show the 3rd bar properly */}
         <section className="px-2 md:px-12 pt-0.5 pb-2 md:pt-1 md:pb-4">
-          <div className="grid grid-cols-12 gap-0.5 md:gap-1 h-[130px] md:h-[300px] gpu-accelerated bg-black overflow-hidden">
+          <div className="grid grid-cols-12 gap-0.5 md:gap-1 h-[180px] md:h-[300px] gpu-accelerated bg-black overflow-hidden">
             <div className="col-span-3 h-full overflow-hidden border border-white/5">
               <FlashOfferCard />
             </div>
@@ -299,9 +299,9 @@ export default function Home() {
               {settings?.showVideoInAppBar ? (
                 <div className="absolute inset-0 w-full h-full"><AnimatedFlashBar /></div>
               ) : (
-                <div className="flex flex-col items-center justify-center space-y-1 md:space-y-4 relative z-10">
-                  <h3 className="text-white font-black text-[5px] md:text-sm lg:text-lg uppercase tracking-[0.2em] italic text-center drop-shadow-xl font-headline">DOWNLOAD APP</h3>
-                  <div className="bg-white p-0.5 md:p-2 w-8 h-8 md:w-28 md:h-28 flex items-center justify-center border border-white/20 shadow-2xl">
+                <div className="flex flex-col items-center justify-center space-y-1 md:space-y-4 relative z-10 w-full">
+                  <h3 className="text-white font-black text-[5px] md:text-sm lg:text-lg uppercase tracking-[0.2em] italic text-center drop-shadow-xl font-headline leading-none">DOWNLOAD APP</h3>
+                  <div className="bg-white p-0.5 md:p-2 w-10 h-10 md:w-28 md:h-28 flex items-center justify-center border border-white/20 shadow-2xl">
                     <Image 
                       src={`https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(settings?.qrCodeLink || 'https://sssmarthaat.com')}`} 
                       alt="QR" 
