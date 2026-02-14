@@ -167,7 +167,7 @@ const FlashOfferCard = memo(() => {
   const activeItem = combinedItems[currentIndex];
 
   return (
-    <div className="h-full bg-black overflow-hidden relative group w-full gpu-accelerated border-r border-white/5 flex items-center justify-center">
+    <div className="h-full bg-black overflow-hidden relative group w-full gpu-accelerated border-r border-white/10 flex items-center justify-center">
       {activeItem ? (
         <div className="h-full w-full relative flex items-center justify-center" key={activeItem.id}>
           <div className="h-full w-full absolute inset-0 animate-ken-burns">
@@ -207,7 +207,7 @@ const FlashOfferCard = memo(() => {
           </div>
         </div>
       ) : (
-        <div className="h-full flex flex-col items-center justify-center gap-2 border border-white/5">
+        <div className="h-full flex flex-col items-center justify-center gap-2 border border-white/10">
           <ShoppingCart className="h-6 w-6 text-white/10" />
         </div>
       )}
@@ -266,11 +266,11 @@ export default function Home() {
   if (!isMounted) return <div className="min-h-screen bg-black" />;
 
   return (
-    <div className="min-h-screen flex flex-col bg-background selection:bg-primary/30 relative">
+    <div className="min-h-screen flex flex-col bg-black selection:bg-primary/30 relative">
       <MainHeader />
 
-      <main className="flex-grow container mx-auto">
-        <section className="grid grid-cols-12 gap-0 h-[130px] md:h-[300px] gpu-accelerated bg-black overflow-hidden border-b border-white/5">
+      <main className="flex-grow container mx-auto bg-black">
+        <section className="grid grid-cols-12 gap-0 h-[130px] md:h-[300px] gpu-accelerated bg-black overflow-hidden border-b border-white/10">
           <div className="col-span-3 h-full overflow-hidden">
             <FlashOfferCard />
           </div>
@@ -291,7 +291,7 @@ export default function Home() {
             )}
           </div>
 
-          <div className="col-span-3 h-full bg-primary relative overflow-hidden flex flex-col items-center justify-center p-1 md:p-4 space-y-1 md:space-y-4 gpu-accelerated shadow-[inset_0_0_100px_rgba(0,0,0,0.2)]">
+          <div className="col-span-3 h-full bg-primary relative overflow-hidden flex flex-col items-center justify-center p-1 md:p-4 space-y-1 md:space-y-4 gpu-accelerated shadow-[inset_0_0_100px_rgba(0,0,0,0.2)] border-l border-white/10">
             {settings?.showVideoInAppBar ? (
               <div className="absolute inset-0 w-full h-full"><AnimatedFlashBar /></div>
             ) : (
@@ -319,7 +319,7 @@ export default function Home() {
           if (catProducts.length === 0) return null;
 
           return (
-            <section key={cat.id} className="py-10 md:py-16 px-4 md:px-12 gpu-accelerated border-b border-white/[0.03] product-section bg-black">
+            <section key={cat.id} className="py-10 md:py-16 px-4 md:px-12 gpu-accelerated border-b border-white/10 product-section bg-black">
               <div className="flex items-center justify-between mb-10">
                 <div className="flex items-center gap-4">
                   <div className="h-6 md:h-8 w-1.5 bg-primary" />
@@ -341,7 +341,7 @@ export default function Home() {
 
         <div className="mt-16 md:mt-24 flex justify-center pb-24 px-4 bg-black">
           <Link href="/shop" className="w-full md:w-auto">
-            <button className="w-full md:w-[220px] border border-white/10 bg-white/[0.05] hover:border-primary text-white px-6 h-12 font-black uppercase tracking-[0.4em] text-[10px] flex items-center justify-center gap-4 transition-all hover:bg-primary hover:text-white active:scale-95 shadow-lg group">
+            <button className="w-full md:w-[220px] border border-white/20 bg-white/[0.05] hover:border-primary text-white px-6 h-12 font-black uppercase tracking-[0.4em] text-[10px] flex items-center justify-center gap-4 transition-all hover:bg-primary hover:text-white active:scale-95 shadow-lg group">
               MORE PRODUCT <ArrowRight className="h-4 w-4 group-hover:translate-x-2 transition-transform" />
             </button>
           </Link>

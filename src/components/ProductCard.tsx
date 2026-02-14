@@ -23,7 +23,7 @@ export const ProductCard = memo(({ product, index = 0 }: ProductCardProps) => {
   return (
     <>
       <Card className="group bg-white border border-white/5 rounded-none flex flex-col h-full overflow-hidden gpu-accelerated transition-all duration-500 hover:border-primary hover:shadow-[0_15px_40px_rgba(0,0,0,0.3)] relative">
-        <Link href={`/products/${product.id}`} className="relative aspect-square overflow-hidden bg-gray-100 block flex items-center justify-center">
+        <Link href={`/products/${product.id}`} className="relative aspect-square overflow-hidden bg-white block flex items-center justify-center">
           <Image
             src={product.imageUrl || 'https://picsum.photos/seed/placeholder/400/400'}
             alt={product.name || 'Product'}
@@ -67,7 +67,7 @@ export const ProductCard = memo(({ product, index = 0 }: ProductCardProps) => {
               <div className="flex items-center justify-between mt-1 h-[20px]">
                 {originalPrice > price ? (
                   <>
-                    <p className="text-[11px] text-black/40 line-through font-bold tracking-tight">
+                    <p className="text-[11px] text-black/60 line-through font-bold tracking-tight">
                       ৳{(originalPrice || 0).toLocaleString()}
                     </p>
                     <div className="bg-primary/10 border border-primary/30 px-2 py-0.5 ml-auto">
@@ -84,7 +84,7 @@ export const ProductCard = memo(({ product, index = 0 }: ProductCardProps) => {
               disabled={isOutOfStock}
               onClick={(e) => { e.preventDefault(); setIsOrderOpen(true); }}
               style={{ backgroundColor: !isOutOfStock ? 'var(--button-bg)' : undefined }}
-              className={`w-full ${isOutOfStock ? 'bg-gray-100 text-gray-400' : 'hover:opacity-90'} text-white font-black text-[10px] h-12 rounded-none uppercase flex items-center justify-center gap-2 transition-all duration-500 active:scale-95 border-none shadow-xl tracking-[0.3em]`}
+              className={`w-full ${isOutOfStock ? 'bg-white border border-black/10 text-black/30' : 'hover:opacity-90'} text-white font-black text-[10px] h-12 rounded-none uppercase flex items-center justify-center gap-2 transition-all duration-500 active:scale-95 border-none shadow-xl tracking-[0.3em]`}
             >
               {isOutOfStock ? 'SOLD OUT' : 'অর্ডার করুন'}
             </Button>
