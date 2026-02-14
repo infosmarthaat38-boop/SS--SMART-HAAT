@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useRef, useMemo, useState, useEffect, memo } from 'react';
@@ -11,7 +12,7 @@ import { CategoriesGrid } from '@/components/CategoriesGrid';
 import { Carousel, CarouselContent, CarouselItem } from "@/components/ui/carousel";
 import Autoplay from "embla-carousel-autoplay";
 import { useFirestore, useCollection, useMemoFirebase, useDoc } from '@/firebase';
-import { collection, query, where, limit, doc, increment } from 'firebase/firestore';
+import { collection, query, where, limit, doc, increment, orderBy } from 'firebase/firestore';
 import { setDocumentNonBlocking } from '@/firebase/non-blocking-updates';
 import { OrderModal } from '@/components/OrderModal';
 
@@ -109,7 +110,7 @@ const AnimatedFlashBar = memo(() => {
           className="object-cover"
           priority={true}
           decoding="async"
-          {...{ fetchPriority: "high" }}
+          {...({ fetchPriority: "high" } as any)}
         />
       </div>
       <div className="absolute top-1 right-1 bg-[#01a3a4]/40 backdrop-blur-sm border border-white/20 px-1 py-0.5 text-[4px] text-white font-black uppercase tracking-widest flex items-center gap-0.5">
@@ -180,7 +181,7 @@ const FlashOfferCard = memo(() => {
               priority={true}
               loading="eager"
               decoding="async"
-              {...{ fetchPriority: "high" }}
+              {...({ fetchPriority: "high" } as any)}
             />
           </div>
           <div className="absolute top-1 md:top-2 left-1 md:left-2 bg-red-600 px-1 md:px-2 py-0.5 text-[4px] md:text-[7px] font-black text-white uppercase tracking-widest z-10 shadow-xl">FLASH OFFER</div>
@@ -222,7 +223,12 @@ export default function Home() {
   const [isMounted, setIsMounted] = useState(false);
   
   const categoriesRef = useMemoFirebase(() => db ? collection(db, 'categories') : null, [db]);
-  const productsRef = useMemoFirebase(() => db ? collection(db, 'products') : null, [db]);
+  
+  // SPEED BOOST: Limit total products fetched on home to 60 to prevent slow loading
+  const productsRef = useMemoFirebase(() => {
+    if (!db) return null;
+    return query(collection(db, 'products'), orderBy('createdAt', 'desc'), limit(60));
+  }, [db]);
 
   const sliderProductQuery = useMemoFirebase(() => {
     if (!db) return null;
@@ -271,13 +277,14 @@ export default function Home() {
       <MainHeader />
 
       <main className="flex-grow container mx-auto bg-black">
+        {/* TOP FOLD: ZERO GAP LAYOUT */}
         <section className="px-2 md:px-12 pt-0.5 pb-2 md:pt-1 md:pb-4">
-          <div className="grid grid-cols-12 gap-0 h-[180px] md:h-[300px] gpu-accelerated bg-black overflow-hidden">
-            <div className="col-span-3 h-full overflow-hidden">
+          <div className="grid grid-cols-12 gap-0 h-[180px] md:h-[300px] gpu-accelerated bg-black overflow-hidden border border-white/5">
+            <div className="col-span-3 h-full overflow-hidden border-r border-white/5">
               <FlashOfferCard />
             </div>
             
-            <div className="col-span-6 h-full relative overflow-hidden bg-black">
+            <div className="col-span-6 h-full relative overflow-hidden bg-black border-r border-white/5">
               {combinedSliderItems.length > 0 ? (
                 <Carousel className="w-full h-full" opts={{ loop: true }} plugins={[autoplay.current]}>
                   <CarouselContent className="h-full ml-0">
@@ -307,6 +314,7 @@ export default function Home() {
                       height={150} 
                       className="w-full h-full" 
                       priority={true} 
+                      decoding="async"
                     />
                   </div>
                   <div className="flex flex-col gap-0.5 md:gap-2 w-full max-w-[140px]">
