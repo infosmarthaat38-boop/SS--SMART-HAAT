@@ -18,10 +18,10 @@ export const MainHeader = memo(() => {
 
   return (
     <>
-      <div className="fixed top-0 left-0 right-0 z-[120] shadow-2xl bg-black/95 backdrop-blur-md gpu-accelerated border-b border-white/5">
+      <div className="fixed top-0 left-0 right-0 z-[120] shadow-2xl bg-[#01a3a4] backdrop-blur-md gpu-accelerated border-b border-black/5">
         <Navbar />
         {settings?.liveStatus && (
-          <div className="bg-black border-t border-white/[0.03] h-[22px] md:h-[26px] flex items-center overflow-hidden whitespace-nowrap py-0 relative w-full">
+          <div className="bg-black h-[22px] md:h-[26px] flex items-center overflow-hidden whitespace-nowrap py-0 relative w-full">
             <div className="flex items-center gap-4 animate-marquee w-full px-2 md:px-12">
               <div 
                 style={{ color: broadcastColor }}
