@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { memo } from 'react';
@@ -21,7 +22,7 @@ export const MainHeader = memo(() => {
         <Navbar />
         {settings?.liveStatus && (
           <div className="bg-black border-t border-white/5 h-[32px] md:h-[36px] flex items-center overflow-hidden whitespace-nowrap py-0 relative w-full">
-            <div className="flex items-center gap-8 animate-marquee w-full px-4">
+            <div className="flex items-center gap-8 animate-marquee w-full px-2 md:px-12">
               <div 
                 style={{ color: broadcastColor }}
                 className="flex items-center gap-2 text-[11px] md:text-[13px] font-black uppercase tracking-widest shrink-0"

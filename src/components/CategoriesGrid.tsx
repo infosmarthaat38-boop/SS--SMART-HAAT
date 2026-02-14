@@ -24,7 +24,7 @@ export function CategoriesGrid() {
   if (!categories || categories.length === 0) return null;
 
   return (
-    <section className="py-12 md:py-20 px-4 md:px-10 border-t border-white/5">
+    <section className="py-12 md:py-20 px-2 md:px-12 border-t border-white/5">
       <div className="flex items-center gap-3 mb-10">
         <div className="h-6 w-1.5 bg-[#01a3a4]" />
         <h2 className="text-xl md:text-2xl font-black text-white uppercase tracking-tighter flex items-center gap-3">

@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useState, useEffect } from 'react';
@@ -56,7 +57,7 @@ export function Navbar() {
   if (!isMounted) {
     return (
       <nav className="w-full bg-[#01a3a4] py-2 h-[64px] shadow-lg">
-        <div className="container mx-auto px-4 flex items-center"><LogoIcon /></div>
+        <div className="container mx-auto px-2 md:px-12 flex items-center"><LogoIcon /></div>
       </nav>
     );
   }
@@ -64,10 +65,10 @@ export function Navbar() {
   return (
     <>
       <nav className="w-full bg-[#01a3a4] shadow-lg border-b border-black/10 min-h-[64px] py-2 flex items-center relative z-[110]">
-        <div className="container mx-auto px-4">
+        <div className="container mx-auto px-2 md:px-12">
           <div className="flex items-center justify-between gap-4">
             
-            {/* LEFT: LOGO & NAME (Now visible on mobile) */}
+            {/* LEFT: LOGO & NAME */}
             <Link href="/" className="flex items-center gap-2 shrink-0 group">
               <LogoIcon />
               <div className="flex flex-col">
