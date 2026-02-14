@@ -21,28 +21,28 @@ export const MainHeader = memo(() => {
       <div className="fixed top-0 left-0 right-0 z-[120] shadow-2xl bg-black/95 backdrop-blur-md gpu-accelerated border-b border-white/5">
         <Navbar />
         {settings?.liveStatus && (
-          <div className="bg-black border-t border-white/5 h-[32px] md:h-[36px] flex items-center overflow-hidden whitespace-nowrap py-0 relative w-full">
+          <div className="bg-black border-t border-white/[0.03] h-[22px] md:h-[26px] flex items-center overflow-hidden whitespace-nowrap py-0 relative w-full">
             <div className="flex items-center gap-8 animate-marquee w-full px-2 md:px-12">
               <div 
                 style={{ color: broadcastColor }}
-                className="flex items-center gap-2 text-[11px] md:text-[13px] font-black uppercase tracking-widest shrink-0"
+                className="flex items-center gap-1.5 text-[9px] md:text-[11px] font-black uppercase tracking-widest shrink-0"
               >
-                <Radio className="h-3 w-3 animate-pulse" /> {liveLabel}
+                <Radio className="h-2.5 w-2.5 animate-pulse" /> {liveLabel}
               </div>
               <p 
                 style={{ color: broadcastColor }}
-                className="text-[11px] md:text-[13px] font-black uppercase tracking-[0.1em] flex items-center gap-8 shrink-0"
+                className="text-[9px] md:text-[11px] font-black uppercase tracking-[0.1em] flex items-center gap-6 shrink-0"
               >
-                {settings.liveStatus} <span className="opacity-20 text-white">||</span> 
-                <span className="flex items-center gap-2">
-                  <MapPin className="h-3 w-3" /> <span className="tracking-tighter opacity-40 text-white">HUB:</span> {hubLocation}
+                {settings.liveStatus} <span className="opacity-10 text-white">|</span> 
+                <span className="flex items-center gap-1.5">
+                  <MapPin className="h-2.5 w-2.5" /> <span className="tracking-tighter opacity-40 text-white">HUB:</span> {hubLocation}
                 </span>
               </p>
             </div>
           </div>
         )}
       </div>
-      <div className={settings?.liveStatus ? "h-[96px] md:h-[100px]" : "h-[64px]"} />
+      <div className={settings?.liveStatus ? "h-[78px] md:h-[82px]" : "h-[56px]"} />
     </>
   );
 });
