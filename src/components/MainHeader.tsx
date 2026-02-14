@@ -30,19 +30,19 @@ export const MainHeader = memo(() => {
               <Navbar />
             </div>
             
-            {/* Pure Black Live Status Bar - Ultra Slim & Clean */}
+            {/* Pure Black Live Status Bar - Enhanced Text Visibility */}
             {settings?.liveStatus && (
-              <div className="h-[20px] md:h-[24px] flex items-center overflow-hidden whitespace-nowrap py-0 relative w-full bg-black border-t border-white/5">
+              <div className="h-[24px] md:h-[32px] flex items-center overflow-hidden whitespace-nowrap py-0 relative w-full bg-black border-t border-white/5">
                 <div className="flex items-center gap-10 animate-marquee w-full px-4">
-                  <div className="flex items-center gap-2 text-[7px] md:text-[8px] font-black uppercase tracking-[0.3em] shrink-0 text-white">
-                    <div className="h-1 w-1 bg-red-600 rounded-full animate-pulse shadow-[0_0_5px_rgba(220,38,38,0.8)]" /> 
+                  <div className="flex items-center gap-2 text-[9px] md:text-[13px] font-black uppercase tracking-[0.3em] shrink-0 text-white">
+                    <div className="h-1.5 w-1.5 bg-red-600 rounded-full animate-pulse shadow-[0_0_8px_rgba(220,38,38,0.8)]" /> 
                     {settings.liveStatusLabel || 'LIVE STATUS:'}
                   </div>
-                  <p className="text-[7px] md:text-[8px] font-bold uppercase tracking-[0.2em] flex items-center gap-5 shrink-0 text-white/90">
+                  <p className="text-[9px] md:text-[13px] font-bold uppercase tracking-[0.2em] flex items-center gap-5 shrink-0 text-white/90">
                     {settings.liveStatus} 
                     <span className="text-white/20">|</span> 
-                    <span className="flex items-center gap-1.5 text-white">
-                      <MapPin className="h-2 w-2 text-white" /> 
+                    <span className="flex items-center gap-2 text-white">
+                      <MapPin className="h-3 w-3 text-white" /> 
                       <span className="font-black opacity-60">HUB:</span> {hubLocation}
                     </span>
                   </p>
@@ -53,8 +53,8 @@ export const MainHeader = memo(() => {
         </div>
       </div>
       
-      {/* Spacer - Precisely calculated to prevent overlap */}
-      <div className={settings?.liveStatus ? "h-[64px] md:h-[72px]" : "h-[44px] md:h-[48px]"} />
+      {/* Spacer - Adjusted for new bar height */}
+      <div className={settings?.liveStatus ? "h-[68px] md:h-[80px]" : "h-[44px] md:h-[48px]"} />
     </>
   );
 });

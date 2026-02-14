@@ -35,23 +35,23 @@ const SlideItem = memo(({ item, priority }: { item: any, priority: boolean }) =>
           {...(priority ? { fetchPriority: "high" } : {})}
         />
         
-        <div className="absolute bottom-2 left-2 z-10 flex flex-col items-start max-w-[90%] pointer-events-none">
-          <h2 className="text-[6px] md:text-[12px] font-headline font-black text-white uppercase tracking-wider mb-0.5 drop-shadow-lg truncate w-full">
+        <div className="absolute bottom-4 left-4 z-10 flex flex-col items-start max-w-[90%] pointer-events-none">
+          <h2 className="text-[8px] md:text-[18px] font-headline font-black text-white uppercase tracking-wider mb-1 drop-shadow-lg truncate w-full">
             {item.name || item.title}
           </h2>
           
           {isProduct && (
-            <div className="flex flex-col space-y-0.5 md:space-y-1 pointer-events-auto">
-              <div className="text-[8px] md:text-lg font-black text-[#01a3a4] tracking-tighter drop-shadow-lg leading-none">
-                <span className="text-[6px] md:text-[10px] font-normal mr-0.5 text-white">৳</span>
+            <div className="flex flex-col space-y-1 md:space-y-2 pointer-events-auto">
+              <div className="text-[10px] md:text-2xl font-black text-[#01a3a4] tracking-tighter drop-shadow-lg leading-none">
+                <span className="text-[8px] md:text-[14px] font-normal mr-0.5 text-white">৳</span>
                 {(item.price || 0).toLocaleString()}
               </div>
               <button 
                 onClick={() => setIsOrderOpen(true)} 
                 style={{ backgroundColor: '#01a3a4' }}
-                className="text-white px-1.5 md:px-4 py-0.5 md:py-1.5 h-4 md:h-7 font-black text-[4px] md:text-[8px] uppercase tracking-widest transition-all hover:opacity-90 active:scale-95 shadow-xl border-none flex items-center gap-1"
+                className="text-white px-2 md:px-6 py-1 md:py-2.5 h-5 md:h-10 font-black text-[6px] md:text-[12px] uppercase tracking-[0.2em] transition-all hover:opacity-90 active:scale-95 shadow-xl border-none flex items-center gap-1.5"
               >
-                <ShoppingCart className="h-1.5 w-1.5 md:h-3 md:w-3" /> অর্ডার করুন
+                <ShoppingCart className="h-2 w-2 md:h-4 md:w-4" /> অর্ডার করুন
               </button>
             </div>
           )}
@@ -113,14 +113,14 @@ const AnimatedFlashBar = memo(() => {
           {...({ fetchPriority: "high" } as any)}
         />
       </div>
-      <div className="absolute top-1 right-1 bg-[#01a3a4]/40 backdrop-blur-sm border border-white/20 px-1 py-0.5 text-[4px] text-white font-black uppercase tracking-widest flex items-center gap-0.5">
-        <Sparkles className="h-1 w-1 animate-pulse" /> FLASH LIVE
+      <div className="absolute top-2 right-2 bg-[#01a3a4]/40 backdrop-blur-sm border border-white/20 px-2 py-1 text-[5px] md:text-[8px] text-white font-black uppercase tracking-widest flex items-center gap-1">
+        <Sparkles className="h-1.5 w-1.5 animate-pulse" /> FLASH LIVE
       </div>
-      <div className="absolute bottom-1 left-1 right-1 z-10 space-y-0">
-        <p className="text-[6px] md:text-[10px] font-black text-white uppercase tracking-widest truncate drop-shadow-md">
+      <div className="absolute bottom-2 left-2 right-2 z-10 space-y-0.5">
+        <p className="text-[7px] md:text-[12px] font-black text-white uppercase tracking-widest truncate drop-shadow-md">
           {activeItem.name || activeItem.title}
         </p>
-        <div className="h-0.5 w-4 bg-[#01a3a4] rounded-full" />
+        <div className="h-0.5 w-6 bg-[#01a3a4] rounded-full" />
       </div>
     </div>
   );
@@ -184,15 +184,15 @@ const FlashOfferCard = memo(() => {
               {...({ fetchPriority: "high" } as any)}
             />
           </div>
-          <div className="absolute top-1 md:top-2 left-1 md:left-2 bg-red-600 px-1 md:px-2 py-0.5 text-[4px] md:text-[7px] font-black text-white uppercase tracking-widest z-10 shadow-xl">FLASH OFFER</div>
+          <div className="absolute top-2 md:top-4 left-2 md:left-4 bg-red-600 px-2 md:px-4 py-1 text-[5px] md:text-[10px] font-black text-white uppercase tracking-[0.2em] z-10 shadow-xl">FLASH OFFER</div>
           
-          <div className="absolute bottom-1 md:bottom-2 left-1 md:left-2 z-10 flex flex-col items-start max-w-[90%]">
-             <p className="text-white font-black text-[5px] md:text-[10px] uppercase tracking-wider mb-0.5 drop-shadow-md truncate w-full">
+          <div className="absolute bottom-2 md:bottom-4 left-2 md:left-4 z-10 flex flex-col items-start max-w-[90%]">
+             <p className="text-white font-black text-[6px] md:text-[14px] uppercase tracking-wider mb-1 drop-shadow-md truncate w-full">
                {activeItem.name || activeItem.title}
              </p>
              {activeItem.price !== undefined && (
-               <div className="mb-0.5">
-                 <span className="text-[#01a3a4] font-black text-[7px] md:text-lg drop-shadow-md">
+               <div className="mb-1">
+                 <span className="text-[#01a3a4] font-black text-[8px] md:text-2xl drop-shadow-md">
                    ৳{(activeItem.price || 0).toLocaleString()}
                  </span>
                </div>
@@ -200,9 +200,9 @@ const FlashOfferCard = memo(() => {
              <button 
                onClick={() => setIsOrderOpen(true)} 
                style={{ backgroundColor: '#01a3a4' }}
-               className="text-white px-1 md:px-3 py-0.5 md:py-1 h-4 md:h-6 font-black text-[4px] md:text-[7px] uppercase tracking-widest transition-all hover:opacity-90 active:scale-95 shadow-xl border-none flex items-center gap-0.5"
+               className="text-white px-2 md:px-5 py-1 md:py-2 h-5 md:h-9 font-black text-[6px] md:text-[11px] uppercase tracking-[0.2em] transition-all hover:opacity-90 active:scale-95 shadow-xl border-none flex items-center gap-1"
              >
-               <ShoppingCart className="h-1.5 w-1.5 md:h-2.5 md:w-2.5" /> অর্ডার করুন
+               <ShoppingCart className="h-2 w-2 md:h-4 md:w-4" /> অর্ডার করুন
              </button>
              <OrderModal product={activeItem} isOpen={isOrderOpen} onClose={() => setIsOrderOpen(false)} />
           </div>
@@ -224,7 +224,6 @@ export default function Home() {
   
   const categoriesRef = useMemoFirebase(() => db ? collection(db, 'categories') : null, [db]);
   
-  // SPEED BOOST: Limit total products fetched on home to 60 to prevent slow loading
   const productsRef = useMemoFirebase(() => {
     if (!db) return null;
     return query(collection(db, 'products'), orderBy('createdAt', 'desc'), limit(60));
@@ -277,9 +276,9 @@ export default function Home() {
       <MainHeader />
 
       <main className="flex-grow container mx-auto bg-black">
-        {/* TOP FOLD: ZERO GAP LAYOUT */}
+        {/* TOP FOLD: ADJUSTED HEIGHTS */}
         <section className="px-2 md:px-12 pt-0.5 pb-2 md:pt-1 md:pb-4">
-          <div className="grid grid-cols-12 gap-0 h-[180px] md:h-[300px] gpu-accelerated bg-black overflow-hidden border border-white/5">
+          <div className="grid grid-cols-12 gap-0 h-[150px] md:h-[450px] gpu-accelerated bg-black overflow-hidden border border-white/5">
             <div className="col-span-3 h-full overflow-hidden border-r border-white/5">
               <FlashOfferCard />
             </div>
@@ -305,8 +304,8 @@ export default function Home() {
                 <div className="absolute inset-0 w-full h-full"><AnimatedFlashBar /></div>
               ) : (
                 <div className="flex flex-col items-center justify-center space-y-1 md:space-y-4 relative z-10 w-full">
-                  <h3 className="text-white font-black text-[5px] md:text-sm lg:text-lg uppercase tracking-[0.2em] italic text-center drop-shadow-xl font-headline leading-none">DOWNLOAD APP</h3>
-                  <div className="bg-white p-0.5 md:p-2 w-10 h-10 md:w-28 md:h-28 flex items-center justify-center border border-white/20 shadow-2xl">
+                  <h3 className="text-white font-black text-[6px] md:text-sm lg:text-lg uppercase tracking-[0.2em] italic text-center drop-shadow-xl font-headline leading-none">DOWNLOAD APP</h3>
+                  <div className="bg-white p-0.5 md:p-2 w-12 h-12 md:w-32 md:h-32 flex items-center justify-center border border-white/20 shadow-2xl">
                     <Image 
                       src={`https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(settings?.qrCodeLink || 'https://sssmarthaat.com')}`} 
                       alt="QR" 
@@ -317,9 +316,9 @@ export default function Home() {
                       decoding="async"
                     />
                   </div>
-                  <div className="flex flex-col gap-0.5 md:gap-2 w-full max-w-[140px]">
-                    <button className="w-full bg-white text-black h-4 md:h-8 flex items-center justify-center gap-0.5 md:gap-2 font-black text-[4px] md:text-[9px] uppercase shadow-lg hover:opacity-90 transition-all"><Apple className="h-1.5 w-1.5 md:h-4 md:w-4" /> APP STORE</button>
-                    <button className="w-full bg-white text-black h-4 md:h-8 flex items-center justify-center gap-0.5 md:gap-2 font-black text-[4px] md:text-[9px] uppercase shadow-lg hover:opacity-90 transition-all"><Play className="h-1.5 w-1.5 md:h-4 md:w-4" /> PLAY STORE</button>
+                  <div className="flex flex-col gap-1 md:gap-3 w-full max-w-[160px]">
+                    <button className="w-full bg-white text-black h-5 md:h-10 flex items-center justify-center gap-1 md:gap-2 font-black text-[5px] md:text-[11px] uppercase shadow-lg hover:opacity-90 transition-all"><Apple className="h-2 w-2 md:h-5 md:w-5" /> APP STORE</button>
+                    <button className="w-full bg-white text-black h-5 md:h-10 flex items-center justify-center gap-1 md:gap-2 font-black text-[5px] md:text-[11px] uppercase shadow-lg hover:opacity-90 transition-all"><Play className="h-2 w-2 md:h-5 md:w-5" /> PLAY STORE</button>
                   </div>
                 </div>
               )}

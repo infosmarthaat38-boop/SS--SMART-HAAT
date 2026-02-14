@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useState, useEffect, memo } from 'react';
@@ -152,49 +153,48 @@ export const OrderModal = memo(({ product, isOpen, onClose }: OrderModalProps) =
                     />
                   </div>
                   <div className="space-y-3">
-                    <h3 className="text-[12px] font-black text-black uppercase tracking-tighter leading-tight line-clamp-2">{product.name || product.title}</h3>
-                    <p className="text-primary font-black text-lg">৳{(product.price || 0).toLocaleString()}</p>
+                    <h3 className="text-[14px] font-black text-black uppercase tracking-tighter leading-tight line-clamp-2">{product.name || product.title}</h3>
+                    <p className="text-primary font-black text-xl">৳{(product.price || 0).toLocaleString()}</p>
                     <div className="p-3 bg-white border border-gray-100 space-y-2">
-                       <p className="text-[9px] font-black text-black uppercase flex items-center gap-1.5">
-                         <Truck className="h-3 w-3 text-primary" /> DELIVERY INFO
+                       <p className="text-[10px] font-black text-black uppercase flex items-center gap-1.5">
+                         <Truck className="h-3.5 w-3.5 text-primary" /> DELIVERY INFO
                        </p>
-                       <p className="text-[9px] font-bold text-gray-500">ঢাকার ভিতরে: ৳{settings?.deliveryChargeInside || '60'}</p>
-                       <p className="text-[9px] font-bold text-gray-500">ঢাকার বাইরে: ৳{settings?.deliveryChargeOutside || '120'}</p>
+                       <p className="text-[10px] font-bold text-gray-500">ঢাকার ভিতরে: ৳{settings?.deliveryChargeInside || '60'}</p>
+                       <p className="text-[10px] font-bold text-gray-500">ঢাকার বাইরে: ৳{settings?.deliveryChargeOutside || '120'}</p>
                     </div>
                   </div>
                 </div>
               )}
 
               <div className="flex-grow flex flex-col h-full bg-white relative overflow-hidden">
-                <div className={cn("p-3 pb-1 shrink-0 bg-white z-10", isMobile && "pt-8")}>
+                <div className={cn("p-4 pb-2 shrink-0 bg-white z-10", isMobile && "pt-10")}>
                   <div className="space-y-0.5">
-                    <DialogTitle className="text-lg font-black text-black uppercase tracking-tighter font-headline">ORDER NOW</DialogTitle>
-                    <p className="text-[7px] font-black text-gray-400 uppercase tracking-[0.2em]">PREMIUM SECURE CHECKOUT</p>
+                    <DialogTitle className="text-xl font-black text-black uppercase tracking-tighter font-headline">ORDER NOW</DialogTitle>
+                    <p className="text-[8px] font-black text-gray-400 uppercase tracking-[0.3em]">PREMIUM SECURE CHECKOUT</p>
                   </div>
 
                   {isMobile && (
-                    <div className="mt-1.5 p-2 bg-gray-50 border border-gray-100 flex items-center justify-between">
+                    <div className="mt-2 p-2 bg-gray-50 border border-gray-100 flex items-center justify-between">
                       <div className="flex items-center gap-1.5">
-                        <Truck className="h-3 w-3 text-primary" />
-                        <span className="text-[7px] font-black uppercase text-black">DELIVERY:</span>
+                        <Truck className="h-3.5 w-3.5 text-primary" />
+                        <span className="text-[8px] font-black uppercase text-black">DELIVERY:</span>
                       </div>
-                      <div className="flex gap-2">
-                        <p className="text-[7px] font-bold text-gray-600">ঢাকা: ৳{settings?.deliveryChargeInside || '60'}</p>
-                        <p className="text-[7px] font-bold text-gray-600">বাইরে: ৳{settings?.deliveryChargeOutside || '120'}</p>
+                      <div className="flex gap-3">
+                        <p className="text-[8px] font-bold text-gray-600">ঢাকা: ৳{settings?.deliveryChargeInside || '60'}</p>
+                        <p className="text-[8px] font-bold text-gray-600">বাইরে: ৳{settings?.deliveryChargeOutside || '120'}</p>
                       </div>
                     </div>
                   )}
                 </div>
 
-                {/* Hard Scroll Logic: Massive padding and touch handling */}
-                <div className="flex-grow overflow-y-auto px-4 pt-1 no-scrollbar touch-pan-y">
-                  <form onSubmit={handleSubmit} className={cn("space-y-3", isMobile ? "pb-[500px]" : "pb-10")}>
-                    <div className="grid grid-cols-2 gap-2">
-                      <div className="space-y-1">
-                        <label className="text-[7px] font-black text-gray-400 uppercase tracking-widest flex items-center gap-1">
-                          <Ruler className="h-2 w-2 text-primary" /> SIZE
+                <div className="flex-grow overflow-y-auto px-5 pt-2 no-scrollbar touch-pan-y">
+                  <form onSubmit={handleSubmit} className={cn("space-y-4", isMobile ? "pb-[500px]" : "pb-10")}>
+                    <div className="grid grid-cols-2 gap-3">
+                      <div className="space-y-1.5">
+                        <label className="text-[8px] font-black text-gray-400 uppercase tracking-widest flex items-center gap-1.5">
+                          <Ruler className="h-2.5 w-2.5 text-primary" /> SIZE
                         </label>
-                        <div className="flex flex-wrap gap-1">
+                        <div className="flex flex-wrap gap-1.5">
                           {product?.sizes?.length > 0 ? product.sizes.map((size: string) => (
                             <button 
                               key={size} 
@@ -202,18 +202,18 @@ export const OrderModal = memo(({ product, isOpen, onClose }: OrderModalProps) =
                               disabled={isSubmitting} 
                               onClick={() => setFormData({...formData, selectedSize: size})} 
                               className={cn(
-                                "px-2 py-0.5 border text-[7px] font-black uppercase transition-all", 
+                                "px-3 py-1 border text-[8px] md:text-[10px] font-black uppercase transition-all", 
                                 formData.selectedSize === size ? 'bg-primary border-primary text-white' : 'bg-gray-50 border-gray-100 text-gray-400'
                               )}
                             >
                               {size}
                             </button>
-                          )) : <span className="text-[7px] font-black text-gray-400 uppercase italic">Standard</span>}
+                          )) : <span className="text-[9px] font-black text-gray-400 uppercase italic">Standard</span>}
                         </div>
                       </div>
-                      <div className="space-y-1">
-                        <label className="text-[7px] font-black text-gray-400 uppercase tracking-widest flex items-center gap-1">
-                          <Hash className="h-2 w-2 text-primary" /> QTY
+                      <div className="space-y-1.5">
+                        <label className="text-[8px] font-black text-gray-400 uppercase tracking-widest flex items-center gap-1.5">
+                          <Hash className="h-2.5 w-2.5 text-primary" /> QTY
                         </label>
                         <input 
                           type="number" 
@@ -222,15 +222,15 @@ export const OrderModal = memo(({ product, isOpen, onClose }: OrderModalProps) =
                           disabled={isSubmitting} 
                           value={formData.quantity} 
                           onChange={(e) => setFormData({...formData, quantity: parseInt(e.target.value) || 1})} 
-                          className="w-full bg-gray-50 border border-gray-100 h-7 px-2 text-[10px] font-black focus:outline-none focus:border-primary text-black" 
+                          className="w-full bg-gray-50 border border-gray-100 h-9 px-3 text-[12px] font-black focus:outline-none focus:border-primary text-black" 
                         />
                       </div>
                     </div>
 
-                    <div className="space-y-2">
-                      <div className="space-y-1">
-                        <label className="text-[7px] font-black text-gray-400 uppercase tracking-widest flex items-center gap-1">
-                          <User className="h-2 w-2 text-primary" /> NAME
+                    <div className="space-y-3">
+                      <div className="space-y-1.5">
+                        <label className="text-[8px] font-black text-gray-400 uppercase tracking-widest flex items-center gap-1.5">
+                          <User className="h-2.5 w-2.5 text-primary" /> NAME
                         </label>
                         <input 
                           required 
@@ -238,12 +238,12 @@ export const OrderModal = memo(({ product, isOpen, onClose }: OrderModalProps) =
                           value={formData.name} 
                           onChange={(e) => setFormData({...formData, name: e.target.value})} 
                           placeholder="ENTER YOUR NAME" 
-                          className="w-full bg-gray-50 border border-gray-100 h-8 px-3 text-[10px] font-black uppercase focus:outline-none focus:border-primary text-black" 
+                          className="w-full bg-gray-50 border border-gray-100 h-10 px-4 text-[12px] font-black uppercase focus:outline-none focus:border-primary text-black" 
                         />
                       </div>
-                      <div className="space-y-1">
-                        <label className="text-[7px] font-black text-gray-400 uppercase tracking-widest flex items-center gap-1">
-                          <Phone className="h-2 w-2 text-primary" /> PHONE
+                      <div className="space-y-1.5">
+                        <label className="text-[8px] font-black text-gray-400 uppercase tracking-widest flex items-center gap-1.5">
+                          <Phone className="h-2.5 w-2.5 text-primary" /> PHONE
                         </label>
                         <input 
                           required 
@@ -252,12 +252,12 @@ export const OrderModal = memo(({ product, isOpen, onClose }: OrderModalProps) =
                           value={formData.phone} 
                           onChange={(e) => setFormData({...formData, phone: e.target.value})} 
                           placeholder="01XXXXXXXXX" 
-                          className="w-full bg-gray-50 border border-gray-100 h-8 px-3 text-[10px] font-black focus:outline-none focus:border-primary text-black" 
+                          className="w-full bg-gray-50 border border-gray-100 h-10 px-4 text-[12px] font-black focus:outline-none focus:border-primary text-black" 
                         />
                       </div>
-                      <div className="space-y-1">
-                        <label className="text-[7px] font-black text-gray-400 uppercase tracking-widest flex items-center gap-1">
-                          <MapPin className="h-2 w-2 text-primary" /> ADDRESS
+                      <div className="space-y-1.5">
+                        <label className="text-[8px] font-black text-gray-400 uppercase tracking-widest flex items-center gap-1.5">
+                          <MapPin className="h-2.5 w-2.5 text-primary" /> ADDRESS
                         </label>
                         <textarea 
                           required 
@@ -265,27 +265,27 @@ export const OrderModal = memo(({ product, isOpen, onClose }: OrderModalProps) =
                           value={formData.address} 
                           onChange={(e) => setFormData({...formData, address: e.target.value})} 
                           placeholder="HOUSE, ROAD, AREA, CITY" 
-                          className="w-full bg-gray-50 border border-gray-100 p-2 text-[10px] font-black uppercase min-h-[60px] focus:outline-none focus:border-primary text-black shadow-sm no-scrollbar" 
+                          className="w-full bg-gray-50 border border-gray-100 p-3 text-[12px] font-black uppercase min-h-[80px] focus:outline-none focus:border-primary text-black shadow-sm no-scrollbar" 
                         />
                       </div>
                     </div>
 
-                    <div className="flex flex-col gap-2 pt-2">
+                    <div className="flex flex-col gap-3 pt-3">
                       <Button 
                         type="submit" 
                         disabled={isSubmitting}
                         style={{ backgroundColor: 'var(--button-bg)' }}
-                        className="w-full hover:bg-black text-white h-11 font-black uppercase tracking-widest rounded-none shadow-lg text-[10px] border-none"
+                        className="w-full hover:bg-black text-white h-14 font-black uppercase tracking-[0.3em] rounded-none shadow-lg text-[14px] border-none"
                       >
-                        {isSubmitting ? <Loader2 className="h-4 w-4 animate-spin" /> : 'অর্ডার নিশ্চিত করুন'}
+                        {isSubmitting ? <Loader2 className="h-5 w-5 animate-spin" /> : 'অর্ডার নিশ্চিত করুন'}
                       </Button>
                       <button 
                         type="button"
                         disabled={isSubmitting}
                         onClick={handleWhatsAppChat}
-                        className="w-full flex items-center justify-center gap-2 h-9 bg-white border border-green-500 text-green-600 font-black text-[8px] uppercase tracking-widest hover:bg-green-50 transition-all"
+                        className="w-full flex items-center justify-center gap-2.5 h-11 bg-white border border-green-500 text-green-600 font-black text-[10px] uppercase tracking-widest hover:bg-green-50 transition-all"
                       >
-                        <MessageCircle className="h-3 w-3" /> CHAT WITH ADMIN
+                        <MessageCircle className="h-4 w-4" /> CHAT WITH ADMIN
                       </button>
                     </div>
                   </form>
