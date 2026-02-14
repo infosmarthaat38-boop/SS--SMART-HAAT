@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useState, useMemo, Suspense } from 'react';
@@ -89,7 +88,7 @@ function ShopContent() {
       ) : (
         <>
           {displayedProducts.length > 0 ? (
-            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-4 md:gap-6">
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 md:gap-6">
               {displayedProducts.map((p, i) => (
                 <ProductCard key={p.id} product={p} index={i} />
               ))}

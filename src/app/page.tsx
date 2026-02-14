@@ -315,7 +315,7 @@ export default function Home() {
             <p className="text-[10px] font-black uppercase text-primary tracking-widest">Initialising Archive...</p>
           </div>
         ) : categories?.map((cat) => {
-          const catProducts = allProducts?.filter(p => p.category === cat.name).slice(0, 16) || [];
+          const catProducts = allProducts?.filter(p => p.category === cat.name).slice(0, 18) || [];
           if (catProducts.length === 0) return null;
 
           return (
@@ -330,7 +330,7 @@ export default function Home() {
                 </Link>
               </div>
               
-              <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-4 md:gap-8">
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 md:gap-6">
                 {catProducts.map((p, i) => (
                   <ProductCard key={p.id} product={p} index={i} />
                 ))}
