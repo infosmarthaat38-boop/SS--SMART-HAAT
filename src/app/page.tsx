@@ -21,7 +21,7 @@ const SlideItem = memo(({ item, priority }: { item: any, priority: boolean }) =>
 
   return (
     <CarouselItem className="h-full">
-      <div className="relative h-full w-full bg-gray-50 overflow-hidden gpu-accelerated flex items-center justify-center">
+      <div className="relative h-full w-full bg-black overflow-hidden gpu-accelerated flex items-center justify-center">
         <Image
           src={item.imageUrl || 'https://picsum.photos/seed/placeholder/800/450'}
           alt={item.name || item.title || 'Banner'}
@@ -35,14 +35,14 @@ const SlideItem = memo(({ item, priority }: { item: any, priority: boolean }) =>
         />
         
         <div className="absolute bottom-4 left-4 z-10 flex flex-col items-start max-w-[90%] pointer-events-none">
-          <h2 className="text-[8px] md:text-[14px] font-headline font-black text-white uppercase tracking-wider mb-1 drop-shadow-md truncate w-full">
+          <h2 className="text-[10px] md:text-[16px] font-headline font-black text-white uppercase tracking-wider mb-1 drop-shadow-lg truncate w-full">
             {item.name || item.title}
           </h2>
           
           {isProduct && (
             <div className="flex flex-col space-y-2 pointer-events-auto">
-              <div className="text-[10px] md:text-xl font-black text-primary tracking-tighter drop-shadow-md">
-                <span className="text-[8px] md:text-[12px] font-normal mr-0.5 text-white">৳</span>
+              <div className="text-[12px] md:text-2xl font-black text-primary tracking-tighter drop-shadow-lg">
+                <span className="text-[10px] md:text-[14px] font-normal mr-0.5 text-white">৳</span>
                 {(item.price || 0).toLocaleString()}
               </div>
               <button 
@@ -100,7 +100,7 @@ const AnimatedFlashBar = memo(() => {
   const activeItem = combinedItems[currentIndex];
 
   return (
-    <div className="h-full w-full relative overflow-hidden bg-white group cursor-pointer">
+    <div className="h-full w-full relative overflow-hidden bg-black group cursor-pointer">
       <div key={activeItem.id} className="h-full w-full absolute inset-0 animate-ken-burns">
         <Image 
           src={activeItem.imageUrl} 
@@ -112,7 +112,7 @@ const AnimatedFlashBar = memo(() => {
           {...{ fetchPriority: "high" }}
         />
       </div>
-      <div className="absolute top-2 right-2 bg-primary/10 backdrop-blur-md border border-white/20 px-2 py-0.5 text-[6px] md:text-[8px] text-white font-black uppercase tracking-widest flex items-center gap-1">
+      <div className="absolute top-2 right-2 bg-primary/20 backdrop-blur-md border border-white/30 px-2 py-0.5 text-[6px] md:text-[8px] text-white font-black uppercase tracking-widest flex items-center gap-1">
         <Sparkles className="h-2 w-2 animate-pulse" /> FLASH LIVE
       </div>
       <div className="absolute bottom-4 left-4 right-4 z-10 space-y-1">
@@ -167,7 +167,7 @@ const FlashOfferCard = memo(() => {
   const activeItem = combinedItems[currentIndex];
 
   return (
-    <div className="h-full bg-gray-50 overflow-hidden relative group w-full gpu-accelerated border-r border-black/5 flex items-center justify-center">
+    <div className="h-full bg-black overflow-hidden relative group w-full gpu-accelerated border-r border-white/5 flex items-center justify-center">
       {activeItem ? (
         <div className="h-full w-full relative flex items-center justify-center" key={activeItem.id}>
           <div className="h-full w-full absolute inset-0 animate-ken-burns">
@@ -207,8 +207,8 @@ const FlashOfferCard = memo(() => {
           </div>
         </div>
       ) : (
-        <div className="h-full flex flex-col items-center justify-center gap-2 border border-black/5">
-          <ShoppingCart className="h-6 w-6 text-black/10" />
+        <div className="h-full flex flex-col items-center justify-center gap-2 border border-white/5">
+          <ShoppingCart className="h-6 w-6 text-white/10" />
         </div>
       )}
     </div>
@@ -263,19 +263,19 @@ export default function Home() {
     }
   }, [db]);
 
-  if (!isMounted) return <div className="min-h-screen bg-white" />;
+  if (!isMounted) return <div className="min-h-screen bg-black" />;
 
   return (
     <div className="min-h-screen flex flex-col bg-background selection:bg-primary/30 relative">
       <MainHeader />
 
       <main className="flex-grow container mx-auto">
-        <section className="grid grid-cols-12 gap-0 h-[130px] md:h-[300px] gpu-accelerated bg-white overflow-hidden border-b border-black/5">
+        <section className="grid grid-cols-12 gap-0 h-[130px] md:h-[300px] gpu-accelerated bg-black overflow-hidden border-b border-white/5">
           <div className="col-span-3 h-full overflow-hidden">
             <FlashOfferCard />
           </div>
           
-          <div className="col-span-6 h-full relative overflow-hidden bg-gray-50">
+          <div className="col-span-6 h-full relative overflow-hidden bg-black">
             {combinedSliderItems.length > 0 ? (
               <Carousel className="w-full h-full" opts={{ loop: true }} plugins={[autoplay.current]}>
                 <CarouselContent className="h-full">
@@ -291,7 +291,7 @@ export default function Home() {
             )}
           </div>
 
-          <div className="col-span-3 h-full bg-primary relative overflow-hidden flex flex-col items-center justify-center p-1 md:p-4 space-y-1 md:space-y-4 gpu-accelerated shadow-[inset_0_0_100px_rgba(0,0,0,0.05)]">
+          <div className="col-span-3 h-full bg-primary relative overflow-hidden flex flex-col items-center justify-center p-1 md:p-4 space-y-1 md:space-y-4 gpu-accelerated shadow-[inset_0_0_100px_rgba(0,0,0,0.2)]">
             {settings?.showVideoInAppBar ? (
               <div className="absolute inset-0 w-full h-full"><AnimatedFlashBar /></div>
             ) : (
@@ -319,13 +319,13 @@ export default function Home() {
           if (catProducts.length === 0) return null;
 
           return (
-            <section key={cat.id} className="py-10 md:py-16 px-4 md:px-12 gpu-accelerated border-b border-black/[0.03] product-section bg-white">
+            <section key={cat.id} className="py-10 md:py-16 px-4 md:px-12 gpu-accelerated border-b border-white/[0.03] product-section bg-black">
               <div className="flex items-center justify-between mb-10">
                 <div className="flex items-center gap-4">
                   <div className="h-6 md:h-8 w-1.5 bg-primary" />
-                  <h2 className="text-[12px] md:text-[16px] font-black text-black uppercase tracking-[0.4em] font-headline">{cat.name} COLLECTION</h2>
+                  <h2 className="text-[12px] md:text-[16px] font-black text-white uppercase tracking-[0.4em] font-headline">{cat.name} COLLECTION</h2>
                 </div>
-                <Link href={`/shop?category=${cat.name}`} className="text-[9px] md:text-[11px] font-black text-primary uppercase tracking-widest hover:text-black transition-colors flex items-center gap-2">
+                <Link href={`/shop?category=${cat.name}`} className="text-[9px] md:text-[11px] font-black text-primary uppercase tracking-widest hover:text-white transition-colors flex items-center gap-2">
                   VIEW ARCHIVE <ArrowRight className="h-3 w-3" />
                 </Link>
               </div>
@@ -339,9 +339,9 @@ export default function Home() {
           );
         })}
 
-        <div className="mt-16 md:mt-24 flex justify-center pb-24 px-4 bg-white">
+        <div className="mt-16 md:mt-24 flex justify-center pb-24 px-4 bg-black">
           <Link href="/shop" className="w-full md:w-auto">
-            <button className="w-full md:w-[220px] border border-black/10 bg-black/[0.02] hover:border-primary text-black px-6 h-12 font-black uppercase tracking-[0.4em] text-[10px] flex items-center justify-center gap-4 transition-all hover:bg-primary hover:text-white active:scale-95 shadow-lg group">
+            <button className="w-full md:w-[220px] border border-white/10 bg-white/[0.05] hover:border-primary text-white px-6 h-12 font-black uppercase tracking-[0.4em] text-[10px] flex items-center justify-center gap-4 transition-all hover:bg-primary hover:text-white active:scale-95 shadow-lg group">
               MORE PRODUCT <ArrowRight className="h-4 w-4 group-hover:translate-x-2 transition-transform" />
             </button>
           </Link>

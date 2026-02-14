@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useEffect } from 'react';
@@ -6,9 +5,8 @@ import { useFirestore, useDoc, useMemoFirebase } from '@/firebase';
 import { doc } from 'firebase/firestore';
 
 /**
- * ThemeHandler - Injects dynamic CSS variables based on Firestore settings.
- * Converts HEX to HSL format for compatibility with ShadCN variables.
- * Ensures ALL text changes color when themeTextColor is updated.
+ * ThemeHandler - Dynamic CSS variable injection.
+ * Enforces "White Cards" and "Light Text" rule regardless of admin settings.
  */
 export function ThemeHandler() {
   const db = useFirestore();
@@ -20,7 +18,6 @@ export function ThemeHandler() {
 
     const root = document.documentElement;
 
-    // Helper to convert hex to HSL space-separated string for ShadCN
     const hexToHsl = (hex: string) => {
       let r = 0, g = 0, b = 0;
       if (!hex) return '0 0% 100%';
@@ -60,19 +57,24 @@ export function ThemeHandler() {
     if (settings.themeBackgroundColor) {
       const hsl = hexToHsl(settings.themeBackgroundColor);
       root.style.setProperty('--background', hsl);
-      root.style.setProperty('--card', hsl);
       root.style.setProperty('--popover', hsl);
     }
 
+    // ALWAYS keep cards white as per user request
+    root.style.setProperty('--card', '0 0% 100%');
+    root.style.setProperty('--card-foreground', '0 0% 0%');
+
     if (settings.themeTextColor) {
       const hsl = hexToHsl(settings.themeTextColor);
-      // UPDATE ALL TEXT VARIABLES SIMULTANEOUSLY
       root.style.setProperty('--foreground', hsl);
-      root.style.setProperty('--card-foreground', hsl);
       root.style.setProperty('--popover-foreground', hsl);
-      root.style.setProperty('--muted-foreground', hsl);
+      root.style.setProperty('--muted-foreground', hsl); // No more gray text
       root.style.setProperty('--secondary-foreground', hsl);
       root.style.setProperty('--accent-foreground', hsl);
+    } else {
+      // Default light text
+      root.style.setProperty('--foreground', '0 0% 100%');
+      root.style.setProperty('--muted-foreground', '0 0% 100%');
     }
 
     if (settings.themeButtonColor) {

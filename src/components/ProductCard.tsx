@@ -22,7 +22,7 @@ export const ProductCard = memo(({ product, index = 0 }: ProductCardProps) => {
 
   return (
     <>
-      <Card className="group bg-white border border-gray-100 rounded-none flex flex-col h-full overflow-hidden gpu-accelerated transition-all duration-500 hover:border-primary hover:shadow-[0_10px_30px_rgba(0,0,0,0.08)] relative">
+      <Card className="group bg-white border border-gray-100 rounded-none flex flex-col h-full overflow-hidden gpu-accelerated transition-all duration-500 hover:border-primary hover:shadow-[0_10px_30px_rgba(0,0,0,0.15)] relative">
         <Link href={`/products/${product.id}`} className="relative aspect-square overflow-hidden bg-gray-50 block flex items-center justify-center">
           <Image
             src={product.imageUrl || 'https://picsum.photos/seed/placeholder/400/400'}
@@ -44,12 +44,12 @@ export const ProductCard = memo(({ product, index = 0 }: ProductCardProps) => {
         
         <CardContent className="p-3 md:p-4 flex flex-col flex-grow bg-white space-y-3">
           <div className="space-y-1">
-            <h3 className="font-black text-[10px] md:text-[11px] text-foreground uppercase truncate tracking-[0.15em] transition-colors group-hover:text-primary">
+            <h3 className="font-black text-[10px] md:text-[11px] text-black uppercase truncate tracking-[0.15em] transition-colors group-hover:text-primary">
               {product.name || 'Premium Item'}
             </h3>
             <div className="flex items-center gap-2">
               <div className={`h-1.5 w-1.5 rounded-full ${isOutOfStock ? 'bg-red-600' : 'bg-green-500'} animate-pulse`} />
-              <span className={`text-[7px] font-black uppercase tracking-[0.2em] ${isOutOfStock ? 'text-red-600' : 'text-green-600 opacity-80'}`}>
+              <span className={`text-[7px] font-black uppercase tracking-[0.2em] ${isOutOfStock ? 'text-red-600' : 'text-green-600'}`}>
                 {isOutOfStock ? 'OUT OF STOCK' : 'IN STOCK'}
               </span>
             </div>
@@ -57,7 +57,7 @@ export const ProductCard = memo(({ product, index = 0 }: ProductCardProps) => {
           
           <div className="mt-auto pt-2">
             <div className="h-[44px] flex flex-col justify-start mb-3 relative">
-              <div className="flex items-baseline gap-1 text-foreground">
+              <div className="flex items-baseline gap-1 text-black">
                 <span className="text-[10px] font-bold text-primary">৳</span>
                 <span className="font-black text-[18px] md:text-[20px] tracking-tighter leading-none">
                   {(price || 0).toLocaleString()}
