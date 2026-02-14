@@ -49,7 +49,7 @@ const SlideItem = memo(({ item, priority }: { item: any, priority: boolean }) =>
               <button 
                 onClick={() => setIsOrderOpen(true)} 
                 style={{ backgroundColor: '#01a3a4' }}
-                className="text-white px-2 md:px-6 py-1 md:py-2.5 h-5 md:h-10 font-black text-[6px] md:text-[12px] uppercase tracking-[0.2em] transition-all hover:opacity-90 active:scale-95 shadow-xl border-none flex items-center gap-1.5"
+                className="text-white px-2 md:px-6 py-1 md:py-2.5 h-5 md:h-10 font-black text-[6px] md:text-[14px] uppercase tracking-[0.2em] transition-all hover:opacity-90 active:scale-95 shadow-xl border-none flex items-center gap-1.5"
               >
                 <ShoppingCart className="h-2 w-2 md:h-4 md:w-4" /> অর্ডার করুন
               </button>
@@ -200,7 +200,7 @@ const FlashOfferCard = memo(() => {
              <button 
                onClick={() => setIsOrderOpen(true)} 
                style={{ backgroundColor: '#01a3a4' }}
-               className="text-white px-2 md:px-5 py-1 md:py-2 h-5 md:h-9 font-black text-[6px] md:text-[11px] uppercase tracking-[0.2em] transition-all hover:opacity-90 active:scale-95 shadow-xl border-none flex items-center gap-1"
+               className="text-white px-2 md:px-5 py-1 md:py-2 h-5 md:h-9 font-black text-[6px] md:text-[14px] uppercase tracking-[0.2em] transition-all hover:opacity-90 active:scale-95 shadow-xl border-none flex items-center gap-1"
              >
                <ShoppingCart className="h-2 w-2 md:h-4 md:w-4" /> অর্ডার করুন
              </button>
@@ -278,7 +278,7 @@ export default function Home() {
       <main className="flex-grow container mx-auto bg-black">
         {/* TOP FOLD: ADJUSTED HEIGHTS */}
         <section className="px-2 md:px-12 pt-0.5 pb-2 md:pt-1 md:pb-4">
-          <div className="grid grid-cols-12 gap-0 h-[150px] md:h-[450px] gpu-accelerated bg-black overflow-hidden border border-white/5">
+          <div className="grid grid-cols-12 gap-0 h-[130px] md:h-[380px] gpu-accelerated bg-black overflow-hidden border border-white/5">
             <div className="col-span-3 h-full overflow-hidden border-r border-white/5">
               <FlashOfferCard />
             </div>
