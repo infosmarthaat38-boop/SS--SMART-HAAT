@@ -112,7 +112,7 @@ const AnimatedFlashBar = memo(() => {
           {...{ fetchPriority: "high" }}
         />
       </div>
-      <div className="absolute top-1 right-1 bg-primary/40 backdrop-blur-sm border border-white/20 px-1 py-0.5 text-[4px] md:text-[7px] text-white font-black uppercase tracking-widest flex items-center gap-0.5">
+      <div className="absolute top-1 right-1 bg-primary/40 backdrop-blur-sm border border-white/20 px-1 py-0.5 text-[4px] text-white font-black uppercase tracking-widest flex items-center gap-0.5">
         <Sparkles className="h-1 w-1 animate-pulse" /> FLASH LIVE
       </div>
       <div className="absolute bottom-1 left-1 right-1 z-10 space-y-0">
@@ -319,8 +319,8 @@ export default function Home() {
           if (catProducts.length === 0) return null;
 
           return (
-            <section key={cat.id} className="py-6 md:py-16 px-2 md:px-12 gpu-accelerated border-b border-white/10 product-section bg-black">
-              <div className="flex items-center justify-between mb-6 md:mb-10">
+            <section key={cat.id} className="py-4 md:py-8 px-2 md:px-12 gpu-accelerated border-b border-white/10 product-section bg-black">
+              <div className="flex items-center justify-between mb-3 md:mb-5">
                 <div className="flex items-center gap-2 md:gap-4">
                   <div className="h-4 md:h-8 w-1 bg-primary" />
                   <h2 className="text-[10px] md:text-[16px] font-black text-white uppercase tracking-[0.3em] font-headline">{cat.name} COLLECTION</h2>
