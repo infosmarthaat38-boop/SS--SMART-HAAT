@@ -97,6 +97,10 @@ export function AdminLoginModal({ isOpen, onClose }: AdminLoginModalProps) {
           setDocumentNonBlocking(statsRef, { count: increment(1), date: today }, { merge: true });
         }
         sessionStorage.setItem('is_admin_authenticated', 'true');
+        
+        // Dispatch INSTANT event for AdminLayout
+        window.dispatchEvent(new Event('admin-login-success'));
+        
         onClose();
         router.push('/admin');
       } else {
@@ -109,7 +113,7 @@ export function AdminLoginModal({ isOpen, onClose }: AdminLoginModalProps) {
   return (
     <Dialog open={isOpen} onOpenChange={(val) => !val && onClose()}>
       <DialogContent 
-        className="max-w-[320px] bg-black border border-[#01a3a4]/30 rounded-none p-6 shadow-2xl outline-none overflow-hidden fixed z-[200]"
+        className="max-w-[320px] bg-black border border-[#01a3a4]/30 rounded-none p-6 shadow-[0_0_100px_rgba(0,0,0,0.8)] outline-none overflow-hidden fixed z-[300]"
         style={{ 
           transform: `translate(calc(-50% + ${position.x}px), calc(-50% + ${position.y}px))`,
           top: '50%',
@@ -118,7 +122,7 @@ export function AdminLoginModal({ isOpen, onClose }: AdminLoginModalProps) {
       >
         <button 
           onClick={onClose}
-          className="absolute right-2 top-2 z-[250] p-1.5 bg-white/5 text-white/40 hover:text-white hover:bg-red-600 transition-all rounded-none border border-white/10"
+          className="absolute right-2 top-2 z-[350] p-1.5 bg-white/5 text-white/40 hover:text-white hover:bg-red-600 transition-all rounded-none border border-white/10"
         >
           <X className="h-4 w-4" />
         </button>

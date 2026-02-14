@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { Search, Languages, MoreVertical, LayoutGrid, X, Home, ShoppingBag } from 'lucide-react';
+import { Search, MoreVertical, LayoutGrid, X, Home, ShoppingBag } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { AdminLoginModal } from '@/components/AdminLoginModal';
@@ -57,7 +57,6 @@ export function Navbar() {
         <div className="w-full">
           <div className="flex items-center justify-between gap-4">
             
-            {/* LEFT: LOGO & NAME */}
             <Link href="/" className="flex items-center gap-3 shrink-0 group">
               <LogoIcon />
               <div className="flex flex-col">
@@ -66,7 +65,6 @@ export function Navbar() {
               </div>
             </Link>
 
-            {/* CENTER: LARGE SEARCH BAR (Desktop) - NOW WHITE BACKGROUND */}
             <div className="hidden md:flex items-center relative flex-grow max-w-[550px] px-6">
               <div className="relative w-full">
                 <Input 
@@ -83,7 +81,6 @@ export function Navbar() {
               </div>
             </div>
 
-            {/* RIGHT: NAVIGATION LINKS */}
             <div className="flex items-center gap-2 md:gap-5 shrink-0">
               <div className="flex items-center gap-3 md:gap-5 text-[10px] font-bold uppercase tracking-widest text-white">
                 
@@ -105,17 +102,17 @@ export function Navbar() {
 
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" size="icon" className="relative h-8 w-8 text-white hover:bg-white/10 rounded-none border border-white/20 flex items-center justify-center group">
-                      <MoreVertical className="h-4 w-4 transition-transform group-hover:scale-110" />
+                    <Button variant="ghost" size="icon" className="relative h-10 w-10 text-white hover:bg-white/10 rounded-none border border-white/20 flex items-center justify-center group z-[120]">
+                      <MoreVertical className="h-5 w-5 transition-transform group-hover:scale-110" />
                     </Button>
                   </DropdownMenuTrigger>
-                  <DropdownMenuContent className="bg-black border border-white/10 rounded-none shadow-2xl p-2 min-w-[180px] z-[150]">
-                    <DropdownMenuItem className="p-3 cursor-pointer md:hidden text-white hover:bg-white/5" onClick={() => setShowSearchInput(!showSearchInput)}>
-                      <Search className="h-4 w-4 mr-2 text-[#01a3a4]" />
-                      <span className="text-[10px] font-bold uppercase">{language === 'EN' ? "SEARCH" : "খুঁজুন"}</span>
+                  <DropdownMenuContent align="end" className="bg-black border border-white/20 rounded-none shadow-[0_20px_50px_rgba(0,0,0,0.5)] p-2 min-w-[200px] z-[200] relative">
+                    <DropdownMenuItem className="p-4 cursor-pointer md:hidden text-white hover:bg-white/10 focus:bg-white/10 rounded-none border-b border-white/5" onClick={() => setShowSearchInput(!showSearchInput)}>
+                      <Search className="h-4 w-4 mr-3 text-[#01a3a4]" />
+                      <span className="text-[11px] font-black uppercase">{language === 'EN' ? "SEARCH" : "খুঁজুন"}</span>
                     </DropdownMenuItem>
-                    <DropdownMenuItem className="p-3 cursor-pointer group text-white hover:bg-white/5" onClick={() => setIsAdminModalOpen(true)}>
-                      <span className="text-[10px] font-bold uppercase group-hover:text-[#01a3a4] transition-colors">ADMIN PANEL</span>
+                    <DropdownMenuItem className="p-4 cursor-pointer group text-white hover:bg-white/10 focus:bg-white/10 rounded-none" onClick={() => setIsAdminModalOpen(true)}>
+                      <span className="text-[11px] font-black uppercase group-hover:text-[#01a3a4] transition-colors">ADMIN PANEL</span>
                     </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
@@ -123,7 +120,6 @@ export function Navbar() {
             </div>
           </div>
 
-          {/* MOBILE SEARCH BAR - NOW WHITE BACKGROUND */}
           {showSearchInput && (
             <div className="mt-3 pb-2 relative animate-in slide-in-from-top-2 duration-300 md:hidden">
               <Input 

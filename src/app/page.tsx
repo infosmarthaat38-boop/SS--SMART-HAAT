@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useRef, useMemo, useState, useEffect, memo } from 'react';
@@ -272,7 +271,6 @@ export default function Home() {
       <MainHeader />
 
       <main className="flex-grow container mx-auto bg-black">
-        {/* TOP GRID: Fixed height for mobile to show the 3rd bar properly */}
         <section className="px-2 md:px-12 pt-0.5 pb-2 md:pt-1 md:pb-4">
           <div className="grid grid-cols-12 gap-0.5 md:gap-1 h-[180px] md:h-[300px] gpu-accelerated bg-black overflow-hidden">
             <div className="col-span-3 h-full overflow-hidden border border-white/5">

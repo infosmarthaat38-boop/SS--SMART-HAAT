@@ -1,7 +1,6 @@
-
 "use client";
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { Loader2 } from 'lucide-react';
 import { AdminLoginModal } from '@/components/AdminLoginModal';
@@ -12,26 +11,37 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const [showLogin, setShowLogin] = useState(false);
   const router = useRouter();
 
-  // Robust auth check that polls sessionStorage to prevent "hang" or "refresh required" issues
-  useEffect(() => {
-    const checkAuth = () => {
-      const authStatus = sessionStorage.getItem('is_admin_authenticated') === 'true';
-      if (authStatus) {
-        setIsAuthenticated(true);
-        setShowLogin(false);
-      } else {
-        setIsAuthenticated(false);
-        setShowLogin(true);
-      }
-      setIsLoading(false);
-    };
+  const checkAuth = useCallback(() => {
+    const authStatus = sessionStorage.getItem('is_admin_authenticated') === 'true';
+    if (authStatus) {
+      setIsAuthenticated(true);
+      setShowLogin(false);
+    } else {
+      setIsAuthenticated(false);
+      setShowLogin(true);
+    }
+    setIsLoading(false);
+  }, []);
 
+  useEffect(() => {
+    // Initial check
     checkAuth();
     
-    // Interval check to ensure state sync without manual refresh
+    // Listen for the custom login event for INSTANT activation without refresh
+    const handleLoginSuccess = () => {
+      checkAuth();
+    };
+
+    window.addEventListener('admin-login-success', handleLoginSuccess);
+    
+    // Safety interval just in case
     const interval = setInterval(checkAuth, 1000);
-    return () => clearInterval(interval);
-  }, []);
+    
+    return () => {
+      window.removeEventListener('admin-login-success', handleLoginSuccess);
+      clearInterval(interval);
+    };
+  }, [checkAuth]);
 
   if (isLoading) {
     return (
