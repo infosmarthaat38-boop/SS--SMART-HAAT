@@ -8,6 +8,8 @@ import { Input } from '@/components/ui/input';
 import { AdminLoginModal } from '@/components/AdminLoginModal';
 import { CategoryNavModal } from '@/components/CategoryNavModal';
 import { useRouter } from 'next/navigation';
+import { useFirestore, useDoc, useMemoFirebase } from '@/firebase';
+import { doc } from 'firebase/firestore';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -30,6 +32,10 @@ export function Navbar() {
   const [isMounted, setIsMounted] = useState(false);
   const router = useRouter();
 
+  const db = useFirestore();
+  const settingsRef = useMemoFirebase(() => db ? doc(db, 'settings', 'site-config') : null, [db]);
+  const { data: settings } = useDoc(settingsRef);
+
   useEffect(() => {
     setIsMounted(true);
     const storedLang = localStorage.getItem('app_lang') as 'EN' | 'BN';
@@ -49,6 +55,15 @@ export function Navbar() {
     }
   };
 
+  const handleSupportClick = () => {
+    const rawNumber = settings?.whatsappUrl || settings?.phone || '01700000000';
+    let cleanPhone = rawNumber.replace(/[^0-9]/g, "");
+    if (cleanPhone.length === 11 && cleanPhone.startsWith('0')) {
+      cleanPhone = '88' + cleanPhone;
+    }
+    window.open(`https://wa.me/${cleanPhone}?text=${encodeURIComponent("Hello SS SMART HAAT Support, I need some assistance.")}`, '_blank');
+  };
+
   if (!isMounted) return null;
 
   return (
@@ -57,18 +72,20 @@ export function Navbar() {
         <div className="w-full">
           <div className="flex items-center justify-between gap-4">
             
-            <div className="flex items-center gap-2 md:gap-3 shrink-0 group">
+            <div className="flex items-center gap-1 md:gap-2 shrink-0 group">
               <Link href="/"><LogoIcon /></Link>
               
-              {/* SECRET ADMIN TRIGGER: Subtle 3 dots next to logo */}
+              {/* SECRET ADMIN TRIGGER: Vertical dots, very slim */}
               <div 
                 onClick={() => setIsAdminModalOpen(true)}
-                className="cursor-default select-none flex items-center h-full px-1"
+                className="cursor-default select-none flex flex-col items-center justify-center h-8 w-2 gap-0.5"
               >
-                <MoreHorizontal className="h-3 w-3 text-white/20 hover:text-white/40 transition-colors" />
+                <div className="w-0.5 h-0.5 bg-white/20 rounded-full" />
+                <div className="w-0.5 h-0.5 bg-white/20 rounded-full" />
+                <div className="w-0.5 h-0.5 bg-white/20 rounded-full" />
               </div>
 
-              <div className="flex flex-col">
+              <div className="flex flex-col ml-1">
                 <Link href="/"><h1 className="text-[10px] sm:text-[12px] md:text-[14px] font-headline font-black text-white leading-none uppercase tracking-tighter">SS SMART HAAT</h1></Link>
                 <span className="text-[6px] sm:text-[7px] text-white font-bold uppercase tracking-[0.2em] opacity-90">
                   PREMIUM MARKET PLACE
@@ -122,7 +139,7 @@ export function Navbar() {
                       <Search className="h-4 w-4 mr-3 text-[#01a3a4]" />
                       <span className="text-[10px] font-black uppercase">{language === 'EN' ? "SEARCH" : "খুঁজুন"}</span>
                     </DropdownMenuItem>
-                    <DropdownMenuItem className="p-3 cursor-pointer text-white/40 hover:text-white focus:bg-white/10 rounded-none" onClick={() => router.push('/')}>
+                    <DropdownMenuItem className="p-3 cursor-pointer text-white/40 hover:text-white focus:bg-white/10 rounded-none" onClick={handleSupportClick}>
                       <span className="text-[10px] font-black uppercase">SUPPORT</span>
                     </DropdownMenuItem>
                   </DropdownMenuContent>
