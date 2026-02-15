@@ -49,10 +49,10 @@ export const MainHeader = memo(() => {
                     className="text-[9px] md:text-[13px] font-bold uppercase tracking-[0.2em] flex items-center gap-5 shrink-0"
                   >
                     {settings.liveStatus} 
-                    <span className="opacity-20" style={{ color: statusColor }}>|</span> 
+                    <span className="opacity-40" style={{ color: statusColor }}>|</span> 
                     <span className="flex items-center gap-2">
-                      <MapPin className="h-3 w-3" style={{ color: statusColor }} /> 
-                      <span className="font-bold opacity-60">HUB:</span> {hubLocation}
+                      <MapPin className="h-3.5 w-3.5" style={{ color: statusColor }} /> 
+                      <span className="font-black">HUB:</span> {hubLocation}
                     </span>
                   </p>
                 </div>
