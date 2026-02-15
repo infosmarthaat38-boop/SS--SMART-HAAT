@@ -60,7 +60,7 @@ export const ProductCard = memo(({ product, index = 0 }: ProductCardProps) => {
             <div className="flex flex-col justify-start mb-1 md:mb-2 relative">
               <div className="flex items-baseline gap-0.5 text-black">
                 <span className="text-[10px] md:text-[12px] font-black text-primary">৳</span>
-                <span className="font-black text-[16px] md:text-[22px] tracking-tighter leading-none">
+                <span className="font-black text-[18px] md:text-[24px] tracking-tighter leading-none">
                   {(price || 0).toLocaleString()}
                 </span>
               </div>
@@ -81,14 +81,14 @@ export const ProductCard = memo(({ product, index = 0 }: ProductCardProps) => {
               </div>
             </div>
 
-            <Button 
+            <button 
               disabled={isOutOfStock}
               onClick={(e) => { e.preventDefault(); setIsOrderOpen(true); }}
               style={{ backgroundColor: !isOutOfStock ? 'var(--button-bg)' : undefined }}
-              className={`w-full ${isOutOfStock ? 'bg-white border border-black/10 text-black/30' : 'hover:opacity-90'} text-white font-black text-[12px] md:text-[16px] h-8 md:h-12 rounded-none uppercase flex items-center justify-center gap-1.5 transition-all duration-500 active:scale-95 border-none shadow-lg tracking-[0.1em]`}
+              className={`w-full ${isOutOfStock ? 'bg-white border border-black/10 text-black/30' : 'hover:opacity-90'} text-white font-black text-[12px] md:text-[18px] h-9 md:h-14 rounded-none uppercase flex items-center justify-center gap-1.5 transition-all duration-500 active:scale-95 border-none shadow-lg tracking-[0.1em]`}
             >
               {isOutOfStock ? 'SOLD OUT' : 'অর্ডার করুন'}
-            </Button>
+            </button>
           </div>
         </CardContent>
       </Card>
