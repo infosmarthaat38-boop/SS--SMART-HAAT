@@ -1,4 +1,3 @@
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -91,9 +90,9 @@ section, .product-section {
 }
 
 @keyframes ken-burns {
-  0% { transform: scale(1); }
-  50% { transform: scale(1.1); }
-  100% { transform: scale(1); }
+  0% { transform: scale(1) translate(0, 0); }
+  50% { transform: scale(1.2) translate(-1%, -1%); }
+  100% { transform: scale(1) translate(0, 0); }
 }
 
 .animate-marquee {
@@ -106,7 +105,7 @@ section, .product-section {
 }
 
 .animate-ken-burns {
-  animation: ken-burns 8s ease-in-out infinite;
+  animation: ken-burns 12s ease-in-out infinite;
   will-change: transform;
 }
 

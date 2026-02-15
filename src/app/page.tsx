@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useRef, useMemo, useState, useEffect, memo } from 'react';
@@ -15,6 +14,7 @@ import { useFirestore, useCollection, useMemoFirebase, useDoc } from '@/firebase
 import { collection, query, where, limit, doc, increment, orderBy } from 'firebase/firestore';
 import { setDocumentNonBlocking } from '@/firebase/non-blocking-updates';
 import { OrderModal } from '@/components/OrderModal';
+import { cn } from '@/lib/utils';
 
 const SlideItem = memo(({ item, priority }: { item: any, priority: boolean }) => {
   const [isOrderOpen, setIsOrderOpen] = useState(false);
@@ -28,7 +28,7 @@ const SlideItem = memo(({ item, priority }: { item: any, priority: boolean }) =>
           alt={item.name || item.title || 'Banner'}
           fill
           sizes="100vw"
-          className="object-fill"
+          className="object-fill animate-ken-burns"
           priority={priority}
           loading={priority ? "eager" : "lazy"}
           decoding="async"
@@ -102,22 +102,28 @@ const AnimatedFlashBar = memo(() => {
 
   return (
     <div className="h-full w-full relative overflow-hidden bg-black group cursor-pointer gpu-accelerated">
-      <div key={activeItem.id} className="h-full w-full absolute inset-0">
+      <div 
+        key={activeItem.id} 
+        className={cn(
+          "h-full w-full absolute inset-0 animate-in fade-in duration-1000",
+          currentIndex % 2 === 0 ? "slide-in-from-top-4" : "slide-in-from-bottom-4"
+        )}
+      >
         <Image 
           src={activeItem.imageUrl} 
           alt="Flash" 
           fill 
-          className="object-fill"
+          className="object-fill animate-ken-burns"
           priority={true}
           loading="eager"
           decoding="async"
           {...({ fetchPriority: "high" } as any)}
         />
       </div>
-      <div className="absolute top-2 right-2 bg-[#01a3a4]/40 backdrop-blur-sm border border-white/20 px-2 py-1 text-[6px] md:text-[8px] text-white font-black uppercase tracking-widest flex items-center gap-1">
+      <div className="absolute top-2 right-2 bg-[#01a3a4]/40 backdrop-blur-sm border border-white/20 px-2 py-1 text-[6px] md:text-[8px] text-white font-black uppercase tracking-widest flex items-center gap-1 z-20">
         <Sparkles className="h-1.5 w-1.5 animate-pulse" /> FLASH LIVE
       </div>
-      <div className="absolute bottom-2 left-2 right-2 z-10 space-y-0.5">
+      <div className="absolute bottom-2 left-2 right-2 z-20 space-y-0.5">
         <p className="text-[10px] md:text-[14px] font-black text-white uppercase tracking-widest truncate drop-shadow-md">
           {activeItem.name || activeItem.title}
         </p>
@@ -171,23 +177,29 @@ const FlashOfferCard = memo(() => {
   return (
     <div className="h-full bg-black overflow-hidden relative group w-full gpu-accelerated flex items-center justify-center">
       {activeItem ? (
-        <div className="h-full w-full relative flex items-center justify-center" key={activeItem.id}>
+        <div 
+          className={cn(
+            "h-full w-full relative flex items-center justify-center animate-in fade-in duration-1000",
+            currentIndex % 2 === 0 ? "slide-in-from-left-4" : "slide-in-from-right-4"
+          )} 
+          key={activeItem.id}
+        >
           <div className="h-full w-full absolute inset-0">
             <Image 
               src={activeItem.imageUrl || 'https://picsum.photos/seed/flash/400/400'} 
               alt="Flash Offer" 
               fill 
               sizes="(max-width: 768px) 33vw, 25vw" 
-              className="object-fill" 
+              className="object-fill animate-ken-burns" 
               priority={true}
               loading="eager"
               decoding="async"
               {...({ fetchPriority: "high" } as any)}
             />
           </div>
-          <div className="absolute top-2 md:top-4 left-2 md:left-4 bg-red-600 px-2 md:px-4 py-1 text-[6px] md:text-[10px] font-black text-white uppercase tracking-[0.2em] z-10 shadow-xl">FLASH OFFER</div>
+          <div className="absolute top-2 md:top-4 left-2 md:left-4 bg-red-600 px-2 md:px-4 py-1 text-[6px] md:text-[10px] font-black text-white uppercase tracking-[0.2em] z-20 shadow-xl">FLASH OFFER</div>
           
-          <div className="absolute bottom-2 md:bottom-4 left-2 md:left-4 z-10 flex flex-col items-start max-w-[90%]">
+          <div className="absolute bottom-2 md:bottom-4 left-2 md:left-4 z-20 flex flex-col items-start max-w-[90%]">
              <p className="text-white font-black text-[10px] md:text-[16px] uppercase tracking-wider mb-1 drop-shadow-md truncate w-full">
                {activeItem.name || activeItem.title}
              </p>
