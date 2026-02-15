@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useState, useEffect, memo } from 'react';
@@ -21,13 +20,15 @@ import {
   X,
   Truck,
   MessageCircle,
-  Loader2
+  Loader2,
+  AlertTriangle
 } from 'lucide-react';
 import { useFirestore, useMemoFirebase, useDoc } from '@/firebase';
 import { doc } from 'firebase/firestore';
 import { createOrderAndNotify } from '@/app/actions/order-actions';
 import { cn } from '@/lib/utils';
 import { useIsMobile } from '@/hooks/use-mobile';
+import { useToast } from '@/hooks/use-toast';
 
 interface OrderModalProps {
   product: any;
@@ -38,6 +39,7 @@ interface OrderModalProps {
 export const OrderModal = memo(({ product, isOpen, onClose }: OrderModalProps) => {
   const db = useFirestore();
   const isMobile = useIsMobile();
+  const { toast } = useToast();
   const [step, setStep] = useState<'FORM' | 'SUCCESS'>('FORM');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -96,10 +98,26 @@ export const OrderModal = memo(({ product, isOpen, onClose }: OrderModalProps) =
       if (result.success) {
         setStep('SUCCESS');
       } else {
-        alert("FAILED TO PLACE ORDER. PLEASE TRY AGAIN.");
+        if (result.error === 'STOCK_LIMIT_EXCEEDED') {
+          toast({
+            variant: "destructive",
+            title: "OUT OF STOCK",
+            description: "SORRY, THIS PRODUCT IS NO LONGER AVAILABLE IN THE SELECTED QUANTITY.",
+          });
+        } else {
+          toast({
+            variant: "destructive",
+            title: "ORDER FAILED",
+            description: "SYSTEM ERROR. PLEASE TRY AGAIN LATER.",
+          });
+        }
       }
     } catch (err) {
-      alert("SYSTEM ERROR. PLEASE TRY AGAIN.");
+      toast({
+        variant: "destructive",
+        title: "SYSTEM ERROR",
+        description: "COULD NOT PROCESS YOUR ORDER.",
+      });
     } finally {
       setIsSubmitting(false);
     }
@@ -122,7 +140,6 @@ export const OrderModal = memo(({ product, isOpen, onClose }: OrderModalProps) =
 
   if (!product) return null;
 
-  // Priority: Product-specific delivery charge > Global Settings > Defaults
   const deliveryInside = product.deliveryInside || settings?.deliveryChargeInside?.toString() || '60';
   const deliveryOutside = product.deliveryOutside || settings?.deliveryChargeOutside?.toString() || '120';
 
