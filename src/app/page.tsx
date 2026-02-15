@@ -35,23 +35,23 @@ const SlideItem = memo(({ item, priority }: { item: any, priority: boolean }) =>
           {...(priority ? { fetchPriority: "high" } : {})}
         />
         
-        <div className="absolute bottom-4 left-4 z-10 flex flex-col items-start max-w-[90%] pointer-events-none">
-          <h2 className="text-[12px] md:text-[20px] font-headline font-black text-white uppercase tracking-wider mb-1 drop-shadow-lg truncate w-full">
+        <div className="absolute bottom-3 left-3 z-10 flex flex-col items-start max-w-[90%] pointer-events-none">
+          <h2 className="text-[10px] md:text-[16px] font-headline font-black text-white uppercase tracking-wider mb-1 drop-shadow-lg truncate w-full">
             {item.name || item.title}
           </h2>
           
           {isProduct && (
-            <div className="flex flex-col space-y-1 md:space-y-2 pointer-events-auto">
-              <div className="text-[14px] md:text-2xl font-black text-[#01a3a4] tracking-tighter drop-shadow-lg leading-none">
-                <span className="text-[10px] md:text-[14px] font-normal mr-0.5 text-white">৳</span>
+            <div className="flex flex-col space-y-1 md:space-y-1.5 pointer-events-auto">
+              <div className="text-[12px] md:text-xl font-black text-[#01a3a4] tracking-tighter drop-shadow-lg leading-none">
+                <span className="text-[9px] md:text-[12px] font-normal mr-0.5 text-white">৳</span>
                 {(item.price || 0).toLocaleString()}
               </div>
               <button 
                 onClick={() => setIsOrderOpen(true)} 
                 style={{ backgroundColor: '#01a3a4' }}
-                className="text-white px-3 md:px-5 py-1 md:py-2 h-7 md:h-10 font-black text-[8px] md:text-[11px] uppercase tracking-[0.2em] transition-all hover:opacity-90 active:scale-95 shadow-xl border-none flex items-center gap-1.5"
+                className="text-white px-2.5 md:px-4 py-1 h-6 md:h-8 font-black text-[7px] md:text-[9px] uppercase tracking-[0.2em] transition-all hover:opacity-90 active:scale-95 shadow-xl border-none flex items-center gap-1"
               >
-                <ShoppingCart className="h-3 w-3 md:h-4 md:w-4" /> অর্ডার করুন
+                <ShoppingCart className="h-2.5 w-2.5 md:h-3.5 w-3.5" /> অর্ডার করুন
               </button>
             </div>
           )}
@@ -120,14 +120,14 @@ const AnimatedFlashBar = memo(() => {
           {...({ fetchPriority: "high" } as any)}
         />
       </div>
-      <div className="absolute top-2 right-2 bg-[#01a3a4]/40 backdrop-blur-sm border border-white/20 px-2 py-1 text-[6px] md:text-[8px] text-white font-black uppercase tracking-widest flex items-center gap-1 z-20">
-        <Sparkles className="h-1.5 w-1.5 animate-pulse" /> FLASH LIVE
+      <div className="absolute top-2 right-2 bg-[#01a3a4]/40 backdrop-blur-sm border border-white/20 px-1.5 py-0.5 text-[5px] md:text-[7px] text-white font-black uppercase tracking-widest flex items-center gap-1 z-20">
+        <Sparkles className="h-1 w-1 animate-pulse" /> FLASH LIVE
       </div>
       <div className="absolute bottom-2 left-2 right-2 z-20 space-y-0.5">
-        <p className="text-[10px] md:text-[14px] font-black text-white uppercase tracking-widest truncate drop-shadow-md">
+        <p className="text-[8px] md:text-[12px] font-black text-white uppercase tracking-widest truncate drop-shadow-md">
           {activeItem.name || activeItem.title}
         </p>
-        <div className="h-0.5 w-8 bg-[#01a3a4] rounded-full" />
+        <div className="h-0.5 w-6 bg-[#01a3a4] rounded-full" />
       </div>
     </div>
   );
@@ -197,15 +197,15 @@ const FlashOfferCard = memo(() => {
               {...({ fetchPriority: "high" } as any)}
             />
           </div>
-          <div className="absolute top-2 md:top-4 left-2 md:left-4 bg-red-600 px-2 md:px-4 py-1 text-[6px] md:text-[10px] font-black text-white uppercase tracking-[0.2em] z-20 shadow-xl">FLASH OFFER</div>
+          <div className="absolute top-2 md:top-3 left-2 md:left-3 bg-red-600 px-1.5 md:px-3 py-0.5 text-[5px] md:text-[8px] font-black text-white uppercase tracking-[0.2em] z-20 shadow-xl">FLASH OFFER</div>
           
-          <div className="absolute bottom-2 md:bottom-4 left-2 md:left-4 z-20 flex flex-col items-start max-w-[90%]">
-             <p className="text-white font-black text-[10px] md:text-[16px] uppercase tracking-wider mb-1 drop-shadow-md truncate w-full">
+          <div className="absolute bottom-2 md:bottom-3 left-2 md:left-3 z-20 flex flex-col items-start max-w-[90%]">
+             <p className="text-white font-black text-[8px] md:text-[13px] uppercase tracking-wider mb-0.5 md:mb-1 drop-shadow-md truncate w-full">
                {activeItem.name || activeItem.title}
              </p>
              {activeItem.price !== undefined && (
                <div className="mb-1">
-                 <span className="text-[#01a3a4] font-black text-[12px] md:text-2xl drop-shadow-md leading-none">
+                 <span className="text-[#01a3a4] font-black text-[10px] md:text-xl drop-shadow-md leading-none">
                    ৳{(activeItem.price || 0).toLocaleString()}
                  </span>
                </div>
@@ -213,9 +213,9 @@ const FlashOfferCard = memo(() => {
              <button 
                onClick={() => setIsOrderOpen(true)} 
                style={{ backgroundColor: '#01a3a4' }}
-               className="text-white px-3 md:px-5 py-1 md:py-2 h-6 md:h-9 font-black text-[8px] md:text-[11px] uppercase tracking-[0.2em] transition-all hover:opacity-90 active:scale-95 shadow-xl border-none flex items-center gap-1.5"
+               className="text-white px-2 md:px-4 py-1 h-5 md:h-7 font-black text-[7px] md:text-[9px] uppercase tracking-[0.2em] transition-all hover:opacity-90 active:scale-95 shadow-xl border-none flex items-center gap-1"
              >
-               <ShoppingCart className="h-3 w-3 md:h-4 md:w-4" /> অর্ডার করুন
+               <ShoppingCart className="h-2.5 w-2.5 md:h-3.5 w-3.5" /> অর্ডার করুন
              </button>
              <OrderModal product={activeItem} isOpen={isOrderOpen} onClose={() => setIsOrderOpen(false)} />
           </div>
