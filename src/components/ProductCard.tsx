@@ -21,8 +21,8 @@ export const ProductCard = memo(({ product, index = 0 }: ProductCardProps) => {
   const originalPrice = product?.originalPrice || price;
 
   return (
-    <>
-      <Card className="group bg-white border border-white/5 rounded-none flex flex-col h-full overflow-hidden gpu-accelerated transition-all duration-500 hover:border-primary hover:shadow-[0_10px_30px_rgba(0,0,0,0.3)] relative">
+    <div className="product-card-container gpu-accelerated h-full">
+      <Card className="group bg-white border border-white/5 rounded-none flex flex-col h-full overflow-hidden transition-all duration-500 hover:border-primary hover:shadow-[0_10px_30px_rgba(0,0,0,0.3)] relative">
         <Link href={`/products/${product?.id}`} className="relative aspect-square overflow-hidden bg-white block flex items-center justify-center">
           <Image
             src={product?.imageUrl || 'https://picsum.photos/seed/placeholder/400/400'}
@@ -92,7 +92,7 @@ export const ProductCard = memo(({ product, index = 0 }: ProductCardProps) => {
         </CardContent>
       </Card>
       <OrderModal product={product} isOpen={isOrderOpen} onClose={() => setIsOrderOpen(false)} />
-    </>
+    </div>
   );
 });
 

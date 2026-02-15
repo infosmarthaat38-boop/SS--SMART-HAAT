@@ -8,7 +8,7 @@ import { MapPin } from 'lucide-react';
 
 /**
  * MainHeader - ROBUST LOCK.
- * Optimized for zero layout shift and 100% speed.
+ * Optimized for zero layout shift and 100% speed using memoization and layout containment.
  */
 export const MainHeader = memo(() => {
   const db = useFirestore();

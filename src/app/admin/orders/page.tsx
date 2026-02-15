@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, memo } from 'react';
 import { MainHeader } from '@/components/MainHeader';
 import { Footer } from '@/components/Footer';
 import { Button } from '@/components/ui/button';
@@ -51,81 +51,17 @@ import { Badge } from '@/components/ui/badge';
 import { jsPDF } from "jspdf";
 import autoTable from 'jspdf-autotable';
 
-export default function AdminOrders() {
-  const db = useFirestore();
-  const [isConfirmOpen, setIsConfirmOpen] = useState(false);
-  const [isAlertOpen, setIsAlertOpen] = useState(false);
-  const [selectedOrder, setSelectedOrder] = useState<any>(null);
-  const [deliveryCharge, setDeliveryCharge] = useState('');
-  const [alertConfig, setAlertConfig] = useState<{title: string, desc: string, action: () => void} | null>(null);
-  const [isGeneratingPdf, setIsGeneratingPdf] = useState(false);
-
-  const ordersRef = useMemoFirebase(() => {
-    if (!db) return null;
-    return query(collection(db, 'orders'), orderBy('createdAt', 'desc'));
-  }, [db]);
-
-  const pendingOrdersQuery = useMemoFirebase(() => {
-    if (!db) return null;
-    return query(collection(db, 'orders'), where('status', '==', 'PENDING'));
-  }, [db]);
-  
-  const { data: orders, isLoading } = useCollection(ordersRef);
-  const { data: pendingOrders } = useCollection(pendingOrdersQuery);
-
-  const handleOpenConfirm = (order: any) => {
-    setSelectedOrder(order);
-    setDeliveryCharge('');
-    setIsConfirmOpen(true);
-  };
-
-  const handleFinalizeConfirmation = () => {
-    if (!selectedOrder || !deliveryCharge || !db) return;
-    
-    updateDocumentNonBlocking(doc(db, 'orders', selectedOrder.id), { 
-      status: 'CONFIRMED',
-      deliveryCharge: parseFloat(deliveryCharge)
-    });
-    
-    setIsConfirmOpen(false);
-    setSelectedOrder(null);
-  };
-
-  const triggerAlert = (title: string, desc: string, action: () => void) => {
-    setAlertConfig({ title, desc, action });
-    setIsAlertOpen(true);
-  };
-
-  const handleUpdateStatus = (id: string, newStatus: string) => {
-    if (!db) return;
-    if (newStatus === 'CANCELLED') {
-      triggerAlert(
-        "ARE YOU SURE YOU WANT TO CANCEL THIS ORDER?",
-        "THIS ACTION CANNOT BE UNDONE. THE CLIENT WILL BE NOTIFIED OF THE CANCELLATION.",
-        () => updateDocumentNonBlocking(doc(db, 'orders', id), { status: 'CANCELLED' })
-      );
-    } else {
-      updateDocumentNonBlocking(doc(db, 'orders', id), { status: newStatus });
-    }
-  };
-
-  const handleDeleteOrder = (id: string) => {
-    if (!db) return;
-    triggerAlert(
-      "PERMANENTLY DELETE THIS ORDER RECORD?",
-      "THIS WILL REMOVE ALL DATA ASSOCIATED WITH THIS ORDER FROM THE PERMANENT DATABASE.",
-      () => deleteDocumentNonBlocking(doc(db, 'orders', id))
-    );
-  };
-
-  const generateInvoice = async (order: any) => {
-    setIsGeneratingPdf(true);
+// OPTIMIZED INVOICE GENERATOR WITH UTF-8 FIX ATTEMPT
+const generateInvoice = async (order: any, setIsGeneratingPdf: (val: boolean) => void) => {
+  setIsGeneratingPdf(true);
+  try {
     const doc = new jsPDF();
     const dCharge = order.deliveryCharge || 0;
     const subtotal = (order.productPrice || 0) * (order.quantity || 1);
     const total = subtotal + dCharge;
-    const primaryColor = [1, 163, 164];
+    const primaryColor = [1, 163, 164]; // #01a3a4
     
+    // Header
     doc.setFontSize(22);
     doc.setTextColor(0, 0, 0);
     doc.setFont("helvetica", "bold");
@@ -146,16 +82,16 @@ export default function AdminOrders() {
 
     doc.setFontSize(9);
     doc.setTextColor(100, 100, 100);
-    doc.setFont("helvetica", "bold");
     doc.text("INVOICE NO:", 140, 47);
-    doc.setFont("helvetica", "normal");
+    doc.setTextColor(0, 0, 0);
     doc.text(`#${order.id.slice(0, 10).toUpperCase()}`, 165, 47);
     
-    doc.setFont("helvetica", "bold");
+    doc.setTextColor(100, 100, 100);
     doc.text("DATE:", 140, 53);
-    doc.setFont("helvetica", "normal");
+    doc.setTextColor(0, 0, 0);
     doc.text(`${new Date(order.createdAt).toLocaleDateString()}`, 165, 53);
 
+    // Customer Box
     doc.setFillColor(250, 250, 250);
     doc.rect(15, 65, 120, 45, 'F');
     
@@ -166,33 +102,27 @@ export default function AdminOrders() {
     
     doc.setFontSize(9);
     doc.setTextColor(60, 60, 60);
-    doc.setFont("helvetica", "bold");
     doc.text("NAME:", 20, 83);
-    doc.setFont("helvetica", "normal");
-    doc.text((order.customerName || 'GUEST').toUpperCase(), 45, 83);
+    doc.setTextColor(0, 0, 0);
+    // Sanitize string to prevent rendering junk characters if Bengali is present
+    const safeName = (order.customerName || 'GUEST').replace(/[^\x00-\x7F]/g, "").toUpperCase() || 'CLIENT';
+    doc.text(safeName, 45, 83);
     
-    doc.setFont("helvetica", "bold");
+    doc.setTextColor(60, 60, 60);
     doc.text("PHONE:", 20, 89);
-    doc.setFont("helvetica", "normal");
+    doc.setTextColor(0, 0, 0);
     doc.text(order.customerPhone || 'N/A', 45, 89);
     
-    doc.setFont("helvetica", "bold");
+    doc.setTextColor(60, 60, 60);
     doc.text("ADDRESS:", 20, 95);
-    doc.setFont("helvetica", "normal");
-    const splitAddress = doc.splitTextToSize((order.customerAddress || 'N/A').toUpperCase(), 85);
+    doc.setTextColor(0, 0, 0);
+    const safeAddress = (order.customerAddress || 'N/A').replace(/[^\x00-\x7F]/g, "").toUpperCase() || 'ADDRESS';
+    const splitAddress = doc.splitTextToSize(safeAddress, 85);
     doc.text(splitAddress, 45, 95);
 
-    if (order.productImageUrl) {
-      try {
-        doc.setDrawColor(240, 240, 240);
-        doc.rect(145, 65, 45, 45); 
-        doc.addImage(order.productImageUrl, 'JPEG', 146, 66, 43, 43);
-      } catch (err) {
-        console.error("PDF Image Error:", err);
-      }
-    }
-
-    const itemDesc = order.selectedSize ? `${(order.productName || 'PRODUCT').toUpperCase()} (SIZE: ${order.selectedSize})` : (order.productName || 'PRODUCT').toUpperCase();
+    // Product Table
+    const safeProductName = (order.productName || 'PRODUCT').replace(/[^\x00-\x7F]/g, "").toUpperCase() || 'PREMIUM ITEM';
+    const itemDesc = order.selectedSize ? `${safeProductName} (SIZE: ${order.selectedSize})` : safeProductName;
 
     autoTable(doc, {
       startY: 120,
@@ -232,13 +162,16 @@ export default function AdminOrders() {
 
     const finalY = (doc as any).lastAutoTable.finalY + 10;
     
+    // Totals
     doc.setFontSize(9);
     doc.setTextColor(100, 100, 100);
-    doc.setFont("helvetica", "normal");
     doc.text("SUBTOTAL", 140, finalY);
+    doc.setTextColor(0, 0, 0);
     doc.text(`BDT ${subtotal.toLocaleString()}`, 195, finalY, { align: 'right' });
     
+    doc.setTextColor(100, 100, 100);
     doc.text("DELIVERY CHARGE", 140, finalY + 7);
+    doc.setTextColor(0, 0, 0);
     doc.text(`+ BDT ${dCharge.toLocaleString()}`, 195, finalY + 7, { align: 'right' });
     
     doc.setDrawColor(primaryColor[0], primaryColor[1], primaryColor[2]);
@@ -251,6 +184,7 @@ export default function AdminOrders() {
     doc.text("GRAND TOTAL", 140, finalY + 20);
     doc.text(`BDT ${total.toLocaleString()}`, 195, finalY + 20, { align: 'right' });
 
+    // Payment Method
     doc.setFillColor(240, 240, 240);
     doc.rect(15, finalY + 12, 40, 10, 'F');
     doc.setFontSize(8);
@@ -260,6 +194,7 @@ export default function AdminOrders() {
     doc.setFont("helvetica", "bold");
     doc.text("CASH ON DELIVERY", 20, finalY + 18.5);
 
+    // Footer Info
     doc.setDrawColor(240, 240, 240);
     doc.line(15, 275, 195, 275);
     doc.setFontSize(8);
@@ -268,8 +203,77 @@ export default function AdminOrders() {
     doc.text("THANK YOU FOR CHOOSING SS SMART HAAT. YOUR SATISFACTION IS OUR PRIORITY.", 15, 282);
     doc.text("GENERATED BY SS SMART HAAT SYSTEM", 135, 282);
 
-    doc.save(`INVOICE_${(order.customerName || 'GUEST').replace(/\s+/g, '_')}_${order.id.slice(0, 5)}.pdf`);
+    doc.save(`INVOICE_${safeName.slice(0, 10)}_${order.id.slice(0, 5)}.pdf`);
+  } catch (err) {
+    console.error("PDF Generation Error:", err);
+  } finally {
     setIsGeneratingPdf(false);
+  }
+};
+
+export default function AdminOrders() {
+  const db = useFirestore();
+  const [isConfirmOpen, setIsConfirmOpen] = useState(false);
+  const [isAlertOpen, setIsAlertOpen] = useState(false);
+  const [selectedOrder, setSelectedOrder] = useState<any>(null);
+  const [deliveryCharge, setDeliveryCharge] = useState('');
+  const [alertConfig, setAlertConfig] = useState<{title: string, desc: string, action: () => void} | null>(null);
+  const [isGeneratingPdf, setIsGeneratingPdf] = useState(false);
+
+  const ordersRef = useMemoFirebase(() => {
+    if (!db) return null;
+    return query(collection(db, 'orders'), orderBy('createdAt', 'desc'));
+  }, [db]);
+
+  const pendingOrdersQuery = useMemoFirebase(() => {
+    if (!db) return null;
+    return query(collection(db, 'orders'), where('status', '==', 'PENDING'));
+  }, [db]);
+  
+  const { data: orders, isLoading } = useCollection(ordersRef);
+  const { data: pendingOrders } = useCollection(pendingOrdersQuery);
+
+  const handleOpenConfirm = (order: any) => {
+    setSelectedOrder(order);
+    setDeliveryCharge('');
+    setIsConfirmOpen(true);
+  };
+
+  const handleFinalizeConfirmation = () => {
+    if (!selectedOrder || !deliveryCharge || !db) return;
+    updateDocumentNonBlocking(doc(db, 'orders', selectedOrder.id), { 
+      status: 'CONFIRMED',
+      deliveryCharge: parseFloat(deliveryCharge)
+    });
+    setIsConfirmOpen(false);
+    setSelectedOrder(null);
+  };
+
+  const triggerAlert = (title: string, desc: string, action: () => void) => {
+    setAlertConfig({ title, desc, action });
+    setIsAlertOpen(true);
+  };
+
+  const handleUpdateStatus = (id: string, newStatus: string) => {
+    if (!db) return;
+    if (newStatus === 'CANCELLED') {
+      triggerAlert(
+        "ARE YOU SURE YOU WANT TO CANCEL THIS ORDER?",
+        "THIS ACTION CANNOT BE UNDONE. THE CLIENT WILL BE NOTIFIED OF THE CANCELLATION.",
+        () => updateDocumentNonBlocking(doc(db, 'orders', id), { status: 'CANCELLED' })
+      );
+    } else {
+      updateDocumentNonBlocking(doc(db, 'orders', id), { status: newStatus });
+    }
+  };
+
+  const handleDeleteOrder = (id: string) => {
+    if (!db) return;
+    triggerAlert(
+      "PERMANENTLY DELETE THIS ORDER RECORD?",
+      "THIS WILL REMOVE ALL DATA ASSOCIATED WITH THIS ORDER FROM THE PERMANENT DATABASE.",
+      () => deleteDocumentNonBlocking(doc(db, 'orders', id))
+    );
   };
 
   if (!db) return <div className="min-h-screen bg-black flex items-center justify-center"><Loader2 className="h-10 w-10 text-[#01a3a4] animate-spin" /></div>;
@@ -425,7 +429,7 @@ export default function AdminOrders() {
                   <Button 
                     variant="secondary"
                     disabled={isGeneratingPdf}
-                    onClick={() => generateInvoice(order)}
+                    onClick={() => generateInvoice(order, setIsGeneratingPdf)}
                     className="bg-white/5 hover:bg-white/10 text-white font-black text-[9px] uppercase rounded-none h-10 px-4 border border-white/10"
                   >
                     {isGeneratingPdf ? <Loader2 className="h-3.5 w-3.5 animate-spin text-orange-500" /> : <FileText className="mr-2 h-3.5 w-3.5 text-orange-500" />} INVOICE

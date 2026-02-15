@@ -51,7 +51,7 @@
 }
 
 /* ROBUST RENDERING LOCK - handles 10,000+ items without hang */
-section, .product-section {
+section, .product-section, .product-card-container {
   content-visibility: auto;
   contain-intrinsic-size: 1px 500px;
 }

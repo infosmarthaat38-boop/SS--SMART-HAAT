@@ -23,7 +23,7 @@
 
 ### 4. Admin Panel & Intelligence
 - **Dashboard:** Revenue bar charts, visitor counts, and real-time order toasts.
-- **Invoice System:** Professional PDF generator with site branding and BDT formatting.
+- **Invoice System:** Professional PDF generator with site branding and ASCII-safe text to prevent encoding errors.
 - **Theme Control:** Fully synced HSL CSS variables for primary, background, button, and text colors.
 - **Inventory:** Per-product delivery charges (Dhaka Inside/Outside). Supports "FREE" text or numeric values.
 
