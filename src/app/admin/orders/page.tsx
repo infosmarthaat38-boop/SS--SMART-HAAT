@@ -51,7 +51,7 @@ import { Badge } from '@/components/ui/badge';
 import { jsPDF } from "jspdf";
 import autoTable from 'jspdf-autotable';
 
-// OPTIMIZED INVOICE GENERATOR WITH UTF-8 FIX ATTEMPT
+// IMPROVED INVOICE GENERATOR WITH IMAGE AND TEXT FIX
 const generateInvoice = async (order: any, setIsGeneratingPdf: (val: boolean) => void) => {
   setIsGeneratingPdf(true);
   try {
@@ -104,8 +104,7 @@ const generateInvoice = async (order: any, setIsGeneratingPdf: (val: boolean) =>
     doc.setTextColor(60, 60, 60);
     doc.text("NAME:", 20, 83);
     doc.setTextColor(0, 0, 0);
-    // Sanitize string to prevent rendering junk characters if Bengali is present
-    const safeName = (order.customerName || 'GUEST').replace(/[^\x00-\x7F]/g, "").toUpperCase() || 'CLIENT';
+    const safeName = (order.customerName || 'CLIENT').toUpperCase();
     doc.text(safeName, 45, 83);
     
     doc.setTextColor(60, 60, 60);
@@ -116,13 +115,24 @@ const generateInvoice = async (order: any, setIsGeneratingPdf: (val: boolean) =>
     doc.setTextColor(60, 60, 60);
     doc.text("ADDRESS:", 20, 95);
     doc.setTextColor(0, 0, 0);
-    const safeAddress = (order.customerAddress || 'N/A').replace(/[^\x00-\x7F]/g, "").toUpperCase() || 'ADDRESS';
+    const safeAddress = (order.customerAddress || 'ADDRESS').toUpperCase();
     const splitAddress = doc.splitTextToSize(safeAddress, 85);
     doc.text(splitAddress, 45, 95);
 
+    // Product Image
+    if (order.productImageUrl) {
+      try {
+        doc.addImage(order.productImageUrl, 'JPEG', 145, 65, 45, 45);
+        doc.setDrawColor(240, 240, 240);
+        doc.rect(145, 65, 45, 45);
+      } catch (e) {
+        console.error("Image insertion error", e);
+      }
+    }
+
     // Product Table
-    const safeProductName = (order.productName || 'PRODUCT').replace(/[^\x00-\x7F]/g, "").toUpperCase() || 'PREMIUM ITEM';
-    const itemDesc = order.selectedSize ? `${safeProductName} (SIZE: ${order.selectedSize})` : safeProductName;
+    const pName = (order.productName || 'PRODUCT').toUpperCase();
+    const itemDesc = order.selectedSize ? `${pName} (SIZE: ${order.selectedSize})` : pName;
 
     autoTable(doc, {
       startY: 120,

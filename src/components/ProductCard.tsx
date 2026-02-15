@@ -36,8 +36,8 @@ export const ProductCard = memo(({ product, index = 0 }: ProductCardProps) => {
           />
           
           {isOutOfStock && (
-            <div className="absolute inset-0 bg-white/90 flex items-center justify-center z-10">
-              <span className="text-black text-[9px] md:text-[11px] font-black border border-black px-2 py-1 uppercase tracking-[0.1em] bg-white/40 backdrop-blur-md shadow-2xl">ARCHIVE ONLY</span>
+            <div className="absolute inset-0 bg-black/80 flex items-center justify-center z-10 animate-in fade-in duration-500">
+              <span className="text-white text-[10px] md:text-[12px] font-black border-2 border-white px-4 py-2 uppercase tracking-[0.2em] bg-red-600/20 backdrop-blur-md shadow-2xl animate-pulse">OUT OF STOCK</span>
             </div>
           )}
         </Link>
@@ -84,7 +84,7 @@ export const ProductCard = memo(({ product, index = 0 }: ProductCardProps) => {
               disabled={isOutOfStock}
               onClick={(e) => { e.preventDefault(); setIsOrderOpen(true); }}
               style={{ backgroundColor: !isOutOfStock ? 'var(--button-bg)' : undefined }}
-              className={`w-full ${isOutOfStock ? 'bg-white border border-black/10 text-black/30' : 'hover:opacity-90'} text-white font-black text-[8px] md:text-[10px] h-7 md:h-8 rounded-none uppercase flex items-center justify-center gap-1 transition-all duration-500 active:scale-95 border-none shadow-lg tracking-[0.1em]`}
+              className={`w-full ${isOutOfStock ? 'bg-gray-100 border border-black/5 text-black/20' : 'hover:opacity-90'} text-white font-black text-[8px] md:text-[10px] h-7 md:h-8 rounded-none uppercase flex items-center justify-center gap-1 transition-all duration-500 active:scale-95 border-none shadow-lg tracking-[0.1em]`}
             >
               {isOutOfStock ? 'SOLD OUT' : 'অর্ডার করুন'}
             </button>
