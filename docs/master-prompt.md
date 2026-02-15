@@ -13,7 +13,8 @@
 ### 2. Homepage Structure (Slim & High-Impact)
 - **Fixed Sticky Header:** Fixed at the top (z-index: 120). Contains Navbar + dynamic color-synced Status Bar.
 - **Top Fold Grid:** Three-column grid (Flash Offer, Main Slider, QR Bar). Height: 380px (Desktop) / 130px (Mobile).
-- **Rendering Lock:** Use `content-visibility: auto` and `React.memo` for all sections to handle massive inventory without lag.
+- **Top Fold Titles:** Titles in Slider/Flash bars must be small, BLACK colored, and positioned below the "Order Now" button on a white label.
+- **Rendering Lock:** Use `content-visibility: auto` and `React.memo` for all sections to handle massive inventory (10,000+) without lag.
 - **Section Spacing:** Zero gaps between top bars. Minimal vertical gaps (py-4 md:py-8) for products.
 
 ### 3. Core Component Rules
@@ -23,9 +24,9 @@
 
 ### 4. Admin Panel & Intelligence
 - **Dashboard:** Revenue bar charts, visitor counts, and real-time order toasts.
-- **Invoice System:** Professional PDF generator with site branding and ASCII-safe text to prevent encoding errors.
+- **Invoice System:** Professional PDF generator with Unicode-safe ASCII filtering to prevent encoding errors. Ensures Item Description is never empty.
 - **Theme Control:** Fully synced HSL CSS variables for primary, background, button, and text colors.
-- **Inventory:** Per-product delivery charges (Dhaka Inside/Outside). Supports "FREE" text or numeric values.
+- **Inventory:** Per-product delivery charges (Dhaka Inside/Outside). Supports "FREE" text or numeric values. Automatic stock reduction on order creation using transactions.
 
 ### 5. Technical Specifications (PERFORMANCE FIRST)
 - **Framework:** Next.js 15 (App Router), Firebase Firestore.

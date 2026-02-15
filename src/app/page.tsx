@@ -36,26 +36,28 @@ const SlideItem = memo(({ item, priority }: { item: any, priority: boolean }) =>
           {...(priority ? { fetchPriority: "high" } : {})}
         />
         
-        <div className="absolute bottom-3 left-3 z-10 flex flex-col items-start max-w-[90%] pointer-events-none">
-          <h2 className="text-[10px] md:text-[13px] font-headline font-black text-white uppercase tracking-wider mb-1 drop-shadow-lg truncate w-full">
-            {item.name || item.title}
-          </h2>
-          
+        <div className="absolute bottom-3 left-3 z-10 flex flex-col items-start max-w-[90%] gap-1">
           {isProduct && (
-            <div className="flex flex-col space-y-1 pointer-events-auto">
-              <div className="text-[11px] md:text-lg font-black text-[#01a3a4] tracking-tighter drop-shadow-lg leading-none">
+            <div className="flex flex-col items-start gap-1 pointer-events-auto">
+              <div className="text-[11px] md:text-sm font-black text-[#01a3a4] tracking-tighter drop-shadow-lg leading-none bg-black/40 px-1 py-0.5">
                 <span className="text-[8px] md:text-[10px] font-normal mr-0.5 text-white">৳</span>
                 {(item.price || 0).toLocaleString()}
               </div>
               <button 
                 onClick={() => setIsOrderOpen(true)} 
                 style={{ backgroundColor: '#01a3a4' }}
-                className="text-white px-2.5 py-0.5 h-5 md:h-6 font-black text-[7px] md:text-[9px] uppercase tracking-[0.15em] transition-all hover:opacity-90 active:scale-95 shadow-xl border-none flex items-center gap-1"
+                className="text-white px-2 py-0.5 h-5 md:h-6 font-black text-[7px] md:text-[9px] uppercase tracking-[0.1em] transition-all hover:opacity-90 active:scale-95 shadow-xl border-none flex items-center gap-1"
               >
                 <ShoppingCart className="h-2 w-2 md:h-2.5 md:w-2.5" /> অর্ডার করুন
               </button>
             </div>
           )}
+          
+          <div className="bg-white px-1.5 py-0.5 shadow-xl border-l-2 border-[#01a3a4]">
+            <h2 className="text-[7px] md:text-[9px] font-black text-black uppercase tracking-widest truncate max-w-[150px] md:max-w-[250px]">
+              {item.name || item.title}
+            </h2>
+          </div>
         </div>
       </div>
       <OrderModal product={item} isOpen={isOrderOpen} onClose={() => setIsOrderOpen(false)} />
@@ -69,6 +71,7 @@ SlideItem.displayName = 'SlideItem';
 const AnimatedFlashBar = memo(() => {
   const db = useFirestore();
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [isOrderOpen, setIsOrderOpen] = useState(false);
   
   const flashProductQuery = useMemoFirebase(() => {
     if (!db) return null;
@@ -101,9 +104,10 @@ const AnimatedFlashBar = memo(() => {
 
   if (combinedItems.length === 0) return null;
   const activeItem = combinedItems[currentIndex];
+  const isProduct = activeItem.price !== undefined;
 
   return (
-    <div className="h-full w-full relative overflow-hidden bg-black group cursor-pointer gpu-accelerated">
+    <div className="h-full w-full relative overflow-hidden bg-black group gpu-accelerated">
       <div 
         key={activeItem.id} 
         className={cn(
@@ -121,15 +125,28 @@ const AnimatedFlashBar = memo(() => {
           decoding="async"
         />
       </div>
+      
       <div className="absolute top-2 right-2 bg-[#01a3a4]/40 backdrop-blur-sm border border-white/20 px-1.5 py-0.5 text-[5px] md:text-[7px] text-white font-black uppercase tracking-widest flex items-center gap-1 z-20">
         <Sparkles className="h-1 w-1 animate-pulse" /> FLASH LIVE
       </div>
-      <div className="absolute bottom-2 left-2 right-2 z-20 space-y-0.5">
-        <p className="text-[7px] md:text-[9px] font-black text-white uppercase tracking-widest truncate drop-shadow-md">
-          {activeItem.name || activeItem.title}
-        </p>
-        <div className="h-0.5 w-6 bg-[#01a3a4] rounded-full" />
+
+      <div className="absolute bottom-2 left-2 right-2 z-20 flex flex-col items-start gap-1">
+        {isProduct && (
+          <button 
+            onClick={() => setIsOrderOpen(true)} 
+            style={{ backgroundColor: '#01a3a4' }}
+            className="text-white px-2 py-0.5 h-5 md:h-6 font-black text-[7px] md:text-[9px] uppercase tracking-[0.1em] transition-all hover:opacity-90 active:scale-95 shadow-xl border-none flex items-center gap-1 pointer-events-auto"
+          >
+            <ShoppingCart className="h-2 w-2 md:h-2.5 md:w-2.5" /> অর্ডার করুন
+          </button>
+        )}
+        <div className="bg-white px-1.5 py-0.5 shadow-xl border-l-2 border-[#01a3a4] w-fit">
+          <p className="text-[7px] md:text-[9px] font-black text-black uppercase tracking-widest truncate max-w-full">
+            {activeItem.name || activeItem.title}
+          </p>
+        </div>
       </div>
+      <OrderModal product={activeItem} isOpen={isOrderOpen} onClose={() => setIsOrderOpen(false)} />
     </div>
   );
 });
@@ -175,6 +192,7 @@ const FlashOfferCard = memo(() => {
   }, [combinedItems.length]);
   
   const activeItem = combinedItems[currentIndex];
+  const isProduct = activeItem?.price !== undefined;
 
   return (
     <div className="h-full bg-black overflow-hidden relative group w-full gpu-accelerated flex items-center justify-center">
@@ -200,24 +218,21 @@ const FlashOfferCard = memo(() => {
           </div>
           <div className="absolute top-2 left-2 bg-red-600 px-1.5 py-0.5 text-[5px] md:text-[7px] font-black text-white uppercase tracking-[0.2em] z-20 shadow-xl">FLASH OFFER</div>
           
-          <div className="absolute bottom-2 left-2 right-2 z-20 flex flex-col items-start max-w-[90%]">
-             <p className="text-white font-black text-[7px] md:text-[10px] uppercase tracking-wider mb-0.5 drop-shadow-md truncate w-full">
-               {activeItem.name || activeItem.title}
-             </p>
-             {activeItem.price !== undefined && (
-               <div className="mb-1">
-                 <span className="text-[#01a3a4] font-black text-[9px] md:text-sm drop-shadow-md leading-none">
-                   ৳{(activeItem.price || 0).toLocaleString()}
-                 </span>
-               </div>
+          <div className="absolute bottom-2 left-2 right-2 z-20 flex flex-col items-start gap-1">
+             {isProduct && (
+               <button 
+                 onClick={() => setIsOrderOpen(true)} 
+                 style={{ backgroundColor: '#01a3a4' }}
+                 className="text-white px-2 py-0.5 h-5 md:h-6 font-black text-[7px] md:text-[9px] uppercase tracking-[0.1em] transition-all hover:opacity-90 active:scale-95 shadow-xl border-none flex items-center gap-1 pointer-events-auto"
+               >
+                 <ShoppingCart className="h-2 w-2 md:h-2.5 md:w-2.5" /> অর্ডার করুন
+               </button>
              )}
-             <button 
-               onClick={() => setIsOrderOpen(true)} 
-               style={{ backgroundColor: '#01a3a4' }}
-               className="text-white px-2 py-0.5 h-5 md:h-6 font-black text-[7px] md:text-[9px] uppercase tracking-[0.15em] transition-all hover:opacity-90 active:scale-95 shadow-xl border-none flex items-center gap-1"
-             >
-               <ShoppingCart className="h-2 w-2 md:h-2.5 md:w-2.5" /> অর্ডার করুন
-             </button>
+             <div className="bg-white px-1.5 py-0.5 shadow-xl border-l-2 border-[#01a3a4] w-fit">
+               <p className="text-[7px] md:text-[9px] font-black text-black uppercase tracking-widest truncate max-w-full">
+                 {activeItem.name || activeItem.title}
+               </p>
+             </div>
              <OrderModal product={activeItem} isOpen={isOrderOpen} onClose={() => setIsOrderOpen(false)} />
           </div>
         </div>
