@@ -56,7 +56,8 @@ export default function AdminProducts() {
   const [price, setPrice] = useState('');
   const [originalPrice, setOriginalPrice] = useState('');
   const [category, setCategory] = useState('');
-  const [deliveryChargeInfo, setDeliveryChargeInfo] = useState('');
+  const [deliveryInside, setDeliveryInside] = useState('');
+  const [deliveryOutside, setDeliveryOutside] = useState('');
   const [stockQuantity, setStockQuantity] = useState('100');
   const [showInSlider, setShowInSlider] = useState(false);
   const [showInFlashOffer, setShowInFlashOffer] = useState(false);
@@ -158,7 +159,8 @@ export default function AdminProducts() {
       price: parseFloat(price),
       originalPrice: originalPrice ? parseFloat(originalPrice) : parseFloat(price),
       category: category.toUpperCase(),
-      deliveryChargeInfo: deliveryChargeInfo.toUpperCase(),
+      deliveryInside: deliveryInside.toUpperCase() || '60',
+      deliveryOutside: deliveryOutside.toUpperCase() || '120',
       stockQuantity: sizeList.length > 0 ? sizeList.reduce((acc, curr) => acc + curr.qty, 0) : parseInt(stockQuantity),
       sizes: sizeList.map(s => s.size),
       sizeStock: sizeList.length > 0 ? sizeStock : null,
@@ -186,7 +188,8 @@ export default function AdminProducts() {
     setPrice(''); 
     setOriginalPrice('');
     setCategory(''); 
-    setDeliveryChargeInfo('');
+    setDeliveryInside('');
+    setDeliveryOutside('');
     setStockQuantity('100');
     setSizeList([]);
     setNewSize('');
@@ -299,8 +302,19 @@ export default function AdminProducts() {
                   </Select>
                 </div>
                 <div className="space-y-2">
-                  <label className="text-[9px] font-black text-orange-500 uppercase flex items-center gap-1"><Truck className="h-3 w-3" /> DELIVERY CHARGE</label>
-                  <Input placeholder="E.G. FREE OR 60" value={deliveryChargeInfo} onChange={(e) => setDeliveryChargeInfo(e.target.value)} className="bg-black border-white/20 h-12 text-xs font-black text-white focus:border-orange-500 uppercase" />
+                  <label className="text-[9px] font-black text-orange-500 uppercase">STOCK QUANTITY</label>
+                  <Input type="number" value={stockQuantity} onChange={(e) => setStockQuantity(e.target.value)} className="bg-black border-white/20 h-12 text-xs font-black text-white" />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <label className="text-[9px] font-black text-orange-500 uppercase flex items-center gap-1"><Truck className="h-3 w-3" /> ঢাকার ভিতরে (INSIDE)</label>
+                  <Input placeholder="E.G. FREE OR 60" value={deliveryInside} onChange={(e) => setDeliveryInside(e.target.value)} className="bg-black border-white/20 h-12 text-xs font-black text-white focus:border-orange-500 uppercase" />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-[9px] font-black text-orange-500 uppercase flex items-center gap-1"><Truck className="h-3 w-3" /> ঢাকার বাইরে (OUTSIDE)</label>
+                  <Input placeholder="E.G. FREE OR 120" value={deliveryOutside} onChange={(e) => setDeliveryOutside(e.target.value)} className="bg-black border-white/20 h-12 text-xs font-black text-white focus:border-orange-500 uppercase" />
                 </div>
               </div>
 
@@ -342,13 +356,6 @@ export default function AdminProducts() {
                     </div>
                   ))}
                 </div>
-
-                {sizeList.length === 0 && (
-                  <div className="space-y-2 pt-2 border-t border-white/10">
-                    <label className="text-[9px] font-black text-orange-500 uppercase">GENERAL STOCK QUANTITY</label>
-                    <Input type="number" value={stockQuantity} onChange={(e) => setStockQuantity(e.target.value)} className="bg-black border-white/20 h-12 text-xs font-black text-white" />
-                  </div>
-                )}
               </div>
 
               <div className="grid grid-cols-2 gap-4 p-4 bg-white/5 border border-white/10">
@@ -394,7 +401,6 @@ export default function AdminProducts() {
                         <span className="text-orange-500 font-black text-[13px]">৳{p.price}</span>
                         {p.originalPrice > p.price && <span className="text-white/20 line-through text-[10px]">৳{p.originalPrice}</span>}
                         <span className="text-[8px] font-black text-white/40 uppercase bg-white/5 px-2 py-0.5">{p.category}</span>
-                        {p.deliveryChargeInfo && <span className="text-[8px] font-black text-blue-400 uppercase">DELIVERY: {p.deliveryChargeInfo}</span>}
                       </div>
                     </div>
                     <div className="flex gap-2 shrink-0">
@@ -405,7 +411,8 @@ export default function AdminProducts() {
                         setPrice(p.price.toString()); 
                         setOriginalPrice(p.originalPrice?.toString() || '');
                         setCategory(p.category); 
-                        setDeliveryChargeInfo(p.deliveryChargeInfo || '');
+                        setDeliveryInside(p.deliveryInside || '');
+                        setDeliveryOutside(p.deliveryOutside || '');
                         setStockQuantity(p.stockQuantity?.toString() || '100');
                         setShowInSlider(!!p.showInSlider);
                         setShowInFlashOffer(!!p.showInFlashOffer);

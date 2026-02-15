@@ -24,7 +24,8 @@
         "stockQuantity": { "type": "number", "description": "Global quantity if no sizes exist." },
         "showInSlider": { "type": "boolean" },
         "showInFlashOffer": { "type": "boolean" },
-        "deliveryChargeInfo": { "type": "string", "description": "Custom delivery info, e.g., 'FREE' or '60'" },
+        "deliveryInside": { "type": "string", "description": "Delivery info inside Dhaka, e.g., 'FREE' or '60'" },
+        "deliveryOutside": { "type": "string", "description": "Delivery info outside Dhaka, e.g., 'FREE' or '120'" },
         "createdAt": { "type": "string", "format": "date-time" }
       },
       "required": ["name", "description", "price", "imageUrl", "category"]

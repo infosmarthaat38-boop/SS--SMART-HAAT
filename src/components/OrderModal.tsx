@@ -122,6 +122,15 @@ export const OrderModal = memo(({ product, isOpen, onClose }: OrderModalProps) =
 
   if (!product) return null;
 
+  // Priority: Product-specific delivery charge > Global Settings > Defaults
+  const deliveryInside = product.deliveryInside || settings?.deliveryChargeInside?.toString() || '60';
+  const deliveryOutside = product.deliveryOutside || settings?.deliveryChargeOutside?.toString() || '120';
+
+  const formatDelivery = (val: string) => {
+    if (val.toUpperCase() === 'FREE') return 'FREE';
+    return `৳${val}`;
+  };
+
   return (
     <Dialog open={isOpen} onOpenChange={(val) => !val && !isSubmitting && onClose()}>
       <DialogContent className={cn(
@@ -159,8 +168,8 @@ export const OrderModal = memo(({ product, isOpen, onClose }: OrderModalProps) =
                        <p className="text-[10px] font-black text-black uppercase flex items-center gap-1.5">
                          <Truck className="h-3.5 w-3.5 text-primary" /> DELIVERY INFO
                        </p>
-                       <p className="text-[10px] font-bold text-gray-500">ঢাকার ভিতরে: ৳{settings?.deliveryChargeInside || '60'}</p>
-                       <p className="text-[10px] font-bold text-gray-500">ঢাকার বাইরে: ৳{settings?.deliveryChargeOutside || '120'}</p>
+                       <p className="text-[10px] font-bold text-gray-500 uppercase">ঢাকার ভিতরে: {formatDelivery(deliveryInside)}</p>
+                       <p className="text-[10px] font-bold text-gray-500 uppercase">ঢাকার বাইরে: {formatDelivery(deliveryOutside)}</p>
                     </div>
                   </div>
                 </div>
@@ -180,8 +189,8 @@ export const OrderModal = memo(({ product, isOpen, onClose }: OrderModalProps) =
                         <span className="text-[8px] font-black uppercase text-black">DELIVERY:</span>
                       </div>
                       <div className="flex gap-3">
-                        <p className="text-[8px] font-bold text-gray-600">ঢাকা: ৳{settings?.deliveryChargeInside || '60'}</p>
-                        <p className="text-[8px] font-bold text-gray-600">বাইরে: ৳{settings?.deliveryChargeOutside || '120'}</p>
+                        <p className="text-[8px] font-bold text-gray-600">ঢাকা: {formatDelivery(deliveryInside)}</p>
+                        <p className="text-[8px] font-bold text-gray-600">বাইরে: {formatDelivery(deliveryOutside)}</p>
                       </div>
                     </div>
                   )}
