@@ -18,6 +18,7 @@ export const MainHeader = memo(() => {
   const { data: settings } = useDoc(settingsRef);
 
   const hubLocation = settings?.liveLocation || 'BANANI, DHAKA';
+  const statusColor = settings?.statusColor || '#FFFFFF';
 
   return (
     <>
@@ -30,15 +31,21 @@ export const MainHeader = memo(() => {
               <Navbar />
             </div>
             
-            {/* Pure Black Live Status Bar - Enhanced Text Visibility */}
+            {/* Pure Black Live Status Bar - Enhanced Text Visibility with Dynamic Color */}
             {settings?.liveStatus && (
               <div className="h-[24px] md:h-[32px] flex items-center overflow-hidden whitespace-nowrap py-0 relative w-full bg-black border-t border-white/5">
                 <div className="flex items-center gap-10 animate-marquee w-full px-4">
                   <div className="flex items-center gap-2 text-[9px] md:text-[13px] font-black uppercase tracking-[0.3em] shrink-0 text-white">
-                    <div className="h-1.5 w-1.5 bg-red-600 rounded-full animate-pulse shadow-[0_0_8px_rgba(220,38,38,0.8)]" /> 
+                    <div 
+                      className="h-1.5 w-1.5 rounded-full animate-pulse" 
+                      style={{ backgroundColor: statusColor, boxShadow: `0 0 8px ${statusColor}` }}
+                    /> 
                     {settings.liveStatusLabel || 'LIVE STATUS:'}
                   </div>
-                  <p className="text-[9px] md:text-[13px] font-bold uppercase tracking-[0.2em] flex items-center gap-5 shrink-0 text-white/90">
+                  <p 
+                    style={{ color: statusColor }}
+                    className="text-[9px] md:text-[13px] font-bold uppercase tracking-[0.2em] flex items-center gap-5 shrink-0"
+                  >
                     {settings.liveStatus} 
                     <span className="text-white/20">|</span> 
                     <span className="flex items-center gap-2 text-white">
