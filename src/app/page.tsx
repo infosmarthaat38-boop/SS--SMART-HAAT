@@ -28,7 +28,7 @@ const SlideItem = memo(({ item, priority }: { item: any, priority: boolean }) =>
           alt={item.name || item.title || 'Banner'}
           fill
           sizes="100vw"
-          className="object-fill animate-ken-burns"
+          className="object-fill"
           priority={priority}
           loading={priority ? "eager" : "lazy"}
           decoding="async"
@@ -106,7 +106,7 @@ const AnimatedFlashBar = memo(() => {
         key={activeItem.id} 
         className={cn(
           "h-full w-full absolute inset-0 animate-in fade-in duration-1000",
-          currentIndex % 2 === 0 ? "slide-in-from-top-4" : "slide-in-from-bottom-4"
+          currentIndex % 2 === 0 ? "slide-in-from-top-full" : "slide-in-from-bottom-full"
         )}
       >
         <Image 
@@ -180,7 +180,7 @@ const FlashOfferCard = memo(() => {
         <div 
           className={cn(
             "h-full w-full relative flex items-center justify-center animate-in fade-in duration-1000",
-            currentIndex % 2 === 0 ? "slide-in-from-left-4" : "slide-in-from-right-4"
+            currentIndex % 2 === 0 ? "slide-in-from-left-full" : "slide-in-from-right-full"
           )} 
           key={activeItem.id}
         >

@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { memo } from 'react';
@@ -35,7 +34,10 @@ export const MainHeader = memo(() => {
             {settings?.liveStatus && (
               <div className="h-[24px] md:h-[32px] flex items-center overflow-hidden whitespace-nowrap py-0 relative w-full bg-black border-t border-white/5">
                 <div className="flex items-center gap-10 animate-marquee w-full px-4">
-                  <div className="flex items-center gap-2 text-[9px] md:text-[13px] font-black uppercase tracking-[0.3em] shrink-0 text-white">
+                  <div 
+                    style={{ color: statusColor }}
+                    className="flex items-center gap-2 text-[9px] md:text-[13px] font-bold uppercase tracking-[0.3em] shrink-0"
+                  >
                     <div 
                       className="h-1.5 w-1.5 rounded-full animate-pulse" 
                       style={{ backgroundColor: statusColor, boxShadow: `0 0 8px ${statusColor}` }}
@@ -47,10 +49,10 @@ export const MainHeader = memo(() => {
                     className="text-[9px] md:text-[13px] font-bold uppercase tracking-[0.2em] flex items-center gap-5 shrink-0"
                   >
                     {settings.liveStatus} 
-                    <span className="text-white/20">|</span> 
-                    <span className="flex items-center gap-2 text-white">
-                      <MapPin className="h-3 w-3 text-white" /> 
-                      <span className="font-black opacity-60">HUB:</span> {hubLocation}
+                    <span className="opacity-20" style={{ color: statusColor }}>|</span> 
+                    <span className="flex items-center gap-2">
+                      <MapPin className="h-3 w-3" style={{ color: statusColor }} /> 
+                      <span className="font-bold opacity-60">HUB:</span> {hubLocation}
                     </span>
                   </p>
                 </div>
