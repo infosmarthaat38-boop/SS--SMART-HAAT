@@ -7,6 +7,7 @@ import Link from 'next/link';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { OrderModal } from '@/components/OrderModal';
+import { Truck } from 'lucide-react';
 
 interface ProductCardProps {
   product: any;
@@ -20,6 +21,12 @@ export const ProductCard = memo(({ product, index = 0 }: ProductCardProps) => {
   const isPriority = index < 6;
   const price = product.price || 0;
   const originalPrice = product.originalPrice || price;
+
+  const deliveryText = product.deliveryChargeInfo === 'FREE' 
+    ? 'FREE DELIVERY' 
+    : product.deliveryChargeInfo 
+      ? `৳${product.deliveryChargeInfo} DELIVERY` 
+      : null;
 
   return (
     <>
@@ -39,6 +46,12 @@ export const ProductCard = memo(({ product, index = 0 }: ProductCardProps) => {
           {isOutOfStock && (
             <div className="absolute inset-0 bg-white/90 flex items-center justify-center z-10">
               <span className="text-black text-[6px] md:text-[10px] font-black border border-black px-2 py-1 uppercase tracking-[0.1em] bg-white/40 backdrop-blur-md shadow-2xl">ARCHIVE ONLY</span>
+            </div>
+          )}
+
+          {deliveryText && (
+            <div className="absolute top-2 left-2 bg-primary text-white text-[6px] md:text-[8px] font-black px-2 py-1 uppercase tracking-widest shadow-xl z-10 flex items-center gap-1">
+              <Truck className="h-2 w-2 md:h-2.5 md:w-2.5" /> {deliveryText}
             </div>
           )}
         </Link>
@@ -85,7 +98,7 @@ export const ProductCard = memo(({ product, index = 0 }: ProductCardProps) => {
               disabled={isOutOfStock}
               onClick={(e) => { e.preventDefault(); setIsOrderOpen(true); }}
               style={{ backgroundColor: !isOutOfStock ? 'var(--button-bg)' : undefined }}
-              className={`w-full ${isOutOfStock ? 'bg-white border border-black/10 text-black/30' : 'hover:opacity-90'} text-white font-black text-[10px] md:text-[12px] h-7 md:h-10 rounded-none uppercase flex items-center justify-center gap-1.5 transition-all duration-500 active:scale-95 border-none shadow-lg tracking-[0.1em]`}
+              className={`w-full ${isOutOfStock ? 'bg-white border border-black/10 text-black/30' : 'hover:opacity-90'} text-white font-black text-[10px] md:text-[14px] h-7 md:h-11 rounded-none uppercase flex items-center justify-center gap-1.5 transition-all duration-500 active:scale-95 border-none shadow-lg tracking-[0.1em]`}
             >
               {isOutOfStock ? 'SOLD OUT' : 'অর্ডার করুন'}
             </Button>

@@ -24,6 +24,7 @@
         "stockQuantity": { "type": "number", "description": "Global quantity if no sizes exist." },
         "showInSlider": { "type": "boolean" },
         "showInFlashOffer": { "type": "boolean" },
+        "deliveryChargeInfo": { "type": "string", "description": "Custom delivery info, e.g., 'FREE' or '60'" },
         "createdAt": { "type": "string", "format": "date-time" }
       },
       "required": ["name", "description", "price", "imageUrl", "category"]

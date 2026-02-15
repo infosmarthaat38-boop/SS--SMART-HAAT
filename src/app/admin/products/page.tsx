@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useState, useRef, useEffect } from 'react';
@@ -21,7 +22,8 @@ import {
   AlertTriangle,
   Sparkles,
   RefreshCw,
-  X
+  X,
+  Truck
 } from 'lucide-react';
 import { Checkbox } from "@/components/ui/checkbox";
 import Link from 'next/link';
@@ -54,6 +56,7 @@ export default function AdminProducts() {
   const [price, setPrice] = useState('');
   const [originalPrice, setOriginalPrice] = useState('');
   const [category, setCategory] = useState('');
+  const [deliveryChargeInfo, setDeliveryChargeInfo] = useState('');
   const [stockQuantity, setStockQuantity] = useState('100');
   const [showInSlider, setShowInSlider] = useState(false);
   const [showInFlashOffer, setShowInFlashOffer] = useState(false);
@@ -126,6 +129,10 @@ export default function AdminProducts() {
     setNewSize('');
   };
 
+  const removeSizeRow = (index: number) => {
+    setSizeList(prev => prev.filter((_, i) => i !== index));
+  };
+
   const updateSizeQty = (index: number, val: string) => {
     const newList = [...sizeList];
     newList[index].qty = parseInt(val) || 0;
@@ -151,6 +158,7 @@ export default function AdminProducts() {
       price: parseFloat(price),
       originalPrice: originalPrice ? parseFloat(originalPrice) : parseFloat(price),
       category: category.toUpperCase(),
+      deliveryChargeInfo: deliveryChargeInfo.toUpperCase(),
       stockQuantity: sizeList.length > 0 ? sizeList.reduce((acc, curr) => acc + curr.qty, 0) : parseInt(stockQuantity),
       sizes: sizeList.map(s => s.size),
       sizeStock: sizeList.length > 0 ? sizeStock : null,
@@ -178,6 +186,7 @@ export default function AdminProducts() {
     setPrice(''); 
     setOriginalPrice('');
     setCategory(''); 
+    setDeliveryChargeInfo('');
     setStockQuantity('100');
     setSizeList([]);
     setNewSize('');
@@ -201,10 +210,10 @@ export default function AdminProducts() {
     }
   };
 
-  if (!db) return <div className="min-h-screen bg-black flex items-center justify-center"><Loader2 className="h-10 w-10 text-[#01a3a4] animate-spin" /></div>;
+  if (!db) return <div className="min-h-screen bg-black flex items-center justify-center"><Loader2 className="h-10 w-10 text-orange-500 animate-spin" /></div>;
 
   return (
-    <div className="min-h-screen bg-background selection:bg-[#01a3a4]/30">
+    <div className="min-h-screen bg-background selection:bg-orange-500/30">
       <MainHeader />
       <main className="container mx-auto px-2 md:px-12 py-10">
         <div className="flex items-center gap-4 mb-12">
@@ -279,17 +288,20 @@ export default function AdminProducts() {
                 </div>
               </div>
 
-              <div className="space-y-2">
-                <label className="text-[9px] font-black text-orange-500 uppercase flex items-center gap-1"><LayoutDashboard className="h-3 w-3" /> CATEGORY</label>
-                <Select value={category} onValueChange={setCategory}>
-                  <SelectTrigger className="bg-black border-white/20 h-12 uppercase font-black text-[10px] text-white focus:border-orange-500"><SelectValue placeholder="SELECT CATEGORY" /></SelectTrigger>
-                  <SelectContent className="bg-card border-white/10">
-                    {categories?.map((c) => <SelectItem key={c.id} value={c.name} className="uppercase font-black text-[10px]">{c.name}</SelectItem>)}
-                    {category && !categories?.find(c => c.name === category) && (
-                      <SelectItem value={category} className="uppercase font-black text-[10px] border-l-2 border-orange-500">{category}</SelectItem>
-                    )}
-                  </SelectContent>
-                </Select>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <label className="text-[9px] font-black text-orange-500 uppercase flex items-center gap-1"><LayoutDashboard className="h-3 w-3" /> CATEGORY</label>
+                  <Select value={category} onValueChange={setCategory}>
+                    <SelectTrigger className="bg-black border-white/20 h-12 uppercase font-black text-[10px] text-white focus:border-orange-500"><SelectValue placeholder="SELECT" /></SelectTrigger>
+                    <SelectContent className="bg-card border-white/10">
+                      {categories?.map((c) => <SelectItem key={c.id} value={c.name} className="uppercase font-black text-[10px]">{c.name}</SelectItem>)}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="space-y-2">
+                  <label className="text-[9px] font-black text-orange-500 uppercase flex items-center gap-1"><Truck className="h-3 w-3" /> DELIVERY CHARGE</label>
+                  <Input placeholder="E.G. FREE OR 60" value={deliveryChargeInfo} onChange={(e) => setDeliveryChargeInfo(e.target.value)} className="bg-black border-white/20 h-12 text-xs font-black text-white focus:border-orange-500 uppercase" />
+                </div>
               </div>
 
               <div className="space-y-4 p-5 bg-white/[0.02] border border-white/10">
@@ -382,7 +394,7 @@ export default function AdminProducts() {
                         <span className="text-orange-500 font-black text-[13px]">৳{p.price}</span>
                         {p.originalPrice > p.price && <span className="text-white/20 line-through text-[10px]">৳{p.originalPrice}</span>}
                         <span className="text-[8px] font-black text-white/40 uppercase bg-white/5 px-2 py-0.5">{p.category}</span>
-                        <span className="text-[8px] font-black text-green-500/70 uppercase">STOCK: {p.stockQuantity}</span>
+                        {p.deliveryChargeInfo && <span className="text-[8px] font-black text-blue-400 uppercase">DELIVERY: {p.deliveryChargeInfo}</span>}
                       </div>
                     </div>
                     <div className="flex gap-2 shrink-0">
@@ -393,6 +405,7 @@ export default function AdminProducts() {
                         setPrice(p.price.toString()); 
                         setOriginalPrice(p.originalPrice?.toString() || '');
                         setCategory(p.category); 
+                        setDeliveryChargeInfo(p.deliveryChargeInfo || '');
                         setStockQuantity(p.stockQuantity?.toString() || '100');
                         setShowInSlider(!!p.showInSlider);
                         setShowInFlashOffer(!!p.showInFlashOffer);

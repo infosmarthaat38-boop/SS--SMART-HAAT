@@ -1,9 +1,10 @@
+
 "use client";
 
 import React, { useState } from 'react';
 import Image from 'next/image';
 import { useParams, useRouter } from 'next/navigation';
-import { ArrowLeft, ShoppingCart, Heart, Share2, Loader2, Package, Ruler, MapPin } from 'lucide-react';
+import { ArrowLeft, ShoppingCart, Heart, Share2, Loader2, Package, Ruler, MapPin, Truck } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { MainHeader } from '@/components/MainHeader';
 import { Footer } from '@/components/Footer';
@@ -32,7 +33,6 @@ export default function ProductDetails() {
   const { data: product, isLoading } = useDoc(productRef);
   const { data: settings } = useDoc(settingsRef);
 
-  // Fetch more products for the bottom section
   const moreProductsRef = useMemoFirebase(() => {
     if (!db) return null;
     return query(collection(db, 'products'), limit(18));
@@ -74,6 +74,11 @@ export default function ProductDetails() {
   }
 
   const isOutOfStock = (product.stockQuantity || 0) <= 0;
+  const deliveryText = product.deliveryChargeInfo === 'FREE' 
+    ? 'FREE DELIVERY' 
+    : product.deliveryChargeInfo 
+      ? `৳${product.deliveryChargeInfo} DELIVERY` 
+      : null;
 
   return (
     <div className="min-h-screen flex flex-col bg-background selection:bg-[#01a3a4]/30">
@@ -104,7 +109,14 @@ export default function ProductDetails() {
             <div className="space-y-10">
               <div className="space-y-6">
                 <div className="flex items-center justify-between">
-                  <Badge className="rounded-none uppercase tracking-[0.3em] text-[10px] bg-[#01a3a4] text-white font-black border-none px-4 py-1.5">{product.category}</Badge>
+                  <div className="flex gap-2">
+                    <Badge className="rounded-none uppercase tracking-[0.3em] text-[10px] bg-[#01a3a4] text-white font-black border-none px-4 py-1.5">{product.category}</Badge>
+                    {deliveryText && (
+                      <Badge className="rounded-none uppercase tracking-[0.3em] text-[10px] bg-blue-600 text-white font-black border-none px-4 py-1.5 flex items-center gap-1.5">
+                        <Truck className="h-3 w-3" /> {deliveryText}
+                      </Badge>
+                    )}
+                  </div>
                   
                   <div className="flex items-center gap-2 bg-white/5 px-3 py-1 border border-white/10">
                     <MapPin className="h-3 w-3 text-[#01a3a4]" />
@@ -161,13 +173,13 @@ export default function ProductDetails() {
                   <button 
                     disabled={isOutOfStock}
                     onClick={() => setIsOrderOpen(true)}
-                    className={`flex-grow h-14 rounded-none text-[14px] font-black uppercase tracking-[0.4em] shadow-2xl transition-all duration-500 flex items-center justify-center gap-3 ${isOutOfStock ? 'bg-white/5 text-white/20 border border-white/10' : 'bg-[#01a3a4] hover:bg-white hover:text-black text-white shadow-[#01a3a4]/20'}`}
+                    className={`flex-grow h-16 rounded-none text-[16px] font-black uppercase tracking-[0.4em] shadow-2xl transition-all duration-500 flex items-center justify-center gap-3 ${isOutOfStock ? 'bg-white/5 text-white/20 border border-white/10' : 'bg-[#01a3a4] hover:bg-white hover:text-black text-white shadow-[#01a3a4]/20'}`}
                   >
-                    <ShoppingCart className="h-5 w-5" /> {isOutOfStock ? 'SOLD OUT' : 'অর্ডার করুন'}
+                    <ShoppingCart className="h-6 w-6" /> {isOutOfStock ? 'SOLD OUT' : 'অর্ডার করুন'}
                   </button>
                   <div className="flex gap-3">
-                    <Button size="icon" variant="outline" className="h-14 w-14 rounded-none border-white/10 text-white hover:bg-[#01a3a4] hover:border-[#01a3a4] transition-all duration-500"><Heart className="h-5 w-5" /></Button>
-                    <Button size="icon" variant="outline" className="h-14 w-14 rounded-none border-white/10 text-white hover:bg-[#01a3a4] hover:border-[#01a3a4] transition-all duration-500"><Share2 className="h-5 w-5" /></Button>
+                    <Button size="icon" variant="outline" className="h-16 w-16 rounded-none border-white/10 text-white hover:bg-[#01a3a4] hover:border-[#01a3a4] transition-all duration-500"><Heart className="h-6 w-6" /></Button>
+                    <Button size="icon" variant="outline" className="h-16 w-16 rounded-none border-white/10 text-white hover:bg-[#01a3a4] hover:border-[#01a3a4] transition-all duration-500"><Share2 className="h-6 w-6" /></Button>
                   </div>
                 </div>
               </div>
