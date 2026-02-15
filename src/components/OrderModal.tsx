@@ -284,7 +284,7 @@ export const OrderModal = memo(({ product, isOpen, onClose }: OrderModalProps) =
                         type="submit" 
                         disabled={isSubmitting}
                         style={{ backgroundColor: 'var(--button-bg)' }}
-                        className="w-full hover:bg-black text-white h-14 font-black uppercase tracking-[0.3em] rounded-none shadow-lg text-[14px] border-none"
+                        className="w-full hover:bg-black text-white h-14 font-black uppercase tracking-[0.3em] rounded-none shadow-lg text-[12px] border-none"
                       >
                         {isSubmitting ? <Loader2 className="h-5 w-5 animate-spin" /> : 'অর্ডার নিশ্চিত করুন'}
                       </Button>

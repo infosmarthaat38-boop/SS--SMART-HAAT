@@ -49,7 +49,7 @@ const SlideItem = memo(({ item, priority }: { item: any, priority: boolean }) =>
               <button 
                 onClick={() => setIsOrderOpen(true)} 
                 style={{ backgroundColor: '#01a3a4' }}
-                className="text-white px-3 md:px-8 py-1.5 md:py-3 h-8 md:h-12 font-black text-[10px] md:text-[16px] uppercase tracking-[0.2em] transition-all hover:opacity-90 active:scale-95 shadow-xl border-none flex items-center gap-2"
+                className="text-white px-3 md:px-8 py-1.5 md:py-3 h-8 md:h-12 font-black text-[9px] md:text-[14px] uppercase tracking-[0.2em] transition-all hover:opacity-90 active:scale-95 shadow-xl border-none flex items-center gap-2"
               >
                 <ShoppingCart className="h-3 w-3 md:h-5 md:w-5" /> অর্ডার করুন
               </button>
@@ -201,7 +201,7 @@ const FlashOfferCard = memo(() => {
              <button 
                onClick={() => setIsOrderOpen(true)} 
                style={{ backgroundColor: '#01a3a4' }}
-               className="text-white px-3 md:px-6 py-1.5 md:py-2.5 h-7 md:h-11 font-black text-[10px] md:text-[16px] uppercase tracking-[0.2em] transition-all hover:opacity-90 active:scale-95 shadow-xl border-none flex items-center gap-1.5"
+               className="text-white px-3 md:px-6 py-1.5 md:py-2.5 h-7 md:h-11 font-black text-[9px] md:text-[14px] uppercase tracking-[0.2em] transition-all hover:opacity-90 active:scale-95 shadow-xl border-none flex items-center gap-1.5"
              >
                <ShoppingCart className="h-3 w-3 md:h-5 md:w-5" /> অর্ডার করুন
              </button>

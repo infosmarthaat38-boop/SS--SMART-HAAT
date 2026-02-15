@@ -85,7 +85,7 @@ export const ProductCard = memo(({ product, index = 0 }: ProductCardProps) => {
               disabled={isOutOfStock}
               onClick={(e) => { e.preventDefault(); setIsOrderOpen(true); }}
               style={{ backgroundColor: !isOutOfStock ? 'var(--button-bg)' : undefined }}
-              className={`w-full ${isOutOfStock ? 'bg-white border border-black/10 text-black/30' : 'hover:opacity-90'} text-white font-black text-[12px] md:text-[18px] h-9 md:h-14 rounded-none uppercase flex items-center justify-center gap-1.5 transition-all duration-500 active:scale-95 border-none shadow-lg tracking-[0.1em]`}
+              className={`w-full ${isOutOfStock ? 'bg-white border border-black/10 text-black/30' : 'hover:opacity-90'} text-white font-black text-[10px] md:text-[15px] h-9 md:h-14 rounded-none uppercase flex items-center justify-center gap-1.5 transition-all duration-500 active:scale-95 border-none shadow-lg tracking-[0.1em]`}
             >
               {isOutOfStock ? 'SOLD OUT' : 'অর্ডার করুন'}
             </button>
