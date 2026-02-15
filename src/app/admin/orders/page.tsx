@@ -51,15 +51,22 @@ import { Badge } from '@/components/ui/badge';
 import { jsPDF } from "jspdf";
 import autoTable from 'jspdf-autotable';
 
-// PDF UNICODE SAFETY HELPER
-const toSafePdfText = (text: string) => {
+/**
+ * HARD FIX: PDF UNICODE SAFETY HELPER
+ * Removes all non-ASCII characters to prevent the gibberish/broken text
+ * seen in the invoice screenshots. This ensures a professional PDF output.
+ */
+const toSafePdfText = (text: any) => {
   if (!text) return "PREMIUM ITEM";
-  // Remove non-ASCII characters to prevent gibberish in standard PDF fonts
-  const cleaned = text.replace(/[^\x20-\x7E]/g, "").trim();
+  // Remove all non-standard characters and collapse spaces
+  const cleaned = text.toString()
+    .replace(/[^\x20-\x7E]/g, " ")
+    .replace(/\s+/g, ' ')
+    .trim();
   return cleaned || "PREMIUM PRODUCT";
 };
 
-// IMPROVED INVOICE GENERATOR WITH IMAGE AND TEXT FIX
+// IMPROVED INVOICE GENERATOR WITH HARD CHARACTER LOCK
 const generateInvoice = async (order: any, setIsGeneratingPdf: (val: boolean) => void) => {
   setIsGeneratingPdf(true);
   try {
@@ -125,22 +132,23 @@ const generateInvoice = async (order: any, setIsGeneratingPdf: (val: boolean) =>
     const splitAddress = doc.splitTextToSize(toSafePdfText(order.customerAddress), 85);
     doc.text(splitAddress, 45, 95);
 
-    // Product Image handling
+    // Product Image handling - ensures visual verification
     if (order.productImageUrl) {
       try {
-        // Ensure image fits within box
         doc.addImage(order.productImageUrl, 'JPEG', 145, 65, 45, 45, undefined, 'FAST');
         doc.setDrawColor(240, 240, 240);
         doc.rect(145, 65, 45, 45);
       } catch (e) {
         doc.setFontSize(8);
-        doc.text("IMAGE NOT LOADED", 155, 85);
+        doc.text("PRODUCT PREVIEW", 155, 85);
       }
     }
 
-    // Product Table
+    // Product Table with Hard Character Filter
     const pName = toSafePdfText(order.productName);
-    const itemDesc = order.selectedSize ? `${pName} (SIZE: ${order.selectedSize})` : pName;
+    const itemDesc = order.selectedSize && order.selectedSize !== 'N/A' 
+      ? `${pName} (SIZE: ${toSafePdfText(order.selectedSize)})` 
+      : pName;
 
     autoTable(doc, {
       startY: 120,
@@ -167,6 +175,7 @@ const generateInvoice = async (order: any, setIsGeneratingPdf: (val: boolean) =>
         textColor: [60, 60, 60],
         valign: 'middle',
         lineWidth: 0,
+        font: 'helvetica'
       },
       columnStyles: {
         0: { cellWidth: 90 },
@@ -385,7 +394,7 @@ export default function AdminOrders() {
                       <Hash className="h-3 w-3 text-orange-500" />
                       <span className="text-[10px] font-black text-white">{order.quantity || 1} PCS</span>
                     </div>
-                    {order.selectedSize && (
+                    {order.selectedSize && order.selectedSize !== 'N/A' && (
                       <div className="flex items-center gap-1 bg-white/5 px-2 py-1 border border-white/5">
                         <Ruler className="h-3 w-3 text-orange-500" />
                         <span className="text-[10px] font-black text-white">{order.selectedSize}</span>
