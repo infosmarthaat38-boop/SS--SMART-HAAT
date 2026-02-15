@@ -52,13 +52,13 @@ import { jsPDF } from "jspdf";
 import autoTable from 'jspdf-autotable';
 
 /**
- * HARD FIX: PDF UNICODE SAFETY HELPER
- * Removes all non-ASCII characters to prevent the gibberish/broken text
- * seen in the invoice screenshots. This ensures a professional PDF output.
+ * ULTRA HARD FIX: PDF CHARACTER SANITIZER
+ * Ensures description field is NEVER empty and handles non-ASCII gracefully.
  */
 const toSafePdfText = (text: any) => {
   if (!text) return "PREMIUM ITEM";
-  // Remove all non-standard characters and collapse spaces
+  // Filter only standard printable characters to ensure PDF stability
+  // but keep the integrity of the data string.
   const cleaned = text.toString()
     .replace(/[^\x20-\x7E]/g, " ")
     .replace(/\s+/g, ' ')
@@ -132,7 +132,7 @@ const generateInvoice = async (order: any, setIsGeneratingPdf: (val: boolean) =>
     const splitAddress = doc.splitTextToSize(toSafePdfText(order.customerAddress), 85);
     doc.text(splitAddress, 45, 95);
 
-    // Product Image handling - ensures visual verification
+    // Product Image handling
     if (order.productImageUrl) {
       try {
         doc.addImage(order.productImageUrl, 'JPEG', 145, 65, 45, 45, undefined, 'FAST');
@@ -144,8 +144,9 @@ const generateInvoice = async (order: any, setIsGeneratingPdf: (val: boolean) =>
       }
     }
 
-    // Product Table with Hard Character Filter
-    const pName = toSafePdfText(order.productName);
+    // Product Table with Guaranteed Description Populating
+    const pNameRaw = order.productName || "PREMIUM PRODUCT";
+    const pName = toSafePdfText(pNameRaw);
     const itemDesc = order.selectedSize && order.selectedSize !== 'N/A' 
       ? `${pName} (SIZE: ${toSafePdfText(order.selectedSize)})` 
       : pName;

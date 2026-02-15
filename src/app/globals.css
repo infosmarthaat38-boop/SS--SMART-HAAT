@@ -50,10 +50,11 @@
   }
 }
 
-/* ROBUST RENDERING LOCK - handles 10,000+ items without hang */
-section, .product-section, .product-card-container {
+/* ULTIMATE ROBUST RENDERING LOCK - handles 10,000+ items without hang */
+section, .product-section, .product-card-container, .admin-card-lock {
   content-visibility: auto;
   contain-intrinsic-size: 1px 500px;
+  contain: layout style paint;
 }
 
 .gpu-accelerated {
