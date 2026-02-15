@@ -16,6 +16,7 @@ import { setDocumentNonBlocking } from '@/firebase/non-blocking-updates';
 import { OrderModal } from '@/components/OrderModal';
 import { cn } from '@/lib/utils';
 
+// LOCKED COMPONENT: SLIDE ITEM
 const SlideItem = memo(({ item, priority }: { item: any, priority: boolean }) => {
   const [isOrderOpen, setIsOrderOpen] = useState(false);
   const isProduct = item.price !== undefined;
@@ -36,22 +37,22 @@ const SlideItem = memo(({ item, priority }: { item: any, priority: boolean }) =>
         />
         
         <div className="absolute bottom-3 left-3 z-10 flex flex-col items-start max-w-[90%] pointer-events-none">
-          <h2 className="text-[10px] md:text-[16px] font-headline font-black text-white uppercase tracking-wider mb-1 drop-shadow-lg truncate w-full">
+          <h2 className="text-[10px] md:text-[13px] font-headline font-black text-white uppercase tracking-wider mb-1 drop-shadow-lg truncate w-full">
             {item.name || item.title}
           </h2>
           
           {isProduct && (
-            <div className="flex flex-col space-y-1 md:space-y-1.5 pointer-events-auto">
-              <div className="text-[12px] md:text-xl font-black text-[#01a3a4] tracking-tighter drop-shadow-lg leading-none">
-                <span className="text-[9px] md:text-[12px] font-normal mr-0.5 text-white">৳</span>
+            <div className="flex flex-col space-y-1 pointer-events-auto">
+              <div className="text-[11px] md:text-lg font-black text-[#01a3a4] tracking-tighter drop-shadow-lg leading-none">
+                <span className="text-[8px] md:text-[10px] font-normal mr-0.5 text-white">৳</span>
                 {(item.price || 0).toLocaleString()}
               </div>
               <button 
                 onClick={() => setIsOrderOpen(true)} 
                 style={{ backgroundColor: '#01a3a4' }}
-                className="text-white px-2.5 md:px-4 py-1 h-6 md:h-8 font-black text-[7px] md:text-[9px] uppercase tracking-[0.2em] transition-all hover:opacity-90 active:scale-95 shadow-xl border-none flex items-center gap-1"
+                className="text-white px-2.5 py-0.5 h-5 md:h-6 font-black text-[7px] md:text-[9px] uppercase tracking-[0.15em] transition-all hover:opacity-90 active:scale-95 shadow-xl border-none flex items-center gap-1"
               >
-                <ShoppingCart className="h-2.5 w-2.5 md:h-3.5 w-3.5" /> অর্ডার করুন
+                <ShoppingCart className="h-2 w-2 md:h-2.5 md:w-2.5" /> অর্ডার করুন
               </button>
             </div>
           )}
@@ -64,6 +65,7 @@ const SlideItem = memo(({ item, priority }: { item: any, priority: boolean }) =>
 
 SlideItem.displayName = 'SlideItem';
 
+// LOCKED COMPONENT: FLASH BAR (RIGHT)
 const AnimatedFlashBar = memo(() => {
   const db = useFirestore();
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -117,14 +119,13 @@ const AnimatedFlashBar = memo(() => {
           priority={true}
           loading="eager"
           decoding="async"
-          {...({ fetchPriority: "high" } as any)}
         />
       </div>
       <div className="absolute top-2 right-2 bg-[#01a3a4]/40 backdrop-blur-sm border border-white/20 px-1.5 py-0.5 text-[5px] md:text-[7px] text-white font-black uppercase tracking-widest flex items-center gap-1 z-20">
         <Sparkles className="h-1 w-1 animate-pulse" /> FLASH LIVE
       </div>
       <div className="absolute bottom-2 left-2 right-2 z-20 space-y-0.5">
-        <p className="text-[8px] md:text-[12px] font-black text-white uppercase tracking-widest truncate drop-shadow-md">
+        <p className="text-[7px] md:text-[9px] font-black text-white uppercase tracking-widest truncate drop-shadow-md">
           {activeItem.name || activeItem.title}
         </p>
         <div className="h-0.5 w-6 bg-[#01a3a4] rounded-full" />
@@ -135,6 +136,7 @@ const AnimatedFlashBar = memo(() => {
 
 AnimatedFlashBar.displayName = 'AnimatedFlashBar';
 
+// LOCKED COMPONENT: FLASH OFFER (LEFT)
 const FlashOfferCard = memo(() => {
   const [isOrderOpen, setIsOrderOpen] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -194,18 +196,17 @@ const FlashOfferCard = memo(() => {
               priority={true}
               loading="eager"
               decoding="async"
-              {...({ fetchPriority: "high" } as any)}
             />
           </div>
-          <div className="absolute top-2 md:top-3 left-2 md:left-3 bg-red-600 px-1.5 md:px-3 py-0.5 text-[5px] md:text-[8px] font-black text-white uppercase tracking-[0.2em] z-20 shadow-xl">FLASH OFFER</div>
+          <div className="absolute top-2 left-2 bg-red-600 px-1.5 py-0.5 text-[5px] md:text-[7px] font-black text-white uppercase tracking-[0.2em] z-20 shadow-xl">FLASH OFFER</div>
           
-          <div className="absolute bottom-2 md:bottom-3 left-2 md:left-3 z-20 flex flex-col items-start max-w-[90%]">
-             <p className="text-white font-black text-[8px] md:text-[13px] uppercase tracking-wider mb-0.5 md:mb-1 drop-shadow-md truncate w-full">
+          <div className="absolute bottom-2 left-2 right-2 z-20 flex flex-col items-start max-w-[90%]">
+             <p className="text-white font-black text-[7px] md:text-[10px] uppercase tracking-wider mb-0.5 drop-shadow-md truncate w-full">
                {activeItem.name || activeItem.title}
              </p>
              {activeItem.price !== undefined && (
                <div className="mb-1">
-                 <span className="text-[#01a3a4] font-black text-[10px] md:text-xl drop-shadow-md leading-none">
+                 <span className="text-[#01a3a4] font-black text-[9px] md:text-sm drop-shadow-md leading-none">
                    ৳{(activeItem.price || 0).toLocaleString()}
                  </span>
                </div>
@@ -213,9 +214,9 @@ const FlashOfferCard = memo(() => {
              <button 
                onClick={() => setIsOrderOpen(true)} 
                style={{ backgroundColor: '#01a3a4' }}
-               className="text-white px-2 md:px-4 py-1 h-5 md:h-7 font-black text-[7px] md:text-[9px] uppercase tracking-[0.2em] transition-all hover:opacity-90 active:scale-95 shadow-xl border-none flex items-center gap-1"
+               className="text-white px-2 py-0.5 h-5 md:h-6 font-black text-[7px] md:text-[9px] uppercase tracking-[0.15em] transition-all hover:opacity-90 active:scale-95 shadow-xl border-none flex items-center gap-1"
              >
-               <ShoppingCart className="h-2.5 w-2.5 md:h-3.5 w-3.5" /> অর্ডার করুন
+               <ShoppingCart className="h-2 w-2 md:h-2.5 md:w-2.5" /> অর্ডার করুন
              </button>
              <OrderModal product={activeItem} isOpen={isOrderOpen} onClose={() => setIsOrderOpen(false)} />
           </div>
@@ -289,9 +290,8 @@ export default function Home() {
       <MainHeader />
 
       <main className="flex-grow container mx-auto bg-black">
-        {/* TOP FOLD: PERFECT IMAGE DISPLAY */}
         <section className="px-2 md:px-12 pt-0.5 pb-2 md:pt-1 md:pb-4">
-          <div className="grid grid-cols-12 gap-0 h-[130px] md:h-[380px] gpu-accelerated bg-black overflow-hidden border border-white/5">
+          <div className="grid grid-cols-12 gap-0 h-[130px] md:h-[380px] gpu-accelerated bg-black overflow-hidden border border-white/5 shadow-2xl">
             <div className="col-span-3 h-full overflow-hidden border-r border-white/5 bg-black">
               <FlashOfferCard />
             </div>
@@ -312,12 +312,12 @@ export default function Home() {
               )}
             </div>
 
-            <div className="col-span-3 h-full bg-[#01a3a4] relative overflow-hidden flex flex-col items-center justify-center p-1 md:p-4 space-y-1 md:space-y-4 gpu-accelerated shadow-[inset_0_0_100px_rgba(0,0,0,0.2)]">
+            <div className="col-span-3 h-full bg-[#01a3a4] relative overflow-hidden flex flex-col items-center justify-center p-1 md:p-4 space-y-1 md:space-y-4 gpu-accelerated">
               {settings?.showVideoInAppBar ? (
                 <div className="absolute inset-0 w-full h-full bg-black"><AnimatedFlashBar /></div>
               ) : (
                 <div className="flex flex-col items-center justify-center space-y-1 md:space-y-4 relative z-10 w-full">
-                  <h3 className="text-white font-black text-[10px] md:text-sm lg:text-lg uppercase tracking-[0.2em] italic text-center drop-shadow-xl font-headline leading-none">DOWNLOAD APP</h3>
+                  <h3 className="text-white font-black text-[8px] md:text-[14px] uppercase tracking-[0.2em] italic text-center drop-shadow-xl font-headline leading-none">DOWNLOAD APP</h3>
                   <div className="bg-white p-0.5 md:p-2 w-14 h-14 md:w-32 md:h-32 flex items-center justify-center border border-white/20 shadow-2xl">
                     <Image 
                       src={`https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(settings?.qrCodeLink || 'https://sssmarthaat.com')}`} 
@@ -330,8 +330,8 @@ export default function Home() {
                     />
                   </div>
                   <div className="flex flex-col gap-1 md:gap-3 w-full max-w-[160px]">
-                    <button className="w-full bg-white text-black h-6 md:h-10 flex items-center justify-center gap-1 md:gap-2 font-black text-[7px] md:text-[11px] uppercase shadow-lg hover:opacity-90 transition-all"><Apple className="h-3 w-3 md:h-5 md:w-5" /> APP STORE</button>
-                    <button className="w-full bg-white text-black h-6 md:h-10 flex items-center justify-center gap-1 md:gap-2 font-black text-[7px] md:text-[11px] uppercase shadow-lg hover:opacity-90 transition-all"><Play className="h-3 w-3 md:h-5 md:w-5" /> PLAY STORE</button>
+                    <button className="w-full bg-white text-black h-5 md:h-9 flex items-center justify-center gap-1 md:gap-2 font-black text-[6px] md:text-[10px] uppercase shadow-lg hover:opacity-90 transition-all"><Apple className="h-2.5 w-2.5 md:h-4 md:w-4" /> APP STORE</button>
+                    <button className="w-full bg-white text-black h-5 md:h-9 flex items-center justify-center gap-1 md:gap-2 font-black text-[6px] md:text-[10px] uppercase shadow-lg hover:opacity-90 transition-all"><Play className="h-2.5 w-2.5 md:h-4 md:w-4" /> PLAY STORE</button>
                   </div>
                 </div>
               )}
@@ -342,7 +342,7 @@ export default function Home() {
         {isCategoriesLoading || isProductsLoading ? (
           <div className="flex flex-col items-center justify-center py-40 gap-4">
             <Loader2 className="h-12 w-12 text-[#01a3a4] animate-spin" />
-            <p className="text-[10px] font-black uppercase text-[#01a3a4] tracking-widest">Initialising Archive...</p>
+            <p className="text-[10px] font-black uppercase text-[#01a3a4] tracking-widest">Locking Systems...</p>
           </div>
         ) : categories?.map((cat) => {
           const catProducts = allProducts?.filter(p => p.category === cat.name).slice(0, 18) || [];

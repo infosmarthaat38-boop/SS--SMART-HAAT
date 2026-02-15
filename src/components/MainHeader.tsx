@@ -7,8 +7,7 @@ import { doc } from 'firebase/firestore';
 import { MapPin } from 'lucide-react';
 
 /**
- * MainHeader - Fixed at top.
- * Contains Navbar and Ultra-Slim Black Live Status Bar.
+ * MainHeader - ROBUST LOCK.
  * Optimized for zero layout shift and 100% speed.
  */
 export const MainHeader = memo(() => {
@@ -21,18 +20,15 @@ export const MainHeader = memo(() => {
 
   return (
     <>
-      <div className="fixed top-0 left-0 right-0 z-[120] bg-black gpu-accelerated shadow-2xl">
+      <div className="fixed top-0 left-0 right-0 z-[120] bg-black gpu-accelerated shadow-2xl border-b border-white/5">
         <div className="px-2 md:px-12">
-          {/* Constrained Header Container */}
           <div className="overflow-hidden">
-            {/* Navbar with Signature Teal Background */}
             <div className="bg-[#01a3a4]">
               <Navbar />
             </div>
             
-            {/* Pure Black Live Status Bar - Enhanced Text Visibility with Dynamic Color */}
             {settings?.liveStatus && (
-              <div className="h-[24px] md:h-[32px] flex items-center overflow-hidden whitespace-nowrap py-0 relative w-full bg-black border-t border-white/5">
+              <div className="h-[24px] md:h-[32px] flex items-center overflow-hidden whitespace-nowrap py-0 relative w-full bg-black">
                 <div className="flex items-center gap-10 animate-marquee w-full px-4">
                   <div 
                     style={{ color: statusColor }}
@@ -61,8 +57,6 @@ export const MainHeader = memo(() => {
           </div>
         </div>
       </div>
-      
-      {/* Spacer - Adjusted for new bar height */}
       <div className={settings?.liveStatus ? "h-[68px] md:h-[80px]" : "h-[44px] md:h-[48px]"} />
     </>
   );

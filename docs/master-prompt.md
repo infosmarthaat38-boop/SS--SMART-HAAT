@@ -1,9 +1,8 @@
-
-# BEST HAAT - Master AI Prompt (ULTIMATE HARD VERSION)
+# BEST HAAT - Master AI Prompt (ULTIMATE HARD VERSION - LOCKED)
 
 **Role:** Expert Full-stack Developer & UI/UX Designer.
 **Project Name:** BEST HAAT (Subtitle: PREMIUM MARKET PLACE).
-**Core Concept:** A unique, ultra-fast, high-end luxury e-commerce marketplace for the Bangladesh market.
+**Core Concept:** A unique, ultra-fast, high-end luxury e-commerce marketplace for the Bangladesh market. Optimized for 10,000+ products with 100% first performance.
 
 ### 1. Visual Identity & Design Language (STRICT RULES)
 - **Theme:** Ultra-luxury DARK THEME. Background: Pure Black (#000000), Accent Color: Teal/Cyan (#01a3a4).
@@ -12,41 +11,27 @@
 - **Branding:** Logo: "BEST HAAT" in large bold letters, with "PREMIUM MARKET PLACE" in very small letters underneath.
 
 ### 2. Homepage Structure (Slim & High-Impact)
-- **Fixed Sticky Header:** The entire header (Navbar + scrolling Live Status Bar) MUST be fixed at the top of the screen (z-index: 120).
-- **Top Fold Grid:** A three-column grid containing (1) Flash Offer card, (2) Main Slider, (3) QR/App Bar. Fixed height: 450px (Desktop) / 350px (Tablet) / 180px (Mobile).
-- **Category-wise Display:** Group products by category. Each section must show exactly **16 products in 2 rows** (8 per row on desktop, 2 per row on mobile).
-- **Section Spacing:** Minimal vertical gaps (py-4 md:py-8) and tight header-to-grid spacing (mb-4 md:mb-6).
-- **Main CTA:** A large, wide button labeled **"MORE PRODUCT"** linking to the shop page.
+- **Fixed Sticky Header:** Fixed at the top (z-index: 120). Contains Navbar + dynamic color-synced Status Bar.
+- **Top Fold Grid:** Three-column grid (Flash Offer, Main Slider, QR Bar). Height: 380px (Desktop) / 130px (Mobile).
+- **Rendering Lock:** Use `content-visibility: auto` and `React.memo` for all sections to handle massive inventory without lag.
+- **Section Spacing:** Zero gaps between top bars. Minimal vertical gaps (py-4 md:py-8) for products.
 
-### 3. Shop Page Intelligence
-- **Zero-Gap Layout:** The product grid must start immediately under the sticky header/live-bar with 0px padding-top.
-- **Smart Search Logic:** Implement "Relevance First". If a user searches, prioritize matching items at the top, then display the rest of the archive below them.
-- **Infinite Feel:** A large "LOAD MORE ARCHIVE" button for pagination.
+### 3. Core Component Rules
+- **Order Button:** Must be small and sleek (9px-11px font size). Color derived from `--button-bg`.
+- **Images:** Use `object-fill` for top fold items. Product cards use `object-contain` on white background.
+- **Flash Bar:** Cinematic Ken Burns zoom/pan effect with directional entrance animations.
 
-### 4. Navigation & Specialized Modals
-- **Navbar:** Must have HOME, SHOP, and a unique **"CATEGORY"** button.
-- **Category Modal:** Clicking "CATEGORY" opens a full-screen/large modal with a grid of all categories including their images.
-- **Mobile Experience:** Toggleable mobile search input and specialized slim navigation.
+### 4. Admin Panel & Intelligence
+- **Dashboard:** Revenue bar charts, visitor counts, and real-time order toasts.
+- **Invoice System:** Professional PDF generator with site branding and BDT formatting.
+- **Theme Control:** Fully synced HSL CSS variables for primary, background, button, and text colors.
+- **Inventory:** Per-product delivery charges (Dhaka Inside/Outside). Supports "FREE" text or numeric values.
 
-### 5. Ordering & Localization (Bangla Precision)
-- **Checkout Modal:** Fast order form (Name, Phone, Address, Size selection, Quantity).
-- **Delivery Labels:** Use exact Bangla text: **"ঢাকার ভিতরে"** and **"ঢাকার বাইরে"**.
-- **Thank You State:** Post-order success text: **"THANK YOU - আমাদের এক জন প্রতিনিধি যত দ্রুত সম্ভব আপনার সাথে যোগাযোগ করবে"**.
-- **Admin Chat:** Direct WhatsApp integration for every specific product.
-
-### 6. Admin Panel (The Command Center)
-- **Dashboard:** Revenue bar charts, visitor counts, and real-time "New Order" notifications using toasts.
-- **Invoice System:** Professional PDF generator. Must include site branding, customer details, product image, and BDT currency formatting.
-- **Inventory Management:** Full control for Products and Categories.
-- **Client-side Image Compression:** Built-in tool to compress all uploads to 8-12KB for ultra-fast site loading.
-- **Live Broadcast Control:** Interface to update the marquee "Live Message", label text, color, and "Primary Hub Location" globally.
-- **System Preservation:** A dedicated section to copy this master prompt.
-
-### 7. Technical Specifications
-- **Framework:** Next.js 15 (App Router), Firebase Firestore, Firebase Auth.
-- **Styling:** Tailwind CSS, ShadCN UI, Lucide Icons.
-- **Performance:** GPU-accelerated transitions, high-priority loading for top-fold images (`priority={true}`).
-- **Safety:** Comprehensive null-checking (e.g., `(price || 0).toLocaleString()`) to prevent runtime crashes.
+### 5. Technical Specifications (PERFORMANCE FIRST)
+- **Framework:** Next.js 15 (App Router), Firebase Firestore.
+- **Performance:** GPU-accelerated transitions, high-priority loading (`priority={true}`) for fold images.
+- **Safety:** Strict null-checking and optional chaining on all data objects to prevent runtime crashes.
+- **Scalability:** Optimized for 10,000+ products using CSS containment and shallow component trees.
 
 ---
-*Generated for BEST HAAT - Premium Market Place.*
+*Generated for BEST HAAT - Premium Market Place. SYSTEM LOCKED.*
