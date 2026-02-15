@@ -74,11 +74,6 @@ export default function ProductDetails() {
   }
 
   const isOutOfStock = (product.stockQuantity || 0) <= 0;
-  const deliveryText = product.deliveryChargeInfo === 'FREE' 
-    ? 'FREE DELIVERY' 
-    : product.deliveryChargeInfo 
-      ? `৳${product.deliveryChargeInfo} DELIVERY` 
-      : null;
 
   return (
     <div className="min-h-screen flex flex-col bg-background selection:bg-[#01a3a4]/30">
@@ -111,11 +106,6 @@ export default function ProductDetails() {
                 <div className="flex items-center justify-between">
                   <div className="flex gap-2">
                     <Badge className="rounded-none uppercase tracking-[0.3em] text-[10px] bg-[#01a3a4] text-white font-black border-none px-4 py-1.5">{product.category}</Badge>
-                    {deliveryText && (
-                      <Badge className="rounded-none uppercase tracking-[0.3em] text-[10px] bg-blue-600 text-white font-black border-none px-4 py-1.5 flex items-center gap-1.5">
-                        <Truck className="h-3 w-3" /> {deliveryText}
-                      </Badge>
-                    )}
                   </div>
                   
                   <div className="flex items-center gap-2 bg-white/5 px-3 py-1 border border-white/10">

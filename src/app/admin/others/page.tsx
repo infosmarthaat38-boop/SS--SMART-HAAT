@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useState, useEffect } from 'react';
@@ -12,11 +13,10 @@ import {
   Save, 
   Mail, 
   Phone, 
-  Loader2,
+  Loader2, 
   Share2,
   Contact2,
   Truck,
-  MessageSquare,
   Zap,
   QrCode,
   Facebook,
@@ -234,7 +234,7 @@ export default function AdminOthers() {
               <CardContent className="p-8 space-y-6">
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <label className="text-[9px] font-black text-orange-500 uppercase">INSIDE DHAKA</label>
+                    <label className="text-[9px] font-black text-orange-500 uppercase">ঢাকার ভিতরে (INSIDE DHAKA)</label>
                     <Input 
                       type="number"
                       value={formData.deliveryChargeInside}
@@ -243,7 +243,7 @@ export default function AdminOthers() {
                     />
                   </div>
                   <div className="space-y-2">
-                    <label className="text-[9px] font-black text-orange-500 uppercase">OUTSIDE DHAKA</label>
+                    <label className="text-[9px] font-black text-orange-500 uppercase">ঢাকার বাইরে (OUTSIDE DHAKA)</label>
                     <Input 
                       type="number"
                       value={formData.deliveryChargeOutside}
