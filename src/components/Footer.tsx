@@ -17,6 +17,16 @@ export function Footer() {
   const settingsRef = useMemoFirebase(() => db ? doc(db, 'settings', 'site-config') : null, [db]);
   const { data: settings } = useDoc(settingsRef);
 
+  const getWhatsAppLink = (input: string) => {
+    if (!input || input === '#') return '#';
+    if (input.startsWith('http')) return input;
+    let cleanPhone = input.replace(/[^0-9]/g, "");
+    if (cleanPhone.length === 11 && cleanPhone.startsWith('0')) {
+      cleanPhone = '88' + cleanPhone;
+    }
+    return `https://wa.me/${cleanPhone}`;
+  };
+
   const contact = {
     email: settings?.email || 'INFO@SSSMARTHAAT.COM',
     phone: settings?.phone || '+880 1XXX XXXXXX',
@@ -27,7 +37,7 @@ export function Footer() {
       instagram: settings?.instagramUrl || '#',
       twitter: settings?.twitterUrl || '#',
       youtube: settings?.youtubeUrl || '#',
-      whatsapp: settings?.whatsappUrl || '#',
+      whatsapp: getWhatsAppLink(settings?.whatsappUrl || settings?.phone || '#'),
     }
   };
 
@@ -59,10 +69,10 @@ export function Footer() {
             </div>
 
             <div className="flex gap-3">
-              <Link href={contact.social.facebook} className="w-8 h-8 bg-white/5 flex items-center justify-center hover:bg-[#01a3a4] hover:text-white transition-all border border-white/10"><Facebook className="h-3.5 w-3.5 text-white" /></Link>
-              <Link href={contact.social.instagram} className="w-8 h-8 bg-white/5 flex items-center justify-center hover:bg-[#01a3a4] hover:text-white transition-all border border-white/10"><Instagram className="h-3.5 w-3.5 text-white" /></Link>
-              <Link href={contact.social.whatsapp} className="w-8 h-8 bg-white/5 flex items-center justify-center hover:bg-green-600 hover:text-white transition-all border border-white/10"><WhatsAppIcon className="h-3.5 w-3.5 text-white" /></Link>
-              <Link href={contact.social.youtube} className="w-8 h-8 bg-white/5 flex items-center justify-center hover:bg-[#01a3a4] hover:text-white transition-all border border-white/10"><Youtube className="h-3.5 w-3.5 text-white" /></Link>
+              <Link href={contact.social.facebook} target="_blank" className="w-8 h-8 bg-white/5 flex items-center justify-center hover:bg-[#01a3a4] hover:text-white transition-all border border-white/10"><Facebook className="h-3.5 w-3.5 text-white" /></Link>
+              <Link href={contact.social.instagram} target="_blank" className="w-8 h-8 bg-white/5 flex items-center justify-center hover:bg-[#01a3a4] hover:text-white transition-all border border-white/10"><Instagram className="h-3.5 w-3.5 text-white" /></Link>
+              <Link href={contact.social.whatsapp} target="_blank" className="w-8 h-8 bg-white/5 flex items-center justify-center hover:bg-green-600 hover:text-white transition-all border border-white/10"><WhatsAppIcon className="h-3.5 w-3.5 text-white" /></Link>
+              <Link href={contact.social.youtube} target="_blank" className="w-8 h-8 bg-white/5 flex items-center justify-center hover:bg-[#01a3a4] hover:text-white transition-all border border-white/10"><Youtube className="h-3.5 w-3.5 text-white" /></Link>
             </div>
           </div>
           
